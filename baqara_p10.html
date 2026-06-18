@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار حفظ سورة البقرة — صفحة ١٠</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
+
+      :root {
+    --bg:            linear-gradient(160deg, #F4F7F0 0%, #EDF2E6 50%, #F2F5EE 100%);
+    --card:          #FAFCF7;
+    --parchment:     #F0F5E8;
+    --accent:        #4A6741;
+    --accent2:       #C9A84C;
+    --teal:          #5C7A52;
+    --text:          #1E2D1A;
+    --text-soft:     #5A6B4E;
+    --border:        #C8D9B0;
+    --shadow:        rgba(74,103,65,0.10);
+    --green-ok:      #DFF0D8;
+    --green-ok-text: #2D5A1B;
+    --red-no:        #FAE8DC;
+    --red-no-text:   #7B3020;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Amiri', serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at top right, rgba(196,150,90,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at bottom left, rgba(74,124,126,0.07) 0%, transparent 60%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 22px 32px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 3px 18px var(--shadow);
+    position: relative;
+  }
+
+  header::before, header::after {
+    content: '✦';
+    color: var(--accent2);
+    font-size: 1.2rem;
+    position: absolute;
+    top: 12px;
+  }
+  header::before { right: 16px; }
+  header::after  { left: 16px; }
+
+  .surah-name {
+    font-family: 'Scheherazade New', serif;
+    font-size: 1.9rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    color: var(--text-soft);
+    margin-top: 5px;
+  }
+
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .score-item {
+    background: var(--teal);
+    color: #FFFDF8;
+    padding: 4px 18px;
+    border-radius: 20px;
+    font-size: 0.92rem;
+  }
+
+  .quiz-container { width: 100%; max-width: 700px; }
+
+  .question-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 14px var(--shadow);
+    display: none;
+    animation: fadeIn 0.35s ease;
+  }
+  .question-card.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+
+  .q-number {
+    background: var(--accent);
+    color: #FFFDF8;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .q-type {
+    font-size: 0.82rem;
+    color: var(--teal);
+    background: #DFF0D8;
+    padding: 3px 12px;
+    border-radius: 12px;
+    border: 1px solid #B0D0D0;
+  }
+
+  .question-text {
+    font-family: 'Scheherazade New', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    line-height: 2.2;
+    text-align: center;
+    margin-bottom: 20px;
+    background: var(--parchment);
+    padding: 16px;
+    border-radius: 6px;
+    border-right: 4px solid var(--accent2);
+  }
+
+  .blank {
+    display: inline-block;
+    min-width: 90px;
+    border-bottom: 2px solid var(--accent2);
+    color: transparent;
+    background: rgba(196,150,90,0.1);
+    border-radius: 2px;
+    padding: 0 6px;
+    vertical-align: bottom;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .option-btn {
+    font-family: 'Scheherazade New', serif;
+    font-size: 1.2rem;
+    background: var(--parchment);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 11px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    background: var(--teal);
+    color: #FFFDF8;
+    border-color: var(--teal);
+  }
+
+  .option-btn.correct {
+    background: #DFF0D8;
+    color: #2D5A1B;
+    border-color: #8CC47A;
+  }
+
+  .option-btn.wrong {
+    background: #FAE8DC;
+    color: #7B3020;
+    border-color: #E4AA9A;
+  }
+
+  .option-btn:disabled { cursor: default; }
+
+  .text-input-wrap { margin-bottom: 14px; }
+
+  .text-input {
+    font-family: 'Scheherazade New', serif;
+    font-size: 1.4rem;
+    width: 100%;
+    padding: 11px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--parchment);
+    color: var(--text);
+    text-align: right;
+    direction: rtl;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .text-input:focus { border-color: var(--teal); }
+  .text-input.correct { border-color: #8CC47A; background: #DFF0D8; color: #2D5A1B; }
+  .text-input.wrong   { border-color: #E4A09A; background: var(--red-no);  color: var(--red-no-text); }
+
+  .feedback {
+    text-align: center;
+    font-size: 0.98rem;
+    margin-top: 8px;
+    min-height: 22px;
+    font-weight: 700;
+  }
+  .feedback.correct { color: #2D5A1B; }
+  .feedback.wrong   { color: #7B3020; }
+
+  .submit-btn {
+    font-family: 'Amiri', serif;
+    font-size: 1rem;
+    background: var(--teal);
+    color: #FFFDF8;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    margin: 10px auto 0;
+  }
+  .submit-btn:hover { background: var(--accent); }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-btn {
+    font-family: 'Amiri', serif;
+    font-size: 0.92rem;
+    background: none;
+    color: var(--text-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover:not(:disabled) { background: var(--parchment); color: var(--accent); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .progress-dots { display: flex; gap: 6px; }
+
+  .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--border);
+    opacity: 0.5;
+    transition: all 0.3s;
+  }
+  .dot.active        { opacity: 1; background: var(--accent2); transform: scale(1.3); }
+  .dot.done-correct  { background: #5BA87A; opacity: 1; }
+  .dot.done-wrong    { background: #C97070; opacity: 1; }
+
+  .results-card {
+    display: none;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 36px;
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 4px 20px var(--shadow);
+    animation: fadeIn 0.5s ease;
+  }
+  .results-card.show { display: block; }
+
+  .result-circle {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 4px solid var(--accent2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .result-score { font-size: 2rem; color: #FFFDF8; font-weight: 700; }
+  .result-label { font-size: 0.78rem; color: #F5DFC0; }
+
+  .result-title {
+    font-family: 'Scheherazade New', serif;
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .result-message { color: var(--text-soft); font-size: 1rem; margin-bottom: 24px; }
+
+  .retry-btn {
+    font-family: 'Amiri', serif;
+    background: var(--teal);
+    color: #FFFDF8;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 34px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .retry-btn:hover { background: var(--accent); }
+
+
+  .back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: var(--text-soft);
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Amiri', serif;
+  }
+  .back-btn:hover { background: var(--parchment); color: var(--accent); }
+  .back-btn.visible { display: flex; }
+
+  .level-screen {
+    width: 100%;
+    max-width: 700px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 30px 28px;
+    box-shadow: 0 3px 18px var(--shadow);
+    animation: fadeIn 0.4s ease;
+    text-align: center;
+  }
+
+  .level-title {
+    font-family: 'Scheherazade New', serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .level-subtitle {
+    font-size: 0.92rem;
+    color: var(--text-soft);
+    margin-bottom: 26px;
+  }
+
+  .level-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .level-card {
+    background: var(--parchment);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 12px;
+    cursor: pointer;
+    transition: all 0.22s;
+    text-align: center;
+  }
+
+  .level-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px var(--shadow); }
+
+  .level-card.selected {
+    border-color: var(--teal);
+    background: #DFF0D8;
+    box-shadow: 0 0 0 3px rgba(74,103,65,0.18);
+  }
+
+  .level-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+  .level-name {
+    font-family: 'Amiri', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .level-desc {
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    line-height: 1.5;
+  }
+
+  .start-btn {
+    font-family: 'Amiri', serif;
+    background: var(--teal);
+    color: #FFFDF8;
+    border: none;
+    border-radius: 6px;
+    padding: 13px 44px;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    margin: 22px auto 0;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .start-btn.ready { opacity: 1; pointer-events: all; }
+  .start-btn.ready:hover { background: var(--accent); }
+
+  .ayah-ref {
+    font-size: 0.83rem;
+    color: var(--text-soft);
+    text-align: right;
+    direction: rtl;
+    margin-bottom: 5px;
+  }
+
+
+  /* Translate Button */
+  .translate-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--accent);
+    color: #FAFCF7;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 16px;
+    font-family: 'Amiri', serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 999;
+  }
+  .translate-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+  .translate-menu {
+    position: fixed;
+    bottom: 64px;
+    left: 20px;
+    background: #FAFCF7;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--shadow);
+    overflow: hidden;
+    display: none;
+    z-index: 999;
+    min-width: 160px;
+  }
+  .translate-menu.open { display: block; }
+
+  .translate-option {
+    display: block;
+    padding: 10px 18px;
+    font-family: 'Amiri', serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--border);
+  }
+  .translate-option:last-child { border-bottom: none; }
+  .translate-option:hover { background: var(--parchment); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="back-btn" id="back-btn" onclick="goBack()">← الرجوع</button>
+  <div class="surah-name">سورة البقرة</div>
+  <div class="subtitle">الآيات ٦٢ إلى ٦٩</div>
+  <div class="subtitle">اختبار الحفظ | صفحة ١٠</div>
+  <div class="score-bar">
+    <div class="score-item">✓ <span id="correct-count">0</span> صحيح</div>
+    <div class="score-item">✗ <span id="wrong-count">0</span> خطأ</div>
+    <div class="score-item" id="q-counter">السؤال ١ / ١٠</div>
+  </div>
+</header>
+
+
+<!-- شاشة اختيار المستوى -->
+<div id="level-screen" class="level-screen">
+  <div class="level-title">اختر مستوى الاختبار</div>
+  <div class="level-subtitle">كل مستوى له طريقة مختلفة في الاختبار</div>
+  <div class="level-cards">
+    <div class="level-card" onclick="selectLevel('easy', this)">
+      <span class="level-icon">🌱</span>
+      <span class="level-name">سهل</span>
+      <span class="level-desc">اختيار من متعدد — اختر الكلمة الصحيحة من ٤ خيارات</span>
+    </div>
+    <div class="level-card" onclick="selectLevel('medium', this)">
+      <span class="level-icon">🌿</span>
+      <span class="level-name">متوسط</span>
+      <span class="level-desc">إكمال فراغ — اكتب الكلمة أو الجزء الناقص من الآية</span>
+    </div>
+    <div class="level-card" onclick="selectLevel('hard', this)">
+      <span class="level-icon">🌳</span>
+      <span class="level-name">صعب</span>
+      <span class="level-desc">اكتب الآية كاملة من الذاكرة بدون أي مساعدة</span>
+    </div>
+  </div>
+  <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
+</div>
+
+<div class="quiz-container" id="quiz-container" style="display:none"></div>
+<div class="results-card" id="results-card"></div>
+
+<script>
+// كل الأسئلة مصنفة حسب المستوى
+const allQuestions = {
+    easy: [
+    { ayah: 'الآية ٦٢', question: '﴿إِنَّ الَّذِينَ آمَنُوا وَالَّذِينَ هَادُوا وَالنَّصَارَىٰ وَالصَّابِئِينَ مَنْ آمَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ وَعَمِلَ صَالِحًا فَلَهُمْ ___﴾', options: ['رِزْقُهُمْ عِندَ رَبِّهِمْ', 'أَجْرُهُمْ عِندَ رَبِّهِمْ', 'ثَوَابُهُمْ عِندَ رَبِّهِمْ', 'جَزَاؤُهُمْ عِندَ رَبِّهِمْ'], answer: 1 },
+    { ayah: 'الآية ٦٢', question: '﴿وَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ ___﴾', options: ['يَحْزَنُونَ', 'يَبْكُونَ', 'يَخْسَرُونَ', 'يَهْلَكُونَ'], answer: 0 },
+    { ayah: 'الآية ٦٣', question: '﴿وَإِذْ أَخَذْنَا مِيثَاقَكُمْ وَرَفَعْنَا فَوْقَكُمُ الطُّورَ خُذُوا مَا آتَيْنَاكُم ___﴾', options: ['بِيَقِينٍ', 'بِصِدْقٍ', 'بِقُوَّةٍ', 'بِإِخْلَاصٍ'], answer: 2 },
+    { ayah: 'الآية ٦٣', question: '﴿وَاذْكُرُوا مَا فِيهِ لَعَلَّكُمْ ___﴾', options: ['تَعْقِلُونَ', 'تَشْكُرُونَ', 'تَتَّقُونَ', 'تَفْلَحُونَ'], answer: 2 },
+    { ayah: 'الآية ٦٤', question: '﴿ثُمَّ تَوَلَّيْتُم مِّن بَعْدِ ذَٰلِكَ فَلَوْلَا فَضْلُ اللَّهِ عَلَيْكُمْ وَرَحْمَتُهُ لَكُنتُم مِّنَ ___﴾', options: ['الظَّالِمِينَ', 'الْكَافِرِينَ', 'الْخَاسِرِينَ', 'الْهَالِكِينَ'], answer: 2 },
+    { ayah: 'الآية ٦٥', question: '﴿وَلَقَدْ عَلِمْتُمُ الَّذِينَ اعْتَدَوْا مِنكُمْ فِي السَّبْتِ فَقُلْنَا لَهُمْ كُونُوا ___﴾', options: ['خَاسِئِينَ', 'قِرَدَةً خَاسِئِينَ', 'مَذْمُومِينَ', 'مَلْعُونِينَ'], answer: 1 },
+    { ayah: 'الآية ٦٦', question: '﴿فَجَعَلْنَاهَا نَكَالًا لِّمَا بَيْنَ يَدَيْهَا وَمَا خَلْفَهَا وَمَوْعِظَةً ___﴾', options: ['لِلْمُؤْمِنِينَ', 'لِلْمُسْلِمِينَ', 'لِلْمُتَّقِينَ', 'لِلْعَالَمِينَ'], answer: 2 },
+    { ayah: 'الآية ٦٧', question: 'ماذا قال موسى لقومه؟', options: ['إِنَّ اللَّهَ يَأْمُرُكُمْ أَن تَذْبَحُوا بَقَرَةً', 'إِنَّ اللَّهَ يَأْمُرُكُمْ أَن تُصَلُّوا', 'إِنَّ اللَّهَ يَأْمُرُكُمْ أَن تَصُومُوا', 'إِنَّ اللَّهَ يَأْمُرُكُمْ أَن تَتَّقُوا'], answer: 0 },
+    { ayah: 'الآية ٦٧', question: '﴿قَالَ أَعُوذُ بِاللَّهِ أَنْ أَكُونَ مِنَ ___﴾', options: ['الظَّالِمِينَ', 'الْجَاهِلِينَ', 'الْكَافِرِينَ', 'الْمُشْرِكِينَ'], answer: 1 },
+    { ayah: 'الآية ٦٨', question: '﴿إِنَّهَا بَقَرَةٌ لَّا فَارِضٌ وَلَا بِكْرٌ ___﴾', options: ['بَلْ هِيَ وَسَطٌ بَيْنَ ذَٰلِكَ', 'عَوَانٌ بَيْنَ ذَٰلِكَ', 'بَلْ هِيَ عَوَانٌ بَيْنَ ذَٰلِكَ', 'بَيْنَ ذَٰلِكَ عَوَانٌ'], answer: 2 },
+    { ayah: 'الآية ٦٩', question: '﴿إِنَّهَا بَقَرَةٌ صَفْرَاءُ فَاقِعٌ لَّوْنُهَا ___﴾', options: ['تَسُرُّ النَّاظِرِينَ', 'تُبْهِجُ النَّاظِرِينَ', 'تَسُرُّ الْمُؤْمِنِينَ', 'تُفْرِحُ النَّاظِرِينَ'], answer: 0 },
+    { ayah: 'الآية ٦٨', question: '﴿فَافْعَلُوا مَا ___﴾', options: ['تُؤْمَرُونَ', 'تُؤْمَرُونَ بِهِ', 'أُمِرْتُمْ', 'تَشَاؤُونَ'], answer: 0 },
+    { ayah: 'الآية ٦٣', question: 'ما الذي رُفع فوق بني إسرائيل؟', options: ['الْجَبَلُ', 'الطُّورُ', 'السَّمَاءُ', 'الْغَمَامُ'], answer: 1 },
+    { ayah: 'الآية ٦٥', question: 'في أي يوم اعتدى أصحاب السبت؟', options: ['الْجُمُعَةِ', 'الْأَحَدِ', 'السَّبْتِ', 'الِاثْنَيْنِ'], answer: 2 },
+    { ayah: 'الآية ٦٩', question: 'ما لون البقرة في الآية ٦٩؟', options: ['بَيْضَاءُ', 'سَوْدَاءُ', 'صَفْرَاءُ', 'حَمْرَاءُ'], answer: 2 },
+  ], answer: 0 },
+    { ayah: 'الآية ٥٨', question: 'ماذا أُمر بنو إسرائيل أن يقولوا عند دخول الباب؟', options: ['رَبَّنَا اغْفِرْ لَنَا', 'حِطَّةٌ', 'تُبْنَا إِلَيْكَ', 'اغْفِرْ لَنَا ذُنُوبَنَا'], answer: 1 },
+    { ayah: 'الآية ٥٨', question: '﴿وَادْخُلُوا الْبَابَ ___﴾', options: ['خَاشِعِينَ', 'رَاكِعِينَ', 'سُجَّدًا', 'تَائِبِينَ'], answer: 2 },
+    { ayah: 'الآية ٥٨', question: '﴿نَّغْفِرْ لَكُمْ ___﴾', options: ['ذُنُوبَكُمْ', 'سَيِّئَاتِكُمْ', 'خَطَايَاكُمْ', 'آثَامَكُمْ'], answer: 2 },
+    { ayah: 'الآية ٥٨', question: '﴿وَسَنَزِيدُ ___﴾', options: ['الصَّابِرِينَ', 'الشَّاكِرِينَ', 'الصَّالِحِينَ', 'الْمُحْسِنِينَ'], answer: 3 },
+    { ayah: 'الآية ٥٩', question: '﴿فَبَدَّلَ الَّذِينَ ظَلَمُوا قَوْلًا ___ الَّذِي قِيلَ لَهُمْ﴾', options: ['سِوَى', 'بَدَلَ', 'غَيْرَ', 'دُونَ'], answer: 2 },
+    { ayah: 'الآية ٥٩', question: '﴿فَأَنزَلْنَا عَلَى الَّذِينَ ظَلَمُوا ___ مِّنَ السَّمَاءِ﴾', options: ['عَذَابًا أَلِيمًا', 'بَلَاءً شَدِيدًا', 'رِجْزًا', 'صَاعِقَةً'], answer: 2 },
+    { ayah: 'الآية ٥٩', question: '﴿بِمَا كَانُوا ___﴾ في نهاية الآية ٥٩', options: ['يَكْفُرُونَ', 'يَعْصُونَ', 'يَظْلِمُونَ', 'يَفْسُقُونَ'], answer: 3 },
+    { ayah: 'الآية ٦٠', question: '﴿فَقُلْنَا اضْرِب بِّعَصَاكَ ___﴾', options: ['الْبَحْرَ', 'الصَّخْرَةَ', 'الْحَجَرَ', 'الْأَرْضَ'], answer: 2 },
+    { ayah: 'الآية ٦٠', question: 'كم عيناً انفجرت من الحجر؟', options: ['سَبْعَ عُيُونٍ', 'عَشْرَ عُيُونٍ', 'أَرْبَعَ عَشْرَةَ عَيْنًا', 'اثْنَتَا عَشْرَةَ عَيْنًا'], answer: 3 },
+    { ayah: 'الآية ٦٠', question: '﴿وَلَا تَعْثَوْا فِي الْأَرْضِ ___﴾', options: ['ظَالِمِينَ', 'كَافِرِينَ', 'مُفْسِدِينَ', 'جَاحِدِينَ'], answer: 2 },
+    { ayah: 'الآية ٦٠', question: '﴿قَدْ عَلِمَ كُلُّ أُنَاسٍ ___﴾', options: ['مَسْلَكَهُمْ', 'مَشْرَبَهُمْ', 'مَأْكَلَهُمْ', 'مَقَامَهُمْ'], answer: 1 },
+    { ayah: 'الآية ٦١', question: '﴿لَن نَّصْبِرَ عَلَىٰ طَعَامٍ ___﴾', options: ['وَاحِدٍ', 'بَعِيدٍ', 'قَلِيلٍ', 'يَسِيرٍ'], answer: 0 },
+    { ayah: 'الآية ٦١', question: '﴿وَضُرِبَتْ عَلَيْهِمُ الذِّلَّةُ وَالْمَسْكَنَةُ وَبَاءُوا بِـ___﴾', options: ['لَعْنَةٍ مِّنَ اللَّهِ', 'سَخَطٍ مِّنَ اللَّهِ', 'غَضَبٍ مِّنَ اللَّهِ', 'عَذَابٍ مِّنَ اللَّهِ'], answer: 2 },
+    { ayah: 'الآية ٦١', question: '﴿ذَٰلِكَ بِمَا عَصَوا وَّكَانُوا ___﴾', options: ['يَظْلِمُونَ', 'يَكْفُرُونَ', 'يَفْسُقُونَ', 'يَعْتَدُونَ'], answer: 3 },
+  ],
+    medium: [
+    { ayah: 'الآية ٦٢', question: 'أكمل: ﴿فَلَهُمْ أَجْرُهُمْ عِندَ رَبِّهِمْ وَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ ___﴾', answer: 'يَحْزَنُونَ' },
+    { ayah: 'الآية ٦٣', question: 'أكمل: ﴿خُذُوا مَا آتَيْنَاكُم بِقُوَّةٍ وَاذْكُرُوا مَا فِيهِ لَعَلَّكُمْ ___﴾', answer: 'تَتَّقُونَ' },
+    { ayah: 'الآية ٦٤', question: 'أكمل: ﴿فَلَوْلَا فَضْلُ اللَّهِ عَلَيْكُمْ وَرَحْمَتُهُ لَكُنتُم مِّنَ ___﴾', answer: 'الْخَاسِرِينَ' },
+    { ayah: 'الآية ٦٥', question: 'أكمل: ﴿فَقُلْنَا لَهُمْ كُونُوا قِرَدَةً ___﴾', answer: 'خَاسِئِينَ' },
+    { ayah: 'الآية ٦٦', question: 'أكمل: ﴿فَجَعَلْنَاهَا نَكَالًا لِّمَا بَيْنَ يَدَيْهَا وَمَا خَلْفَهَا وَمَوْعِظَةً ___﴾', answer: 'لِّلْمُتَّقِينَ' },
+    { ayah: 'الآية ٦٧', question: 'أكمل: ﴿قَالَ أَعُوذُ بِاللَّهِ أَنْ أَكُونَ مِنَ ___﴾', answer: 'الْجَاهِلِينَ' },
+    { ayah: 'الآية ٦٨', question: 'أكمل: ﴿إِنَّهَا بَقَرَةٌ لَّا فَارِضٌ وَلَا بِكْرٌ عَوَانٌ ___﴾', answer: 'بَيْنَ ذَٰلِكَ' },
+    { ayah: 'الآية ٦٨', question: 'أكمل: ﴿فَافْعَلُوا مَا ___﴾', answer: 'تُؤْمَرُونَ' },
+    { ayah: 'الآية ٦٩', question: 'أكمل: ﴿إِنَّهَا بَقَرَةٌ صَفْرَاءُ فَاقِعٌ لَّوْنُهَا ___﴾', answer: 'تَسُرُّ النَّاظِرِينَ' },
+    { ayah: 'الآية ٦٣', question: 'أكمل: ﴿وَرَفَعْنَا فَوْقَكُمُ الطُّورَ خُذُوا مَا آتَيْنَاكُم ___﴾', answer: 'بِقُوَّةٍ' },
+  ],
+    hard: [
+    { ayah: 'الآية ٦٢', question: 'اكتب الآية ٦٢ كاملة من الذاكرة', answer: 'إِنَّ الَّذِينَ آمَنُوا وَالَّذِينَ هَادُوا وَالنَّصَارَىٰ وَالصَّابِئِينَ مَنْ آمَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ وَعَمِلَ صَالِحًا فَلَهُمْ أَجْرُهُمْ عِندَ رَبِّهِمْ وَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ' },
+    { ayah: 'الآية ٦٣', question: 'اكتب الآية ٦٣ كاملة من الذاكرة', answer: 'وَإِذْ أَخَذْنَا مِيثَاقَكُمْ وَرَفَعْنَا فَوْقَكُمُ الطُّورَ خُذُوا مَا آتَيْنَاكُم بِقُوَّةٍ وَاذْكُرُوا مَا فِيهِ لَعَلَّكُمْ تَتَّقُونَ' },
+    { ayah: 'الآية ٦٤-٦٥', question: 'اكتب الآيتين ٦٤ و٦٥ من الذاكرة', answer: 'ثُمَّ تَوَلَّيْتُم مِّن بَعْدِ ذَٰلِكَ فَلَوْلَا فَضْلُ اللَّهِ عَلَيْكُمْ وَرَحْمَتُهُ لَكُنتُم مِّنَ الْخَاسِرِينَ وَلَقَدْ عَلِمْتُمُ الَّذِينَ اعْتَدَوْا مِنكُمْ فِي السَّبْتِ فَقُلْنَا لَهُمْ كُونُوا قِرَدَةً خَاسِئِينَ' },
+    { ayah: 'الآية ٦٦', question: 'اكتب الآية ٦٦ كاملة من الذاكرة', answer: 'فَجَعَلْنَاهَا نَكَالًا لِّمَا بَيْنَ يَدَيْهَا وَمَا خَلْفَهَا وَمَوْعِظَةً لِّلْمُتَّقِينَ' },
+    { ayah: 'الآية ٦٧-٦٩', question: 'اكتب الآية ٦٧ كاملة من الذاكرة', answer: 'وَإِذْ قَالَ مُوسَىٰ لِقَوْمِهِ إِنَّ اللَّهَ يَأْمُرُكُمْ أَن تَذْبَحُوا بَقَرَةً قَالُوا أَتَتَّخِذُنَا هُزُوًا قَالَ أَعُوذُ بِاللَّهِ أَنْ أَكُونَ مِنَ الْجَاهِلِينَ' },
+  ]
+};
+
+let selectedLevel = null;
+let questions = [];
+let current = 0;
+let score = 0;
+let wrongCount = 0;
+let answered = [];
+
+function selectLevel(level, el) {
+  selectedLevel = level;
+  document.querySelectorAll('.level-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('start-btn').classList.add('ready');
+}
+
+function startQuiz() {
+  if (!selectedLevel) return;
+  questions = allQuestions[selectedLevel];
+  answered = new Array(questions.length).fill(null);
+  score = 0; wrongCount = 0; current = 0;
+  document.getElementById('correct-count').textContent = '0';
+  document.getElementById('wrong-count').textContent = '0';
+  document.getElementById('level-screen').style.display = 'none';
+  document.getElementById('quiz-container').style.display = 'block';
+  document.getElementById('back-btn').classList.add('visible');
+  document.getElementById('q-counter').textContent = `السؤال ١ / ${toArabicNum(questions.length)}`;
+  buildQuiz();
+}
+
+function goBack() {
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('results-card').classList.remove('show');
+  document.getElementById('results-card').innerHTML = '';
+  document.getElementById('level-screen').style.display = 'block';
+  document.getElementById('back-btn').classList.remove('visible');
+  document.querySelectorAll('.level-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('start-btn').classList.remove('ready');
+  selectedLevel = null;
+  score = 0; wrongCount = 0; current = 0;
+  document.getElementById('correct-count').textContent = '0';
+  document.getElementById('wrong-count').textContent = '0';
+}
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card' + (i === 0 ? ' active' : '');
+    card.id = `card-${i}`;
+
+    const isMCQ = q.options !== undefined;
+    let bodyHTML = '';
+
+    if (isMCQ) {
+      bodyHTML = `
+        <div class="ayah-ref">${q.ayah}</div>
+        <div class="question-text">${q.question}</div>
+        <div class="options">
+          ${q.options.map((opt, j) => `
+            <button class="option-btn" onclick="checkMCQ(${i}, ${j})" id="opt-${i}-${j}">${opt}</button>
+          `).join('')}
+        </div>
+        <div class="feedback" id="fb-${i}"></div>
+      `;
+    } else {
+      const isHard = selectedLevel === 'hard';
+      bodyHTML = `
+        <div class="ayah-ref">${q.ayah}</div>
+        <div class="question-text">${q.question}</div>
+        <div class="text-input-wrap">
+          <${isHard ? 'textarea rows="4" style="resize:vertical"' : 'input type="text"'} class="text-input" id="inp-${i}" placeholder="اكتب${isHard ? ' الآية كاملة' : ' إجابتك'} هنا..." dir="rtl"></${isHard ? 'textarea' : 'input'}>
+        </div>
+        <button class="submit-btn" onclick="checkFill(${i})">تحقق ✓</button>
+        <div class="feedback" id="fb-${i}"></div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="question-header">
+        <div class="q-number">${i + 1}</div>
+        <div class="q-type">${isMCQ ? 'اختيار من متعدد' : (selectedLevel === 'hard' ? 'حفظ كامل' : 'إكمال فراغ')}</div>
+      </div>
+      ${bodyHTML}
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="navigate(${i}, -1)" ${i === 0 ? 'disabled' : ''}>◀ السابق</button>
+        <div class="progress-dots" id="dots-${i}"></div>
+        <button class="nav-btn" onclick="navigate(${i}, 1)" ${i === questions.length - 1 ? 'disabled' : ''}>التالي ▶</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  renderDots();
+}
+
+function renderDots() {
+  document.querySelectorAll('[id^="dots-"]').forEach(dotsEl => {
+    dotsEl.innerHTML = questions.map((_, i) => {
+      let cls = 'dot';
+      if (i === current) cls += ' active';
+      else if (answered[i] === true) cls += ' done-correct';
+      else if (answered[i] === false) cls += ' done-wrong';
+      return `<div class="${cls}"></div>`;
+    }).join('');
+  });
+}
+
+function checkMCQ(qi, chosen) {
+  if (answered[qi] !== null) return;
+  const q = questions[qi];
+  const isCorrect = chosen === q.answer;
+  answered[qi] = isCorrect;
+
+  for (let j = 0; j < q.options.length; j++) {
+    const btn = document.getElementById(`opt-${qi}-${j}`);
+    btn.disabled = true;
+    if (j === q.answer) btn.classList.add('correct');
+    else if (j === chosen && !isCorrect) btn.classList.add('wrong');
+  }
+
+  const fb = document.getElementById(`fb-${qi}`);
+  if (isCorrect) {
+    score++;
+    fb.textContent = '✓ إجابة صحيحة!';
+    fb.className = 'feedback correct';
+    document.getElementById('correct-count').textContent = score;
+  } else {
+    wrongCount++;
+    fb.textContent = '✗ الإجابة الصحيحة: ' + q.options[q.answer];
+    fb.className = 'feedback wrong';
+    document.getElementById('wrong-count').textContent = wrongCount;
+  }
+
+  renderDots();
+  setTimeout(() => {
+    if (qi < questions.length - 1) navigate(qi, 1);
+    else if (allAnswered()) showResults();
+  }, 4000);
+}
+
+function checkFill(qi) {
+  if (answered[qi] !== null) return;
+  const inp = document.getElementById(`inp-${qi}`);
+  const userVal = inp.value.trim().replace(/\s+/g, ' ');
+  const correctVal = questions[qi].answer;
+
+  const normalize = s => s
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/[ةه]/g, 'ه')
+    .replace(/[ىي]/g, 'ي')
+    .replace(/[\u064B-\u065F]/g, '')
+    .replace(/\s+/g, ' ').trim();
+
+  const isCorrect = normalize(userVal) === normalize(correctVal);
+  answered[qi] = isCorrect;
+  inp.disabled = true;
+
+  const fb = document.getElementById(`fb-${qi}`);
+  if (isCorrect) {
+    score++;
+    inp.classList.add('correct');
+    fb.textContent = '✓ إجابة صحيحة!';
+    fb.className = 'feedback correct';
+    document.getElementById('correct-count').textContent = score;
+  } else {
+    wrongCount++;
+    inp.classList.add('wrong');
+    fb.innerHTML = '✗ الإجابة الصحيحة: <span style="font-family:Scheherazade New,serif;font-size:1.1rem">' + correctVal + '</span>';
+    fb.className = 'feedback wrong';
+    document.getElementById('wrong-count').textContent = wrongCount;
+  }
+
+  renderDots();
+  setTimeout(() => {
+    if (qi < questions.length - 1) navigate(qi, 1);
+    else if (allAnswered()) showResults();
+  }, 4000);
+}
+
+function navigate(from, dir) {
+  const to = from + dir;
+  if (to < 0 || to >= questions.length) return;
+  document.getElementById(`card-${from}`).classList.remove('active');
+  document.getElementById(`card-${to}`).classList.add('active');
+  current = to;
+  document.getElementById('q-counter').textContent = `السؤال ${toArabicNum(current + 1)} / ${toArabicNum(questions.length)}`;
+  renderDots();
+}
+
+function allAnswered() { return answered.every(a => a !== null); }
+
+function toArabicNum(n) {
+  return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+}
+
+function showResults() {
+  document.getElementById('quiz-container').style.display = 'none';
+  const res = document.getElementById('results-card');
+  res.classList.add('show');
+  const pct = Math.round((score / questions.length) * 100);
+  const levelNames = { easy: 'سهل 🌱', medium: 'متوسط 🌿', hard: 'صعب 🌳' };
+  let msg = '';
+  if (pct === 100) msg = 'ما شاء الله! حفظ ممتاز 🌟';
+  else if (pct >= 70) msg = 'أحسنت! استمر في المراجعة 📖';
+  else msg = 'لا تيأس، كرر الحفظ وأعد المحاولة 💪';
+
+  res.innerHTML = `
+    <div class="result-circle">
+      <div class="result-score">${toArabicNum(score)}/${toArabicNum(questions.length)}</div>
+      <div class="result-label">نتيجة</div>
+    </div>
+    <div class="result-title">${msg}</div>
+    <div class="result-message">المستوى: ${levelNames[selectedLevel]} — حصلت على ${toArabicNum(pct)}%</div>
+    <button class="retry-btn" onclick="goBack()">اختر مستوى آخر 🔄</button>
+  `;
+}
+
+
+// جاهز — الاختبار يبدأ بعد اختيار المستوى
+
+function toggleTranslate() {
+  document.getElementById('translate-menu').classList.toggle('open');
+}
+
+function translateTo(lang) {
+  const url = 'https://translate.google.com/translate?sl=ar&tl=' + lang + '&u=' + encodeURIComponent(window.location.href);
+  window.open(url, '_blank');
+  document.getElementById('translate-menu').classList.remove('open');
+}
+
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('translate-menu');
+  if (!e.target.closest('.translate-btn') && !e.target.closest('.translate-menu')) {
+    menu.classList.remove('open');
+  }
+});
+
+</script>
+
+<!-- Translate Button -->
+<div class="translate-menu" id="translate-menu">
+  <a class="translate-option" href="#" onclick="translateTo('en')">🇬🇧 English</a>
+  <a class="translate-option" href="#" onclick="translateTo('fr')">🇫🇷 Français</a>
+  <a class="translate-option" href="#" onclick="translateTo('tr')">🇹🇷 Türkçe</a>
+  <a class="translate-option" href="#" onclick="translateTo('ur')">🇵🇰 اردو</a>
+  <a class="translate-option" href="#" onclick="translateTo('id')">🇮🇩 Indonesia</a>
+</div>
+<button class="translate-btn" onclick="toggleTranslate()">🌐 ترجمة</button>
+
+</body>
+</html>
