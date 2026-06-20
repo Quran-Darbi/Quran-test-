@@ -338,7 +338,7 @@
   <div class="ayat-range">الآيات ١ إلى ٥</div>
   <div class="page-info">اختبار الحفظ | وجه ١ — صفحة ٢</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">١٥</span></div>
+    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">٥</span></div>
     <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
     <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
   </div>
@@ -409,15 +409,10 @@ const AYAT = [
 //  أسئلة المستوى السهل (١٥ سؤال MCQ)
 // ══════════════════════════════════════════════
 const EASY_Q=[
-  {q:"«ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ هُدًى لِّلـ_____»",choices:["مُتَّقِينَ","مُؤْمِنِينَ","مُسْلِمِينَ","مُحْسِنِينَ"],answer:0},
   {q:"«ذَٰلِكَ الْكِتَابُ لَا _____ فِيهِ هُدًى لِّلْمُتَّقِينَ»",choices:["رَيْبَ","شَكَّ","خَوْفَ","ضَلَالَ"],answer:0},
-  {q:"«الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ _____ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ»",choices:["الصَّلَاةَ","الزَّكَاةَ","الصِّيَامَ","الْحَجَّ"],answer:0},
   {q:"«الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ _____»",choices:["يُنفِقُونَ","يُؤْمِنُونَ","يُسَبِّحُونَ","يُقِيمُونَ"],answer:0},
   {q:"«وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ _____ وَمَا أُنزِلَ مِن قَبْلِكَ»",choices:["إِلَيْكَ","عَلَيْكَ","لَدَيْكَ","مَعَكَ"],answer:0},
-  {q:"«وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن _____»",choices:["قَبْلِكَ","بَعْدِكَ","عِنْدِكَ","حَوْلِكَ"],answer:0},
   {q:"«وَبِالْآخِرَةِ هُمْ _____»",choices:["يُوقِنُونَ","يُؤْمِنُونَ","يَعْلَمُونَ","يَشْهَدُونَ"],answer:0},
-  {q:"«أُولَٰئِكَ عَلَىٰ _____ مِّن رَّبِّهِمْ»",choices:["هُدًى","نُورٍ","رَحْمَةٍ","فَضْلٍ"],answer:0},
-  {q:"«أُولَٰئِكَ عَلَىٰ هُدًى مِّن _____»",choices:["رَّبِّهِمْ","اللَّهِ","نَبِيِّهِمْ","رَسُولِهِمْ"],answer:0},
   {q:"«وَأُولَٰئِكَ هُمُ _____»",choices:["الْمُفْلِحُونَ","الْمُؤْمِنُونَ","الصَّادِقُونَ","الْفَائِزُونَ"],answer:0}
 ];
 
@@ -536,7 +531,7 @@ function updateBadges() {
 
 function startQuiz() {
   if (!currentLevel) return;
-  if (currentLevel === 'easy')   questions = shuffle([...EASY_Q]);
+  if (currentLevel === 'easy')   questions = [...EASY_Q];
   if (currentLevel === 'medium') questions = shuffle([...MEDIUM_Q]);
   if (currentLevel === 'hard')   questions = [...HARD_Q];
 
@@ -730,7 +725,7 @@ function retryQuiz() {
   document.getElementById('total-q').textContent = '١٥';
   document.getElementById('wrong-badge').innerHTML   = '٠ ✗<br>خطأ';
   document.getElementById('correct-badge').innerHTML = '٠ ✓<br>صحيح';
-  document.getElementById('qnum-badge').innerHTML    = 'السؤال ١ /<br>١٠';
+  document.getElementById('qnum-badge').innerHTML    = 'السؤال ١ /<br>٥';
   document.getElementById('progress-fill').style.width = '0%';
 }
 </script>
