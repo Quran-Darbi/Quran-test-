@@ -628,16 +628,16 @@ function showQuestion() {
 
       bVoice.onclick = () => {
         vZone.style.display=''; tZone.style.display='none';
-        bVoice.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff;border:1.5px solid var(--accent);';
-        bText.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);';
+        bVoice.style.background='var(--accent)'; bVoice.style.color='#fff'; bVoice.style.borderColor='var(--accent)';
+        bText.style.background='var(--surface2)'; bText.style.color='var(--text)'; bText.style.borderColor='var(--border)';
       };
       bText.onclick = () => {
         vZone.style.display='none'; tZone.style.display='';
-        bText.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff;border:1.5px solid var(--accent);';
-        bVoice.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);';
+        bText.style.background='var(--accent)'; bText.style.color='#fff'; bText.style.borderColor='var(--accent)';
+        bVoice.style.background='var(--surface2)'; bVoice.style.color='var(--text)'; bVoice.style.borderColor='var(--border)';
       };
 
-      // زر التسجيل
+      // عناصر التسجيل
       const recBtn = document.createElement('button');
       recBtn.style.cssText = 'width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';
       recBtn.textContent = '🎤 اضغط للتسجيل';
@@ -655,60 +655,70 @@ function showQuestion() {
 
       vZone.appendChild(recBtn); vZone.appendChild(clrBtn); vZone.appendChild(txBox); vZone.appendChild(vSub);
 
-      // منطق التسجيل
       const isSecure = location.protocol==='https:'||location.hostname==='localhost';
       const SpeechAPI = window.SpeechRecognition||window.webkitSpeechRecognition;
-      let rec=null, recognizing=false, sessionText='', savedText='';
 
-      function setBtn(state) {
+      // النص المحفوظ من جلسات سابقة (بعد الضغط على إيقاف مؤقت)
+      let savedText = '';
+      // النص المتراكم في الجلسة الحالية
+      let currentText = '';
+      let recognizing = false;
+      let rec = null;
+
+      function getFullText(){ return savedText ? (savedText+' '+currentText).trim() : currentText; }
+
+      function setBtn(state){
         if(state==='rec')  { recBtn.textContent='⏸ إيقاف مؤقت';    recBtn.style.background='#e74c3c'; recBtn.style.color='#fff'; recBtn.style.borderColor='#e74c3c'; }
-        if(state==='pause'){ recBtn.textContent='▶️ استمر في التسجيل'; recBtn.style.background='#f0a500'; recBtn.style.color='#fff'; recBtn.style.borderColor='#f0a500'; }
+        if(state==='pause'){ recBtn.textContent='▶️ استمر في التسجيل'; recBtn.style.background='#e67e22'; recBtn.style.color='#fff'; recBtn.style.borderColor='#e67e22'; }
         if(state==='idle') { recBtn.textContent='🎤 اضغط للتسجيل'; recBtn.style.background='var(--surface2)'; recBtn.style.color='var(--text)'; recBtn.style.borderColor='var(--border)'; }
       }
 
       clrBtn.onclick = () => {
-        if(recognizing){try{rec.stop();}catch(e){}}
-        recognizing=false; sessionText=''; savedText='';
+        if(recognizing){try{rec.stop();}catch(e){} recognizing=false;}
+        savedText=''; currentText='';
         txBox.textContent=''; txBox.style.display='none'; vSub.style.display='none'; clrBtn.style.display='none';
         setBtn('idle');
       };
 
-      if(SpeechAPI && isSecure) {
+      if(SpeechAPI && isSecure){
 
-        function startSession() {
-          rec = new SpeechAPI();
-          rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=false;
+        rec = new SpeechAPI();
+        rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=true;
 
-          rec.onstart = () => { recognizing=true; sessionText=''; setBtn('rec'); };
+        rec.onstart = () => { recognizing=true; currentText=''; setBtn('rec'); };
 
-          rec.onresult = e => {
-            // اجمع نتائج هذه الجلسة فقط
-            let t='';
-            for(let i=0;i<e.results.length;i++) t+=e.results[i][0].transcript+' ';
-            sessionText = t.trim();
-            // النص الكامل = المحفوظ + هذه الجلسة
-            const full = savedText ? savedText+' '+sessionText : sessionText;
-            txBox.textContent=full; txBox.style.display='block'; vSub.style.display='block'; clrBtn.style.display='block';
-          };
+        rec.onresult = e => {
+          // الحل الصحيح: استخدم e.resultIndex لمعالجة النتائج الجديدة فقط
+          for(let i=e.resultIndex; i<e.results.length; i++){
+            if(e.results[i].isFinal){
+              currentText = (currentText+' '+e.results[i][0].transcript).trim();
+            }
+          }
+          // أضف النتيجة المؤقتة الأخيرة للعرض فقط
+          let display = currentText;
+          const last = e.results[e.results.length-1];
+          if(!last.isFinal) display = (currentText+' '+last[0].transcript).trim();
 
-          rec.onerror = e => { if(e.error==='aborted') return; recognizing=false; setBtn(sessionText||savedText?'pause':'idle'); };
+          txBox.textContent = getFullText().replace(currentText, display) || display;
+          const full = savedText ? (savedText+' '+display).trim() : display;
+          txBox.textContent = full;
+          txBox.style.display='block'; vSub.style.display='block'; clrBtn.style.display='block';
+        };
 
-          rec.onend = () => {
-            recognizing=false;
-            // احفظ نص هذه الجلسة ضمن المحفوظ
-            if(sessionText) { savedText = savedText ? savedText+' '+sessionText : sessionText; sessionText=''; }
-            setBtn(savedText?'pause':'idle');
-          };
+        rec.onerror = e => { if(e.error!=='no-speech'&&e.error!=='aborted') recognizing=false; };
 
-          recBtn.disabled=false;
-          try { rec.start(); } catch(e) { setBtn('idle'); }
-        }
+        rec.onend = () => {
+          recognizing=false;
+          // onend بيحصل بعد إيقاف مؤقت أو وقفة - مش بنحفظ savedText هنا
+          setBtn(getFullText()?'pause':'idle');
+        };
 
         recBtn.onclick = () => {
-          if(recognizing) {
-            // إيقاف مؤقت
+          if(recognizing){
+            // إيقاف مؤقت - احفظ النص
             recognizing=false;
-            if(sessionText){ savedText = savedText ? savedText+' '+sessionText : sessionText; sessionText=''; }
+            savedText = getFullText();
+            currentText='';
             try{rec.stop();}catch(e){}
             setBtn('pause');
             return;
@@ -716,8 +726,28 @@ function showQuestion() {
           // بدء أو استمرار
           recBtn.textContent='⏳ ...'; recBtn.disabled=true;
           navigator.mediaDevices.getUserMedia({audio:true})
-            .then(s=>{s.getTracks().forEach(t=>t.stop()); startSession();})
-            .catch(err=>{recBtn.disabled=false; recBtn.textContent='🚫 '+(err.name==='NotAllowedError'?'تم رفض الإذن':err.message);});
+            .then(s=>{
+              s.getTracks().forEach(t=>t.stop());
+              recBtn.disabled=false;
+              // rec جديد في كل جلسة لضمان e.results نظيف
+              rec = new SpeechAPI();
+              rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=true;
+              rec.onstart  = ()=>{ recognizing=true; currentText=''; setBtn('rec'); };
+              rec.onresult = e=>{
+                for(let i=e.resultIndex;i<e.results.length;i++){
+                  if(e.results[i].isFinal) currentText=(currentText+' '+e.results[i][0].transcript).trim();
+                }
+                let display=currentText;
+                const last=e.results[e.results.length-1];
+                if(!last.isFinal) display=(currentText+' '+last[0].transcript).trim();
+                const full=savedText?(savedText+' '+display).trim():display;
+                txBox.textContent=full; txBox.style.display='block'; vSub.style.display='block'; clrBtn.style.display='block';
+              };
+              rec.onerror = e=>{ if(e.error!=='no-speech'&&e.error!=='aborted') recognizing=false; };
+              rec.onend   = ()=>{ recognizing=false; setBtn(getFullText()?'pause':'idle'); };
+              rec.start();
+            })
+            .catch(err=>{recBtn.disabled=false;recBtn.textContent='🚫 '+(err.name==='NotAllowedError'?'تم رفض الإذن':err.message);});
         };
 
       } else {
@@ -726,18 +756,18 @@ function showQuestion() {
       }
 
       // منطقة الكتابة
-      const ta2 = document.createElement('textarea');
+      const ta2=document.createElement('textarea');
       ta2.className='answer-input'; ta2.placeholder='اكتب الآية كاملة...'; ta2.id='user-input';
       tZone.appendChild(ta2);
-      const tSub = document.createElement('button');
+      const tSub=document.createElement('button');
       tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q);
       tZone.appendChild(tSub);
 
-      // زر المساعدة (ظاهر دائماً)
-      const hBox = document.createElement('div');
+      // زر المساعدة - ظاهر دائماً
+      const hBox=document.createElement('div');
       hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;';
       zone.appendChild(hBox);
-      const hBtn = document.createElement('button');
+      const hBtn=document.createElement('button');
       hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)';
       hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;';
       hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};
@@ -745,10 +775,10 @@ function showQuestion() {
 
     } else {
       // المتوسط
-      const ta = document.createElement('textarea');
+      const ta=document.createElement('textarea');
       ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input';
       zone.appendChild(ta);
-      const sub = document.createElement('button');
+      const sub=document.createElement('button');
       sub.className='submit-btn'; sub.textContent='تحقق ✓'; sub.onclick=()=>checkText(q);
       zone.appendChild(sub);
     }
