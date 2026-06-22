@@ -643,16 +643,54 @@ function showQuestion() {
         checkTextVal(q, txt);
       };
       let recognizing = false;
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRec) {
+      const isSecure = location.protocol === 'https:' || location.hostname === 'localhost';
+      const SpeechRec = (window.SpeechRecognition || window.webkitSpeechRecognition);
+      if (SpeechRec && isSecure) {
         const rec = new SpeechRec();
-        rec.lang='ar-SA'; rec.continuous=false; rec.interimResults=true;
-        rec.onstart = ()=>{ recognizing=true; recordBtn.textContent='⏹ أوقف'; recordBtn.style.background='#e74c3c'; recordBtn.style.color='#fff'; recordBtn.style.borderColor='#e74c3c'; };
-        rec.onresult = (e)=>{ let t=''; for(let i=0;i<e.results.length;i++) t+=e.results[i][0].transcript; transcriptBox.textContent=t; transcriptBox.style.display='block'; voiceSubmit.style.display='block'; };
-        rec.onerror = ()=>{ recognizing=false; recordBtn.textContent='🎤 اضغط للتسجيل'; recordBtn.style.cssText='width:100%;padding:16px;border-radius:14px;font-size:17px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:10px;'; };
-        rec.onend   = ()=>{ recognizing=false; recordBtn.textContent= transcriptBox.textContent ? '🎤 أعد التسجيل' : '🎤 اضغط للتسجيل'; recordBtn.style.background='var(--surface2)'; recordBtn.style.color='var(--text)'; recordBtn.style.borderColor='var(--border)'; };
+        rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=true;
+        let manualStop = false;
+        let fullTranscript = '';
+        let savedTranscript = '';  // النص المحفوظ قبل إعادة التسجيل
+
+        // إزالة التكرار عند نقطة الوصل بين جلستين
+        function removeOverlap(existing, newText) {
+          if (!existing) return newText;
+          const norm = s => s.replace(/[ً-ٰٟ]/g,'').replace(/\s+/g,' ').trim();
+          const existWords = norm(existing).split(' ');
+          const newWords   = norm(newText).split(' ');
+          // نجرب حذف أول 1 أو 2 أو 3 كلمات لو موجودين في آخر النص السابق
+          for (let overlap = Math.min(3, existWords.length, newWords.length); overlap >= 1; overlap--) {
+            const tail  = existWords.slice(-overlap).join(' ');
+            const head  = newWords.slice(0, overlap).join(' ');
+            if (tail === head) {
+              // احذف الكلمات المكررة من بداية النص الجديد
+              const rawNewWords = newText.trim().split(/\s+/);
+              return rawNewWords.slice(overlap).join(' ');
+            }
+          }
+          return newText;
+        }
+
+        rec.onstart = ()=>{ recognizing=true; manualStop=false; recordBtn.textContent='⏹ أوقف التسجيل'; recordBtn.style.background='#e74c3c'; recordBtn.style.color='#fff'; recordBtn.style.borderColor='#e74c3c'; };
+        rec.onresult = (e)=>{
+          let t='';
+          for(let i=0;i<e.results.length;i++) t+=e.results[i][0].transcript+' ';
+          const deduped = removeOverlap(savedTranscript, t.trim());
+          fullTranscript = (savedTranscript + ' ' + deduped).trim();
+          transcriptBox.textContent=fullTranscript; transcriptBox.style.display='block'; voiceSubmit.style.display='block';
+        };
+        rec.onerror = (e)=>{
+          if(e.error==='no-speech' && !manualStop){ try{rec.start();}catch(ex){} return; }
+          recognizing=false;
+        };
+        rec.onend = ()=>{
+          if(recognizing && !manualStop){ try{rec.start();}catch(ex){ recognizing=false; } return; }
+          recognizing=false;
+          recordBtn.textContent= fullTranscript ? '🎤 أعد التسجيل' : '🎤 اضغط للتسجيل';
+          recordBtn.style.background='var(--surface2)'; recordBtn.style.color='var(--text)'; recordBtn.style.borderColor='var(--border)';
+        };
         recordBtn.onclick = ()=>{
-          if(recognizing){ rec.stop(); return; }
+          if(recognizing){ manualStop=true; recognizing=false; savedTranscript=fullTranscript; rec.stop(); return; }
           transcriptBox.textContent=''; transcriptBox.style.display='none'; voiceSubmit.style.display='none';
           recordBtn.textContent='⏳ جاري الاتصال بالميكروفون...'; recordBtn.disabled=true;
           navigator.mediaDevices && navigator.mediaDevices.getUserMedia({audio:true})
@@ -667,7 +705,15 @@ function showQuestion() {
             });
         };
       } else {
-        recordBtn.textContent='⚠️ المتصفح لا يدعم التسجيل'; recordBtn.disabled=true;
+        recordBtn.textContent = isSecure ? '⚠️ المتصفح لا يدعم التسجيل الصوتي' : '🔒 التسجيل الصوتي يعمل فقط على الموقع (GitHub Pages)';
+        recordBtn.disabled = true;
+        recordBtn.style.opacity = '0.65';
+        transcriptBox.textContent = isSecure
+          ? 'جرّبي متصفحاً آخر مثل كروم'
+          : '💡 افتحي الصفحة من الموقع الرسمي لتفعيل هذه الميزة: quran-darbi.github.io/Quran-test-';
+        transcriptBox.style.display = 'block';
+        transcriptBox.style.color = 'var(--text-soft)';
+        transcriptBox.style.fontSize = '14px';
       }
       voiceZone.appendChild(recordBtn); voiceZone.appendChild(transcriptBox); voiceZone.appendChild(voiceSubmit);
       zone.appendChild(voiceZone);
