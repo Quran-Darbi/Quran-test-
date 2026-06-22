@@ -27,6 +27,22 @@
     --border:   #D4AF7A;
     --shadow:   rgba(139,94,60,0.12);
     --soon:     #B0A090;
+    --nav-bg:   #FAFCF7;
+  }
+
+  html[data-theme="dark"] {
+    --bg:       #1C1812;
+    --card:     #2A241B;
+    --parchment:#2F2A20;
+    --accent:   #E0B068;
+    --accent2:  #C4965A;
+    --teal:     #6FB8BA;
+    --text:     #EFE6D8;
+    --text-soft:#C9B89A;
+    --border:   #4A4030;
+    --shadow:   rgba(0,0,0,0.35);
+    --soon:     #6B6354;
+    --nav-bg:   #221D16;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,18 +55,40 @@
       radial-gradient(ellipse at bottom left, rgba(139,94,60,0.08) 0%, transparent 55%);
     min-height: 100vh;
     padding: 0 0 40px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: var(--text);
   }
 
   /* NAV */
   nav {
-    background: #FAFCF7;
+    background: var(--nav-bg);
     border-bottom: 1.5px solid var(--border);
     padding: 12px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 8px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 200;
   }
+
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+
+  .theme-toggle {
+    background: var(--parchment);
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover { border-color: var(--teal); transform: scale(1.08); }
 
   .nav-logo {
     font-family: 'Scheherazade New', serif;
@@ -76,8 +114,8 @@
   /* HERO */
   .hero {
     text-align: center;
-    padding: 44px 20px 32px;
-    background: #FAFCF7;
+    padding: 20px 20px 28px;
+    background: var(--nav-bg);
     border-bottom: 2px solid var(--border);
     box-shadow: 0 2px 16px var(--shadow);
   }
@@ -136,9 +174,18 @@
   .stat span { color: var(--accent); font-weight: 700; font-size: 1rem; }
 
   /* SEARCH */
+  .search-sticky {
+    position: sticky;
+    top: 57px;
+    z-index: 150;
+    background: var(--bg);
+    padding-top: 14px;
+    padding-bottom: 10px;
+  }
+
   .search-wrap {
     max-width: 600px;
-    margin: 24px auto 0;
+    margin: 0 auto;
     padding: 0 16px;
   }
 
@@ -149,7 +196,7 @@
     padding: 10px 18px;
     border: 1.5px solid var(--border);
     border-radius: 24px;
-    background: #FAFCF7;
+    background: var(--nav-bg);
     color: var(--text);
     outline: none;
     text-align: right;
@@ -158,6 +205,33 @@
   }
   .search-input:focus { border-color: var(--teal); }
   .search-input::placeholder { color: var(--text-soft); opacity: 0.7; }
+
+  /* JUZ CHIPS */
+  .juz-chips {
+    max-width: 600px;
+    margin: 10px auto 0;
+    padding: 0 16px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .juz-chips::-webkit-scrollbar { height: 4px; }
+  .juz-chip {
+    flex-shrink: 0;
+    background: var(--parchment);
+    border: 1.5px solid var(--border);
+    color: var(--text-soft);
+    border-radius: 16px;
+    padding: 5px 14px;
+    font-size: 0.85rem;
+    font-family: 'Amiri', serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s;
+  }
+  .juz-chip:hover { border-color: var(--teal); color: var(--teal); }
+  .juz-chip.active { background: var(--accent); border-color: var(--accent); color: #FFFDF8; }
 
   /* MAIN */
   .main {
@@ -208,15 +282,28 @@
   /* CARDS */
   .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
   }
 
+  @keyframes shimmer {
+    0% { background-position: -300px 0; }
+    100% { background-position: 300px 0; }
+  }
+  .quiz-card.skeleton {
+    pointer-events: none;
+    color: transparent;
+    background: linear-gradient(90deg, var(--parchment) 25%, var(--card) 50%, var(--parchment) 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.2s infinite linear;
+  }
+  .quiz-card.skeleton * { visibility: hidden; }
+
   .quiz-card {
-    background: #FAFCF7;
+    background: var(--nav-bg);
     border: 1.5px solid var(--border);
     border-radius: 8px;
-    padding: 16px;
+    padding: 14px;
     text-decoration: none;
     color: var(--text);
     transition: all 0.22s;
@@ -270,7 +357,23 @@
   }
 
   .badge-ready { background: #DFF0D8; color: var(--teal); border: 1px solid #8CC47A; }
-  .badge-soon  { background: #F0EBE3; color: var(--soon); border: 1px solid #D4C8B8; }
+  .badge-soon  { background: var(--parchment); color: var(--soon); border: 1px solid var(--border); }
+  .badge-done  { background: #FFE8B0; color: #8B5E1A; border: 1px solid #E0B860; }
+
+  .card-check {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background: var(--teal);
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   /* ABOUT */
   .about-section {
@@ -280,7 +383,7 @@
   }
 
   .about-card {
-    background: #FAFCF7;
+    background: var(--nav-bg);
     border: 1.5px solid var(--border);
     border-radius: 8px;
     padding: 28px 28px;
@@ -333,7 +436,9 @@
 
   @media (max-width: 480px) {
     .hero-title { font-size: 1.85rem; }
-    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .quiz-card { padding: 10px 8px; }
+    .card-info { font-size: 0.7rem; }
     nav { flex-direction: column; gap: 10px; }
   }
 
@@ -363,7 +468,7 @@
     position: fixed;
     bottom: 64px;
     left: 20px;
-    background: #FAFCF7;
+    background: var(--nav-bg);
     border: 1.5px solid var(--border);
     border-radius: 12px;
     box-shadow: 0 4px 20px var(--shadow);
@@ -393,16 +498,20 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">دربي لحفظ القرآن</div>
-  <ul class="nav-links">
-    <li><a href="#tests">الاختبارات</a></li>
-    <li><a href="#about">عن المشروع</a></li>
-  </ul>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#tests">الاختبارات</a></li>
+      <li><a href="#about">عن المشروع</a></li>
+    </ul>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="تبديل الوضع الليلي">🌙</button>
+  </div>
 </nav>
 
 <!-- TOP STRIP -->
-<div style="text-align:center; padding:10px 16px; background:#FFFFFF; border-bottom:1.5px solid var(--border); font-family:'Scheherazade New',serif;">
+<div style="text-align:center; padding:10px 16px; background:var(--bg); border-bottom:1.5px solid var(--border); font-family:'Scheherazade New',serif;">
   <div style="font-size:0.9rem; color:var(--teal);">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾ صدق الله العظيم</div>
-  <div style="font-size:0.95rem; color:#8B5E3C; margin-top:4px; font-family:'Scheherazade New',serif;">دربي لحفظ القرآن — هند هاني أبوبكر</div>
+  <div style="font-size:0.95rem; color:var(--text-soft); margin-top:4px; font-family:'Scheherazade New',serif; font-weight:700;">دربي لحفظ القرآن</div>
+  <div style="font-size:0.85rem; color:var(--text-soft); margin-top:2px; font-family:'Scheherazade New',serif; font-weight:700;">هند هاني أبوبكر</div>
 </div>
 
 <!-- HERO -->
@@ -419,8 +528,11 @@
 </div>
 
 <!-- SEARCH -->
-<div class="search-wrap">
-  <input type="text" class="search-input" placeholder="🔍 ابحث عن سورة أو صفحة..." oninput="filterCards(this.value)" />
+<div class="search-sticky">
+  <div class="search-wrap">
+    <input type="text" class="search-input" placeholder="🔍 ابحث عن سورة أو صفحة..." oninput="filterCards(this.value)" />
+  </div>
+  <div class="juz-chips" id="juz-chips"></div>
 </div>
 
 <!-- TESTS -->
@@ -431,7 +543,7 @@
     <div class="juz-header">
       <div class="juz-badge">الجزء الأول</div>
       <div class="juz-title">سورة البقرة</div>
-      <div class="juz-progress">٩ / ٢٢ متاح</div>
+      <div class="juz-progress">٢٠ / ٢٠ متاح</div>
     </div>
     <div class="cards-grid">
       <a href="albaqara_p2.html" class="quiz-card" data-text="سورة البقرة صفحة ٢ آيات ١–٥">
@@ -488,6 +600,124 @@
         <div class="card-info">الآيات ٦٢–٦٩ | وجه ٩ | ص ١٠</div>
         <span class="card-badge badge-ready">✓ متاح الآن</span>
       </a>
+      <a href="albaqara_p11.html" class="quiz-card" data-text="سورة البقرة صفحة ١١ آيات ٧٠–٧٦">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ٧٠–٧٦ | وجه ١٠ | ص ١١</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p12.html" class="quiz-card" data-text="سورة البقرة صفحة ١٢ آيات ٧٧–٨٣">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ٧٧–٨٣ | وجه ١١ | ص ١٢</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p13.html" class="quiz-card" data-text="سورة البقرة صفحة ١٣ آيات ٨٤–٨٨">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ٨٤–٨٨ | وجه ١٢ | ص ١٣</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p14.html" class="quiz-card" data-text="سورة البقرة صفحة ١٤ آيات ٨٩–٩٣">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ٨٩–٩٣ | وجه ١٣ | ص ١٤</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p15.html" class="quiz-card" data-text="سورة البقرة صفحة ١٥ آيات ٩٤–١٠١">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ٩٤–١٠١ | وجه ١٤ | ص ١٥</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p16.html" class="quiz-card" data-text="سورة البقرة صفحة ١٦ آيات ١٠٢–١٠٥">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٠٢–١٠٥ | وجه ١٥ | ص ١٦</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p17.html" class="quiz-card" data-text="سورة البقرة صفحة ١٧ آيات ١٠٦–١١٢">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٠٦–١١٢ | وجه ١٦ | ص ١٧</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p18.html" class="quiz-card" data-text="سورة البقرة صفحة ١٨ آيات ١١٣–١١٩">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١١٣–١١٩ | وجه ١٧ | ص ١٨</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p19.html" class="quiz-card" data-text="سورة البقرة صفحة ١٩ آيات ١٢٠–١٢٦">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٢٠–١٢٦ | وجه ١٨ | ص ١٩</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p20.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٠ آيات ١٢٧–١٣٤">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٢٧–١٣٤ | وجه ١٩ | ص ٢٠</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p21.html" class="quiz-card" data-text="سورة البقرة صفحة ٢١ آيات ١٣٥–١٤١">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٣٥–١٤١ | وجه ٢٠ | ص ٢١</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="juz-section" data-juz="2">
+    <div class="juz-header">
+      <div class="juz-badge">الجزء الثاني</div>
+      <div class="juz-title">سورة البقرة (تابع)</div>
+      <div class="juz-progress">٦ / ٢٠ متاح</div>
+    </div>
+    <div class="cards-grid">
+      <a href="albaqara_p22.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٢ آيات ١٤٢–١٤٥">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٤٢–١٤٥ | وجه ٢١ | ص ٢٢</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p23.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٣ آيات ١٤٦–١٥٣">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٤٦–١٥٣ | وجه ٢٢ | ص ٢٣</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p24.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٤ آيات ١٥٤–١٦٣">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٥٤–١٦٣ | وجه ٢٣ | ص ٢٤</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p25.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٥ آيات ١٦٤–١٦٩">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٦٤–١٦٩ | وجه ٢٤ | ص ٢٥</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p26.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٦ آيات ١٧٠–١٧٦">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٧٠–١٧٦ | وجه ٢٥ | ص ٢٦</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <a href="albaqara_p27.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٧ آيات ١٧٧–١٨١">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الآيات ١٧٧–١٨١ | وجه ٢٦ | ص ٢٧</div>
+        <span class="card-badge badge-ready">✓ متاح الآن</span>
+      </a>
+      <div class="quiz-card soon">
+        <div class="card-corner"></div>
+        <div class="card-surah">سورة البقرة</div>
+        <div class="card-info">الصفحات ٢٨–٤١</div>
+        <span class="card-badge badge-soon">قريباً</span>
+      </div>
     </div>
   </div>
 
@@ -519,7 +749,6 @@
 
 <script>
 const juzData = [
-  { num: '٢', title: 'سورة البقرة (تابع)', pages: 'ص ٢٢–٤١' },
   { num: '٣', title: 'البقرة — آل عمران', pages: 'ص ٤٢–٦٢' },
   { num: '٤', title: 'آل عمران — النساء', pages: 'ص ٦٣–٨٢' },
   { num: '٥', title: 'سورة النساء (تابع)', pages: 'ص ٨٣–١٠٢' },
@@ -551,9 +780,12 @@ const juzData = [
 ];
 
 const container = document.getElementById('remaining-juz');
+const juzNumToArabic = {3:'٣',4:'٤',5:'٥',6:'٦',7:'٧',8:'٨',9:'٩',10:'١٠',11:'١١',12:'١٢',13:'١٣',14:'١٤',15:'١٥',16:'١٦',17:'١٧',18:'١٨',19:'١٩',20:'٢٠',21:'٢١',22:'٢٢',23:'٢٣',24:'٢٤',25:'٢٥',26:'٢٦',27:'٢٧',28:'٢٨',29:'٢٩',30:'٣٠'};
+const arabicToNum = Object.fromEntries(Object.entries(juzNumToArabic).map(([k,v])=>[v,k]));
+
 juzData.forEach(j => {
   container.innerHTML += `
-    <div class="juz-section">
+    <div class="juz-section" data-juz="${arabicToNum[j.num]}">
       <div class="juz-header">
         <div class="juz-badge">الجزء ${j.num}</div>
         <div class="juz-title">${j.title}</div>
@@ -585,6 +817,78 @@ function filterCards(val) {
     sec.style.display = anyVisible ? '' : 'none';
   });
 }
+
+/* === DARK MODE === */
+function applyTheme(mode) {
+  document.documentElement.setAttribute('data-theme', mode);
+  document.getElementById('theme-toggle').textContent = mode === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem('quranTheme', next); } catch(e) {}
+}
+(function initTheme(){
+  let saved = null;
+  try { saved = localStorage.getItem('quranTheme'); } catch(e) {}
+  if (!saved) {
+    saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  applyTheme(saved);
+})();
+
+/* === JUZ QUICK FILTER CHIPS === */
+(function buildJuzChips(){
+  const chipsWrap = document.getElementById('juz-chips');
+  const names = {1:'الأول',2:'الثاني',3:'الثالث',4:'الرابع',5:'الخامس',6:'السادس',7:'السابع',8:'الثامن',9:'التاسع',10:'العاشر'};
+  for (let i = 1; i <= 30; i++) {
+    const chip = document.createElement('button');
+    chip.className = 'juz-chip';
+    chip.dataset.juz = i;
+    chip.textContent = names[i] ? `الجزء ${names[i]}` : `الجزء ${i}`;
+    chip.onclick = () => {
+      const target = document.querySelector(`.juz-section[data-juz="${i}"]`);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelectorAll('.juz-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      }
+    };
+    chipsWrap.appendChild(chip);
+  }
+})();
+
+/* === PROGRESS TRACKING (localStorage written by quiz pages) === */
+(function applyProgress(){
+  document.querySelectorAll('a.quiz-card[href]').forEach(card => {
+    const match = card.getAttribute('href').match(/albaqara_(p\d+)\.html/);
+    if (!match) return;
+    let saved = null;
+    try { saved = localStorage.getItem('quranProgress_' + match[1]); } catch(e) {}
+    if (!saved) return;
+    let data;
+    try { data = JSON.parse(saved); } catch(e) { return; }
+    const badge = card.querySelector('.card-badge');
+    if (badge) {
+      badge.className = 'card-badge badge-done';
+      badge.textContent = `✓ تم — ${data.pct}%`;
+    }
+    const check = document.createElement('div');
+    check.className = 'card-check';
+    check.textContent = '✓';
+    card.appendChild(check);
+  });
+})();
+
+/* === SKELETON LOADING POLISH === */
+(function skeletonReveal(){
+  const cards = document.querySelectorAll('.quiz-card:not(.soon)');
+  cards.forEach(c => c.classList.add('skeleton'));
+  window.requestAnimationFrame(() => {
+    setTimeout(() => cards.forEach(c => c.classList.remove('skeleton')), 280);
+  });
+})();
 </script>
 
 <!-- Translate Button -->
