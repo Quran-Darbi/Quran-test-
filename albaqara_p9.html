@@ -619,98 +619,90 @@ function showQuestion() {
       modeRow.appendChild(bVoice); modeRow.appendChild(bText);
       zone.appendChild(modeRow);
 
-      const vZone = document.createElement('div');
-      zone.appendChild(vZone);
-      const tZone = document.createElement('div');
-      tZone.style.display = 'none';
-      zone.appendChild(tZone);
+      const vZone = document.createElement('div'); zone.appendChild(vZone);
+      const tZone = document.createElement('div'); tZone.style.display='none'; zone.appendChild(tZone);
 
-      bVoice.onclick = () => {
-        vZone.style.display=''; tZone.style.display='none';
-        bVoice.style.background='var(--accent)'; bVoice.style.color='#fff'; bVoice.style.borderColor='var(--accent)';
-        bText.style.background='var(--surface2)'; bText.style.color='var(--text)'; bText.style.borderColor='var(--border)';
-      };
-      bText.onclick = () => {
-        vZone.style.display='none'; tZone.style.display='';
-        bText.style.background='var(--accent)'; bText.style.color='#fff'; bText.style.borderColor='var(--accent)';
-        bVoice.style.background='var(--surface2)'; bVoice.style.color='var(--text)'; bVoice.style.borderColor='var(--border)';
-      };
+      bVoice.onclick=()=>{ vZone.style.display=''; tZone.style.display='none'; bVoice.style.background='var(--accent)'; bVoice.style.color='#fff'; bVoice.style.borderColor='var(--accent)'; bText.style.background='var(--surface2)'; bText.style.color='var(--text)'; bText.style.borderColor='var(--border)'; };
+      bText.onclick=()=>{ vZone.style.display='none'; tZone.style.display=''; bText.style.background='var(--accent)'; bText.style.color='#fff'; bText.style.borderColor='var(--accent)'; bVoice.style.background='var(--surface2)'; bVoice.style.color='var(--text)'; bVoice.style.borderColor='var(--border)'; };
 
       const recBtn = document.createElement('button');
-      recBtn.style.cssText = 'width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';
-      recBtn.textContent = '🎤 اضغط للتسجيل';
+      recBtn.style.cssText='width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';
+      recBtn.textContent='🎤 اضغط للتسجيل';
 
       const clrBtn = document.createElement('button');
-      clrBtn.style.cssText = 'width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);margin-bottom:8px;display:none;';
-      clrBtn.textContent = '🗑️ مسح والبدء من جديد';
+      clrBtn.style.cssText='width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);margin-bottom:8px;display:none;';
+      clrBtn.textContent='🗑️ مسح والبدء من جديد';
 
       const txBox = document.createElement('div');
-      txBox.style.cssText = 'background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;display:none;min-height:60px;';
+      txBox.style.cssText='background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;display:none;min-height:60px;';
 
       const vSub = document.createElement('button');
       vSub.className='submit-btn'; vSub.textContent='تحقق ✓'; vSub.style.display='none';
-      vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t)return;vSub.disabled=true;recBtn.disabled=true;checkTextVal(q,t);};
+      vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t||t==='🎤 ...')return;vSub.disabled=true;recBtn.disabled=true;checkTextVal(q,t);};
 
       vZone.appendChild(recBtn); vZone.appendChild(clrBtn); vZone.appendChild(txBox); vZone.appendChild(vSub);
 
-      const isSecure = location.protocol==='https:'||location.hostname==='localhost';
-      const SpeechAPI = window.SpeechRecognition||window.webkitSpeechRecognition;
-
-      let savedText='', recognizing=false, manualStop=false;
+      const isSecure=location.protocol==='https:'||location.hostname==='localhost';
+      const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
+      let rec=null, recognizing=false, savedText='', currentText='';
 
       function setBtn(state){
-        if(state==='rec')  { recBtn.textContent='⏸ إيقاف مؤقت';      recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c'; }
-        if(state==='pause'){ recBtn.textContent='▶️ استمر في التسجيل'; recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22'; }
-        if(state==='idle') { recBtn.textContent='🎤 اضغط للتسجيل';    recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)'; }
+        if(state==='rec')  {recBtn.textContent='⏸ إيقاف مؤقت';    recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}
+        if(state==='pause'){recBtn.textContent='▶️ استمر في التسجيل';recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22';}
+        if(state==='idle') {recBtn.textContent='🎤 اضغط للتسجيل';  recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)';}
       }
 
       clrBtn.onclick=()=>{
-        manualStop=true; recognizing=false; savedText='';
+        if(recognizing){try{rec.stop();}catch(e){}} recognizing=false;
+        savedText=''; currentText='';
         txBox.textContent=''; txBox.style.display='none'; vSub.style.display='none'; clrBtn.style.display='none';
         setBtn('idle');
       };
 
       if(SpeechAPI && isSecure){
+        rec=new SpeechAPI();
+        rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=false;
 
-        function startRec(){
-          const r = new SpeechAPI();
-          // continuous=false: كل جملة نتيجة واحدة نظيفة بدون تكرار
-          r.lang='ar-SA'; r.continuous=false; r.interimResults=true;
+        rec.onstart=()=>{
+          recognizing=true; currentText=''; setBtn('rec');
+          txBox.textContent=savedText||'🎤 ...'; txBox.style.display='block';
+        };
 
-          r.onstart=()=>{ recognizing=true; setBtn('rec'); txBox.style.display='block'; if(!txBox.textContent) txBox.textContent='🎤 ...'; };
+        rec.onresult=e=>{
+          // e.resultIndex = index of new result only — no duplication
+          for(let i=e.resultIndex;i<e.results.length;i++){
+            if(e.results[i].isFinal)
+              currentText=(currentText+' '+e.results[i][0].transcript).trim();
+          }
+          const full=savedText?(savedText+' '+currentText).trim():currentText;
+          txBox.textContent=full; vSub.style.display='block'; clrBtn.style.display='block';
+        };
 
-          r.onresult=e=>{
-            const t = e.results[0][0].transcript;
-            const full = savedText ? (savedText+' '+t).trim() : t;
-            txBox.textContent=full; txBox.style.display='block'; vSub.style.display='block'; clrBtn.style.display='block';
-          };
+        rec.onerror=e=>{ if(e.error!=='no-speech'&&e.error!=='aborted') recognizing=false; };
 
-          r.onerror=e=>{ if(e.error!=='no-speech'&&e.error!=='aborted'){ recognizing=false; setBtn(savedText?'pause':'idle'); } };
-
-          r.onend=()=>{
-            recognizing=false;
-            // احفظ آخر نتيجة نهائية
-            const last = txBox.textContent.trim();
-            if(last && last!=='🎤 ...') savedText=last;
-            if(!manualStop){
-              // إعادة تشغيل تلقائية لالتقاط الجملة التالية
-              try{ startRec(); }catch(e){ setBtn(savedText?'pause':'idle'); }
-            } else {
-              setBtn(savedText?'pause':'idle');
-            }
-          };
-
-          try{ r.start(); }catch(e){ setBtn(savedText?'pause':'idle'); }
-        }
+        rec.onend=()=>{
+          recognizing=false;
+          if(currentText){ savedText=savedText?(savedText+' '+currentText).trim():currentText; currentText=''; }
+          setBtn(savedText?'pause':'idle');
+        };
 
         recBtn.onclick=()=>{
           if(recognizing){
-            manualStop=true; recognizing=false;
-            setBtn('pause');
-            return;
+            recognizing=false; if(currentText){savedText=savedText?(savedText+' '+currentText).trim():currentText;currentText='';}
+            try{rec.stop();}catch(e){} setBtn('pause'); return;
           }
-          manualStop=false;
-          startRec();
+          rec=new SpeechAPI(); rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=false;
+          rec.onstart=()=>{ recognizing=true; currentText=''; setBtn('rec'); txBox.textContent=savedText||'🎤 ...'; txBox.style.display='block'; };
+          rec.onresult=e=>{
+            for(let i=e.resultIndex;i<e.results.length;i++){
+              if(e.results[i].isFinal) currentText=(currentText+' '+e.results[i][0].transcript).trim();
+            }
+            const full=savedText?(savedText+' '+currentText).trim():currentText;
+            txBox.textContent=full; vSub.style.display='block'; clrBtn.style.display='block';
+          };
+          rec.onerror=e=>{ if(e.error!=='no-speech'&&e.error!=='aborted') recognizing=false; };
+          rec.onend=()=>{ recognizing=false; if(currentText){savedText=savedText?(savedText+' '+currentText).trim():currentText;currentText='';} setBtn(savedText?'pause':'idle'); };
+          try{rec.start();}catch(e){setBtn(savedText?'pause':'idle');}
         };
 
       } else {
@@ -718,31 +710,15 @@ function showQuestion() {
         recBtn.disabled=true; recBtn.style.opacity='0.65';
       }
 
-      // منطقة الكتابة
-      const ta2=document.createElement('textarea');
-      ta2.className='answer-input'; ta2.placeholder='اكتب الآية كاملة...'; ta2.id='user-input';
-      tZone.appendChild(ta2);
-      const tSub=document.createElement('button');
-      tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q);
-      tZone.appendChild(tSub);
+      const ta2=document.createElement('textarea'); ta2.className='answer-input'; ta2.placeholder='اكتب الآية كاملة...'; ta2.id='user-input'; tZone.appendChild(ta2);
+      const tSub=document.createElement('button'); tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q); tZone.appendChild(tSub);
 
-      // زر المساعدة - ظاهر دائماً
-      const hBox=document.createElement('div');
-      hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;';
-      zone.appendChild(hBox);
-      const hBtn=document.createElement('button');
-      hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)';
-      hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;';
-      hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};
-      zone.appendChild(hBtn);
+      const hBox=document.createElement('div'); hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;'; zone.appendChild(hBox);
+      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
 
     } else {
-      const ta=document.createElement('textarea');
-      ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input';
-      zone.appendChild(ta);
-      const sub=document.createElement('button');
-      sub.className='submit-btn'; sub.textContent='تحقق ✓'; sub.onclick=()=>checkText(q);
-      zone.appendChild(sub);
+      const ta=document.createElement('textarea'); ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input'; zone.appendChild(ta);
+      const sub=document.createElement('button'); sub.className='submit-btn'; sub.textContent='تحقق ✓'; sub.onclick=()=>checkText(q); zone.appendChild(sub);
     }
   }
 }
