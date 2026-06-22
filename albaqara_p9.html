@@ -608,7 +608,7 @@ function showQuestion() {
   } else {
     if (currentLevel === 'hard') {
 
-      // ── اختيار الوضع ──────────────────────────────────
+      // أزرار الوضع
       const modeRow = document.createElement('div');
       modeRow.style.cssText = 'display:flex;gap:10px;margin-bottom:12px;';
       const bVoice = document.createElement('button');
@@ -620,126 +620,112 @@ function showQuestion() {
       modeRow.appendChild(bVoice); modeRow.appendChild(bText);
       zone.appendChild(modeRow);
 
-      // ── منطقة التسجيل (مفتوحة بالافتراضي) ─────────────
       const vZone = document.createElement('div');
       zone.appendChild(vZone);
-
-      // ── منطقة الكتابة (مخفية) ────────────────────────
       const tZone = document.createElement('div');
       tZone.style.display = 'none';
       zone.appendChild(tZone);
 
-      // ── تبديل ──────────────────────────────────────────
       bVoice.onclick = () => {
         vZone.style.display=''; tZone.style.display='none';
-        bVoice.style.background='var(--accent)'; bVoice.style.color='#fff'; bVoice.style.borderColor='var(--accent)';
-        bText.style.background='var(--surface2)'; bText.style.color='var(--text)'; bText.style.borderColor='var(--border)';
+        bVoice.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff;border:1.5px solid var(--accent);';
+        bText.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);';
       };
       bText.onclick = () => {
         vZone.style.display='none'; tZone.style.display='';
-        bText.style.background='var(--accent)'; bText.style.color='#fff'; bText.style.borderColor='var(--accent)';
-        bVoice.style.background='var(--surface2)'; bVoice.style.color='var(--text)'; bVoice.style.borderColor='var(--border)';
+        bText.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff;border:1.5px solid var(--accent);';
+        bVoice.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);';
       };
 
-      // ── عناصر التسجيل ──────────────────────────────────
+      // زر التسجيل
       const recBtn = document.createElement('button');
-      recBtn.textContent = '🎤 اضغط للتسجيل';
       recBtn.style.cssText = 'width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';
+      recBtn.textContent = '🎤 اضغط للتسجيل';
 
       const clrBtn = document.createElement('button');
-      clrBtn.textContent = '🗑️ مسح التسجيل';
       clrBtn.style.cssText = 'width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);margin-bottom:8px;display:none;';
+      clrBtn.textContent = '🗑️ مسح والبدء من جديد';
 
       const txBox = document.createElement('div');
       txBox.style.cssText = 'background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;display:none;min-height:60px;';
 
       const vSub = document.createElement('button');
       vSub.className='submit-btn'; vSub.textContent='تحقق ✓'; vSub.style.display='none';
-      vSub.onclick = () => {
-        const t=txBox.textContent.trim(); if(!t) return;
-        vSub.disabled=true; recBtn.disabled=true;
-        checkTextVal(q,t);
-      };
+      vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t)return;vSub.disabled=true;recBtn.disabled=true;checkTextVal(q,t);};
 
       vZone.appendChild(recBtn); vZone.appendChild(clrBtn); vZone.appendChild(txBox); vZone.appendChild(vSub);
 
-      // ── منطق التسجيل ───────────────────────────────────
-      let rec=null, recognizing=false, savedTx='', fullTx='';
-
+      // منطق التسجيل
       const isSecure = location.protocol==='https:'||location.hostname==='localhost';
       const SpeechAPI = window.SpeechRecognition||window.webkitSpeechRecognition;
+      let rec=null, recognizing=false, sessionText='', savedText='';
+
+      function setBtn(state) {
+        if(state==='rec')  { recBtn.textContent='⏸ إيقاف مؤقت';    recBtn.style.background='#e74c3c'; recBtn.style.color='#fff'; recBtn.style.borderColor='#e74c3c'; }
+        if(state==='pause'){ recBtn.textContent='▶️ استمر في التسجيل'; recBtn.style.background='#f0a500'; recBtn.style.color='#fff'; recBtn.style.borderColor='#f0a500'; }
+        if(state==='idle') { recBtn.textContent='🎤 اضغط للتسجيل'; recBtn.style.background='var(--surface2)'; recBtn.style.color='var(--text)'; recBtn.style.borderColor='var(--border)'; }
+      }
 
       clrBtn.onclick = () => {
-        if(recognizing){try{rec.stop();}catch(e){} recognizing=false;}
-        fullTx=''; savedTx='';
-        txBox.textContent=''; txBox.style.display='none';
-        vSub.style.display='none'; clrBtn.style.display='none';
-        recBtn.disabled=false; recBtn.textContent='🎤 اضغط للتسجيل';
-        recBtn.style.background='var(--surface2)'; recBtn.style.color='var(--text)'; recBtn.style.borderColor='var(--border)';
+        if(recognizing){try{rec.stop();}catch(e){}}
+        recognizing=false; sessionText=''; savedText='';
+        txBox.textContent=''; txBox.style.display='none'; vSub.style.display='none'; clrBtn.style.display='none';
+        setBtn('idle');
       };
 
-      if (SpeechAPI && isSecure) {
-        rec = new SpeechAPI();
-        rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=false;
+      if(SpeechAPI && isSecure) {
 
-        rec.onstart = () => {
-          recognizing=true;
-          recBtn.textContent='⏹ أوقف التسجيل';
-          recBtn.style.background='#e74c3c'; recBtn.style.color='#fff'; recBtn.style.borderColor='#e74c3c';
-        };
+        function startSession() {
+          rec = new SpeechAPI();
+          rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=false;
 
-        rec.onresult = e => {
-          // فقط النتائج النهائية - لا تكرار
-          let t='';
-          for(let i=0;i<e.results.length;i++) t+=e.results[i][0].transcript+' ';
-          fullTx = t.trim();
-          txBox.textContent = fullTx;
-          txBox.style.display='block'; vSub.style.display='block'; clrBtn.style.display='block';
-        };
+          rec.onstart = () => { recognizing=true; sessionText=''; setBtn('rec'); };
 
-        rec.onerror = e => { if(e.error!=='no-speech') recognizing=false; };
+          rec.onresult = e => {
+            // اجمع نتائج هذه الجلسة فقط
+            let t='';
+            for(let i=0;i<e.results.length;i++) t+=e.results[i][0].transcript+' ';
+            sessionText = t.trim();
+            // النص الكامل = المحفوظ + هذه الجلسة
+            const full = savedText ? savedText+' '+sessionText : sessionText;
+            txBox.textContent=full; txBox.style.display='block'; vSub.style.display='block'; clrBtn.style.display='block';
+          };
 
-        rec.onend = () => {
-          recognizing=false;
-          recBtn.textContent = fullTx ? '🎤 أكمل التسجيل' : '🎤 اضغط للتسجيل';
-          recBtn.style.background='var(--surface2)'; recBtn.style.color='var(--text)'; recBtn.style.borderColor='var(--border)';
-        };
+          rec.onerror = e => { if(e.error==='aborted') return; recognizing=false; setBtn(sessionText||savedText?'pause':'idle'); };
+
+          rec.onend = () => {
+            recognizing=false;
+            // احفظ نص هذه الجلسة ضمن المحفوظ
+            if(sessionText) { savedText = savedText ? savedText+' '+sessionText : sessionText; sessionText=''; }
+            setBtn(savedText?'pause':'idle');
+          };
+
+          recBtn.disabled=false;
+          try { rec.start(); } catch(e) { setBtn('idle'); }
+        }
 
         recBtn.onclick = () => {
-          if(recognizing){
-            recognizing=false; savedTx=fullTx;
-            try{rec.stop();}catch(e){} return;
+          if(recognizing) {
+            // إيقاف مؤقت
+            recognizing=false;
+            if(sessionText){ savedText = savedText ? savedText+' '+sessionText : sessionText; sessionText=''; }
+            try{rec.stop();}catch(e){}
+            setBtn('pause');
+            return;
           }
-          // بدء جلسة جديدة - احفظ النص السابق
-          savedTx = fullTx;
+          // بدء أو استمرار
           recBtn.textContent='⏳ ...'; recBtn.disabled=true;
           navigator.mediaDevices.getUserMedia({audio:true})
-            .then(s=>{
-              s.getTracks().forEach(t=>t.stop());
-              recBtn.disabled=false;
-              // أنشئ rec جديد لكل جلسة لتجنب التكرار
-              rec = new SpeechAPI();
-              rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=false;
-              rec.onstart = () => { recognizing=true; recBtn.textContent='⏹ أوقف التسجيل'; recBtn.style.background='#e74c3c'; recBtn.style.color='#fff'; recBtn.style.borderColor='#e74c3c'; };
-              rec.onresult = e => {
-                let t=''; for(let i=0;i<e.results.length;i++) t+=e.results[i][0].transcript+' ';
-                // النص = ما قيل سابقاً + ما قيل في هذه الجلسة
-                fullTx = savedTx ? (savedTx+' '+t.trim()).trim() : t.trim();
-                txBox.textContent=fullTx; txBox.style.display='block'; vSub.style.display='block'; clrBtn.style.display='block';
-              };
-              rec.onerror = e => { if(e.error!=='no-speech') recognizing=false; };
-              rec.onend = () => { recognizing=false; recBtn.textContent='🎤 أكمل التسجيل'; recBtn.style.background='var(--surface2)'; recBtn.style.color='var(--text)'; recBtn.style.borderColor='var(--border)'; };
-              rec.start();
-            })
-            .catch(err=>{recBtn.disabled=false;recBtn.textContent='🚫 '+(err.name==='NotAllowedError'?'تم رفض الإذن':err.message);});
+            .then(s=>{s.getTracks().forEach(t=>t.stop()); startSession();})
+            .catch(err=>{recBtn.disabled=false; recBtn.textContent='🚫 '+(err.name==='NotAllowedError'?'تم رفض الإذن':err.message);});
         };
 
       } else {
-        recBtn.textContent = isSecure ? '⚠️ المتصفح لا يدعم التسجيل' : '🔒 يعمل على الموقع الرسمي فقط';
+        recBtn.textContent=isSecure?'⚠️ المتصفح لا يدعم التسجيل':'🔒 يعمل على الموقع الرسمي فقط';
         recBtn.disabled=true; recBtn.style.opacity='0.65';
       }
 
-      // ── عناصر الكتابة ──────────────────────────────────
+      // منطقة الكتابة
       const ta2 = document.createElement('textarea');
       ta2.className='answer-input'; ta2.placeholder='اكتب الآية كاملة...'; ta2.id='user-input';
       tZone.appendChild(ta2);
@@ -747,18 +733,18 @@ function showQuestion() {
       tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q);
       tZone.appendChild(tSub);
 
-      // ── زر المساعدة (ظاهر دائماً في الصعب) ────────────
-      const hintBox = document.createElement('div');
-      hintBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;';
-      zone.appendChild(hintBox);
-      const hintBtn = document.createElement('button');
-      hintBtn.id='hint-btn'; hintBtn.textContent='💡 مساعدة (أول ٣ كلمات)';
-      hintBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;';
-      hintBtn.onclick=()=>{hintBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hintBox.style.display='block';hintBtn.disabled=true;hintBtn.style.opacity='0.5';};
-      zone.appendChild(hintBtn);
+      // زر المساعدة (ظاهر دائماً)
+      const hBox = document.createElement('div');
+      hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;';
+      zone.appendChild(hBox);
+      const hBtn = document.createElement('button');
+      hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)';
+      hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;';
+      hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};
+      zone.appendChild(hBtn);
 
     } else {
-      // ── المتوسط ──────────────────────────────────────────
+      // المتوسط
       const ta = document.createElement('textarea');
       ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input';
       zone.appendChild(ta);
