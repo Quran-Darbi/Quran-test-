@@ -409,19 +409,24 @@
   </div>
 </div>
 
-<div class="level-card" id="level-card">
+
+<div style="margin:0 16px 16px;">
+  <a href="recitation.html?surah=baqara_p33" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:13px 20px;font-size:16px;font-family:inherit;color:var(--accent);text-decoration:none;">
+    🎤 اختبر تلاوتك
+  </a>
+</div><div class="level-card" id="level-card">
   <div class="level-title">اختر مستوى الاختبار</div>
   <div class="level-sub">كل مستوى له طريقة مختلفة في الاختبار</div>
   <div class="levels-grid">
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy">
       <span class="level-icon">🌱</span>
       <span class="level-name">سهل</span>
-      <span class="level-desc">اختيار من متعدد — اختر الكلمة الصحيحة من ٣ خيارات</span>
+      <span class="level-desc">اختيار من متعدد</span>
     </button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium">
       <span class="level-icon">🌿</span>
       <span class="level-name">متوسط</span>
-      <span class="level-desc">إكمال فراغ — اكتب الكلمة أو الجزء الناقص من الآية</span>
+      <span class="level-desc">إكمال فراغ</span>
     </button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard">
       <span class="level-icon">🌳</span>
@@ -634,7 +639,7 @@ function showQuestion() {
 
       const vSub = document.createElement('button');
       vSub.className='submit-btn'; vSub.textContent='تحقق ✓'; vSub.style.display='none';
-      vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t||t==='🎤 ...')return;vSub.disabled=true;recBtn.disabled=true;checkTextVal(q,t);};
+      vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t||t==='🎤 ...')return;checkTextVal(q,t);setTimeout(()=>{recBtn.disabled=false;vSub.disabled=false;},100);};
 
       vZone.appendChild(recBtn); vZone.appendChild(clrBtn); vZone.appendChild(txBox); vZone.appendChild(vSub);
 
