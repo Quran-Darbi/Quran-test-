@@ -182,12 +182,17 @@ let refWords = [];
 
 function norm(s){
   return s
-    .replace(/[\u064B-\u065F\u0670\u0671]/g,'')
-    .replace(/[أإآا]/g,'ا')
+    .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,'')
+    .replace(/ٰ/g,'ا')
+    .replace(/ـ/g,'')
+    .replace(/[آأإٱا]/g,'ا')
+    .replace(/[ءئؤ]/g,'')
     .replace(/ة/g,'ه')
-    .replace(/ى/g,'ي')
-    .replace(/[ئؤ]/g,'ء')
-    .replace(/[^\u0600-\u06FF]/g,'')
+    .replace(/[ىئ]/g,'ي')
+    .replace(/رحمان/g,'رحمن')
+    .replace(/(.)(\1)+/g,'$1')
+    .replace(/[^\u0600-\u06FF\s]/g,'')
+    .replace(/\s+/g,' ')
     .trim();
 }
 
@@ -219,19 +224,21 @@ function findStart(userWords){
 }
 
 function compareWords(userWords, ref){
-  const res=[];
-  let ui=0,ri=0;
-  while(ri<ref.length){
-    if(ui>=userWords.length){res.push({ref:ref[ri],status:'missing'});ri++;}
-    else if(norm(userWords[ui])===norm(ref[ri])){res.push({ref:ref[ri],user:userWords[ui],status:'ok'});ui++;ri++;}
-    else{
-      // look-ahead: skip user word
-      if(ui+1<userWords.length && norm(userWords[ui+1])===norm(ref[ri])){ui++;continue;}
-      res.push({ref:ref[ri],user:userWords[ui],status:'err'});
-      ui++;ri++;
-    }
+  const n=ref.length, m=userWords.length;
+  const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+    if(norm(ref[i-1])===norm(userWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;
+    else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
   }
-  return res;
+  const aligned=[];
+  let i=n,j=m;
+  while(i>0||j>0){
+    if(i>0&&j>0&&norm(ref[i-1])===norm(userWords[j-1])){
+      aligned.push({ref:ref[i-1],user:userWords[j-1],status:'ok'});i--;j--;
+    }else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}
+    else{aligned.push({ref:ref[i-1],user:'',status:'missing'});i--;}
+  }
+  return aligned.reverse();
 }
 
 // ===== التسجيل =====

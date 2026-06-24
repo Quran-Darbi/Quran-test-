@@ -185,11 +185,11 @@ function normalize(str){
   return str
     .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,"")
     .replace(/ٰ/g,"ا")
+    .replace(/ـ/g,"")
     .replace(/[آأإٱا]/g,"ا")
-    .replace(/ء/g,"")
+    .replace(/[ءئؤ]/g,"")
     .replace(/ة/g,"ه")
     .replace(/[ىئ]/g,"ي")
-    .replace(/ؤ/g,"و")
     .replace(/رحمان/g,"رحمن")
     .replace(/(.)(\1)+/g,"$1")
     .replace(/\s+/g," ")
@@ -199,11 +199,11 @@ function wordDiff(userVal,correctAnswer){
     const nm=s=>s
     .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,'')
     .replace(/ٰ/g,'ا')
+    .replace(/ـ/g,'')
     .replace(/[آأإٱا]/g,'ا')
-    .replace(/ء/g,'')
+    .replace(/[ءئؤ]/g,'')
     .replace(/ة/g,'ه')
     .replace(/[ىئ]/g,'ي')
-    .replace(/ؤ/g,'و')
     .replace(/رحمان/g,'رحمن')
     .replace(/(.)(\1)+/g,'$1')
     .replace(/ +/g,' ').trim();
@@ -308,7 +308,7 @@ function showQuestion(){
     const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
     const _secure=location.protocol==='https:'||location.hostname==='localhost';
     function _setB(s){
-      if(s==='rec'){recBtn.textContent='⏸ إيقاف';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}
+      recBtn.disabled=false;if(s==='rec'){recBtn.textContent='⏸ إيقاف';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}
       else if(s==='pause'){recBtn.textContent='▶️ استمر';recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22';}
       else{recBtn.textContent='🎤 اضغط للتسجيل';recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)';}
     }
@@ -321,7 +321,7 @@ function showQuestion(){
       return r;
     }
     clrBtn.onclick=()=>{if(_recog){try{_rec.stop();}catch(e){}}_recog=false;_saved='';_cur='';txBox.textContent='';txBox.style.display='none';vSub.style.display='none';clrBtn.style.display='none';_setB('idle');};
-    vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t||t==='🎤 ...')return;vSub.disabled=true;recBtn.disabled=true;checkTextVal(q,t);};
+    vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t||t==='🎤 ...')return;checkTextVal(q,t);setTimeout(()=>{recBtn.disabled=false;vSub.disabled=false;},100);};
     if(_SpeechAPI&&_secure){
       recBtn.onclick=()=>{
         if(_recog){_recog=false;if(_cur){_saved=_saved?(_saved+' '+_cur).trim():_cur;_cur='';}try{_rec.stop();}catch(e){}_setB('pause');return;}

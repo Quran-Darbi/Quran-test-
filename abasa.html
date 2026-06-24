@@ -193,35 +193,54 @@ let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctC
 function toArabicNum(n){return n.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
 function normalize(str){
   return str
-    .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,"")
+    .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,"")
     .replace(/ٰ/g,"ا")
+    .replace(/ـ/g,"")
     .replace(/[آأإٱا]/g,"ا")
-    .replace(/ء/g,"")
+    .replace(/[ءئؤ]/g,"")
     .replace(/ة/g,"ه")
     .replace(/[ىئ]/g,"ي")
-    .replace(/ؤ/g,"و")
     .replace(/رحمان/g,"رحمن")
+    .replace(/(.)(\1)+/g,"$1")
     .replace(/\s+/g," ")
     .trim();
 }
 function wordDiff(userVal,correctAnswer){
     const nm=s=>s
-    .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,'')
+    .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,'')
     .replace(/ٰ/g,'ا')
+    .replace(/ـ/g,'')
     .replace(/[آأإٱا]/g,'ا')
-    .replace(/ء/g,'')
+    .replace(/[ءئؤ]/g,'')
     .replace(/ة/g,'ه')
     .replace(/[ىئ]/g,'ي')
-    .replace(/ؤ/g,'و')
     .replace(/رحمان/g,'رحمن')
+    .replace(/(.)(\1)+/g,'$1')
     .replace(/ +/g,' ').trim();
-  const uWords=nm(userVal).split(' ');const cWords=correctAnswer.split(' ');let correct=0;
-  const html=cWords.map((word,i)=>{const ok=nm(uWords[i]||'')===nm(word);if(ok)correct++;
-    return ok?'<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;">'+word+'</span>'
-             :'<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;">'+word+'</span>';
-  }).join(' ');
-  return '<div style="margin-bottom:6px;font-size:13px;color:#666;">'+correct+' / '+cWords.length+' كلمة صحيحة</div>'
-        +'<div style="font-size:18px;line-height:3.2;direction:rtl;text-align:right;color:#333;">'+html+'</div>';
+  const uWords=userVal.trim().split(/\s+/);
+  const cWords=correctAnswer.split(/\s+/);
+  const n=cWords.length,m=uWords.length;
+  const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+    if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;
+    else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+  }
+  const aligned=[];
+  let i=n,j=m;
+  while(i>0||j>0){
+    if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){
+      aligned.push({ref:cWords[i-1],user:uWords[j-1],ok:true});i--;j--;
+    }else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}
+    else{aligned.push({ref:cWords[i-1],user:'',ok:false});i--;}
+  }
+  aligned.reverse();
+  const correct=aligned.filter(x=>x.ok).length;
+  const html=aligned.map(x=>x.ok
+    ?'<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;">'+x.ref+'</span>'
+    :'<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" title="'+(x.user||'محذوف')+'">'+x.ref+'</span>'
+  ).join(' ');
+  return '<div style="margin-bottom:6px;font-size:13px;color:#666;">'+correct+' / '+n+' كلمة صحيحة</div>'
+        +'<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;color:#333;">'+html+'</div>';
 }
 function updateBadges(){
   document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;
@@ -312,13 +331,13 @@ function showQuestion(){
     const txBox=document.createElement('div');
     txBox.style.cssText='background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;display:none;min-height:60px;';
     const vSub=document.createElement('button');vSub.className='submit-btn';vSub.textContent='تحقق ✓';vSub.style.display='none';
-    vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t||t==='🎤 ...')return;vSub.disabled=true;recBtn.disabled=true;checkTextVal(q,t);};
+    vSub.onclick=()=>{const t=txBox.textContent.trim();if(!t||t==='🎤 ...')return;checkTextVal(q,t);setTimeout(()=>{recBtn.disabled=false;vSub.disabled=false;},100);};
     vZone.appendChild(recBtn);vZone.appendChild(clrBtn);vZone.appendChild(txBox);vZone.appendChild(vSub);
     const isSecure=location.protocol==='https:'||location.hostname==='localhost';
     const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
     let recognizing=false,savedText='',currentText='',recInst=null;
     function setRecBtn(state){
-      if(state==='rec'){recBtn.textContent='⏸ إيقاف مؤقت';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}
+      recBtn.disabled=false;if(state==='rec'){recBtn.textContent='⏸ إيقاف مؤقت';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}
       else if(state==='pause'){recBtn.textContent='▶️ استمر في التسجيل';recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22';}
       else{recBtn.textContent='🎤 اضغط للتسجيل';recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)';}
     }
