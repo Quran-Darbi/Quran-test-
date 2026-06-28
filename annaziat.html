@@ -193,31 +193,50 @@ let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctC
 
 function toArabicNum(n){return n.toString().replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);}
 function normalize(str){
+  if(!str)return'';
   return str
-    .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,"")
-    .replace(/ٰ/g,"ا")
-    .replace(/ـ/g,"")
-    .replace(/[آأإٱا]/g,"ا")
-    .replace(/[ءئؤ]/g,"")
-    .replace(/ة/g,"ه")
-    .replace(/[ىئ]/g,"ي")
-    .replace(/رحمان/g,"رحمن")
-    .replace(/(.)(\1)+/g,"$1")
-    .replace(/\s+/g," ")
-    .trim();
-}
-function wordDiff(userVal,correctAnswer){
-    const nm=s=>s
     .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,'')
+    .replace(/[ىی]ٰ/g,'ا')
+    .replace(/اٰ/g,'ا')
+    .replace(/نٰ/g,'نا')
     .replace(/ٰ/g,'ا')
     .replace(/ـ/g,'')
     .replace(/[آأإٱا]/g,'ا')
     .replace(/[ءئؤ]/g,'')
     .replace(/ة/g,'ه')
-    .replace(/[ىئ]/g,'ي')
+    .replace(/[ىی]/g,'ي')
+    .replace(/ه[ۥۦ]/g,'ه')
+    .replace(/واه(?=\s|$)/g,'اه')
     .replace(/رحمان/g,'رحمن')
-    .replace(/(.)(\1)+/g,'$1')
-    .replace(/ +/g,' ').trim();
+    .replace(/مولانا/g,'مولنا')
+    .replace(/(.)()+/g,'$1')
+    .replace(/ا(?=\s|$)/g,'ي')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function wordDiff(userVal,correctAnswer){
+      const nm=s=>{
+    if(!s)return'';
+    return s
+      .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,'')
+      .replace(/[ىی]ٰ/g,'ا')
+      .replace(/اٰ/g,'ا')
+      .replace(/نٰ/g,'نا')
+      .replace(/ٰ/g,'ا')
+      .replace(/ـ/g,'')
+      .replace(/[آأإٱا]/g,'ا')
+      .replace(/[ءئؤ]/g,'')
+      .replace(/ة/g,'ه')
+      .replace(/[ىی]/g,'ي')
+      .replace(/ه[ۥۦ]/g,'ه')
+      .replace(/واه(?=\s|$)/g,'اه')
+      .replace(/رحمان/g,'رحمن')
+      .replace(/مولانا/g,'مولنا')
+      .replace(/(.)()+/g,'$1')
+      .replace(/ا(?=\s|$)/g,'ي')
+      .replace(/\s+/g,' ')
+      .trim();
+  };
   const uWords=userVal.trim().split(/\s+/);
   const cWords=correctAnswer.split(/\s+/);
   const n=cWords.length,m=uWords.length;
