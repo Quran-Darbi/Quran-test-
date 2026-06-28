@@ -440,173 +440,96 @@ function renderHard(q,zone){
   const tZone=document.createElement('div');tZone.style.display='none';zone.appendChild(tZone);
 
   // ===== منطقة التسجيل الصوتي =====
-  let _rec=null,_recog=false,_interim='';
+  // ===== STATE: المصفوفة هي المصدر الوحيد =====
+  let _rec=null,_recog=false,_words=[],_interim='';
   const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
   const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
-  // زر التسجيل
   const recBtn=document.createElement('button');
   recBtn.style.cssText='width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:10px;transition:all .2s;';
   recBtn.textContent='🎤 اضغط للتسجيل';
 
-  // صندوق النص — contenteditable للتعديل المباشر
   const txBox=document.createElement('div');
   txBox.className='rec-transcript';
-  txBox.contentEditable='true';
   txBox.dir='rtl';
-  txBox.style.cssText='min-height:80px;margin-bottom:10px;outline:none;cursor:text;line-height:2.2;font-size:17px;padding:12px;display:none;word-break:break-word;';
+  txBox.style.cssText='min-height:80px;margin-bottom:10px;line-height:2.2;font-size:17px;padding:12px;display:none;word-break:break-word;';
 
-  // زر التحقق
   const vSub=document.createElement('button');
-  vSub.className='submit-btn';
-  vSub.textContent='تحقق ✓';
-  vSub.style.display='none';
-  vSub.style.marginBottom='8px';
+  vSub.className='submit-btn';vSub.textContent='تحقق ✓';
+  vSub.style.display='none';vSub.style.marginBottom='8px';
 
-  // زر المسح
   const clrBtn=document.createElement('button');
   clrBtn.style.cssText='width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);display:none;';
   clrBtn.textContent='🗑️ مسح الكل والبدء من جديد';
 
-  vZone.appendChild(recBtn);
-  vZone.appendChild(txBox);
-  vZone.appendChild(vSub);
-  vZone.appendChild(clrBtn);
+  vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(vSub);vZone.appendChild(clrBtn);
 
-  // ===== مساعد: الحصول على النص النهائي فقط (بدون interim) =====
-  function _getFinalText(){
-    // نسخة مؤقتة بدون span.interim-text
-    const nodes=[...txBox.childNodes];
-    let text='';
-    nodes.forEach(n=>{
-      if(n.nodeType===3){text+=n.textContent;}  // text node
-      else if(n.nodeType===1&&!n.classList.contains('interim-text')){
-        text+=n.textContent;
-      }
-    });
-    return text.replace(/\s+/g,' ').trim();
-  }
-
-  // ===== تحديث حالة الأزرار =====
-  function _updateUI(){
-    const hasText=_getFinalText().length>0;
-    const hasContent=hasText||_interim.length>0;
-    txBox.style.display=hasContent?'block':'none';
-    vSub.style.display=hasText?'block':'none';
-    clrBtn.style.display=hasContent?'block':'none';
-  }
-
-  // ===== عرض النص المؤقت (interim) =====
-  function _renderInterim(txt){
-    const old=txBox.querySelector('.interim-text');
-    if(old)old.remove();
-    _interim=txt;
-    if(txt){
+  // عرض كامل من المصفوفة (المصدر الوحيد)
+  function _render(){
+    txBox.innerHTML='';
+    const show=_words.length>0||_interim.length>0;
+    txBox.style.display=show?'block':'none';
+    vSub.style.display=_words.length>0?'block':'none';
+    clrBtn.style.display=show?'block':'none';
+    _words.forEach((w,i)=>{
+      if(i>0)txBox.appendChild(document.createTextNode(' '));
       const sp=document.createElement('span');
-      sp.className='interim-text';
+      sp.style.cssText='display:inline-block;background:var(--surface-hover);border-radius:4px;padding:2px 7px;margin:1px;cursor:pointer;line-height:2;';
+      sp.title='انقري مرتين للحذف';sp.textContent=w;
+      sp.ondblclick=(e)=>{e.stopPropagation();_words.splice(i,1);_render();};
+      txBox.appendChild(sp);
+    });
+    if(_interim){
+      const sp=document.createElement('span');
       sp.style.cssText='color:var(--text-soft);font-style:italic;opacity:0.75;';
-      sp.textContent=(txBox.childNodes.length?' ':'')+txt;
+      sp.textContent=(_words.length?' ':'')+_interim;
       txBox.appendChild(sp);
     }
-    _updateUI();
   }
 
-  // ===== إضافة نص نهائي كبطاقات قابلة للحذف =====
-  function _addFinalText(transcript){
-    const old=txBox.querySelector('.interim-text');
-    if(old)old.remove();
-    _interim='';
-    const words=transcript.trim().split(/\s+/).filter(Boolean);
-    words.forEach(w=>{
-      if(txBox.childNodes.length)txBox.appendChild(document.createTextNode(' '));
-      const sp=document.createElement('span');
-      sp.className='final-word';
-      sp.style.cssText='display:inline-block;background:var(--surface-hover);border-radius:4px;padding:2px 7px;margin:1px;cursor:pointer;line-height:2;';
-      sp.title='انقري مرتين للحذف';
-      sp.textContent=w;
-      sp.ondblclick=function(e){e.stopPropagation();this.remove();_updateUI();};
-      txBox.appendChild(sp);
-    });
-    _updateUI();
-  }
-
-  // ===== حالة زر التسجيل =====
   function _setB(s){
     recBtn.disabled=false;
-    if(s==='rec'){
-      recBtn.textContent='⏸ إيقاف التسجيل';
-      recBtn.style.cssText=recBtn.style.cssText+'background:#e74c3c;color:#fff;border-color:#e74c3c;';
-    }else if(s==='pause'){
-      recBtn.textContent='▶️ استمر في التسجيل';
-      recBtn.style.cssText=recBtn.style.cssText+'background:#e67e22;color:#fff;border-color:#e67e22;';
-    }else{
-      recBtn.textContent='🎤 اضغط للتسجيل';
-      recBtn.style.background='var(--surface2)';
-      recBtn.style.color='var(--text)';
-      recBtn.style.borderColor='var(--border)';
-    }
+    if(s==='rec'){recBtn.textContent='⏸ إيقاف التسجيل';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}
+    else if(s==='pause'){recBtn.textContent='▶️ استمر في التسجيل';recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22';}
+    else{recBtn.textContent='🎤 اضغط للتسجيل';recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)';}
   }
 
-  // ===== إنشاء محرك التعرف على الصوت =====
   function _mkRec(){
     const r=new _SpeechAPI();
     r.lang='ar-SA';r.continuous=true;r.interimResults=true;
-    let _lastFinalIdx=-1;
-    r.onstart=()=>{_recog=true;_interim='';_lastFinalIdx=-1;_setB('rec');_updateUI();};
+    r.onstart=()=>{_recog=true;_interim='';_setB('rec');_render();};
     r.onresult=e=>{
-      let interimTxt='';
-      for(let i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal){
-          if(i>_lastFinalIdx){
-            _lastFinalIdx=i;
-            _addFinalText(e.results[i][0].transcript);
-          }
-        }else{
-          interimTxt=e.results[i][0].transcript;
-        }
+      _interim='';
+      // e.resultIndex = النتيجة الجديدة فقط — لا نلمس ما قبلها
+      const res=e.results[e.resultIndex];
+      if(res.isFinal){
+        _words=_words.concat(res[0].transcript.trim().split(/\s+/).filter(Boolean));
+      }else{
+        _interim=res[0].transcript;
       }
-      _renderInterim(interimTxt);
+      _render();
     };
-    r.onerror=e=>{
-      if(e.error!=='no-speech'&&e.error!=='aborted'){
-        _recog=false;
-        _renderInterim('');
-        _setB(_getFinalText()?'pause':'idle');
-      }
-    };
-    r.onend=()=>{
-      _recog=false;
-      _renderInterim('');
-      _setB(_getFinalText()?'pause':'idle');
-    };
+    r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_interim='';_render();_setB(_words.length?'pause':'idle');}};
+    r.onend=()=>{_recog=false;_interim='';_render();_setB(_words.length?'pause':'idle');};
     return r;
   }
 
-  // ===== أحداث الأزرار =====
   clrBtn.onclick=()=>{
     if(_recog){try{_rec.stop();}catch(e){}_recog=false;}
-    _rec=null;_interim='';
-    txBox.innerHTML='';
-    _updateUI();
-    recBtn.disabled=false;
-    _setB('idle');
+    _rec=null;_words=[];_interim='';
+    _render();recBtn.disabled=false;_setB('idle');
   };
 
   vSub.onclick=()=>{
-    if(_recog){_recog=false;try{_rec.stop();}catch(e){}}
-    _renderInterim('');
-    const t=_getFinalText();
-    if(!t)return;
-    vSub.disabled=true;
-    recBtn.disabled=false;
-    checkTextVal(q,t);
+    if(_recog){_recog=false;try{_rec.stop();}catch(e){}}_interim='';
+    const t=_words.join(' ');if(!t)return;
+    vSub.disabled=true;recBtn.disabled=false;checkTextVal(q,t);
   };
 
   if(_SpeechAPI&&_secure){
     recBtn.onclick=()=>{
       if(_recog){_recog=false;try{_rec.stop();}catch(e){}_setB('pause');return;}
-      _rec=_mkRec();
-      try{_rec.start();}catch(e){_setB(_getFinalText()?'pause':'idle');}
+      _rec=_mkRec();try{_rec.start();}catch(e){_setB(_words.length?'pause':'idle');}
     };
   }else{
     recBtn.textContent=_secure?'⚠️ المتصفح لا يدعم التسجيل':'🔒 يعمل على الموقع الرسمي فقط';
