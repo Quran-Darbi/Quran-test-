@@ -13,7 +13,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run fix script
-        run: python scripts/fix_files.py
+        run: python Scripts/fix_files.py
 
       - name: Commit changes
         run: |
