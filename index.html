@@ -5,7 +5,12 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دربي لحفظ القرآن — النسخة البيضاء</title>
+<title>دربي لحفظ القرآن</title>
+<meta name="description" content="اختبر حفظك للقرآن الكريم — ٣ مستويات لكل صفحة">
+<meta property="og:title" content="دربي لحفظ القرآن">
+<meta property="og:description" content="اختبر حفظك للقرآن الكريم صفحةً بصفحة — سهل ومتوسط وصعب">
+<meta property="og:url" content="https://quran-darbi.github.io/Quran-test-/">
+<meta property="og:type" content="website">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -138,7 +143,7 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
       <a href="recitation.html" class="hero-rec-btn">🎤 اختبر تلاوتك</a>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><b>٧٧</b><small>اختباراً متاحاً</small></div>
+      <div class="hstat"><b>٨٩</b><small>اختباراً متاحاً</small></div>
       <div class="hstat"><b>٣٠</b><small>جزءاً</small></div>
       <div class="hstat"><b>٦٠٤</b><small>صفحة</small></div>
     </div>
@@ -195,7 +200,7 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
       <div class="juz-title">جزء عمّ</div>
     </div>
     <div class="acc-right">
-      <div class="juz-prog">٢٥ / ٢٧ متاح</div>
+      <div class="juz-prog">٣٧ / ٣٧ مكتمل ✓</div>
       <span class="acc-arrow">▾</span>
     </div>
   </button>
@@ -283,8 +288,18 @@ const ammaData=[
   ['alaadiyat.html','العاديات','١١ آية',true],
   ['alqaria.html','القارعة','١١ آية',true],
   ['altakathur.html','التكاثر','٨ آيات',true],
-  ['','العصر — الهمزة','ص ٦٠١',false],['','الفيل — الكافرون','ص ٦٠٢',false],
-  ['','النصر — الناس','ص ٦٠٣',false],['','الإخلاص — المعوذتان','ص ٦٠٤',false],
+  ['alasr.html','العصر','٣ آيات',true],
+  ['alhumaza.html','الهمزة','٩ آيات',true],
+  ['alfiyl.html','الفيل','٥ آيات',true],
+  ['aquraysh.html','قريش','٤ آيات',true],
+  ['almaoon.html','الماعون','٧ آيات',true],
+  ['alkawthur.html','الكوثر','٣ آيات',true],
+  ['alkafirun.html','الكافرون','٦ آيات',true],
+  ['alnnasr.html','النصر','٣ آيات',true],
+  ['almasad.html','المسد','٥ آيات',true],
+  ['alikhlas.html','الإخلاص','٤ آيات',true],
+  ['alfalaq.html','الفلق','٥ آيات',true],
+  ['alnnas.html','الناس','٦ آيات',true],
 ];
 
 const remainingJuz=[
@@ -333,11 +348,7 @@ function toggleAcc(btn){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  ['acc-fatiha','acc-baqara','acc-amma'].forEach(id=>{
-    const a=document.getElementById(id);if(!a)return;
-    a.querySelector('.acc-body').classList.add('open');
-    a.querySelector('.acc-arrow').classList.add('open');
-  });
+  // كل الأجزاء مغلقة بالوضع الافتراضي
 });
 
 function doSearch(val){
