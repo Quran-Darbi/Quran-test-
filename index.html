@@ -77,6 +77,14 @@
   .translate-option{display:block;padding:10px 18px;font-family:'Amiri',serif;font-size:0.95rem;color:var(--text);text-decoration:none;transition:background 0.15s;border-bottom:1px solid var(--border);}
   .translate-option:last-child{border-bottom:none;}
   .translate-option:hover{background:var(--parchment);color:var(--accent);}
+
+  /* Accordion */
+  .acc-section{margin-bottom:10px;border-radius:12px;border:1.5px solid var(--border);overflow:hidden;background:var(--nav-bg);}
+  .acc-header{width:100%;background:var(--nav-bg);border:none;cursor:pointer;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;font-family:inherit;color:var(--text);transition:background .2s;gap:8px;}
+  .acc-header:hover{background:var(--parchment);}
+  .acc-arrow{font-size:1.1rem;color:var(--accent);flex-shrink:0;transition:transform .2s;}
+  .acc-body{display:none;padding:14px 14px 16px;border-top:1.5px solid var(--border);}
+  .acc-body.open{display:block;}
 </style>
 </head>
 <body>
@@ -94,8 +102,6 @@
 
 <div style="text-align:center;padding:10px 16px;background:var(--bg);border-bottom:1.5px solid var(--border);font-family:'Scheherazade New',serif;">
   <div style="font-size:0.9rem;color:var(--teal);">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾ صدق الله العظيم</div>
-  <div style="font-size:0.95rem;color:var(--text-soft);margin-top:4px;font-family:'Scheherazade New',serif;font-weight:700;">دربي لحفظ القرآن</div>
-  <div style="font-size:0.85rem;color:var(--text-soft);margin-top:2px;font-family:'Scheherazade New',serif;font-weight:700;">هند هاني أبوبكر</div>
 </div>
 
 <div class="hero">
@@ -106,283 +112,153 @@
   <div class="hero-stats">
     <div class="stat">الأجزاء <span>٣٠</span></div>
     <div class="stat">الصفحات <span>٦٠٤</span></div>
-    <div class="stat">المتاح الآن <span>٦٣</span></div>
+    <div class="stat">المتاح الآن <span>٦٩</span></div>
+  </div>
+  <div style="margin-top:20px;">
+    <a href="recitation.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;border-radius:25px;padding:12px 28px;font-size:1.05rem;font-family:'Scheherazade New',serif;text-decoration:none;box-shadow:0 4px 14px rgba(74,124,126,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+      🎤 اختبر تلاوتك
+    </a>
   </div>
 </div>
 
 <div class="search-sticky">
   <div class="search-wrap">
-    <input type="text" class="search-input" placeholder="🔍 ابحث عن سورة أو صفحة..." oninput="filterCards(this.value)" />
+    <input type="text" class="search-input" placeholder="🔍 ابحث عن سورة أو صفحة..." oninput="filterCards(this.value)" id="searchInput"/>
   </div>
-  <div class="juz-chips" id="juz-chips"></div>
 </div>
 
 <div class="main" id="tests">
 
-  <!-- سورة الفاتحة -->
-  <div class="juz-section" data-juz="0">
-    <div class="juz-header">
-      <div class="juz-badge" style="background:var(--teal)">الفاتحة</div>
-      <div class="juz-title">أم الكتاب — السبع المثاني</div>
-      <div class="juz-progress">١ / ١ متاح</div>
-    </div>
-    <div class="cards-grid">
-      <a href="alfatiha_p1.html" class="quiz-card" data-text="سورة الفاتحة صفحة ١ آيات ١–٧"><div class="card-corner"></div><div class="card-surah">سورة الفاتحة</div><div class="card-info">الآيات ١–٧ | ص ١ | أم الكتاب</div><span class="card-badge badge-ready">✓ متاح</span></a>
-    </div>
-  </div>
-
-  <!-- الجزء الأول: ص٢–ص٢١ -->
-  <div class="juz-section" data-juz="1">
-    <div class="juz-header">
-      <div class="juz-badge">الجزء الأول</div>
-      <div class="juz-title">سورة البقرة</div>
-      <div class="juz-progress">٢٠ / ٢٠ متاح</div>
-    </div>
-    <div class="cards-grid">
-      <a href="albaqara_p2.html" class="quiz-card" data-text="سورة البقرة صفحة ٢ آيات ١–٥"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١–٥ | وجه ١ | ص ٢</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p3.html" class="quiz-card" data-text="سورة البقرة صفحة ٣ آيات ٦–١٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٦–١٦ | وجه ٢ | ص ٣</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p4.html" class="quiz-card" data-text="سورة البقرة صفحة ٤ آيات ١٧–٢٤"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٧–٢٤ | وجه ٣ | ص ٤</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p5.html" class="quiz-card" data-text="سورة البقرة صفحة ٥ آيات ٢٥–٢٩"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٥–٢٩ | وجه ٤ | ص ٥</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p6.html" class="quiz-card" data-text="سورة البقرة صفحة ٦ آيات ٣٠–٣٨"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٣٠–٣٨ | وجه ٥ | ص ٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p7.html" class="quiz-card" data-text="سورة البقرة صفحة ٧ آيات ٣٩–٤٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٣٩–٤٦ | وجه ٦ | ص ٧</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p8.html" class="quiz-card" data-text="سورة البقرة صفحة ٨ آيات ٤٧–٥٧"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٤٧–٥٧ | وجه ٧ | ص ٨</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p9.html" class="quiz-card" data-text="سورة البقرة صفحة ٩ آيات ٥٨–٦١"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٥٨–٦١ | وجه ٨ | ص ٩</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p10.html" class="quiz-card" data-text="سورة البقرة صفحة ١٠ آيات ٦٢–٦٨"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٦٢–٦٨ | وجه ٩ | ص ١٠</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p11.html" class="quiz-card" data-text="سورة البقرة صفحة ١١ آيات ٦٩–٧٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٦٩–٧٦ | وجه ١٠ | ص ١١</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p12.html" class="quiz-card" data-text="سورة البقرة صفحة ١٢ آيات ٧٧–٨٥"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٧٧–٨٥ | وجه ١١ | ص ١٢</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p13.html" class="quiz-card" data-text="سورة البقرة صفحة ١٣ آيات ٨٦–٩٢"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٨٦–٩٢ | وجه ١٢ | ص ١٣</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p14.html" class="quiz-card" data-text="سورة البقرة صفحة ١٤ آيات ٩٣–١٠١"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٩٣–١٠١ | وجه ١٣ | ص ١٤</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p15.html" class="quiz-card" data-text="سورة البقرة صفحة ١٥ آيات ١٠٢–١٠٧"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٠٢–١٠٧ | وجه ١٤ | ص ١٥</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p16.html" class="quiz-card" data-text="سورة البقرة صفحة ١٦ آيات ١٠٨–١١٣"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٠٨–١١٣ | وجه ١٥ | ص ١٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p17.html" class="quiz-card" data-text="سورة البقرة صفحة ١٧ آيات ١١٤–١٢٣"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١١٤–١٢٣ | وجه ١٦ | ص ١٧</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p18.html" class="quiz-card" data-text="سورة البقرة صفحة ١٨ آيات ١٢٤–١٢٩"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٢٤–١٢٩ | وجه ١٧ | ص ١٨</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p19.html" class="quiz-card" data-text="سورة البقرة صفحة ١٩ آيات ١٣٠–١٤١"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٣٠–١٤١ | وجه ١٨ | ص ١٩</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p20.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٠ آيات ١٤٢–١٥٠"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٤٢–١٥٠ | وجه ١٩ | ص ٢٠</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p21.html" class="quiz-card" data-text="سورة البقرة صفحة ٢١ آيات ١٥١–١٥٩"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٥١–١٥٩ | وجه ٢٠ | ص ٢١</div><span class="card-badge badge-ready">✓ متاح</span></a>
+  <!-- الفاتحة -->
+  <div class="acc-section" data-juz="0">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="juz-badge" style="background:var(--teal)">الفاتحة</div>
+        <div class="juz-title">أم الكتاب — السبع المثاني</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="juz-progress">١ / ١ متاح</div>
+        <span class="acc-arrow">▾</span>
+      </div>
+    </button>
+    <div class="acc-body">
+      <div class="cards-grid">
+        <a href="alfatiha_p1.html" class="quiz-card" data-text="سورة الفاتحة صفحة ١ آيات ١–٧"><div class="card-corner"></div><div class="card-surah">سورة الفاتحة</div><div class="card-info">الآيات ١–٧ | ص ١</div><span class="card-badge badge-ready">✓ متاح</span></a>
+      </div>
     </div>
   </div>
 
-  <!-- الجزء الثاني: ص٢٢–ص٤١ -->
-  <div class="juz-section" data-juz="2">
-    <div class="juz-header">
-      <div class="juz-badge">الجزء الثاني</div>
-      <div class="juz-title">سورة البقرة (تابع)</div>
-      <div class="juz-progress">٢٠ / ٢٠ متاح</div>
-    </div>
-    <div class="cards-grid">
-      <a href="albaqara_p22.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٢ آيات ١٦٠–١٦٧"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٦٠–١٦٧ | وجه ٢١ | ص ٢٢</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p23.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٣ آيات ١٦٨–١٧٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٦٨–١٧٦ | وجه ٢٢ | ص ٢٣</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p24.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٤ آيات ١٧٧–١٨٢"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٧٧–١٨٢ | وجه ٢٣ | ص ٢٤</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p25.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٥ آيات ١٨٣–١٨٧"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٨٣–١٨٧ | وجه ٢٤ | ص ٢٥</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p26.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٦ آيات ١٨٨–١٩٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٨٨–١٩٦ | وجه ٢٥ | ص ٢٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p27.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٧ آيات ١٩٧–٢٠٢"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ١٩٧–٢٠٢ | وجه ٢٦ | ص ٢٧</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p28.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٨ آيات ٢٠٣–٢٠٩"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٠٣–٢٠٩ | وجه ٢٧ | ص ٢٨</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p29.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٩ آيات ٢١٠–٢١٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢١٠–٢١٦ | وجه ٢٨ | ص ٢٩</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p30.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٠ آيات ٢١٧–٢٢١"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢١٧–٢٢١ | وجه ٢٩ | ص ٣٠</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p31.html" class="quiz-card" data-text="سورة البقرة صفحة ٣١ آيات ٢٢٢–٢٢٧"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٢٢–٢٢٧ | وجه ٣٠ | ص ٣١</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p32.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٢ آيات ٢٢٨–٢٣١"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٢٨–٢٣١ | وجه ٣١ | ص ٣٢</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p33.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٣ آيات ٢٣٢–٢٣٣"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٣٢–٢٣٣ | وجه ٣٢ | ص ٣٣</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p34.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٤ آيات ٢٣٣–٢٣٤"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٣٣–٢٣٤ | وجه ٣٣ | ص ٣٤</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p35.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٥ آيات ٢٣٤–٢٣٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٣٤–٢٣٦ | وجه ٣٤ | ص ٣٥</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p36.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٦ آيات ٢٣٦–٢٣٩"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٣٦–٢٣٩ | وجه ٣٥ | ص ٣٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p37.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٧ آيات ٢٣٩–٢٤٢"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٣٩–٢٤٢ | وجه ٣٦ | ص ٣٧</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p38.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٨ آيات ٢٤٢–٢٤٥"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٤٢–٢٤٥ | وجه ٣٧ | ص ٣٨</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p39.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٩ آيات ٢٤٥–٢٤٨"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٤٥–٢٤٨ | وجه ٣٨ | ص ٣٩</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p40.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٠ آيات ٢٤٨–٢٥٢"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٤٨–٢٥٢ | وجه ٣٩ | ص ٤٠</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p41.html" class="quiz-card" data-text="سورة البقرة صفحة ٤١ آيات ٢٥٢–٢٥٣"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٥٢–٢٥٣ | وجه ٤٠ | ص ٤١</div><span class="card-badge badge-ready">✓ متاح</span></a>
+  <!-- البقرة — جزء ١ و٢ و٣ مجمّعة في accordion واحد -->
+  <div class="acc-section" data-juz="1">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="juz-badge">الجزء ١–٣</div>
+        <div class="juz-title">سورة البقرة</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="juz-progress">٤٨ / ٤٨ متاح</div>
+        <span class="acc-arrow">▾</span>
+      </div>
+    </button>
+    <div class="acc-body">
+      <div class="cards-grid">
+        <a href="albaqara_p2.html" class="quiz-card" data-text="سورة البقرة صفحة ٢ آيات ١–٥"><div class="card-corner"></div><div class="card-surah">ص ٢</div><div class="card-info">آيات ١–٥</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p3.html" class="quiz-card" data-text="سورة البقرة صفحة ٣ آيات ٦–١٦"><div class="card-corner"></div><div class="card-surah">ص ٣</div><div class="card-info">آيات ٦–١٦</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p4.html" class="quiz-card" data-text="سورة البقرة صفحة ٤ آيات ١٧–٢٤"><div class="card-corner"></div><div class="card-surah">ص ٤</div><div class="card-info">آيات ١٧–٢٤</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p5.html" class="quiz-card" data-text="سورة البقرة صفحة ٥ آيات ٢٥–٢٩"><div class="card-corner"></div><div class="card-surah">ص ٥</div><div class="card-info">آيات ٢٥–٢٩</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p6.html" class="quiz-card" data-text="سورة البقرة صفحة ٦ آيات ٣٠–٣٨"><div class="card-corner"></div><div class="card-surah">ص ٦</div><div class="card-info">آيات ٣٠–٣٨</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p7.html" class="quiz-card" data-text="سورة البقرة صفحة ٧ آيات ٣٩–٤٦"><div class="card-corner"></div><div class="card-surah">ص ٧</div><div class="card-info">آيات ٣٩–٤٦</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p8.html" class="quiz-card" data-text="سورة البقرة صفحة ٨ آيات ٤٧–٥٧"><div class="card-corner"></div><div class="card-surah">ص ٨</div><div class="card-info">آيات ٤٧–٥٧</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p9.html" class="quiz-card" data-text="سورة البقرة صفحة ٩ آيات ٥٨–٦١"><div class="card-corner"></div><div class="card-surah">ص ٩</div><div class="card-info">آيات ٥٨–٦١</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p10.html" class="quiz-card" data-text="سورة البقرة صفحة ١٠"><div class="card-corner"></div><div class="card-surah">ص ١٠</div><div class="card-info">آيات ٦٢–٦٨</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p11.html" class="quiz-card" data-text="سورة البقرة صفحة ١١"><div class="card-corner"></div><div class="card-surah">ص ١١</div><div class="card-info">آيات ٦٩–٧٦</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p12.html" class="quiz-card" data-text="سورة البقرة صفحة ١٢"><div class="card-corner"></div><div class="card-surah">ص ١٢</div><div class="card-info">آيات ٧٧–٨٥</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p13.html" class="quiz-card" data-text="سورة البقرة صفحة ١٣"><div class="card-corner"></div><div class="card-surah">ص ١٣</div><div class="card-info">آيات ٨٦–٩٢</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p14.html" class="quiz-card" data-text="سورة البقرة صفحة ١٤"><div class="card-corner"></div><div class="card-surah">ص ١٤</div><div class="card-info">آيات ٩٣–١٠١</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p15.html" class="quiz-card" data-text="سورة البقرة صفحة ١٥"><div class="card-corner"></div><div class="card-surah">ص ١٥</div><div class="card-info">آيات ١٠٢–١٠٧</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p16.html" class="quiz-card" data-text="سورة البقرة صفحة ١٦"><div class="card-corner"></div><div class="card-surah">ص ١٦</div><div class="card-info">آيات ١٠٨–١١٣</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p17.html" class="quiz-card" data-text="سورة البقرة صفحة ١٧"><div class="card-corner"></div><div class="card-surah">ص ١٧</div><div class="card-info">آيات ١١٤–١٢٣</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p18.html" class="quiz-card" data-text="سورة البقرة صفحة ١٨"><div class="card-corner"></div><div class="card-surah">ص ١٨</div><div class="card-info">آيات ١٢٤–١٢٩</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p19.html" class="quiz-card" data-text="سورة البقرة صفحة ١٩"><div class="card-corner"></div><div class="card-surah">ص ١٩</div><div class="card-info">آيات ١٣٠–١٤١</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p20.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٠"><div class="card-corner"></div><div class="card-surah">ص ٢٠</div><div class="card-info">آيات ١٤٢–١٥٠</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p21.html" class="quiz-card" data-text="سورة البقرة صفحة ٢١"><div class="card-corner"></div><div class="card-surah">ص ٢١</div><div class="card-info">آيات ١٥١–١٥٩</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p22.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٢"><div class="card-corner"></div><div class="card-surah">ص ٢٢</div><div class="card-info">آيات ١٦٠–١٦٧</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p23.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٣"><div class="card-corner"></div><div class="card-surah">ص ٢٣</div><div class="card-info">آيات ١٦٨–١٧٦</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p24.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٤"><div class="card-corner"></div><div class="card-surah">ص ٢٤</div><div class="card-info">آيات ١٧٧–١٨٢</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p25.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٥"><div class="card-corner"></div><div class="card-surah">ص ٢٥</div><div class="card-info">آيات ١٨٣–١٨٧</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p26.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٦"><div class="card-corner"></div><div class="card-surah">ص ٢٦</div><div class="card-info">آيات ١٨٨–١٩٦</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p27.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٧"><div class="card-corner"></div><div class="card-surah">ص ٢٧</div><div class="card-info">آيات ١٩٧–٢٠٢</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p28.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٨"><div class="card-corner"></div><div class="card-surah">ص ٢٨</div><div class="card-info">آيات ٢٠٣–٢٠٩</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p29.html" class="quiz-card" data-text="سورة البقرة صفحة ٢٩"><div class="card-corner"></div><div class="card-surah">ص ٢٩</div><div class="card-info">آيات ٢١٠–٢١٦</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p30.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٠"><div class="card-corner"></div><div class="card-surah">ص ٣٠</div><div class="card-info">آيات ٢١٧–٢٢١</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p31.html" class="quiz-card" data-text="سورة البقرة صفحة ٣١"><div class="card-corner"></div><div class="card-surah">ص ٣١</div><div class="card-info">آيات ٢٢٢–٢٢٧</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p32.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٢"><div class="card-corner"></div><div class="card-surah">ص ٣٢</div><div class="card-info">آيات ٢٢٨–٢٣١</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p33.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٣"><div class="card-corner"></div><div class="card-surah">ص ٣٣</div><div class="card-info">آيات ٢٣٢–٢٣٣</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p34.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٤"><div class="card-corner"></div><div class="card-surah">ص ٣٤</div><div class="card-info">آيات ٢٣٣–٢٣٤</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p35.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٥"><div class="card-corner"></div><div class="card-surah">ص ٣٥</div><div class="card-info">آيات ٢٣٤–٢٣٦</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p36.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٦"><div class="card-corner"></div><div class="card-surah">ص ٣٦</div><div class="card-info">آيات ٢٣٦–٢٣٩</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p37.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٧"><div class="card-corner"></div><div class="card-surah">ص ٣٧</div><div class="card-info">آيات ٢٣٩–٢٤٢</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p38.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٨"><div class="card-corner"></div><div class="card-surah">ص ٣٨</div><div class="card-info">آيات ٢٤٢–٢٤٥</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p39.html" class="quiz-card" data-text="سورة البقرة صفحة ٣٩"><div class="card-corner"></div><div class="card-surah">ص ٣٩</div><div class="card-info">آيات ٢٤٥–٢٤٨</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p40.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٠"><div class="card-corner"></div><div class="card-surah">ص ٤٠</div><div class="card-info">آيات ٢٤٨–٢٥٢</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p41.html" class="quiz-card" data-text="سورة البقرة صفحة ٤١"><div class="card-corner"></div><div class="card-surah">ص ٤١</div><div class="card-info">آيات ٢٥٢–٢٥٣</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p42.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٢ آية الكرسي"><div class="card-corner"></div><div class="card-surah">ص ٤٢</div><div class="card-info">آية الكرسي</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p43.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٣"><div class="card-corner"></div><div class="card-surah">ص ٤٣</div><div class="card-info">آيات ٢٥٧–٢٥٩</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p44.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٤"><div class="card-corner"></div><div class="card-surah">ص ٤٤</div><div class="card-info">آيات ٢٦٠–٢٦٤</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p45.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٥"><div class="card-corner"></div><div class="card-surah">ص ٤٥</div><div class="card-info">آيات ٢٦٥–٢٦٩</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p46.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٦"><div class="card-corner"></div><div class="card-surah">ص ٤٦</div><div class="card-info">آيات ٢٧٠–٢٧٤</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p47.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٧"><div class="card-corner"></div><div class="card-surah">ص ٤٧</div><div class="card-info">آيات ٢٧٥–٢٨١</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p48.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٨ آية الدين"><div class="card-corner"></div><div class="card-surah">ص ٤٨</div><div class="card-info">آية الدَّين</div><span class="card-badge badge-ready">✓</span></a>
+        <a href="albaqara_p49.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٩ ختام"><div class="card-corner"></div><div class="card-surah">ص ٤٩</div><div class="card-info">ختام البقرة</div><span class="card-badge badge-ready">✓</span></a>
+        <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">آل عمران</div><div class="card-info">ص ٥٠–٦٢</div><span class="card-badge badge-soon">قريباً</span></div>
+      </div>
     </div>
   </div>
-
-  <!-- الجزء الثالث: ص٤٢–ص٤٩ (٨ متاح، ١٢ قريباً) -->
-  <div class="juz-section" data-juz="3">
-    <div class="juz-header">
-      <div class="juz-badge">الجزء الثالث</div>
-      <div class="juz-title">سورة البقرة (تابع)</div>
-      <div class="juz-progress">٨ / ٢٠ متاح</div>
-    </div>
-    <div class="cards-grid">
-      <a href="albaqara_p42.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٢ آيات ٢٥٣–٢٥٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٥٣–٢٥٦ | وجه ٤١ | ص ٤٢</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p43.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٣ آيات ٢٥٧–٢٥٩"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٥٧–٢٥٩ | وجه ٤٢ | ص ٤٣</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p44.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٤ آيات ٢٦٠–٢٦٤"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٦٠–٢٦٤ | وجه ٤٣ | ص ٤٤</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p45.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٥ آيات ٢٦٥–٢٦٩"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٦٥–٢٦٩ | وجه ٤٤ | ص ٤٥</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p46.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٦ آيات ٢٧٠–٢٧٤"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٧٠–٢٧٤ | وجه ٤٥ | ص ٤٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p47.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٧ آيات ٢٧٥–٢٨١"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٧٥–٢٨١ | وجه ٤٦ | ص ٤٧</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p48.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٨ آية الدين"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآية ٢٨٢ | وجه ٤٧ | ص ٤٨</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <a href="albaqara_p49.html" class="quiz-card" data-text="سورة البقرة صفحة ٤٩ آيات ٢٨٣–٢٨٦"><div class="card-corner"></div><div class="card-surah">سورة البقرة</div><div class="card-info">الآيات ٢٨٣–٢٨٦ | وجه ٤٨ | ص ٤٩</div><span class="card-badge badge-ready">✓ متاح</span></a>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">سورة آل عمران</div><div class="card-info">ص ٥٠–٦٢</div><span class="card-badge badge-soon">قريباً</span></div>
-    </div>
-  </div>
-
 
   <!-- جزء عمّ -->
-  <div class="juz-section" data-juz="30">
-    <div class="juz-header">
-      <div class="juz-badge">الجزء الثلاثون</div>
-      <div class="juz-title">جزء عمّ</div>
-      <div class="juz-progress">١١ / ٢٣ متاح</div>
-    </div>
-    <div class="cards-grid">
-      <a href="annaba.html" class="quiz-card" data-text="سورة النبأ آيات ١–٤٠ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة النبأ</div>
-        <div class="card-info">الآيات ١–٤٠ | ص ٥٨٢–٥٨٣</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="annaziat.html" class="quiz-card" data-text="سورة النازعات آيات ١–٤٦ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة النازعات</div>
-        <div class="card-info">الآيات ١–٤٦ | ص ٥٨٣–٥٨٤</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="abasa.html" class="quiz-card" data-text="سورة عبس آيات ١–٤٢ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة عبس</div>
-        <div class="card-info">الآيات ١–٤٢ | ص ٥٨٤–٥٨٥</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="attakwir.html" class="quiz-card" data-text="سورة التكوير آيات ١–٢٩ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة التكوير</div>
-        <div class="card-info">الآيات ١–٢٩ | ص ٥٨٦</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="al-infitar.html" class="quiz-card" data-text="سورة الانفطار آيات ١–١٩ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة الانفطار</div>
-        <div class="card-info">الآيات ١–١٩ | ص ٥٨٧</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="almutaffifin.html" class="quiz-card" data-text="سورة المطففين آيات ١–٣٦ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة المطففين</div>
-        <div class="card-info">الآيات ١–٣٦ | ص ٥٨٧–٥٨٩</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="alinshiqaq.html" class="quiz-card" data-text="سورة الانشقاق آيات ١–٢٥ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة الانشقاق</div>
-        <div class="card-info">الآيات ١–٢٥ | ص ٥٨٩</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="alburuj.html" class="quiz-card" data-text="سورة البروج آيات ١–٢٢ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة البروج</div>
-        <div class="card-info">الآيات ١–٢٢ | ص ٥٩٠</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="altariq.html" class="quiz-card" data-text="سورة الطارق آيات ١–١٧ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة الطارق</div>
-        <div class="card-info">الآيات ١–١٧ | ص ٥٩١</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="alaala.html" class="quiz-card" data-text="سورة الأعلى آيات ١–١٩ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة الأعلى</div>
-        <div class="card-info">الآيات ١–١٩ | ص ٥٩١–٥٩٢</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <a href="alghasiya.html" class="quiz-card" data-text="سورة الغاشية آيات ١–٢٦ جزء عم">
-        <div class="card-corner"></div>
-        <div class="card-surah">سورة الغاشية</div>
-        <div class="card-info">الآيات ١–٢٦ | ص ٥٩٢</div>
-        <span class="card-badge badge-ready">✓ متاح</span>
-      </a>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">سورة الفجر</div><div class="card-info">ص ٥٩٣–٥٩٤</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">البلد — الشمس</div><div class="card-info">ص ٥٩٤–٥٩٦</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الليل — الضحى</div><div class="card-info">ص ٥٩٦–٥٩٧</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الشرح — العلق</div><div class="card-info">ص ٥٩٧–٥٩٩</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">القدر — البينة</div><div class="card-info">ص ٥٩٩–٦٠٠</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الزلزلة — العاديات</div><div class="card-info">ص ٦٠٠–٦٠١</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">القارعة — التكاثر</div><div class="card-info">ص ٦٠١</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">العصر — الهمزة</div><div class="card-info">ص ٦٠١–٦٠٢</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الفيل — قريش</div><div class="card-info">ص ٦٠٢</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الماعون — الكوثر</div><div class="card-info">ص ٦٠٣</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الكافرون — النصر</div><div class="card-info">ص ٦٠٣</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">المسد — الإخلاص</div><div class="card-info">ص ٦٠٣–٦٠٤</div><span class="card-badge badge-soon">قريباً</span></div>
-      <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الفلق — الناس</div><div class="card-info">ص ٦٠٤</div><span class="card-badge badge-soon">قريباً</span></div>
+  <div class="acc-section" data-juz="30">
+    <button class="acc-header" onclick="toggleAcc(this)">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="juz-badge" style="background:#2e7d32;">الجزء ٣٠</div>
+        <div class="juz-title">جزء عمّ</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="juz-progress">١٤ / ٢٣ متاح</div>
+        <span class="acc-arrow">▾</span>
+      </div>
+    </button>
+    <div class="acc-body">
+      <div class="cards-grid">
+        <a href="annaba.html" class="quiz-card" data-text="سورة النبأ جزء عم"><div class="card-corner"></div><div class="card-surah">النبأ</div><div class="card-info">٤٠ آية | ص ٥٨٢</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="annaziat.html" class="quiz-card" data-text="سورة النازعات جزء عم"><div class="card-corner"></div><div class="card-surah">النازعات</div><div class="card-info">٤٦ آية | ص ٥٨٣</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="abasa.html" class="quiz-card" data-text="سورة عبس جزء عم"><div class="card-corner"></div><div class="card-surah">عبس</div><div class="card-info">٤٢ آية | ص ٥٨٤</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="attakwir.html" class="quiz-card" data-text="سورة التكوير جزء عم"><div class="card-corner"></div><div class="card-surah">التكوير</div><div class="card-info">٢٩ آية | ص ٥٨٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="al-infitar.html" class="quiz-card" data-text="سورة الانفطار جزء عم"><div class="card-corner"></div><div class="card-surah">الانفطار</div><div class="card-info">١٩ آية | ص ٥٨٧</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="almutaffifin.html" class="quiz-card" data-text="سورة المطففين جزء عم"><div class="card-corner"></div><div class="card-surah">المطففين</div><div class="card-info">٣٦ آية | ص ٥٨٧</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alinshiqaq.html" class="quiz-card" data-text="سورة الانشقاق جزء عم"><div class="card-corner"></div><div class="card-surah">الانشقاق</div><div class="card-info">٢٥ آية | ص ٥٨٩</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alburuj.html" class="quiz-card" data-text="سورة البروج جزء عم"><div class="card-corner"></div><div class="card-surah">البروج</div><div class="card-info">٢٢ آية | ص ٥٩٠</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="altariq.html" class="quiz-card" data-text="سورة الطارق جزء عم"><div class="card-corner"></div><div class="card-surah">الطارق</div><div class="card-info">١٧ آية | ص ٥٩١</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alaala.html" class="quiz-card" data-text="سورة الأعلى جزء عم"><div class="card-corner"></div><div class="card-surah">الأعلى</div><div class="card-info">١٩ آية | ص ٥٩١</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alghasiya.html" class="quiz-card" data-text="سورة الغاشية جزء عم"><div class="card-corner"></div><div class="card-surah">الغاشية</div><div class="card-info">٢٦ آية | ص ٥٩٢</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alfajr.html" class="quiz-card" data-text="سورة الفجر جزء عم"><div class="card-corner"></div><div class="card-surah">الفجر</div><div class="card-info">٣٠ آية | ص ٥٩٣</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="albalad.html" class="quiz-card" data-text="سورة البلد جزء عم"><div class="card-corner"></div><div class="card-surah">البلد</div><div class="card-info">٢٠ آية | ص ٥٩٤</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alshams.html" class="quiz-card" data-text="سورة الشمس جزء عم"><div class="card-corner"></div><div class="card-surah">الشمس</div><div class="card-info">١٥ آية | ص ٥٩٥</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="allayl.html" class="quiz-card" data-text="سورة الليل جزء عم"><div class="card-corner"></div><div class="card-surah">الليل</div><div class="card-info">٢١ آية | ص ٥٩٥</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alduha.html" class="quiz-card" data-text="سورة الضحى جزء عم"><div class="card-corner"></div><div class="card-surah">الضحى</div><div class="card-info">١١ آية | ص ٥٩٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <a href="alsharh.html" class="quiz-card" data-text="سورة الشرح جزء عم"><div class="card-corner"></div><div class="card-surah">الشرح</div><div class="card-info">٨ آيات | ص ٥٩٦</div><span class="card-badge badge-ready">✓ متاح</span></a>
+        <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">التين — العلق</div><div class="card-info">ص ٥٩٧–٥٩٩</div><span class="card-badge badge-soon">قريباً</span></div>
+        <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">القدر — البينة</div><div class="card-info">ص ٥٩٩–٦٠٠</div><span class="card-badge badge-soon">قريباً</span></div>
+        <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الزلزلة — الهمزة</div><div class="card-info">ص ٦٠٠–٦٠٢</div><span class="card-badge badge-soon">قريباً</span></div>
+        <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">الفيل — الكافرون</div><div class="card-info">ص ٦٠٢–٦٠٣</div><span class="card-badge badge-soon">قريباً</span></div>
+        <div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">النصر — الناس</div><div class="card-info">ص ٦٠٣–٦٠٤</div><span class="card-badge badge-soon">قريباً</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- اختبار التلاوة -->
-  <div class="juz-section" data-juz="99">
-    <div class="juz-header">
-      <div class="juz-badge" style="background:var(--teal)">🎤 جديد</div>
-      <div class="juz-title">اختبر تلاوتك</div>
-    </div>
-    <div class="cards-grid">
-      <a href="recitation.html?surah=annaba" class="quiz-card" data-text="اختبار تلاوة سورة النبأ صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 النبأ</div>
-        <div class="card-info">تلاوة سورة النبأ — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=annaziat" class="quiz-card" data-text="اختبار تلاوة سورة النازعات صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 النازعات</div>
-        <div class="card-info">تلاوة سورة النازعات — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=abasa" class="quiz-card" data-text="اختبار تلاوة سورة عبس صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 عبس</div>
-        <div class="card-info">تلاوة سورة عبس — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=attakwir" class="quiz-card" data-text="اختبار تلاوة سورة التكوير صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 التكوير</div>
-        <div class="card-info">تلاوة سورة التكوير — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=alinfitar" class="quiz-card" data-text="اختبار تلاوة سورة الانفطار صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 الانفطار</div>
-        <div class="card-info">تلاوة سورة الانفطار — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=almutaffifin" class="quiz-card" data-text="اختبار تلاوة سورة المطففين صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 المطففين</div>
-        <div class="card-info">تلاوة سورة المطففين — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=alinshiqaq" class="quiz-card" data-text="اختبار تلاوة سورة الانشقاق صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 الانشقاق</div>
-        <div class="card-info">تلاوة سورة الانشقاق — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=alburuj" class="quiz-card" data-text="اختبار تلاوة سورة البروج صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 البروج</div>
-        <div class="card-info">تلاوة سورة البروج — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=altariq" class="quiz-card" data-text="اختبار تلاوة سورة الطارق صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 الطارق</div>
-        <div class="card-info">تلاوة سورة الطارق — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=alaala" class="quiz-card" data-text="اختبار تلاوة سورة الأعلى صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 الأعلى</div>
-        <div class="card-info">تلاوة سورة الأعلى — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-      <a href="recitation.html?surah=alghasiya" class="quiz-card" data-text="اختبار تلاوة سورة الغاشية صوتي">
-        <div class="card-corner" style="background:var(--teal)"></div>
-        <div class="card-surah">🎤 الغاشية</div>
-        <div class="card-info">تلاوة سورة الغاشية — تصحيح فوري</div>
-        <span class="card-badge" style="background:#e0f4f4;color:#2a6a6a;border:1px solid var(--teal)">تجريبي</span>
-      </a>
-    </div>
-  </div>
-
+  <!-- الأجزاء القادمة مطوية تلقائياً -->
   <div id="remaining-juz"></div>
-</div>
 
+</div>
 <div class="about-section" id="about">
   <div class="about-card">
     <div class="about-icon">🌙</div>
@@ -477,6 +353,95 @@ function toggleTheme(){const cur=document.documentElement.getAttribute('data-the
   window.requestAnimationFrame(()=>{setTimeout(()=>cards.forEach(c=>c.classList.remove('skeleton')),280);});
 })();
 
+function toggleTranslate(){document.getElementById('translate-menu').classList.toggle('open');}
+function translateTo(lang){const url=`https://translate.google.com/translate?sl=ar&tl=${lang}&u=`+encodeURIComponent(location.href);window.open(url,'_blank');document.getElementById('translate-menu').classList.remove('open');}
+</script>
+</body>
+</html>
+<div class="translate-menu" id="translate-menu">
+  <a class="translate-option" href="#" onclick="translateTo('en')">🇬🇧 English</a>
+  <a class="translate-option" href="#" onclick="translateTo('fr')">🇫🇷 Français</a>
+  <a class="translate-option" href="#" onclick="translateTo('tr')">🇹🇷 Türkçe</a>
+  <a class="translate-option" href="#" onclick="translateTo('ur')">🇵🇰 اردو</a>
+  <a class="translate-option" href="#" onclick="translateTo('id')">🇮🇩 Indonesia</a>
+</div>
+<button class="translate-btn" onclick="toggleTranslate()">🌐 ترجمة</button>
+
+<script>
+// Accordion
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  const arrow = btn.querySelector('.acc-arrow');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.textContent = isOpen ? '▾' : '▴';
+}
+
+// فتح الفاتحة والبقرة وجزء عم افتراضياً
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.acc-section').forEach((sec, i) => {
+    const body = sec.querySelector('.acc-body');
+    const arrow = sec.querySelector('.acc-arrow');
+    if (i < 3) { // الفاتحة + البقرة + جزء عم مفتوحة
+      body.classList.add('open');
+      if (arrow) arrow.textContent = '▴';
+    }
+  });
+});
+
+// Search — يفتح الـ accordion تلقائياً عند البحث
+function filterCards(val) {
+  const q = val.trim();
+  document.querySelectorAll('.acc-section').forEach(sec => {
+    const cards = sec.querySelectorAll('.quiz-card');
+    let anyVisible = false;
+    cards.forEach(card => {
+      const text = card.dataset.text || card.innerText;
+      const match = !q || text.includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    sec.style.display = anyVisible ? '' : 'none';
+    // افتح تلقائياً عند البحث
+    if (q && anyVisible) {
+      const body = sec.querySelector('.acc-body');
+      const arrow = sec.querySelector('.acc-arrow');
+      if (body) { body.classList.add('open'); if (arrow) arrow.textContent = '▴'; }
+    }
+  });
+  // remaining juz
+  document.querySelectorAll('.juz-section').forEach(sec => {
+    const cards = sec.querySelectorAll('.quiz-card');
+    let anyVisible = false;
+    cards.forEach(card => { const text = card.dataset.text || card.innerText; const match = !q || text.includes(q); card.style.display = match ? '' : 'none'; if (match) anyVisible = true; });
+    sec.style.display = anyVisible ? '' : 'none';
+  });
+}
+
+const juzData=[
+  {num:'٤',title:'آل عمران — النساء',pages:'ص ٦٣–٨٢'},{num:'٥',title:'سورة النساء (تابع)',pages:'ص ٨٣–١٠٢'},
+  {num:'٦',title:'النساء — المائدة',pages:'ص ١٠٢–١٢١'},{num:'٧',title:'المائدة — الأنعام',pages:'ص ١٢١–١٤١'},
+  {num:'٨',title:'الأنعام — الأعراف',pages:'ص ١٤٢–١٦٢'},{num:'٩',title:'الأعراف — الأنفال',pages:'ص ١٦٣–١٨٢'},
+  {num:'١٠',title:'الأنفال — التوبة',pages:'ص ١٨٢–٢٠١'},{num:'١١',title:'التوبة — هود',pages:'ص ٢٠١–٢٢١'},
+  {num:'١٢',title:'هود — يوسف',pages:'ص ٢٢١–٢٤١'},{num:'١٣',title:'يوسف — إبراهيم',pages:'ص ٢٤١–٢٦١'},
+  {num:'١٤',title:'الحجر — النحل',pages:'ص ٢٦٢–٢٨١'},{num:'١٥',title:'الإسراء — الكهف',pages:'ص ٢٨٢–٣٠١'},
+  {num:'١٦',title:'الكهف — طه',pages:'ص ٣٠١–٣٢١'},{num:'١٧',title:'الأنبياء — الحج',pages:'ص ٣٢٢–٣٤١'},
+  {num:'١٨',title:'المؤمنون — الفرقان',pages:'ص ٣٤٢–٣٦١'},{num:'١٩',title:'الفرقان — النمل',pages:'ص ٣٦٢–٣٨١'},
+  {num:'٢٠',title:'النمل — العنكبوت',pages:'ص ٣٨٢–٤٠١'},{num:'٢١',title:'العنكبوت — الأحزاب',pages:'ص ٤٠٢–٤٢١'},
+  {num:'٢٢',title:'الأحزاب — يس',pages:'ص ٤٢١–٤٤١'},{num:'٢٣',title:'يس — الزمر',pages:'ص ٤٤٢–٤٦٢'},
+  {num:'٢٤',title:'الزمر — فصلت',pages:'ص ٤٦٢–٤٨١'},{num:'٢٥',title:'فصلت — الجاثية',pages:'ص ٤٨٢–٥٠١'},
+  {num:'٢٦',title:'الأحقاف — الذاريات',pages:'ص ٥٠٢–٥٢١'},{num:'٢٧',title:'الذاريات — الحديد',pages:'ص ٥٢٢–٥٤٢'},
+  {num:'٢٨',title:'المجادلة — التحريم',pages:'ص ٥٤٢–٥٦٢'},{num:'٢٩',title:'الملك — المرسلات',pages:'ص ٥٦٢–٥٨٢'},
+];
+const arabicNums={'٤':4,'٥':5,'٦':6,'٧':7,'٨':8,'٩':9,'١٠':10,'١١':11,'١٢':12,'١٣':13,'١٤':14,'١٥':15,'١٦':16,'١٧':17,'١٨':18,'١٩':19,'٢٠':20,'٢١':21,'٢٢':22,'٢٣':23,'٢٤':24,'٢٥':25,'٢٦':26,'٢٧':27,'٢٨':28,'٢٩':29};
+const container=document.getElementById('remaining-juz');
+juzData.forEach(j=>{
+  container.innerHTML+=`<div class="acc-section juz-section" data-juz="${arabicNums[j.num]}"><button class="acc-header" onclick="toggleAcc(this)"><div style="display:flex;align-items:center;gap:10px;"><div class="juz-badge">الجزء ${j.num}</div><div class="juz-title">${j.title}</div></div><div style="display:flex;align-items:center;gap:8px;"><div class="juz-progress">٠ / ٢٠ قريباً</div><span class="acc-arrow">▾</span></div></button><div class="acc-body"><div class="cards-grid"><div class="quiz-card soon"><div class="card-corner"></div><div class="card-surah">${j.title.split('—')[0].trim()}</div><div class="card-info">${j.pages}</div><span class="card-badge badge-soon">قريباً</span></div></div></div></div>`;
+});
+
+function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
+function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}
+(function initTheme(){let saved=null;try{saved=localStorage.getItem('quranTheme');}catch(e){}if(!saved)saved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';applyTheme(saved);})();
 function toggleTranslate(){document.getElementById('translate-menu').classList.toggle('open');}
 function translateTo(lang){const url=`https://translate.google.com/translate?sl=ar&tl=${lang}&u=`+encodeURIComponent(location.href);window.open(url,'_blank');document.getElementById('translate-menu').classList.remove('open');}
 </script>
