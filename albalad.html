@@ -207,7 +207,8 @@ const MEDIUM_Q=[
   {q:"«لَآ أُقۡسِمُ بِهَٰذَا ٱلۡبَلَدِ وَأَنتَ _____ بِهَٰذَا ٱلۡبَلَدِ»",answer:"حِلُّۢ"},
   {q:"«وَوَالِدٖ _____»",answer:"وَمَا وَلَدَ"},
   {q:"«لَقَدۡ خَلَقۡنَا ٱلۡإِنسَٰنَ فِي _____»",answer:"كَبَدٍ"},
-  {q:"«أَيَحۡسَبُ أَن لَّن يَقۡدِرَ عَلَيۡهِ _____ — أَيَحۡسَبُ أَن لَّمۡ يَرَهُۥٓ _____»",answer:"أَحَدٌ — أَحَدٌ"},
+  {q:"«أَيَحۡسَبُ أَن لَّن يَقۡدِرَ عَلَيۡهِ _____»",answer:"أَحَدٌ"},
+  {q:"«أَيَحۡسَبُ أَن لَّمۡ يَرَهُۥٓ _____»",answer:"أَحَدٌ"},
   {q:"«أَلَمۡ نَجۡعَل لَّهُۥ عَيۡنَيۡنِ وَلِسَانٗا _____»",answer:"وَشَفَتَيۡنِ"},
   {q:"«وَهَدَيۡنَٰهُ _____»",answer:"ٱلنَّجۡدَيۡنِ"},
   {q:"«فَلَا ٱقۡتَحَمَ ٱلۡعَقَبَةَ وَمَآ أَدۡرَىٰكَ _____»",answer:"مَا ٱلۡعَقَبَةُ"},
@@ -252,7 +253,7 @@ function normalize(str){
 }
 
 function wordDiff(userVal,correctAnswer){
-  const nm=s=>{if(!s)return'';return s.replace(/ـ/g,'').replace(/وٰ/g,'و').replace(/اٰ/g,'ا').replace(/يٰ/g,'ي').replace(/ىٰ/g,'ا').replace(/(.)ٰ/g,'$1ا').replace(/هۥ/g,'ه').replace(/هۦ/g,'ه').replace(/[ۥۦ]/g,'').replace(/[ئؤ]/g,'ء').replace(/ء/g,'').replace(/[آأإٱا]/g,'ا').replace(/[ىی]/g,'ي').replace(/ة/g,'ه').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'').replace(/(.)\1+/g,'$1').replace(/رحمان/g,'رحمن').replace(/هاؤلاء/g,'هولا').replace(/هؤلاء/g,'هولا').replace(/ياايها/g,'يايها').replace(/يا ايها/g,'يايها').replace(/هاذا/g,'هذا').replace(/ذالك/g,'ذلك').replace(/\s+/g,' ').trim();};
+  const nm=s=>{if(!s)return'';return s.replace(/ـ/g,'').replace(/وٰ/g,'و').replace(/اٰ/g,'ا').replace(/يٰ/g,'ي').replace(/ىٰ/g,'ى').replace(/(.)ٰ/g,'$1ا').replace(/هۥ/g,'ه').replace(/هۦ/g,'ه').replace(/[ۥۦ]/g,'').replace(/[ئؤ]/g,'ء').replace(/ء/g,'').replace(/[آأإٱا]/g,'ا').replace(/[ىی]/g,'ي').replace(/ة/g,'ه').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'').replace(/(.)\1+/g,'$1').replace(/رحمان/g,'رحمن').replace(/هاؤلاء/g,'هولا').replace(/هؤلاء/g,'هولا').replace(/ياايها/g,'يايها').replace(/يا ايها/g,'يايها').replace(/هاذا/g,'هذا').replace(/ذالك/g,'ذلك').replace(/\s+/g,' ').trim();};
   const uWords=userVal.trim().split(/\s+/),cWords=correctAnswer.split(/\s+/),n=cWords.length,m=uWords.length;
   const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
   for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}
