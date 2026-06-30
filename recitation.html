@@ -291,6 +291,7 @@ function norm(s){
     .replace(/وٰ/g,'و')
     .replace(/اٰ/g,'ا')
     .replace(/يٰ/g,'ي')
+    .replace(/ىٰ(?=\S)/g,'ا')
     .replace(/ىٰ/g,'ي')
     .replace(/(.)ٰ/g,'$1ا')
     .replace(/هۥ/g,'ه')
