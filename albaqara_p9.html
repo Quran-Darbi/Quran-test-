@@ -385,6 +385,12 @@
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
 </style>
+<link rel="manifest" href="/Quran-test-/manifest.json">
+<meta name="theme-color" content="#4a7c4a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="دربي">
+<link rel="apple-touch-icon" href="/Quran-test-/icons/icon-192x192.png">
 </head>
 <body>
 
@@ -1055,6 +1061,15 @@ function prevQuestion() {
     }
   }, { passive: true });
 })();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/Quran-test-/service-worker.js')
+      .then(r=>console.log('SW:',r.scope))
+      .catch(e=>console.log('SW err:',e));
+  });
+}
 </script>
 </body>
 </html>
