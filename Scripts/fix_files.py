@@ -25,34 +25,42 @@ def fix_file(path):
         src = f.read()
     out = src
 
-    # 0. قائمة التشكيل القديمة في قالب alburuj/altariq كانت ناقصة (مفيهاش حرف السكون
-    #    ۡ المستخدم في خط جزء عمّ العثماني) فيفضل في الكلمة بعد التطبيع ويمنع التطابق
-    #    — استبدلها بمدى يونيكود شامل (نفس قاعدة alnnas/recitation)، وقبلها قاعدة
-    #    الهمزة على كشيدة (ـَٔ) لازم تتنفذ قبل حذف التشكيل عشان متضيعش
+    # ====================================================
+    # 0. إصلاح قائمة التشكيل (alburuj/altariq pattern):
+    #    - الهمزة على كشيدة بفتحة (ـَٔ) = ألف، غيرها = تتحذف
+    #    - ثم المدى الشامل يشمل ۡ وغيره
+    #    التشكيل يتحذف أولاً (قبل قواعد ىٰ) عشان ىٰٓ ما تتعرفش غلط
     out = out.replace(
         "replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞۢ]/g,'')",
-        r"replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'ا').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')"
+        r"replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـ/g,'').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')"
     )
 
-    # 1. إصلاحات normalize/nm (تتطبق تلقائياً في الموضعين معاً):
-    #    - ىٰ: لو جالها حرف بعدها في نفس الكلمة (زي أَدۡرَىٰكَ، أَلۡهَىٰكُمُ) = "ا"
-    #      لو في آخر الكلمة (زي عَلَىٰ، أَغۡنَىٰ، سَيَصۡلَىٰ) = "ي" (زي باقي حالات ى)
+    # ====================================================
+    # 1. قواعد ىٰ وواو الجماعة ووٰ (alburuj/altariq pattern):
     if "[ىی]ٰ(?=" not in out:
         out = re.sub(r"\[ىی\]ٰ/g,'[اي]'\)",
                       r"[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي')",
                       out)
 
-    #    - الهمزة المكتوبة فوق كشيدة (ـَٔ زي لَتُسۡـَٔلُنَّ) كانت بتتحذف بالكامل
-    #      وتفقد الحرف؛ المفروض تتحول لـ"ا" (زي باقي حالات الهمزة على ألف)
-    if r"[\u0654\u0655]/g,'ا')" not in out:
+    # وٰ = صوت ألف (الصلاة، الزكاة)
+    if r"وٰ/g,'ا'" not in out:
+        out = out.replace(r".replace(/وٰ/g,'و')", r".replace(/وٰ/g,'ا')")
+
+    # ألف وصل بعد واو (وَٱسۡجُدۡ → وسجد) ما عدا ال التعريف
+    if r"وٱ(?!ل)" not in out:
         out = out.replace(
-            r".replace(/ـ/g,'')",
-            r".replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'ا').replace(/ـ/g,'')"
+            r".replace(/وٰ/g,'ا')",
+            r".replace(/وٱ(?!ل)/g,'و').replace(/وٰ/g,'ا')"
         )
 
-    #    - ۦ في وسط الكلمة (زي إِۦلَٰفِهِمۡ) = صوت ياء حقيقي = "ي"
-    #      ۦ في آخر الكلمة (زي بِهِۦ، لِرَبِّهِۦ) = حرف صامت اختياري، تتقبل "به"/"بهي" الاتنين
-    #      (ۥ تفضل تتحذف زي ما هي، دي مش نفس الحرف)
+    # الهمزة على كشيدة (ـَٔ → ا، غيرها تتحذف)
+    if r"[\u0654\u0655]/g,'')" not in out and r"[\u0654\u0655]/g,'ا')" not in out:
+        out = out.replace(
+            r".replace(/ـ/g,'')",
+            r".replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـ/g,'')"
+        )
+
+    # ۦ في وسط الكلمة = ي، في آخرها = صامت اختياري
     if r"ۦ(?=\S)" not in out:
         out = out.replace(
             r".replace(/ه[ۥۦ]/g,'ه').replace(/[ۥۦ]/g,'')",
@@ -63,18 +71,30 @@ def fix_file(path):
             r".replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')"
         )
 
-    #    - كلمات خاصة: اله/إله، ارايت/أرءيت، يا أيها (تتكتب كلمتين وتتقبل ككلمة وحدة)
+    # كلمات خاصة + واو الجماعة
     if "replace(/يا ايها/g,'يايها')" not in out:
         out = out.replace(
             r".replace(/مولانا/g,'مولنا')",
-            r".replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')"
+            r".replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك')"
         )
 
-    # 1ب. نفس الإصلاحات لكن للصيغة الثانية من normalize/nm (زي alnnas.html وrecitation.html)
+    # ====================================================
+    # 1ب. نفس الإصلاحات للصيغة الثانية (alnnas.html pattern):
+    #     التشكيل يتحذف أولاً هنا كمان
     if ".replace(/ىٰ(?=" not in out:
         out = re.sub(r"\.replace\(/ىٰ/g,'[اي]'\)",
                       r".replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')",
                       out)
+
+    if r"وٰ/g,'ا'" not in out:
+        out = out.replace(r".replace(/وٰ/g,'و')", r".replace(/وٰ/g,'ا')")
+
+    if r"وٱ(?!ل)" not in out:
+        out = out.replace(
+            r".replace(/اٰ/g,'ا')",
+            r".replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا')"
+        )
+
     if r"ۦ(?=\S)" not in out:
         out = out.replace(
             r".replace(/هۦ/g,'ه').replace(/[ۥۦ]/g,'')",
@@ -84,10 +104,20 @@ def fix_file(path):
             r".replace(/هۦ/g,'ه').replace(/ۦ/g,'ي').replace(/ۥ/g,'')",
             r".replace(/هۦ/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')"
         )
+
     if "replace(/الاه/g,'اله')" not in out:
         out = out.replace(
             r".replace(/ذالك/g,'ذلك')",
-            r".replace(/ذالك/g,'ذلك').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')"
+            r".replace(/ذالك/g,'ذلك').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك')"
+        )
+
+    # ====================================================
+    # 2. الأرقام: استبدل toArabicNum بدالة تعرض أرقام إنجليزي
+    if 'function toArabicNum(n){return n;}' not in out and 'toArabicNum' in out:
+        out = re.sub(
+            r"function toArabicNum\(n\)\{return[^}]+\}",
+            "function toArabicNum(n){return n;}",
+            out
         )
 
     # 2. أضف زر returnToLevels لو مش موجود
