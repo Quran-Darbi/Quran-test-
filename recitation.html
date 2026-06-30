@@ -4,9 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>اختبر تلاوتك — دربي لحفظ القرآن</title>
+<link rel="manifest" href="/Quran-test-/manifest.json">
+<meta name="theme-color" content="#4a7c4a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="دربي">
+<link rel="apple-touch-icon" href="/Quran-test-/icons/icon-192x192.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
 <style>
 :root{--bg:#f0f4f0;--text:#2d4a2d;--card:#fff;--border:#c8d9c0;--gold:#c4a84a;--accent:#4a7c4a;--surface2:#f4f8f2;--surface3:#f8fbf6;--surface-hover:#e0edd8;--accent-dark:#3a6a3a;--wrong-border:#c0392b;--teal:#3a7a7c;}
 html[data-theme="dark"]{--bg:#1c2420;--text:#d9ecd9;--card:#232f29;--border:#3a4d40;--gold:#d9b96a;--accent:#5fae5f;--surface2:#2a3830;--surface3:#1f2a24;--surface-hover:#324438;--accent-dark:#7fcf7f;--wrong-border:#e74c3c;--teal:#5fb8ba;}
@@ -46,6 +53,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .stat{border-radius:10px;padding:5px 12px;font-size:13px;font-weight:700;}
 .stat.ok{background:#d4edda;color:#1a5c1a;}
 .stat.err{background:#f8d7da;color:#7a1a1a;}
+.stat.pct{background:var(--surface2);color:var(--accent);}
 .score-bar{background:var(--surface2);border-radius:8px;height:10px;margin-bottom:14px;overflow:hidden;}
 .score-fill{height:100%;border-radius:8px;transition:width .6s;}
 .where-msg{font-size:12px;color:var(--accent);background:var(--surface2);border-radius:8px;padding:7px 12px;margin-bottom:12px;text-align:center;}
@@ -148,6 +156,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
     <div class="result-stats">
       <div class="stat ok" id="statOk">✓ ٠</div>
       <div class="stat err" id="statErr">✗ ٠</div>
+      <div class="stat pct" id="statPct">٪ ٠</div>
     </div>
   </div>
   <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
@@ -278,11 +287,12 @@ function norm(s){
     .replace(/وٰ/g,'و')
     .replace(/اٰ/g,'ا')
     .replace(/يٰ/g,'ي')
-    .replace(/ىٰ/g,'ا')
+    .replace(/ىٰ/g,'ي')
     .replace(/(.)ٰ/g,'$1ا')
     .replace(/هۥ/g,'ه')
     .replace(/هۦ/g,'ه')
-    .replace(/[ۥۦ]/g,'')
+    .replace(/ۦ/g,'ي')
+    .replace(/ۥ/g,'')
     .replace(/[ئؤ]/g,'ء')
     .replace(/ء/g,'')
     .replace(/[آأإٱا]/g,'ا')
@@ -297,8 +307,24 @@ function norm(s){
     .replace(/يا ايها/g,'يايها')
     .replace(/هاذا/g,'هذا')
     .replace(/ذالك/g,'ذلك')
+    .replace(/الاه/g,'اله')
+    .replace(/ارايت/g,'اريت')
     .replace(/\s+/g,' ')
     .trim();
+}
+
+function mergeYaAyyuha(words){
+  const out=[];
+  for(let i=0;i<words.length;i++){
+    if(i<words.length-1){
+      const a=norm(words[i]),b=norm(words[i+1]);
+      if(a==='يا'&&(b==='ايها'||b==='ايتها')){
+        out.push(words[i]+words[i+1]);i++;continue;
+      }
+    }
+    out.push(words[i]);
+  }
+  return out;
 }
 
 function onSelectSurah(){
@@ -431,7 +457,7 @@ function retryRec(){clearAll();}
 function checkRecitation(){
   if(recognizing){try{recInst.stop();}catch(e){}recognizing=false;}
   setBtn('idle');
-  const userWords=savedWords.filter(w=>w.length>0);
+  const userWords=mergeYaAyyuha(savedWords.filter(w=>w.length>0));
   if(!userWords.length)return;
   const startIdx=findStart(userWords);
   const ref=refWords.slice(startIdx,startIdx+userWords.length+10);
@@ -445,11 +471,15 @@ function checkRecitation(){
   document.getElementById('whereMsg').textContent=where;
   document.getElementById('statOk').textContent='✓ '+ok;
   document.getElementById('statErr').textContent='✗ '+bad;
+  document.getElementById('statPct').textContent='٪ '+pct;
   const fill=document.getElementById('scoreFill');
   fill.style.width=pct+'%';
   fill.style.background=pct>=80?'#4a7c4a':pct>=60?'#e67e22':'#c0392b';
   document.getElementById('resultTitle').textContent=
     pct===100?'🌟 ممتاز! تلاوة مثالية':pct>=80?'✨ أحسنتِ!':pct>=60?'📖 جيد — راجعي الكلمات الحمراء':'💪 تحتاجين مراجعة';
+  if(pct===100&&typeof confetti==='function'){
+    confetti({particleCount:140,spread:80,origin:{y:0.6},colors:['#4a7c4a','#c4a84a','#5fae5f','#fff']});
+  }
   const display=document.getElementById('ayahDisplay');
   display.innerHTML='';
   results.forEach(r=>{
@@ -475,6 +505,15 @@ document.getElementById('recBtn').style.cursor='default';
   const surah=params.get('surah');
   if(surah){const sel=document.getElementById('surahSelect');if(sel){sel.value=surah;onSelectSurah();}}
 })();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/Quran-test-/service-worker.js')
+      .then(r=>console.log('SW:',r.scope))
+      .catch(e=>console.log('SW err:',e));
+  });
+}
 </script>
 </body>
 </html>
