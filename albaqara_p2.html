@@ -11,7 +11,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار حفظ سورة البقرة — الصفحة ٢</title>
+<title>اختبار حفظ سورة البقرة — الصفحة 2</title>
 <style>
   :root {
     --bg: #f0f4f0;
@@ -416,12 +416,12 @@
 <!-- Info Card -->
 <div class="info-card">
   <div class="surah-title">سورة البقرة</div>
-  <div class="ayat-range">الآيات ١ إلى ٥</div>
-  <div class="page-info">اختبار الحفظ | وجه ١ — صفحة ٢</div>
+  <div class="ayat-range">الآيات 1 إلى 5</div>
+  <div class="page-info">اختبار الحفظ | وجه 1 — صفحة 2</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">٥</span></div>
-    <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
+    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">5</span></div>
+    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 
@@ -464,7 +464,7 @@
     <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
   </div>
   <div id="dot-progress" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-bottom:14px;"></div>
-  <div class="q-number" id="q-number">السؤال ١</div>
+  <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="feedback" id="feedback"></div>
@@ -505,7 +505,7 @@
 
 <script>
 // ══════════════════════════════════════════════
-//  بيانات الآيات — سورة البقرة ١–٥
+//  بيانات الآيات — سورة البقرة 1–5
 // ══════════════════════════════════════════════
 const AYAT = [
   { num: 1, text: "الٓمٓ" },
@@ -516,7 +516,7 @@ const AYAT = [
 ];
 
 // ══════════════════════════════════════════════
-//  أسئلة المستوى السهل (١٥ سؤال MCQ)
+//  أسئلة المستوى السهل (15 سؤال MCQ)
 // ══════════════════════════════════════════════
 const EASY_Q=[
   {q:"«ذَٰلِكَ الْكِتَابُ لَا _____ فِيهِ هُدًى لِّلْمُتَّقِينَ»",choices:["رَيْبَ","شَكَّ","خَوْفَ"],answer:0},
@@ -527,7 +527,7 @@ const EASY_Q=[
 ];
 
 // ══════════════════════════════════════════════
-//  أسئلة المستوى المتوسط (١٠ أسئلة فراغ)
+//  أسئلة المستوى المتوسط (10 أسئلة فراغ)
 // ══════════════════════════════════════════════
 const MEDIUM_Q = [
   {
@@ -583,7 +583,7 @@ const MEDIUM_Q = [
 ];
 
 // ══════════════════════════════════════════════
-//  أسئلة المستوى الصعب (٥ أسئلة — اكتب الآية)
+//  أسئلة المستوى الصعب (5 أسئلة — اكتب الآية)
 // ══════════════════════════════════════════════
 const HARD_Q = [
   {
@@ -629,12 +629,12 @@ function selectLevel(lvl) {
   const btn = document.getElementById('start-btn');
   btn.classList.add('ready');
 
-  const totals = { easy: '٥', medium: '١٠', hard: '٥' };
+  const totals = { easy: '5', medium: '10', hard: '5' };
   document.getElementById('total-q').textContent = totals[lvl];
 }
 
 function toArabicNum(n) {
-  return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  return n.toString().replace(/\d/g, d => '0123456789'[d]);
 }
 
 function updateBadges() {
@@ -806,7 +806,7 @@ function showQuestion() {
       const tSub=document.createElement('button'); tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q); tZone.appendChild(tSub);
 
       const hBox=document.createElement('div'); hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;'; zone.appendChild(hBox);
-      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
+      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول 3 كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
 
     } else {
       const ta=document.createElement('textarea'); ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input'; zone.appendChild(ta);
@@ -985,10 +985,10 @@ function retryQuiz() {
   currentLevel = null;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('start-btn').classList.remove('ready');
-  document.getElementById('total-q').textContent = '١٥';
-  document.getElementById('wrong-badge').innerHTML   = '٠ ✗<br>خطأ';
-  document.getElementById('correct-badge').innerHTML = '٠ ✓<br>صحيح';
-  document.getElementById('qnum-badge').innerHTML    = 'السؤال ١ /<br>٥';
+  document.getElementById('total-q').textContent = '15';
+  document.getElementById('wrong-badge').innerHTML   = '0 ✗<br>خطأ';
+  document.getElementById('correct-badge').innerHTML = '0 ✓<br>صحيح';
+  document.getElementById('qnum-badge').innerHTML    = 'السؤال 1 /<br>5';
   document.getElementById('progress-fill').style.width = '0%';
 }
 
@@ -1096,7 +1096,7 @@ function endReview() {
 }
 
 // ══════════════════════════════════════════════
-//  تأثير الاحتفال (١٠٠٪)
+//  تأثير الاحتفال (100٪)
 // ══════════════════════════════════════════════
 function spawnConfetti() {
   const colors = ['#4a7c4a', '#c4a84a', '#9db89d', '#e0edd8', '#7a9a7a'];

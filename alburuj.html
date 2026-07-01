@@ -94,12 +94,12 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 
 <div class="info-card">
   <div class="surah-title">سورة البروج</div>
-  <div class="ayat-range">الآيات ١ إلى ٢٢</div>
+  <div class="ayat-range">الآيات 1 إلى 22</div>
   <div class="page-info">اختبار الحفظ | جزء عمّ</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">-</span></div>
-    <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
+    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
+    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 
@@ -131,7 +131,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <div class="quiz-area" id="quiz-area">
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
   <div id="dot-progress" style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:14px;"></div>
-  <div class="q-number" id="q-number">السؤال ١</div>
+  <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="nav-row" id="nav-row">
@@ -195,7 +195,7 @@ const AYAT=[
   "فِى لَوْحٍ مَّحْفُوظٍ"
 ];
 
-// ===== أسئلة سهل (١٥ سؤال) =====
+// ===== أسئلة سهل (15 سؤال) =====
 const EASY_Q=[
   {q:"«وَٱلسَّمَآءِ _____»",choices:["ذَاتِ ٱلْبُرُوجِ","ذَاتِ ٱلرَّجْعِ","ذَاتِ ٱلطَّارِقِ"],answer:0},
   {q:"«وَٱلْيَوْمِ _____»",choices:["ٱلْمَوْعُودِ","ٱلْمَشْهُودِ","ٱلْمَعْلُومِ"],answer:0},
@@ -214,7 +214,7 @@ const EASY_Q=[
   {q:"«فِى لَوْحٍ _____»",choices:["مَّحْفُوظٍ","مَّكْنُونٍ","مَّصُونٍ"],answer:0}
 ];
 
-// ===== أسئلة متوسط (١٥ سؤال) =====
+// ===== أسئلة متوسط (15 سؤال) =====
 const MEDIUM_Q=[
   {q:"«وَٱلسَّمَآءِ _____»",answer:"ذَاتِ ٱلْبُرُوجِ"},
   {q:"«وَٱلْيَوْمِ ٱلْمَوْعُودِ وَشَاهِدٍ _____»",answer:"وَمَشْهُودٍ"},
@@ -233,16 +233,16 @@ const MEDIUM_Q=[
   {q:"«فِى لَوْحٍ _____»",answer:"مَّحْفُوظٍ"}
 ];
 
-// ===== أسئلة صعب (٨ أسئلة — تغطي السورة كاملة) =====
+// ===== أسئلة صعب (8 أسئلة — تغطي السورة كاملة) =====
 const HARD_Q=[
-  {ayah:1,q:"اكتبي الآيات ١–٣",answer:"وَٱلسَّمَآءِ ذَاتِ ٱلْبُرُوجِ وَٱلْيَوْمِ ٱلْمَوْعُودِ وَشَاهِدٍ وَمَشْهُودٍ"},
-  {ayah:4,q:"اكتبي الآيات ٤–٧",answer:"قُتِلَ أَصْحَٰبُ ٱلْأُخْدُودِ ٱلنَّارِ ذَاتِ ٱلْوَقُودِ إِذْ هُمْ عَلَيْهَا قُعُودٌ وَهُمْ عَلَىٰ مَا يَفْعَلُونَ بِٱلْمُؤْمِنِينَ شُهُودٌ"},
-  {ayah:8,q:"اكتبي الآيتين ٨–٩",answer:"وَمَا نَقَمُوا۟ مِنْهُمْ إِلَّآ أَن يُؤْمِنُوا۟ بِٱللَّهِ ٱلْعَزِيزِ ٱلْحَمِيدِ ٱلَّذِى لَهُۥ مُلْكُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضِ وَٱللَّهُ عَلَىٰ كُلِّ شَىْءٍ شَهِيدٌ"},
-  {ayah:10,q:"اكتبي الآيتين ١٠–١١",answer:"إِنَّ ٱلَّذِينَ فَتَنُوا۟ ٱلْمُؤْمِنِينَ وَٱلْمُؤْمِنَٰتِ ثُمَّ لَمْ يَتُوبُوا۟ فَلَهُمْ عَذَابُ جَهَنَّمَ وَلَهُمْ عَذَابُ ٱلْحَرِيقِ إِنَّ ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ لَهُمْ جَنَّٰتٌ تَجْرِى مِن تَحْتِهَا ٱلْأَنْهَٰرُ ذَٰلِكَ ٱلْفَوْزُ ٱلْكَبِيرُ"},
-  {ayah:12,q:"اكتبي الآيات ١٢–١٤",answer:"إِنَّ بَطْشَ رَبِّكَ لَشَدِيدٌ إِنَّهُۥ هُوَ يُبْدِئُ وَيُعِيدُ وَهُوَ ٱلْغَفُورُ ٱلْوَدُودُ"},
-  {ayah:15,q:"اكتبي الآيات ١٥–١٦",answer:"ذُو ٱلْعَرْشِ ٱلْمَجِيدُ فَعَّالٌ لِّمَا يُرِيدُ"},
-  {ayah:17,q:"اكتبي الآيات ١٧–٢٠",answer:"هَلْ أَتَىٰكَ حَدِيثُ ٱلْجُنُودِ فِرْعَوْنَ وَثَمُودَ بَلِ ٱلَّذِينَ كَفَرُوا۟ فِى تَكْذِيبٍ وَٱللَّهُ مِن وَرَآئِهِم مُّحِيطٌ"},
-  {ayah:21,q:"اكتبي الآيتين ٢١–٢٢",answer:"بَلْ هُوَ قُرْءَانٌ مَّجِيدٌ فِى لَوْحٍ مَّحْفُوظٍ"}
+  {ayah:1,q:"اكتبي الآيات 1–3",answer:"وَٱلسَّمَآءِ ذَاتِ ٱلْبُرُوجِ وَٱلْيَوْمِ ٱلْمَوْعُودِ وَشَاهِدٍ وَمَشْهُودٍ"},
+  {ayah:4,q:"اكتبي الآيات 4–7",answer:"قُتِلَ أَصْحَٰبُ ٱلْأُخْدُودِ ٱلنَّارِ ذَاتِ ٱلْوَقُودِ إِذْ هُمْ عَلَيْهَا قُعُودٌ وَهُمْ عَلَىٰ مَا يَفْعَلُونَ بِٱلْمُؤْمِنِينَ شُهُودٌ"},
+  {ayah:8,q:"اكتبي الآيتين 8–9",answer:"وَمَا نَقَمُوا۟ مِنْهُمْ إِلَّآ أَن يُؤْمِنُوا۟ بِٱللَّهِ ٱلْعَزِيزِ ٱلْحَمِيدِ ٱلَّذِى لَهُۥ مُلْكُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضِ وَٱللَّهُ عَلَىٰ كُلِّ شَىْءٍ شَهِيدٌ"},
+  {ayah:10,q:"اكتبي الآيتين 10–11",answer:"إِنَّ ٱلَّذِينَ فَتَنُوا۟ ٱلْمُؤْمِنِينَ وَٱلْمُؤْمِنَٰتِ ثُمَّ لَمْ يَتُوبُوا۟ فَلَهُمْ عَذَابُ جَهَنَّمَ وَلَهُمْ عَذَابُ ٱلْحَرِيقِ إِنَّ ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ لَهُمْ جَنَّٰتٌ تَجْرِى مِن تَحْتِهَا ٱلْأَنْهَٰرُ ذَٰلِكَ ٱلْفَوْزُ ٱلْكَبِيرُ"},
+  {ayah:12,q:"اكتبي الآيات 12–14",answer:"إِنَّ بَطْشَ رَبِّكَ لَشَدِيدٌ إِنَّهُۥ هُوَ يُبْدِئُ وَيُعِيدُ وَهُوَ ٱلْغَفُورُ ٱلْوَدُودُ"},
+  {ayah:15,q:"اكتبي الآيات 15–16",answer:"ذُو ٱلْعَرْشِ ٱلْمَجِيدُ فَعَّالٌ لِّمَا يُرِيدُ"},
+  {ayah:17,q:"اكتبي الآيات 17–20",answer:"هَلْ أَتَىٰكَ حَدِيثُ ٱلْجُنُودِ فِرْعَوْنَ وَثَمُودَ بَلِ ٱلَّذِينَ كَفَرُوا۟ فِى تَكْذِيبٍ وَٱللَّهُ مِن وَرَآئِهِم مُّحِيطٌ"},
+  {ayah:21,q:"اكتبي الآيتين 21–22",answer:"بَلْ هُوَ قُرْءَانٌ مَّجِيدٌ فِى لَوْحٍ مَّحْفُوظٍ"}
 ];
 
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
@@ -313,7 +313,7 @@ function renderHard(q,zone){
   const ta2=document.createElement('textarea');ta2.className='answer-input';ta2.placeholder='اكتب الآية كاملة...';ta2.id='user-input';tZone.appendChild(ta2);
   const tSub=document.createElement('button');tSub.className='submit-btn';tSub.textContent='تحقق ✓';tSub.onclick=()=>checkText(q);tZone.appendChild(tSub);
   const hBox=document.createElement('div');hBox.className='hint-box';zone.appendChild(hBox);
-  const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول ٣ كلمات)';hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};zone.appendChild(hBtn);
+  const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول 3 كلمات)';hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};zone.appendChild(hBtn);
 }
 
 function checkTextVal(q,userVal){const fb=document.getElementById('feedback');document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';const userNorm=normalize(userVal),ansNorm=normalize(q.answer);if(userNorm===ansNorm){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';}else{wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';}fb.style.display='block';updateBadges();renderDotProgress();saveResumeState();}
@@ -324,7 +324,7 @@ function prevQuestion(){if(qIndex===0)return;qIndex--;showQuestion();}
 function nextQuestion(){qIndex++;if(qIndex>=questions.length){showResult();}else{showQuestion();}}
 function showResult(){document.getElementById('quiz-area').style.display='none';document.getElementById('result-area').style.display='block';const pct=Math.round((correctCount/questions.length)*100);document.getElementById('result-score').textContent=`${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} — ${toArabicNum(pct)}%`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنتِ السورة بالكامل';}else if(pct>=80){icon='✨';title='أحسنتِ!';msg='نتيجة رائعة، استمري في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجعي السورة مرة أخرى وأعيدي الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأسي، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');if(pct===100)spawnConfetti();}
 function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
-function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='٠ ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='٠ ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال ١ /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}

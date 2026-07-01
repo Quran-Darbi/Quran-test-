@@ -11,7 +11,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار حفظ سورة البقرة — الصفحة ٣٧</title>
+<title>اختبار حفظ سورة البقرة — الصفحة 37</title>
 <style>
   :root {
     --bg: #f0f4f0;
@@ -401,12 +401,12 @@
 
 <div class="info-card">
   <div class="surah-title">سورة البقرة</div>
-  <div class="ayat-range">الآيات ٢٣١ إلى ٢٣٣</div>
-  <div class="page-info">اختبار الحفظ | صفحة ٣٧</div>
+  <div class="ayat-range">الآيات 231 إلى 233</div>
+  <div class="page-info">اختبار الحفظ | صفحة 37</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">١٠</span></div>
-    <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
+    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">10</span></div>
+    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 
@@ -451,7 +451,7 @@
     <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
   </div>
   <div id="dot-progress" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-bottom:14px;"></div>
-  <div class="q-number" id="q-number">السؤال ١</div>
+  <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="feedback" id="feedback"></div>
@@ -500,20 +500,20 @@ const AYAT = [
 const EASY_Q = [
   {q:"«فَأَمْسِكُوهُنَّ بِمَعْرُوفٍ أَوْ سَرِّحُوهُنَّ بِمَعْرُوفٍ وَلَا تُمْسِكُوهُنَّ ضِرَارًا _____»",choices:["لِّتَعْتَدُوا","لِتَظْلِمُوا","لِتَضُرُّوا"],answer:0},
   {q:"«وَلَا تَتَّخِذُوٓا ءَايَٰتِ اللَّهِ _____»",choices:["هُزُوًا","لَعِبًا","باطلًا"],answer:0},
-  {q:"«وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِكُلِّ شَيْءٍ _____» — آية ٢٣١",choices:["عَلِيمٌ","خَبِيرٌ","بَصِيرٌ"],answer:0},
+  {q:"«وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِكُلِّ شَيْءٍ _____» — آية 231",choices:["عَلِيمٌ","خَبِيرٌ","بَصِيرٌ"],answer:0},
   {q:"«فَلَا تَعْضُلُوهُنَّ أَن يَنكِحْنَ أَزْوَٰجَهُنَّ إِذَا تَرَٰضَوْا بَيْنَهُم _____»",choices:["بِالْمَعْرُوفِ","بِالْحَقِّ","بِالْعَدْلِ"],answer:0},
   {q:"«ذَٰلِكُمْ أَزْكَىٰ لَكُمْ وَأَطْهَرُ وَاللَّهُ يَعْلَمُ وَأَنتُمْ _____»",choices:["لَا تَعْلَمُونَ","لَا تَدْرُونَ","لَا تَفْهَمُونَ"],answer:0},
   {q:"«وَالْوَٰلِدَٰتُ يُرْضِعْنَ أَوْلَٰدَهُنَّ حَوْلَيْنِ كَامِلَيْنِ لِمَنْ أَرَادَ أَن يُتِمَّ _____»",choices:["الرَّضَاعَةَ","الرَّضَاعَ","الإِرْضَاعَ"],answer:0},
   {q:"«لَا تُكَلَّفُ نَفْسٌ إِلَّا _____»",choices:["وُسْعَهَا","طَاقَتَهَا","قُدْرَتَهَا"],answer:0},
   {q:"«لَا تُضَآرَّ وَٰلِدَةٌ بِوَلَدِهَا وَلَا مَوْلُودٌ لَّهُ _____»",choices:["بِوَلَدِهِ","بِوَلَدِهَا","بِأَمِّهِ"],answer:0},
-  {q:"«وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِمَا تَعْمَلُونَ _____» — آية ٢٣٣",choices:["بَصِيرٌ","عَلِيمٌ","خَبِيرٌ"],answer:0},
+  {q:"«وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِمَا تَعْمَلُونَ _____» — آية 233",choices:["بَصِيرٌ","عَلِيمٌ","خَبِيرٌ"],answer:0},
   {q:"«وَعَلَى الْمَوْلُودِ لَهُ رِزْقُهُنَّ وَكِسْوَتُهُنَّ _____»",choices:["بِالْمَعْرُوفِ","بِالْقِسْطِ","بِالْعَدْلِ"],answer:0}
 ];
 
 const MEDIUM_Q = [
   {q:"«وَلَا تُمْسِكُوهُنَّ ضِرَارًا لِّتَعْتَدُوا وَمَن يَفْعَلْ ذَٰلِكَ فَقَدْ ظَلَمَ _____»", answer:"نَفْسَهُ"},
   {q:"«وَلَا تَتَّخِذُوٓا ءَايَٰتِ اللَّهِ _____»", answer:"هُزُوًا"},
-  {q:"«وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِكُلِّ شَيْءٍ _____» — آية ٢٣١", answer:"عَلِيمٌ"},
+  {q:"«وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِكُلِّ شَيْءٍ _____» — آية 231", answer:"عَلِيمٌ"},
   {q:"«فَلَا تَعْضُلُوهُنَّ أَن يَنكِحْنَ أَزْوَٰجَهُنَّ إِذَا تَرَٰضَوْا بَيْنَهُم بِالْمَعْرُوفِ ذَٰلِكَ يُوعَظُ بِهِ مَن كَانَ مِنكُمْ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْأَخِرِ ذَٰلِكُمْ أَزْكَىٰ لَكُمْ وَ_____»", answer:"أَطْهَرُ"},
   {q:"«وَالْوَٰلِدَٰتُ يُرْضِعْنَ أَوْلَٰدَهُنَّ حَوْلَيْنِ _____»", answer:"كَامِلَيْنِ"},
   {q:"«لَا تُكَلَّفُ نَفْسٌ إِلَّا _____»", answer:"وُسْعَهَا"},
@@ -524,17 +524,17 @@ const MEDIUM_Q = [
 ];
 
 const HARD_Q = [
-  {q:"اكتب الآية رقم ٢٣١ من سورة البقرة من «وَلَا تَتَّخِذُوٓا ءَايَٰتِ...» حتى آخرها", answer:"وَلَا تَتَّخِذُوٓا ءَايَٰتِ اللَّهِ هُزُوًا وَاذْكُرُوا نِعْمَتَ اللَّهِ عَلَيْكُمْ وَمَآ أَنزَلَ عَلَيْكُم مِّنَ الْكِتَٰبِ وَالْحِكْمَةِ يَعِظُكُم بِهِ وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِكُلِّ شَيْءٍ عَلِيمٌ"},
-  {q:"اكتب الآية رقم ٢٣٢ من سورة البقرة كاملة", answer:"وَإِذَا طَلَّقْتُمُ النِّسَآءَ فَبَلَغْنَ أَجَلَهُنَّ فَلَا تَعْضُلُوهُنَّ أَن يَنكِحْنَ أَزْوَٰجَهُنَّ إِذَا تَرَٰضَوْا بَيْنَهُم بِالْمَعْرُوفِ ذَٰلِكَ يُوعَظُ بِهِ مَن كَانَ مِنكُمْ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْأَخِرِ ذَٰلِكُمْ أَزْكَىٰ لَكُمْ وَأَطْهَرُ وَاللَّهُ يَعْلَمُ وَأَنتُمْ لَا تَعْلَمُونَ"},
-  {q:"اكتب أول جزء من الآية ٢٣٣ حتى «...بِالْمَعْرُوفِ»", answer:"وَالْوَٰلِدَٰتُ يُرْضِعْنَ أَوْلَٰدَهُنَّ حَوْلَيْنِ كَامِلَيْنِ لِمَنْ أَرَادَ أَن يُتِمَّ الرَّضَاعَةَ وَعَلَى الْمَوْلُودِ لَهُ رِزْقُهُنَّ وَكِسْوَتُهُنَّ بِالْمَعْرُوفِ"},
-  {q:"اكتب من «لَا تُكَلَّفُ...» حتى «...مِثْلُ ذَٰلِكَ» من الآية ٢٣٣", answer:"لَا تُكَلَّفُ نَفْسٌ إِلَّا وُسْعَهَا لَا تُضَآرَّ وَٰلِدَةٌ بِوَلَدِهَا وَلَا مَوْلُودٌ لَّهُ بِوَلَدِهِ وَعَلَى الْوَارِثِ مِثْلُ ذَٰلِكَ"},
-  {q:"اكتب آخر جزء من الآية ٢٣٣ من «فَإِنْ أَرَادَا فِصَالًا...» حتى آخرها", answer:"فَإِنْ أَرَادَا فِصَالًا عَن تَرَاضٍ مِّنْهُمَا وَتَشَاوُرٍ فَلَا جُنَاحَ عَلَيْهِمَا وَإِنْ أَرَدتُّمْ أَن تَسْتَرْضِعُوٓا أَوْلَٰدَكُمْ فَلَا جُنَاحَ عَلَيْكُمْ إِذَا سَلَّمْتُم مَّآ ءَاتَيْتُم بِالْمَعْرُوفِ وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِمَا تَعْمَلُونَ بَصِيرٌ"}
+  {q:"اكتب الآية رقم 231 من سورة البقرة من «وَلَا تَتَّخِذُوٓا ءَايَٰتِ...» حتى آخرها", answer:"وَلَا تَتَّخِذُوٓا ءَايَٰتِ اللَّهِ هُزُوًا وَاذْكُرُوا نِعْمَتَ اللَّهِ عَلَيْكُمْ وَمَآ أَنزَلَ عَلَيْكُم مِّنَ الْكِتَٰبِ وَالْحِكْمَةِ يَعِظُكُم بِهِ وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِكُلِّ شَيْءٍ عَلِيمٌ"},
+  {q:"اكتب الآية رقم 232 من سورة البقرة كاملة", answer:"وَإِذَا طَلَّقْتُمُ النِّسَآءَ فَبَلَغْنَ أَجَلَهُنَّ فَلَا تَعْضُلُوهُنَّ أَن يَنكِحْنَ أَزْوَٰجَهُنَّ إِذَا تَرَٰضَوْا بَيْنَهُم بِالْمَعْرُوفِ ذَٰلِكَ يُوعَظُ بِهِ مَن كَانَ مِنكُمْ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْأَخِرِ ذَٰلِكُمْ أَزْكَىٰ لَكُمْ وَأَطْهَرُ وَاللَّهُ يَعْلَمُ وَأَنتُمْ لَا تَعْلَمُونَ"},
+  {q:"اكتب أول جزء من الآية 233 حتى «...بِالْمَعْرُوفِ»", answer:"وَالْوَٰلِدَٰتُ يُرْضِعْنَ أَوْلَٰدَهُنَّ حَوْلَيْنِ كَامِلَيْنِ لِمَنْ أَرَادَ أَن يُتِمَّ الرَّضَاعَةَ وَعَلَى الْمَوْلُودِ لَهُ رِزْقُهُنَّ وَكِسْوَتُهُنَّ بِالْمَعْرُوفِ"},
+  {q:"اكتب من «لَا تُكَلَّفُ...» حتى «...مِثْلُ ذَٰلِكَ» من الآية 233", answer:"لَا تُكَلَّفُ نَفْسٌ إِلَّا وُسْعَهَا لَا تُضَآرَّ وَٰلِدَةٌ بِوَلَدِهَا وَلَا مَوْلُودٌ لَّهُ بِوَلَدِهِ وَعَلَى الْوَارِثِ مِثْلُ ذَٰلِكَ"},
+  {q:"اكتب آخر جزء من الآية 233 من «فَإِنْ أَرَادَا فِصَالًا...» حتى آخرها", answer:"فَإِنْ أَرَادَا فِصَالًا عَن تَرَاضٍ مِّنْهُمَا وَتَشَاوُرٍ فَلَا جُنَاحَ عَلَيْهِمَا وَإِنْ أَرَدتُّمْ أَن تَسْتَرْضِعُوٓا أَوْلَٰدَكُمْ فَلَا جُنَاحَ عَلَيْكُمْ إِذَا سَلَّمْتُم مَّآ ءَاتَيْتُم بِالْمَعْرُوفِ وَاتَّقُوا اللَّهَ وَاعْلَمُوٓا أَنَّ اللَّهَ بِمَا تَعْمَلُونَ بَصِيرٌ"}
 ];
 
 let currentLevel = null;
 let statuses = [];
 let wrongIndices = [];
-const PAGE_ID = 'p٣٧';
+const PAGE_ID = 'p37';
 let questions    = [];
 let qIndex       = 0;
 let correctCount = 0;
@@ -547,12 +547,12 @@ function selectLevel(lvl) {
   const btn = document.getElementById('start-btn');
   btn.classList.add('ready');
 
-  const totals = { easy: '١٠', medium: '١٠', hard: '٥' };
+  const totals = { easy: '10', medium: '10', hard: '5' };
   document.getElementById('total-q').textContent = totals[lvl];
 }
 
 function toArabicNum(n) {
-  return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  return n.toString().replace(/\d/g, d => '0123456789'[d]);
 }
 
 function updateBadges() {
@@ -723,7 +723,7 @@ function showQuestion() {
       const tSub=document.createElement('button'); tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q); tZone.appendChild(tSub);
 
       const hBox=document.createElement('div'); hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;'; zone.appendChild(hBox);
-      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
+      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول 3 كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
 
     } else {
       const ta=document.createElement('textarea'); ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input'; zone.appendChild(ta);
@@ -872,7 +872,7 @@ function showResult() {
 
   document.getElementById('progress-fill').style.width = '100%';
   updateBadges();
-  try { localStorage.removeItem('quranResume_p٣٧'); } catch(e) {}
+  try { localStorage.removeItem('quranResume_p37'); } catch(e) {}
   var __rb = document.getElementById('review-mistakes-btn'); if (__rb) __rb.style.display = (wrongIndices.length > 0 ? 'inline-block' : 'none');
   var __pct = Math.round((correctCount/questions.length)*100); if (__pct === 100) spawnConfetti();
 }
@@ -884,10 +884,10 @@ function retryQuiz() {
   currentLevel = null;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('start-btn').classList.remove('ready');
-  document.getElementById('total-q').textContent = '١٠';
-  document.getElementById('wrong-badge').innerHTML   = '٠ ✗<br>خطأ';
-  document.getElementById('correct-badge').innerHTML = '٠ ✓<br>صحيح';
-  document.getElementById('qnum-badge').innerHTML    = 'السؤال ١ /<br>١٠';
+  document.getElementById('total-q').textContent = '10';
+  document.getElementById('wrong-badge').innerHTML   = '0 ✗<br>خطأ';
+  document.getElementById('correct-badge').innerHTML = '0 ✓<br>صحيح';
+  document.getElementById('qnum-badge').innerHTML    = 'السؤال 1 /<br>10';
   document.getElementById('progress-fill').style.width = '0%';
 }
 
@@ -933,19 +933,19 @@ function renderDotProgress() {
 // ══════════════════════════════════════════════
 function saveResumeState() {
   try {
-    localStorage.setItem('quranResume_p٣٧', JSON.stringify({
+    localStorage.setItem('quranResume_p37', JSON.stringify({
       level: currentLevel, qIndex, correctCount, wrongCount, statuses, wrongIndices, date: Date.now()
     }));
   } catch(e) {}
 }
 function dismissResume() {
-  try { localStorage.removeItem('quranResume_p٣٧'); } catch(e) {}
+  try { localStorage.removeItem('quranResume_p37'); } catch(e) {}
   const b = document.getElementById('resume-banner');
   if (b) b.style.display = 'none';
 }
 function resumeQuiz() {
   let saved = null;
-  try { saved = JSON.parse(localStorage.getItem('quranResume_p٣٧')); } catch(e) {}
+  try { saved = JSON.parse(localStorage.getItem('quranResume_p37')); } catch(e) {}
   if (!saved) return;
   currentLevel = saved.level;
   if (currentLevel === 'easy')   questions = [...EASY_Q];
@@ -963,7 +963,7 @@ function resumeQuiz() {
 }
 (function checkResumeOnLoad() {
   let saved = null;
-  try { saved = JSON.parse(localStorage.getItem('quranResume_p٣٧')); } catch(e) {}
+  try { saved = JSON.parse(localStorage.getItem('quranResume_p37')); } catch(e) {}
   if (saved && saved.qIndex > 0) {
     const b = document.getElementById('resume-banner');
     if (b) b.style.display = 'block';
@@ -1000,7 +1000,7 @@ function endReview() {
 }
 
 // ══════════════════════════════════════════════
-//  تأثير الاحتفال (١٠٠٪)
+//  تأثير الاحتفال (100٪)
 // ══════════════════════════════════════════════
 function spawnConfetti() {
   const colors = ['#4a7c4a', '#c4a84a', '#9db89d', '#e0edd8', '#7a9a7a'];

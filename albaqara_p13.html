@@ -10,7 +10,7 @@
   gtag("config", "G-WFT6TYVB75");
 </script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار حفظ سورة البقرة — الصفحة ١٣</title>
+<title>اختبار حفظ سورة البقرة — الصفحة 13</title>
 <style>
   :root {
     --bg: #f0f4f0;
@@ -91,12 +91,12 @@
   <button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;margin-right:auto;">🔗</button><button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;">🌙</button></div>
 <div class="info-card">
   <div class="surah-title">سورة البقرة</div>
-  <div class="ayat-range">الآيات ٨٤ إلى ٨٨</div>
-  <div class="page-info">اختبار الحفظ | وجه ١٢ — صفحة ١٣</div>
+  <div class="ayat-range">الآيات 84 إلى 88</div>
+  <div class="page-info">اختبار الحفظ | وجه 12 — صفحة 13</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">١٠</span></div>
-    <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
+    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">10</span></div>
+    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 <div id="resume-banner" style="display:none; margin:0 16px 16px; background:var(--surface2); border:1.5px solid var(--gold); border-radius:14px; padding:14px 16px; text-align:center;">
@@ -120,7 +120,7 @@
 <div class="quiz-area" id="quiz-area">
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
   <div id="dot-progress" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-bottom:14px;"></div>
-  <div class="q-number" id="q-number">السؤال ١</div>
+  <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="feedback" id="feedback"></div>
@@ -194,7 +194,7 @@ let wrongIndices = [];
 const PAGE_ID = 'p13';
 
 function toArabicNum(n){return n;}
-function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:'١٠',medium:'١٠',hard:'٥'};document.getElementById('total-q').textContent=t[lvl];}
+function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:'10',medium:'10',hard:'5'};document.getElementById('total-q').textContent=t[lvl];}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 function startQuiz(){if(!currentLevel)return;if(currentLevel==='easy')questions=[...EASY_Q];if(currentLevel==='medium')questions=[...MEDIUM_Q];if(currentLevel==='hard')questions=[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses = questions.map(() => 'pending'); wrongIndices = []; var rb=document.getElementById('resume-banner'); if(rb) rb.style.display='none'; document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
@@ -310,7 +310,7 @@ function showQuestion(){const q=questions[qIndex];updateBadges();document.getEle
       const tSub=document.createElement('button'); tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q); tZone.appendChild(tSub);
 
       const hBox=document.createElement('div'); hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;'; zone.appendChild(hBox);
-      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
+      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول 3 كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
 
     } else {
       const ta=document.createElement('textarea'); ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input'; zone.appendChild(ta);
@@ -391,7 +391,7 @@ function showResult(){document.getElementById('quiz-area').style.display='none';
   var __rb = document.getElementById('review-mistakes-btn'); if (__rb) __rb.style.display = (wrongIndices.length > 0 ? 'inline-block' : 'none');
   var __pct = Math.round((correctCount/questions.length)*100); if (__pct === 100) spawnConfetti();}
 function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
-function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='١٠';document.getElementById('wrong-badge').innerHTML='٠ ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='٠ ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال ١ /<br>١٠';document.getElementById('progress-fill').style.width='0%';}
+function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='10';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>10';document.getElementById('progress-fill').style.width='0%';}
 
 // ══════════════════════════════════════════════
 //  الوضع الليلي
@@ -502,7 +502,7 @@ function endReview() {
 }
 
 // ══════════════════════════════════════════════
-//  تأثير الاحتفال (١٠٠٪)
+//  تأثير الاحتفال (100٪)
 // ══════════════════════════════════════════════
 function spawnConfetti() {
   const colors = ['#4a7c4a', '#c4a84a', '#9db89d', '#e0edd8', '#7a9a7a'];

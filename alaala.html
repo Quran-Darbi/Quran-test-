@@ -92,12 +92,12 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 </div>
 <div class="info-card">
   <div class="surah-title">سورة الأعلى</div>
-  <div class="ayat-range">الآيات ١ إلى ١٩</div>
+  <div class="ayat-range">الآيات 1 إلى 19</div>
   <div class="page-info">اختبار الحفظ | جزء عمّ</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">-</span></div>
-    <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
+    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
+    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 <div id="resume-banner" style="display:none;margin:0 16px 16px;background:var(--surface2);border:1.5px solid var(--gold);border-radius:14px;padding:14px 16px;text-align:center;">
@@ -123,7 +123,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <div class="quiz-area" id="quiz-area">
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
   <div id="dot-progress" style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:14px;"></div>
-  <div class="q-number" id="q-number">السؤال ١</div>
+  <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="nav-row">
@@ -209,13 +209,13 @@ const MEDIUM_Q=[
   {q:"«صُحُفِ إِبْرَٰهِيمَ _____»",answer:"وَمُوسَىٰ"}
 ];
 const HARD_Q=[
-  {ayah:1,q:"اكتبي الآيات ١–٣",answer:"سَبِّحِ ٱسْمَ رَبِّكَ ٱلْأَعْلَى ٱلَّذِى خَلَقَ فَسَوَّىٰ وَٱلَّذِى قَدَّرَ فَهَدَىٰ"},
-  {ayah:4,q:"اكتبي الآيتين ٤–٥",answer:"وَٱلَّذِىٓ أَخْرَجَ ٱلْمَرْعَىٰ فَجَعَلَهُۥ غُثَآءً أَحْوَىٰ"},
-  {ayah:6,q:"اكتبي الآيات ٦–٨",answer:"سَنُقْرِئُكَ فَلَا تَنسَىٰ إِلَّا مَا شَآءَ ٱللَّهُ إِنَّهُۥ يَعْلَمُ ٱلْجَهْرَ وَمَا يَخْفَىٰ وَنُيَسِّرُكَ لِلْيُسْرَىٰ"},
-  {ayah:9,q:"اكتبي الآيات ٩–١١",answer:"فَذَكِّرْ إِن نَّفَعَتِ ٱلذِّكْرَىٰ سَيَذَّكَّرُ مَن يَخْشَىٰ وَيَتَجَنَّبُهَا ٱلْأَشْقَى"},
-  {ayah:12,q:"اكتبي الآيات ١٢–١٣",answer:"ٱلَّذِى يَصْلَى ٱلنَّارَ ٱلْكُبْرَىٰ ثُمَّ لَا يَمُوتُ فِيهَا وَلَا يَحْيَىٰ"},
-  {ayah:14,q:"اكتبي الآيتين ١٤–١٥",answer:"قَدْ أَفْلَحَ مَن تَزَكَّىٰ وَذَكَرَ ٱسْمَ رَبِّهِۦ فَصَلَّىٰ"},
-  {ayah:16,q:"اكتبي الآيات ١٦–١٩",answer:"بَلْ تُؤْثِرُونَ ٱلْحَيَوٰةَ ٱلدُّنْيَا وَٱلْءَاخِرَةُ خَيْرٌ وَأَبْقَىٰ إِنَّ هَٰذَا لَفِى ٱلصُّحُفِ ٱلْأُولَىٰ صُحُفِ إِبْرَٰهِيمَ وَمُوسَىٰ"}
+  {ayah:1,q:"اكتبي الآيات 1–3",answer:"سَبِّحِ ٱسْمَ رَبِّكَ ٱلْأَعْلَى ٱلَّذِى خَلَقَ فَسَوَّىٰ وَٱلَّذِى قَدَّرَ فَهَدَىٰ"},
+  {ayah:4,q:"اكتبي الآيتين 4–5",answer:"وَٱلَّذِىٓ أَخْرَجَ ٱلْمَرْعَىٰ فَجَعَلَهُۥ غُثَآءً أَحْوَىٰ"},
+  {ayah:6,q:"اكتبي الآيات 6–8",answer:"سَنُقْرِئُكَ فَلَا تَنسَىٰ إِلَّا مَا شَآءَ ٱللَّهُ إِنَّهُۥ يَعْلَمُ ٱلْجَهْرَ وَمَا يَخْفَىٰ وَنُيَسِّرُكَ لِلْيُسْرَىٰ"},
+  {ayah:9,q:"اكتبي الآيات 9–11",answer:"فَذَكِّرْ إِن نَّفَعَتِ ٱلذِّكْرَىٰ سَيَذَّكَّرُ مَن يَخْشَىٰ وَيَتَجَنَّبُهَا ٱلْأَشْقَى"},
+  {ayah:12,q:"اكتبي الآيات 12–13",answer:"ٱلَّذِى يَصْلَى ٱلنَّارَ ٱلْكُبْرَىٰ ثُمَّ لَا يَمُوتُ فِيهَا وَلَا يَحْيَىٰ"},
+  {ayah:14,q:"اكتبي الآيتين 14–15",answer:"قَدْ أَفْلَحَ مَن تَزَكَّىٰ وَذَكَرَ ٱسْمَ رَبِّهِۦ فَصَلَّىٰ"},
+  {ayah:16,q:"اكتبي الآيات 16–19",answer:"بَلْ تُؤْثِرُونَ ٱلْحَيَوٰةَ ٱلدُّنْيَا وَٱلْءَاخِرَةُ خَيْرٌ وَأَبْقَىٰ إِنَّ هَٰذَا لَفِى ٱلصُّحُفِ ٱلْأُولَىٰ صُحُفِ إِبْرَٰهِيمَ وَمُوسَىٰ"}
 ];
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
 function normalize(str){if(!str)return'';return str.replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'ا').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1').replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();}
@@ -260,7 +260,7 @@ function renderHard(q,zone){
   const ta2=document.createElement('textarea');ta2.className='answer-input';ta2.placeholder='اكتب الآية كاملة...';ta2.id='user-input';tZone.appendChild(ta2);
   const tSub=document.createElement('button');tSub.className='submit-btn';tSub.textContent='تحقق ✓';tSub.onclick=()=>checkText(q);tZone.appendChild(tSub);
   const hBox=document.createElement('div');hBox.className='hint-box';zone.appendChild(hBox);
-  const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول ٣ كلمات)';hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};zone.appendChild(hBtn);
+  const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول 3 كلمات)';hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};zone.appendChild(hBtn);
 }
 function checkTextVal(q,userVal){const fb=document.getElementById('feedback');document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';}else{wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';}fb.style.display='block';updateBadges();renderDotProgress();saveResumeState();}
 function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,userVal);}
@@ -270,7 +270,7 @@ function prevQuestion(){if(qIndex===0)return;qIndex--;showQuestion();}
 function nextQuestion(){qIndex++;if(qIndex>=questions.length)showResult();else showQuestion();}
 function showResult(){document.getElementById('quiz-area').style.display='none';document.getElementById('result-area').style.display='block';const pct=Math.round((correctCount/questions.length)*100);document.getElementById('result-score').textContent=`${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} — ${toArabicNum(pct)}%`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنتِ السورة بالكامل';}else if(pct>=80){icon='✨';title='أحسنتِ!';msg='نتيجة رائعة، استمري في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجعي السورة مرة أخرى وأعيدي الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأسي، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');if(pct===100)spawnConfetti();}
 function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
-function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='٠ ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='٠ ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال ١ /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}

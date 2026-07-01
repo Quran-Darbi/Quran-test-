@@ -96,12 +96,12 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 
 <div class="info-card">
   <div class="surah-title">سورة التكوير</div>
-  <div class="ayat-range">الآيات ١ إلى ٢٩</div>
+  <div class="ayat-range">الآيات 1 إلى 29</div>
   <div class="page-info">اختبار الحفظ | جزء عمّ</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">-</span></div>
-    <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
+    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
+    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 
@@ -133,7 +133,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <div class="quiz-area" id="quiz-area">
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
   <div id="dot-progress" style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:14px;"></div>
-  <div class="q-number" id="q-number">السؤال ١</div>
+  <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <!-- أزرار التنقل ثابتة -->
@@ -205,7 +205,7 @@ const AYAT=[
   "وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ ٱلْعَٰلَمِينَ"
 ];
 
-// ===== أسئلة سهل (١٥ سؤال — تركز على المتشابهات) =====
+// ===== أسئلة سهل (15 سؤال — تركز على المتشابهات) =====
 const EASY_Q=[
   {q:"«إِذَا ٱلشَّمْسُ _____»",choices:["كُوِّرَتْ","كُسِرَتْ","كُبِّرَتْ"],answer:0},
   {q:"«وَإِذَا ٱلنُّجُومُ _____»",choices:["ٱنكَدَرَتْ","ٱنتَثَرَتْ","ٱنفَطَرَتْ"],answer:0},
@@ -224,7 +224,7 @@ const EASY_Q=[
   {q:"«وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ _____»",choices:["ٱلْعَٰلَمِينَ","ٱلسَّمَٰوَٰتِ","ٱلْعَرْشِ"],answer:0}
 ];
 
-// ===== أسئلة متوسط (١٥ سؤال) =====
+// ===== أسئلة متوسط (15 سؤال) =====
 const MEDIUM_Q=[
   {q:"«إِذَا ٱلشَّمْسُ _____»",answer:"كُوِّرَتْ"},
   {q:"«وَإِذَا ٱلنُّجُومُ _____»",answer:"ٱنكَدَرَتْ"},
@@ -243,18 +243,18 @@ const MEDIUM_Q=[
   {q:"«وَمَا هُوَ عَلَى ٱلْغَيْبِ _____»",answer:"بِضَنِينٍ"}
 ];
 
-// ===== أسئلة صعب (١٠ أسئلة — تغطي السورة كاملة) =====
+// ===== أسئلة صعب (10 أسئلة — تغطي السورة كاملة) =====
 const HARD_Q=[
-  {ayah:1, q:"اكتبي الآية ١",answer:"إِذَا ٱلشَّمْسُ كُوِّرَتْ"},
-  {ayah:2, q:"اكتبي الآية ٢",answer:"وَإِذَا ٱلنُّجُومُ ٱنكَدَرَتْ"},
-  {ayah:3, q:"اكتبي الآيات ٣–٥",answer:"وَإِذَا ٱلْجِبَالُ سُيِّرَتْ وَإِذَا ٱلْعِشَارُ عُطِّلَتْ وَإِذَا ٱلْوُحُوشُ حُشِرَتْ"},
-  {ayah:6, q:"اكتبي الآيات ٦–٧",answer:"وَإِذَا ٱلْبِحَارُ سُجِّرَتْ وَإِذَا ٱلنُّفُوسُ زُوِّجَتْ"},
-  {ayah:8, q:"اكتبي الآيات ٨–٩",answer:"وَإِذَا ٱلْمَوْءُۥدَةُ سُئِلَتْ بِأَىِّ ذَنۢبٍ قُتِلَتْ"},
-  {ayah:10, q:"اكتبي الآيات ١٠–١١",answer:"وَإِذَا ٱلصُّحُفُ نُشِرَتْ وَإِذَا ٱلسَّمَآءُ كُشِطَتْ"},
-  {ayah:12, q:"اكتبي الآيات ١٢–١٤",answer:"وَإِذَا ٱلْجَحِيمُ سُعِّرَتْ وَإِذَا ٱلْجَنَّةُ أُزْلِفَتْ عَلِمَتْ نَفْسٌ مَّآ أَحْضَرَتْ"},
-  {ayah:15, q:"اكتبي الآيات ١٥–١٨",answer:"فَلَآ أُقْسِمُ بِٱلْخُنَّسِ ٱلْجَوَارِ ٱلْكُنَّسِ وَٱلَّيْلِ إِذَا عَسْعَسَ وَٱلصُّبْحِ إِذَا تَنَفَّسَ"},
-  {ayah:19, q:"اكتبي الآيات ١٩–٢٢",answer:"إِنَّهُۥ لَقَوْلُ رَسُولٍ كَرِيمٍ ذِى قُوَّةٍ عِندَ ذِى ٱلْعَرْشِ مَكِينٍ مُّطَاعٍ ثَمَّ أَمِينٍ وَمَا صَاحِبُكُم بِمَجْنُونٍ"},
-  {ayah:23, q:"اكتبي الآيات ٢٣–٢٩",answer:"وَلَقَدْ رَءَاهُ بِٱلْأُفُقِ ٱلْمُبِينِ وَمَا هُوَ عَلَى ٱلْغَيْبِ بِضَنِينٍ وَمَا هُوَ بِقَوْلِ شَيْطَٰنٍ رَّجِيمٍ فَأَيْنَ تَذْهَبُونَ إِنْ هُوَ إِلَّا ذِكْرٌ لِّلْعَٰلَمِينَ لِمَن شَآءَ مِنكُمْ أَن يَسْتَقِيمَ وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ ٱلْعَٰلَمِينَ"}
+  {ayah:1, q:"اكتبي الآية 1",answer:"إِذَا ٱلشَّمْسُ كُوِّرَتْ"},
+  {ayah:2, q:"اكتبي الآية 2",answer:"وَإِذَا ٱلنُّجُومُ ٱنكَدَرَتْ"},
+  {ayah:3, q:"اكتبي الآيات 3–5",answer:"وَإِذَا ٱلْجِبَالُ سُيِّرَتْ وَإِذَا ٱلْعِشَارُ عُطِّلَتْ وَإِذَا ٱلْوُحُوشُ حُشِرَتْ"},
+  {ayah:6, q:"اكتبي الآيات 6–7",answer:"وَإِذَا ٱلْبِحَارُ سُجِّرَتْ وَإِذَا ٱلنُّفُوسُ زُوِّجَتْ"},
+  {ayah:8, q:"اكتبي الآيات 8–9",answer:"وَإِذَا ٱلْمَوْءُۥدَةُ سُئِلَتْ بِأَىِّ ذَنۢبٍ قُتِلَتْ"},
+  {ayah:10, q:"اكتبي الآيات 10–11",answer:"وَإِذَا ٱلصُّحُفُ نُشِرَتْ وَإِذَا ٱلسَّمَآءُ كُشِطَتْ"},
+  {ayah:12, q:"اكتبي الآيات 12–14",answer:"وَإِذَا ٱلْجَحِيمُ سُعِّرَتْ وَإِذَا ٱلْجَنَّةُ أُزْلِفَتْ عَلِمَتْ نَفْسٌ مَّآ أَحْضَرَتْ"},
+  {ayah:15, q:"اكتبي الآيات 15–18",answer:"فَلَآ أُقْسِمُ بِٱلْخُنَّسِ ٱلْجَوَارِ ٱلْكُنَّسِ وَٱلَّيْلِ إِذَا عَسْعَسَ وَٱلصُّبْحِ إِذَا تَنَفَّسَ"},
+  {ayah:19, q:"اكتبي الآيات 19–22",answer:"إِنَّهُۥ لَقَوْلُ رَسُولٍ كَرِيمٍ ذِى قُوَّةٍ عِندَ ذِى ٱلْعَرْشِ مَكِينٍ مُّطَاعٍ ثَمَّ أَمِينٍ وَمَا صَاحِبُكُم بِمَجْنُونٍ"},
+  {ayah:23, q:"اكتبي الآيات 23–29",answer:"وَلَقَدْ رَءَاهُ بِٱلْأُفُقِ ٱلْمُبِينِ وَمَا هُوَ عَلَى ٱلْغَيْبِ بِضَنِينٍ وَمَا هُوَ بِقَوْلِ شَيْطَٰنٍ رَّجِيمٍ فَأَيْنَ تَذْهَبُونَ إِنْ هُوَ إِلَّا ذِكْرٌ لِّلْعَٰلَمِينَ لِمَن شَآءَ مِنكُمْ أَن يَسْتَقِيمَ وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ ٱلْعَٰلَمِينَ"}
 ];
 
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
@@ -534,7 +534,7 @@ function renderHard(q,zone){
 
   // زر المساعدة
   const hBox=document.createElement('div');hBox.className='hint-box';zone.appendChild(hBox);
-  const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول ٣ كلمات)';
+  const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول 3 كلمات)';
   hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};
   zone.appendChild(hBtn);
 }
@@ -628,9 +628,9 @@ function retryQuiz(){
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('start-btn').classList.remove('ready');
   document.getElementById('total-q').textContent='-';
-  document.getElementById('wrong-badge').innerHTML='٠ ✗<br>خطأ';
-  document.getElementById('correct-badge').innerHTML='٠ ✓<br>صحيح';
-  document.getElementById('qnum-badge').innerHTML='السؤال ١ /<br>-';
+  document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';
+  document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';
+  document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';
   document.getElementById('progress-fill').style.width='0%';
 }
 

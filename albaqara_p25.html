@@ -11,7 +11,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار حفظ سورة البقرة — الصفحة ٢٥</title>
+<title>اختبار حفظ سورة البقرة — الصفحة 25</title>
 <style>
   :root {
     --bg: #f0f4f0;
@@ -401,12 +401,12 @@
 
 <div class="info-card">
   <div class="surah-title">سورة البقرة</div>
-  <div class="ayat-range">الآيات ١٦٤ إلى ١٦٩</div>
-  <div class="page-info">اختبار الحفظ | صفحة ٢٥</div>
+  <div class="ayat-range">الآيات 164 إلى 169</div>
+  <div class="page-info">اختبار الحفظ | صفحة 25</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال ١ /<br><span id="total-q">١٠</span></div>
-    <div class="stat-badge" id="wrong-badge">٠ ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">٠ ✓<br>صحيح</div>
+    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">10</span></div>
+    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 
@@ -425,7 +425,7 @@
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy">
       <span class="level-icon">🌱</span>
       <span class="level-name">سهل</span>
-      <span class="level-desc">اختيار من متعدد — اختر الكلمة الصحيحة من ٣ خيارات</span>
+      <span class="level-desc">اختيار من متعدد — اختر الكلمة الصحيحة من 3 خيارات</span>
     </button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium">
       <span class="level-icon">🌿</span>
@@ -446,7 +446,7 @@
     <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
   </div>
   <div id="dot-progress" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-bottom:14px;"></div>
-  <div class="q-number" id="q-number">السؤال ١</div>
+  <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="feedback" id="feedback"></div>
@@ -522,11 +522,11 @@ const MEDIUM_Q = [
 ];
 
 const HARD_Q = [
-  { q: "اكتب الآية رقم ١٦٤ من سورة البقرة كاملة", answer: AYAT[0].text },
-  { q: "اكتب الآية رقم ١٦٥ من سورة البقرة كاملة", answer: AYAT[1].text },
-  { q: "اكتب الآية رقم ١٦٦ من سورة البقرة كاملة", answer: AYAT[2].text },
-  { q: "اكتب الآية رقم ١٦٨ من سورة البقرة كاملة", answer: AYAT[4].text },
-  { q: "اكتب الآية رقم ١٦٩ من سورة البقرة كاملة", answer: AYAT[5].text }
+  { q: "اكتب الآية رقم 164 من سورة البقرة كاملة", answer: AYAT[0].text },
+  { q: "اكتب الآية رقم 165 من سورة البقرة كاملة", answer: AYAT[1].text },
+  { q: "اكتب الآية رقم 166 من سورة البقرة كاملة", answer: AYAT[2].text },
+  { q: "اكتب الآية رقم 168 من سورة البقرة كاملة", answer: AYAT[4].text },
+  { q: "اكتب الآية رقم 169 من سورة البقرة كاملة", answer: AYAT[5].text }
 ];
 
 let currentLevel = null;
@@ -545,12 +545,12 @@ function selectLevel(lvl) {
   const btn = document.getElementById('start-btn');
   btn.classList.add('ready');
 
-  const totals = { easy: '١٠', medium: '١٠', hard: '٥' };
+  const totals = { easy: '10', medium: '10', hard: '5' };
   document.getElementById('total-q').textContent = totals[lvl];
 }
 
 function toArabicNum(n) {
-  return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+  return n.toString().replace(/\d/g, d => '0123456789'[d]);
 }
 
 function updateBadges() {
@@ -721,7 +721,7 @@ function showQuestion() {
       const tSub=document.createElement('button'); tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q); tZone.appendChild(tSub);
 
       const hBox=document.createElement('div'); hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;'; zone.appendChild(hBox);
-      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول ٣ كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
+      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول 3 كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
 
     } else {
       const ta=document.createElement('textarea'); ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input'; zone.appendChild(ta);
@@ -882,10 +882,10 @@ function retryQuiz() {
   currentLevel = null;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('start-btn').classList.remove('ready');
-  document.getElementById('total-q').textContent = '١٠';
-  document.getElementById('wrong-badge').innerHTML   = '٠ ✗<br>خطأ';
-  document.getElementById('correct-badge').innerHTML = '٠ ✓<br>صحيح';
-  document.getElementById('qnum-badge').innerHTML    = 'السؤال ١ /<br>١٠';
+  document.getElementById('total-q').textContent = '10';
+  document.getElementById('wrong-badge').innerHTML   = '0 ✗<br>خطأ';
+  document.getElementById('correct-badge').innerHTML = '0 ✓<br>صحيح';
+  document.getElementById('qnum-badge').innerHTML    = 'السؤال 1 /<br>10';
   document.getElementById('progress-fill').style.width = '0%';
 }
 
@@ -998,7 +998,7 @@ function endReview() {
 }
 
 // ══════════════════════════════════════════════
-//  تأثير الاحتفال (١٠٠٪)
+//  تأثير الاحتفال (100٪)
 // ══════════════════════════════════════════════
 function spawnConfetti() {
   const colors = ['#4a7c4a', '#c4a84a', '#9db89d', '#e0edd8', '#7a9a7a'];
