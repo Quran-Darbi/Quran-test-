@@ -20,10 +20,16 @@ if('serviceWorker' in navigator){
 }
 </script>"""
 
+def ar2en(text):
+    """تحويل الأرقام العربية-الهندية إلى غربية"""
+    for i, c in enumerate('٠١٢٣٤٥٦٧٨٩'):
+        text = text.replace(c, str(i))
+    return text
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
-    out = src
+    out = ar2en(src)
 
     # ====================================================
     # 0. إصلاح قائمة التشكيل (alburuj/altariq pattern):
@@ -165,7 +171,7 @@ def fix_index_recitation(path):
     """index.html و recitation.html — PWA + زر مشاركة"""
     with open(path, encoding='utf-8') as f:
         src = f.read()
-    out = src
+    out = ar2en(src)
 
     SHARE_FN = """function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick=\"shareApp()\"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
