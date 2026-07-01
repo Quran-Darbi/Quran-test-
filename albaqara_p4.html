@@ -136,7 +136,8 @@
 </head>
 <body>
 
-<div class="top-bar"><a href="index.html" class="back-btn">← الرجوع</a><button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;">🌙</button></div>
+<div class="top-bar"><a href="index.html" class="back-btn">← الرجوع</a>
+  <button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;margin-right:auto;">🔗</button><button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;">🌙</button></div>
 
 <div class="info-card">
   <div class="surah-title">سورة البقرة</div>
@@ -453,6 +454,7 @@ function retryQuiz(){document.getElementById('result-area').style.display='none'
 // ══════════════════════════════════════════════
 //  الوضع الليلي
 // ══════════════════════════════════════════════
+function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
   document.getElementById('theme-toggle').textContent = mode === 'dark' ? '☀️' : '🌙';

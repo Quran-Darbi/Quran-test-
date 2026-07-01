@@ -82,6 +82,7 @@
 <body>
 <div class="top-bar">
   <a href="index.html" class="back-btn">← الرجوع</a>
+  <button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;margin-right:auto;">🔗</button>
   <button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;margin-right:auto;">🌙</button>
 </div>
 
@@ -377,6 +378,7 @@ function showResult(){
 }
 function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='٧';document.getElementById('wrong-badge').innerHTML='٠ ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='٠ ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال ١ /<br>٧';document.getElementById('progress-fill').style.width='0%';}
+function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}
 (function initTheme(){let saved=null;try{saved=localStorage.getItem('quranTheme');}catch(e){}if(!saved)saved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';applyTheme(saved);})();
