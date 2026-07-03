@@ -280,6 +280,49 @@ def fix_file(path):
         if m2:
             out = out[:m2.start()] + "const nm = s => normalize(s||'');" + out[m2.end():]
 
+    # ====================================================
+    # 7ب. تصحيح كارثي يوليو ٢٠٢٦: صفحات فيها normalize() بيتم نداؤها
+    #      (بتاعت checkText) بس مش متعرّفة خالص — بتخلي زر التحقق
+    #      يتعطل تماماً على كل سؤال كتابة/فراغ (medium وhard) لأن
+    #      الكود بيرمي استثناء صامت أول ما المستخدم يضغط "تحقق"
+    if 'normalize(q.answer)' in out and 'function normalize(' not in out:
+        m3 = re.search(r"function wordDiff\(", out)
+        if m3:
+            out = out[:m3.start()] + NEW_NORMALIZE_BODY + "\n\n" + out[m3.start():]
+        # صحّح nm() جوه wordDiff لو موجودة بنفس النمط القديم
+        m4 = re.search(r"const nm\s*=\s*s\s*=>\s*s\.replace\(/\[\\u064B-\\u065F\\u0670\]/g,''\)[^;]*;", out)
+        if m4:
+            out = out[:m4.start()] + "const nm = s => normalize(s||'');" + out[m4.end():]
+
+    # ====================================================
+    # 7جـ. تصحيح كارثي يوليو ٢٠٢٦: زر التحقق في وضع التسجيل الصوتي
+    #      (المستوى الصعب) بينادي checkTextVal() اللي مش متعرّفة —
+    #      بيخلي الزر يتعطل تماماً بلا أي نتيجة ظاهرة للمستخدم
+    if 'checkTextVal(q' in out and 'function checkTextVal' not in out:
+        CHECK_TEXT_VAL_FN = (
+            "function checkTextVal(q, userVal) {\n"
+            "  if (!userVal) return;\n"
+            "  const fb = document.getElementById('feedback');\n"
+            "  const correct = normalize(q.answer);\n"
+            "  const user    = normalize(userVal);\n"
+            "  if (user === correct) {\n"
+            "    correctCount++; statuses[qIndex]='correct';\n"
+            "    fb.className = 'feedback correct';\n"
+            "    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';\n"
+            "  } else {\n"
+            "    wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);\n"
+            "    fb.className = 'feedback wrong';\n"
+            "    fb.innerHTML = '✗ الإجابة الصحيحة:<br><span style=\"font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;\">'+wordDiff(userVal,q.answer)+'</span>';\n"
+            "  }\n"
+            "  fb.style.display = 'block';\n"
+            "  updateBadges();\n"
+            "  renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';\n"
+            "}\n"
+        )
+        m5 = re.search(r"function checkText\(", out)
+        if m5:
+            out = out[:m5.start()] + CHECK_TEXT_VAL_FN + out[m5.start():]
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
