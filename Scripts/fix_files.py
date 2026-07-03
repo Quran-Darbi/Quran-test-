@@ -38,8 +38,15 @@ def fix_file(path):
     #    التشكيل يتحذف أولاً (قبل قواعد ىٰ) عشان ىٰٓ ما تتعرفش غلط
     out = out.replace(
         "replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞۢ]/g,'')",
-        r"replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـ/g,'').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')"
+        r"replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـ/g,'').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')"
     )
+
+    # تصحيح لاحق (يوليو ٢٠٢٦): الملفات اللي اتصلحت قبل كده بالقاعدة القديمة
+    # لوحدها (من غير استثناء الياء) بتحسب "خطيئته" غلط — نضيف الاستثناء قبلها
+    OLD_KASHIDA_HAMZA = r"replace(/ـ\u064E\u0654/g,'ا')"
+    NEW_KASHIDA_HAMZA = r"replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')"
+    if OLD_KASHIDA_HAMZA in out and NEW_KASHIDA_HAMZA not in out:
+        out = out.replace(OLD_KASHIDA_HAMZA, NEW_KASHIDA_HAMZA, 1)
 
     # 1. قواعد الألف الخنجرية والإصلاحات (alburuj/altariq pattern):
 
@@ -157,8 +164,21 @@ def fix_file(path):
     #      دلوقتي مقصورة على أفعال الوصل الفعلية بس (اسجد، اقترب...) بدل أي كلمة تبدأ بـ"وا"
     OLD_WA_RULE = r".replace(/^وا(?!ل)/g,'و')"
     NEW_WA_RULE = r".replace(/^وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا])/g,'و')"
+    # قائمة أوسع (يوليو ٢٠٢٦): إضافة أفعال وصل شائعة كانت ناقصة وبتسبب
+    # رفض إجابات صحيحة زي: واتبعوا، واسمعوا، واستكبر، واستعينوا، واركعوا
+    NEWER_WA_RULE = r".replace(/^وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر)/g,'و')"
     if OLD_WA_RULE in out:
-        out = out.replace(OLD_WA_RULE, NEW_WA_RULE)
+        out = out.replace(OLD_WA_RULE, NEWER_WA_RULE)
+    elif NEW_WA_RULE in out:
+        out = out.replace(NEW_WA_RULE, NEWER_WA_RULE)
+    elif r"وٱ(?!ل)/g,'و')" in out and r"^وا(?=" not in out:
+        # ملفات فيها وٱ(?!ل) بس من غير قاعدة ^وا خالص (زي annaba.html) —
+        # فضلت ماشية على واتبعوا/واسمعوا غلط لأنها مش من غير القاعدة أصلاً
+        out = out.replace(
+            r".replace(/وٱ(?!ل)/g,'و')",
+            r".replace(/وٱ(?!ل)/g,'و')" + NEWER_WA_RULE,
+            1
+        )
 
     # ====================================================
     # 2. الأرقام: استبدل toArabicNum بدالة تعرض أرقام إنجليزي
@@ -200,7 +220,67 @@ def fix_file(path):
     if 'manifest.json' not in out:
         out = out.replace('</head>', PWA_HEAD + '\n</head>', 1)
 
-    # 6. أضف Service Worker لو مش موجود
+    # ====================================================
+    # 7. تصحيح شامل يوليو ٢٠٢٦: صفحات القالب القديم (البقرة p2–p13)
+    #    اللي normalize() فيها بدائي جداً (بس تشكيل+ألف+تاء مربوطة) وناقصها
+    #    كل حاجة: الألف الخنجرية، الهمزات، ألف الوصل، الشدة... إلخ
+    #    الباگ ده هو سبب رفض إجابات زي "الصلاة"، "غشاوة"، "خطيئته" وغيرها
+    NEW_NORMALIZE_BODY = (
+        "function normalize(str){\n"
+        "  if(!str)return'';\n"
+        "  return str\n"
+        "    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n"
+        "    .replace(/ـ\\u064E\\u0654/g,'ا')\n"
+        "    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n"
+        "    .replace(/ـ/g,'')\n"
+        "    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED]/g,'')\n"
+        "    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n"
+        "    .replace(/وٱ(?!ل)/g,'و')\n"
+        "    " + NEWER_WA_RULE + "\n"
+        "    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n"
+        "    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n"
+        "    .replace(/نٰ/g,'نا')\n"
+        "    .replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n"
+        "    .replace(/(.)ٰ/g,'$1ا')\n"
+        "    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n"
+        "    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n"
+        "    .replace(/ه[ۥۦ]/g,'ه')\n"
+        "    .replace(/[ئؤ]/g,'ء').replace(/ء/g,'')\n"
+        "    .replace(/[آأإٱا]/g,'ا')\n"
+        "    .replace(/[ىی]/g,'ي')\n"
+        "    .replace(/ة/g,'ه')\n"
+        "    .replace(/(.)\\1+/g,'$1')\n"
+        "    .replace(/رحمان/g,'رحمن')\n"
+        "    .replace(/مولانا/g,'مولنا').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n"
+        "    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n"
+        "    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n"
+        "    .replace(/\\s+/g,' ')\n"
+        "    .trim();\n"
+        "}"
+    )
+    OLD_MINIMAL_NORMALIZE_MARKER = "replace(/[\\u064B-\\u065F\\u0670]/g, '')"
+    if OLD_MINIMAL_NORMALIZE_MARKER in out and 'function normalize(str)' in out:
+        m = re.search(r"function normalize\(str\)\s*\{", out)
+        if m:
+            i = out.index('{', m.start())
+            depth = 0
+            end = None
+            for j in range(i, len(out)):
+                if out[j] == '{':
+                    depth += 1
+                elif out[j] == '}':
+                    depth -= 1
+                    if depth == 0:
+                        end = j + 1
+                        break
+            if end:
+                out = out[:m.start()] + NEW_NORMALIZE_BODY + out[end:]
+        # نفس التصحيح لنسخة nm() المكررة جوه wordDiff (لو فيها نفس النمط القديم)
+        m2 = re.search(r"const nm\s*=\s*s\s*=>\s*s\.replace\(/\[\\u064B-\\u065F\\u0670\]/g,''\)[^;]*;", out)
+        if m2:
+            out = out[:m2.start()] + "const nm = s => normalize(s||'');" + out[m2.end():]
+
+    # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
 
