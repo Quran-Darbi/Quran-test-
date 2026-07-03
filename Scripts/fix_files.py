@@ -38,13 +38,13 @@ def fix_file(path):
     #    التشكيل يتحذف أولاً (قبل قواعد ىٰ) عشان ىٰٓ ما تتعرفش غلط
     out = out.replace(
         "replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞۢ]/g,'')",
-        r"replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـ/g,'').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')"
+        r"replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')"
     )
 
     # تصحيح لاحق (يوليو ٢٠٢٦): الملفات اللي اتصلحت قبل كده بالقاعدة القديمة
     # لوحدها (من غير استثناء الياء) بتحسب "خطيئته" غلط — نضيف الاستثناء قبلها
-    OLD_KASHIDA_HAMZA = r"replace(/ـ\u064E\u0654/g,'ا')"
-    NEW_KASHIDA_HAMZA = r"replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')"
+    OLD_KASHIDA_HAMZA = r"replace(/ـَٔ/g,'ا')"
+    NEW_KASHIDA_HAMZA = r"replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا')"
     if OLD_KASHIDA_HAMZA in out and NEW_KASHIDA_HAMZA not in out:
         out = out.replace(OLD_KASHIDA_HAMZA, NEW_KASHIDA_HAMZA, 1)
 
@@ -84,10 +84,10 @@ def fix_file(path):
         out = out.replace(r".replace(/هاؤلاء/g,'هولا').replace(/هؤلاء/g,'هولا')", "")
 
     # الهمزة على كشيدة (ـَٔ → ا، غيرها تتحذف)
-    if r"[\u0654\u0655]/g,'')" not in out and r"[\u0654\u0655]/g,'ا')" not in out:
+    if r"[ٕٔ]/g,'')" not in out and r"[ٕٔ]/g,'ا')" not in out:
         out = out.replace(
             r".replace(/ـ/g,'')",
-            r".replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـ/g,'')"
+            r".replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')"
         )
 
     # ۦ في وسط الكلمة = ي، في آخرها = صامت اختياري
@@ -244,11 +244,11 @@ def fix_file(path):
         "function normalize(str){\n"
         "  if(!str)return'';\n"
         "  return str\n"
-        "    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n"
-        "    .replace(/ـ\\u064E\\u0654/g,'ا')\n"
-        "    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n"
+        "    .replace(/يٓ?ـَٔ/g,'ي')\n"
+        "    .replace(/ـَٔ/g,'ا')\n"
+        "    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')\n"
         "    .replace(/ـ/g,'')\n"
-        "    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED]/g,'')\n"
+        "    .replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')\n"
         "    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n"
         "    .replace(/وٱ(?!ل)/g,'و')\n"
         "    " + NEWER_WA_RULE + "\n"
@@ -273,8 +273,8 @@ def fix_file(path):
         "    .trim();\n"
         "}"
     )
-    OLD_MINIMAL_NORMALIZE_MARKER = "replace(/[\\u064B-\\u065F\\u0670]/g, '')"
-    if OLD_MINIMAL_NORMALIZE_MARKER in out and 'function normalize(str)' in out:
+    OLD_MINIMAL_NORMALIZE_RE = re.compile(r"replace\(/\[\\u064B-\\u065F\\u0670\]/g,\s*''\)")
+    if OLD_MINIMAL_NORMALIZE_RE.search(out) and 'function normalize(str)' in out:
         m = re.search(r"function normalize\(str\)\s*\{", out)
         if m:
             i = out.index('{', m.start())
@@ -291,7 +291,11 @@ def fix_file(path):
             if end:
                 out = out[:m.start()] + NEW_NORMALIZE_BODY + out[end:]
         # نفس التصحيح لنسخة nm() المكررة جوه wordDiff (لو فيها نفس النمط القديم)
-        m2 = re.search(r"const nm\s*=\s*s\s*=>\s*s\.replace\(/\[\\u064B-\\u065F\\u0670\]/g,''\)[^;]*;", out)
+        # (متسامح مع فراغات مختلفة: "s =>" أو "s=>"، إلخ)
+        m2 = re.search(
+            r"const\s+nm\s*=\s*s\s*=>\s*s\.replace\(/\[\\u064B-\\u065F\\u0670\]/g,\s*''\)[^;]*;",
+            out
+        )
         if m2:
             out = out[:m2.start()] + "const nm = s => normalize(s||'');" + out[m2.end():]
 
@@ -305,7 +309,7 @@ def fix_file(path):
         if m3:
             out = out[:m3.start()] + NEW_NORMALIZE_BODY + "\n\n" + out[m3.start():]
         # صحّح nm() جوه wordDiff لو موجودة بنفس النمط القديم
-        m4 = re.search(r"const nm\s*=\s*s\s*=>\s*s\.replace\(/\[\\u064B-\\u065F\\u0670\]/g,''\)[^;]*;", out)
+        m4 = re.search(r"const\s+nm\s*=\s*s\s*=>\s*s\.replace\(/\[\\u064B-\\u065F\\u0670\]/g,\s*''\)[^;]*;", out)
         if m4:
             out = out[:m4.start()] + "const nm = s => normalize(s||'');" + out[m4.end():]
 
