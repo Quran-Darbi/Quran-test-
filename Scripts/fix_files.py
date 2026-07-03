@@ -202,6 +202,21 @@ def fix_file(path):
         # أضف الدالة قبل applyTheme
         out = out.replace('function applyTheme', SHARE_FN + '\nfunction applyTheme', 1)
 
+    # 3ب. رسالة "استئناف الاختبار": من عامية مؤنثة لصيغة فصحى مذكرة أكثر احترافية
+    #     (المستخدم مش بالضرورة أنثى)
+    OLD_RESUME_MSG = "📌 عندك اختبار لسه ما خلصتيهوش، عايزة تكملي منين وقفتي؟"
+    NEW_RESUME_MSG = "📌 لديك اختبار لم يكتمل. هل ترغب في المتابعة من حيث توقفتَ، أم البدء من جديد؟"
+    if OLD_RESUME_MSG in out:
+        out = out.replace(OLD_RESUME_MSG, NEW_RESUME_MSG)
+    OLD_RESUME_BTN1 = '>كمل من هنا</button>'
+    NEW_RESUME_BTN1 = '>المتابعة من هنا</button>'
+    if OLD_RESUME_BTN1 in out:
+        out = out.replace(OLD_RESUME_BTN1, NEW_RESUME_BTN1)
+    OLD_RESUME_BTN2 = '>ابدأ من جديد</button>'
+    NEW_RESUME_BTN2 = '>البدء من جديد</button>'
+    if OLD_RESUME_BTN2 in out:
+        out = out.replace(OLD_RESUME_BTN2, NEW_RESUME_BTN2)
+
     # 4. أضف زر returnToLevels لو مش موجود
     if 'returnToLevels' not in out:
         # CSS
