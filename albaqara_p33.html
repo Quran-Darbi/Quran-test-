@@ -754,7 +754,7 @@ function normalize(str){
   if(!str)return'';
   return str
     .replace(/ي\u0653?ـ\u064E\u0654/g,'ي')
-    .replace(/ـ\u064E\u0654/g,'ا')
+    .replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')
     .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'')
     .replace(/ـ/g,'')
     .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')
@@ -775,7 +775,7 @@ function normalize(str){
     .replace(/ة/g,'ه')
     .replace(/(.)\1+/g,'$1')
     .replace(/رحمان/g,'رحمن')
-    .replace(/مولانا/g,'مولنا').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')
+    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')
     .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
     .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')
     .replace(/\s+/g,' ')
@@ -804,6 +804,24 @@ function checkMCQ(chosen, correct, btn) {
   renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';
 }
 
+function checkTextVal(q, userVal) {
+  if (!userVal) return;
+  const fb = document.getElementById('feedback');
+  const correct = normalize(q.answer);
+  const user    = normalize(userVal);
+  if (user === correct) {
+    correctCount++; statuses[qIndex]='correct';
+    fb.className = 'feedback correct';
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';
+  } else {
+    wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
+    fb.className = 'feedback wrong';
+    fb.innerHTML = '✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';
+  }
+  fb.style.display = 'block';
+  updateBadges();
+  renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';
+}
 function checkText(q) {
   const input = document.getElementById('user-input');
   const userVal = input.value.trim();

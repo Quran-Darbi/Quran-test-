@@ -481,6 +481,24 @@ function checkMCQ(chosen,correct,btn){
   fb.style.display='block'; updateBadges(); renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display='block'; document.getElementById('skip-btn').style.display='none';
 }
 
+function checkTextVal(q, userVal) {
+  if (!userVal) return;
+  const fb = document.getElementById('feedback');
+  const correct = normalize(q.answer);
+  const user    = normalize(userVal);
+  if (user === correct) {
+    correctCount++; statuses[qIndex]='correct';
+    fb.className = 'feedback correct';
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';
+  } else {
+    wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
+    fb.className = 'feedback wrong';
+    fb.innerHTML = '✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';
+  }
+  fb.style.display = 'block';
+  updateBadges();
+  renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';
+}
 function checkText(q) {
   const input = document.getElementById('user-input');
   const userVal = input.value.trim();
