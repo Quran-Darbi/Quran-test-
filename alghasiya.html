@@ -353,6 +353,92 @@ function nextQuestion(){qIndex++;if(qIndex>=questions.length)showResult();else s
 function showResult(){document.getElementById('quiz-area').style.display='none';document.getElementById('result-area').style.display='block';const pct=Math.round((correctCount/questions.length)*100);document.getElementById('result-score').textContent=`${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} — ${toArabicNum(pct)}%`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنتِ السورة بالكامل';}else if(pct>=80){icon='✨';title='أحسنتِ!';msg='نتيجة رائعة، استمري في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجعي السورة مرة أخرى وأعيدي الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأسي، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');if(pct===100)spawnConfetti();}
 function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
+
+/* ===== ترتيب الآيات 🔀 ===== */
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+function startOrderQuiz(){
+  orderPlaced=new Array(AYAT.length).fill(null);
+  orderCursor=0;
+  orderPoolOrder=AYAT.map((t,idx)=>idx);
+  shuffle(orderPoolOrder);
+  document.getElementById('level-card').style.display='none';
+  document.getElementById('order-area').style.display='block';
+  document.getElementById('order-feedback').style.display='none';
+  document.getElementById('order-reveal').style.display='none';
+  document.getElementById('order-check-btn').style.display='none';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=false;rb.style.opacity='1';
+  renderOrderQuiz();
+}
+function mushafHtml(){
+  return '<div class="mushaf-block">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
+}
+function nextEmptyFrom(start){
+  for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  return -1;
+}
+function renderOrderQuiz(){
+  const slotsDiv=document.getElementById('order-slots');
+  const poolDiv=document.getElementById('order-pool');
+  slotsDiv.innerHTML='';
+  poolDiv.innerHTML='';
+  orderPlaced.forEach((idx,pos)=>{
+    const div=document.createElement('div');
+    if(idx===null){
+      const active=(pos===orderCursor);
+      div.className='order-slot empty'+(active?' active-slot':'');
+      div.innerHTML='<span class="order-badge">'+toArabicNum(pos+1)+'</span><span class="order-slot-placeholder">'+(active?'— الخانة النشطة الآن —':'— خانة فاضية، اضغط للمتابعة من هنا —')+'</span>';
+      div.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
+    }else{
+      div.className='order-slot filled';
+      div.innerHTML='<span class="order-badge">'+toArabicNum(pos+1)+'</span><span>'+AYAT[idx]+'</span>';
+      div.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+    }
+    slotsDiv.appendChild(div);
+  });
+  orderPoolOrder.forEach(idx=>{
+    if(orderPlaced.includes(idx))return;
+    const btn=document.createElement('button');
+    btn.className='order-item';
+    btn.textContent=AYAT[idx];
+    btn.onclick=()=>{
+      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}
+      if(orderCursor===-1)return;
+      orderPlaced[orderCursor]=idx;
+      orderCursor=nextEmptyFrom(orderCursor+1);
+      document.getElementById('order-feedback').style.display='none';
+      renderOrderQuiz();
+    };
+    poolDiv.appendChild(btn);
+  });
+  const allFilled=!orderPlaced.includes(null);
+  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';
+}
+function checkOrderAnswer(){
+  let correct=0;
+  document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
+    const ok=(orderPlaced[pos]===pos);
+    if(ok)correct++;
+    el.classList.remove('correct-slot','wrong-slot');
+    el.classList.add(ok?'correct-slot':'wrong-slot');
+  });
+  const fb=document.getElementById('order-feedback');
+  const allCorrect=(correct===AYAT.length);
+  fb.className='feedback '+(allCorrect?'correct':'wrong');
+  fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());
+  fb.style.display='block';
+  document.getElementById('order-check-btn').style.display='none';
+  if(allCorrect)spawnConfetti();
+}
+function revealOrderAnswer(){
+  document.getElementById('order-reveal').innerHTML=mushafHtml();
+  document.getElementById('order-reveal').style.display='block';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=true;rb.style.opacity='0.5';
+}
+/* ===== نهاية ترتيب الآيات ===== */
+
 function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}
