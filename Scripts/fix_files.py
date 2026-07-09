@@ -26,6 +26,210 @@ def ar2en(text):
         text = text.replace(c, str(i))
     return text
 
+# ====================================================
+# ميزة ترتيب الآيات 🔀 (يوليو ٢٠٢٦)
+# تُطبَّق فقط على الملفات اللي فيها const AYAT (جزء عم حاليًا).
+# صفحات البقرة لسه محتاجة إضافة AYAT كامل قبل ما تستفيد من الميزة دي.
+# ====================================================
+
+ORDER_CSS = (
+    ".order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}"
+    ".order-item:hover{background:var(--surface-hover);border-color:var(--accent);}"
+    ".order-slot{display:flex;gap:10px;align-items:center;border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.8;cursor:pointer;}"
+    ".order-slot.empty{background:var(--surface2);border:1.5px dashed var(--border);color:var(--text-faint);}"
+    ".order-slot.empty.active-slot{border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);border-style:solid;}"
+    ".order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}"
+    ".order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}"
+    ".order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}"
+    ".order-badge{background:var(--accent);color:#fff;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}"
+    ".mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}"
+    ".ayah-end{color:var(--gold);font-size:15px;}"
+)
+
+ORDER_BTN_HTML = (
+    "</button>\n"
+    "    <button class=\"level-btn\" onclick=\"selectLevel('order')\" id=\"btn-order\">"
+    "<span class=\"level-icon\">🔀</span><span class=\"level-name\">ترتيب</span>"
+    "<span class=\"level-desc\">رتّب الآيات</span></button>"
+)
+
+ORDER_AREA_HTML = '''<div class="quiz-area" id="order-area">
+  <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
+  <div id="order-slots" style="margin-bottom:16px;"></div>
+  <div id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
+    <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
+  </div>
+  <div id="order-reveal" style="display:none;"></div>
+  <div class="feedback" id="order-feedback"></div>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+</div>
+'''
+
+ORDER_JS = '''
+/* ===== ترتيب الآيات 🔀 ===== */
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+function startOrderQuiz(){
+  orderPlaced=new Array(AYAT.length).fill(null);
+  orderCursor=0;
+  orderPoolOrder=AYAT.map((t,idx)=>idx);
+  shuffle(orderPoolOrder);
+  document.getElementById('level-card').style.display='none';
+  document.getElementById('order-area').style.display='block';
+  document.getElementById('order-feedback').style.display='none';
+  document.getElementById('order-reveal').style.display='none';
+  document.getElementById('order-check-btn').style.display='none';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=false;rb.style.opacity='1';
+  renderOrderQuiz();
+}
+function mushafHtml(){
+  return '<div class="mushaf-block">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
+}
+function nextEmptyFrom(start){
+  for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  return -1;
+}
+function renderOrderQuiz(){
+  const slotsDiv=document.getElementById('order-slots');
+  const poolDiv=document.getElementById('order-pool');
+  slotsDiv.innerHTML='';
+  poolDiv.innerHTML='';
+  orderPlaced.forEach((idx,pos)=>{
+    const div=document.createElement('div');
+    if(idx===null){
+      const active=(pos===orderCursor);
+      div.className='order-slot empty'+(active?' active-slot':'');
+      div.innerHTML='<span class="order-badge">'+toArabicNum(pos+1)+'</span><span class="order-slot-placeholder">'+(active?'— الخانة النشطة الآن —':'— خانة فاضية، اضغط للمتابعة من هنا —')+'</span>';
+      div.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
+    }else{
+      div.className='order-slot filled';
+      div.innerHTML='<span class="order-badge">'+toArabicNum(pos+1)+'</span><span>'+AYAT[idx]+'</span>';
+      div.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+    }
+    slotsDiv.appendChild(div);
+  });
+  orderPoolOrder.forEach(idx=>{
+    if(orderPlaced.includes(idx))return;
+    const btn=document.createElement('button');
+    btn.className='order-item';
+    btn.textContent=AYAT[idx];
+    btn.onclick=()=>{
+      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}
+      if(orderCursor===-1)return;
+      orderPlaced[orderCursor]=idx;
+      orderCursor=nextEmptyFrom(orderCursor+1);
+      document.getElementById('order-feedback').style.display='none';
+      renderOrderQuiz();
+    };
+    poolDiv.appendChild(btn);
+  });
+  const allFilled=!orderPlaced.includes(null);
+  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';
+}
+function checkOrderAnswer(){
+  let correct=0;
+  document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
+    const ok=(orderPlaced[pos]===pos);
+    if(ok)correct++;
+    el.classList.remove('correct-slot','wrong-slot');
+    el.classList.add(ok?'correct-slot':'wrong-slot');
+  });
+  const fb=document.getElementById('order-feedback');
+  const allCorrect=(correct===AYAT.length);
+  fb.className='feedback '+(allCorrect?'correct':'wrong');
+  fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());
+  fb.style.display='block';
+  document.getElementById('order-check-btn').style.display='none';
+  if(allCorrect)spawnConfetti();
+}
+function revealOrderAnswer(){
+  document.getElementById('order-reveal').innerHTML=mushafHtml();
+  document.getElementById('order-reveal').style.display='block';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=true;rb.style.opacity='0.5';
+}
+/* ===== نهاية ترتيب الآيات ===== */
+'''
+
+OLD_SELECT_LEVEL = "function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum((lvl==='easy'?EASY_Q:lvl==='medium'?MEDIUM_Q:HARD_Q).length);}"
+NEW_SELECT_LEVEL = "function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');if(lvl==='order'){document.getElementById('total-q').textContent=toArabicNum(AYAT.length);}else{document.getElementById('total-q').textContent=toArabicNum((lvl==='easy'?EASY_Q:lvl==='medium'?MEDIUM_Q:HARD_Q).length);}}"
+
+OLD_START_QUIZ = "function startQuiz(){if(!currentLevel)return;questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses=questions.map(()=>'pending');wrongIndices=[];const rb=document.getElementById('resume-banner');if(rb)rb.style.display='none';document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}"
+NEW_START_QUIZ = "function startQuiz(){if(!currentLevel)return;if(currentLevel==='order'){startOrderQuiz();return;}questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses=questions.map(()=>'pending');wrongIndices=[];const rb=document.getElementById('resume-banner');if(rb)rb.style.display='none';document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}"
+
+OLD_RETURN_LEVELS = "function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';"
+NEW_RETURN_LEVELS = "function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';"
+
+BTN_CLOSE_PATTERN = re.compile(r'(</button>)(\s*</div>\s*<button class="start-btn")')
+
+def add_ordering_feature(out):
+    """يضيف ميزة ترتيب الآيات 🔀 للملفات اللي فيها AYAT (جزء عم)."""
+    if 'order-area' in out:
+        return out, False  # مطبّقة بالفعل
+    if 'const AYAT=' not in out and 'const AYAT =' not in out:
+        return out, False  # مفيش AYAT (صفحات البقرة لسه)
+
+    changed = False
+
+    # 1. CSS
+    if '</style>' in out and '.order-slot' not in out:
+        out = out.replace('</style>', ORDER_CSS + '\n</style>', 1)
+        changed = True
+
+    # 2. زر رابع في منتقي المستوى
+    new_out, n = BTN_CLOSE_PATTERN.subn(
+        lambda m: ORDER_BTN_HTML + m.group(2), out, count=1
+    )
+    if n:
+        out = new_out
+        changed = True
+
+    # توسيع الشبكة عشان تستوعب 4 أزرار على الموبايل
+    out = out.replace(
+        '.levels-grid{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}',
+        '.levels-grid{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}'
+    )
+    out = re.sub(
+        r'\.level-btn\{flex:1;max-width:100px;background:var\(--surface2\);border:1\.5px solid var\(--border\);border-radius:14px;padding:16px 8px;',
+        '.level-btn{flex:1;min-width:76px;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 6px;',
+        out
+    )
+
+    # 3. قسم order-area كامل — قبل result-area
+    if '<div class="result-area" id="result-area">' in out and 'id="order-area"' not in out:
+        out = out.replace(
+            '<div class="result-area" id="result-area">',
+            ORDER_AREA_HTML + '<div class="result-area" id="result-area">',
+            1
+        )
+        changed = True
+
+    # 4. selectLevel
+    if OLD_SELECT_LEVEL in out:
+        out = out.replace(OLD_SELECT_LEVEL, NEW_SELECT_LEVEL, 1)
+        changed = True
+
+    # 5. startQuiz
+    if OLD_START_QUIZ in out:
+        out = out.replace(OLD_START_QUIZ, NEW_START_QUIZ, 1)
+        changed = True
+
+    # 6. returnToLevels
+    if OLD_RETURN_LEVELS in out and "order-area').style.display='none'" not in out:
+        out = out.replace(OLD_RETURN_LEVELS, NEW_RETURN_LEVELS, 1)
+        changed = True
+
+    # 7. دوال JS للترتيب — قبل shareApp
+    if 'function shareApp(' in out and 'startOrderQuiz' not in out:
+        out = out.replace('function shareApp(', ORDER_JS + '\nfunction shareApp(', 1)
+        changed = True
+
+    return out, changed
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -38,7 +242,7 @@ def fix_file(path):
     #    التشكيل يتحذف أولاً (قبل قواعد ىٰ) عشان ىٰٓ ما تتعرفش غلط
     out = out.replace(
         "replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞۢ]/g,'')",
-        r"replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')"
+        r"replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')"
     )
 
     # تصحيح لاحق (يوليو ٢٠٢٦): الملفات اللي اتصلحت قبل كده بالقاعدة القديمة
@@ -84,10 +288,10 @@ def fix_file(path):
         out = out.replace(r".replace(/هاؤلاء/g,'هولا').replace(/هؤلاء/g,'هولا')", "")
 
     # الهمزة على كشيدة (ـَٔ → ا، غيرها تتحذف)
-    if r"[ٕٔ]/g,'')" not in out and r"[ٕٔ]/g,'ا')" not in out:
+    if r"[ٕٔ]/g,'')" not in out and r"[ٕٔ]/g,'ا')" not in out:
         out = out.replace(
             r".replace(/ـ/g,'')",
-            r".replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')"
+            r".replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')"
         )
 
     # ۦ في وسط الكلمة = ي، في آخرها = صامت اختياري
@@ -246,9 +450,9 @@ def fix_file(path):
         "  return str\n"
         "    .replace(/يٓ?ـَٔ/g,'ي')\n"
         "    .replace(/ـَٔ/g,'ا')\n"
-        "    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')\n"
+        "    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')\n"
         "    .replace(/ـ/g,'')\n"
-        "    .replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')\n"
+        "    .replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')\n"
         "    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n"
         "    .replace(/وٱ(?!ل)/g,'و')\n"
         "    " + NEWER_WA_RULE + "\n"
@@ -341,6 +545,10 @@ def fix_file(path):
         m5 = re.search(r"function checkText\(", out)
         if m5:
             out = out[:m5.start()] + CHECK_TEXT_VAL_FN + out[m5.start():]
+
+    # ====================================================
+    # 9. ميزة ترتيب الآيات 🔀 (جزء عم فقط — الملفات اللي فيها AYAT)
+    out, order_changed = add_ordering_feature(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
