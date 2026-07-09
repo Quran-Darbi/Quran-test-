@@ -452,9 +452,10 @@ def ensure_order_wiring(path, out):
 
 
 def add_ordering_feature(out, filename=''):
-    """يضيف ميزة ترتيب الآيات 🔀 للملفات اللي فيها AYAT (جزء عم)."""
-    if 'order-area' in out:
-        return out, False  # مطبّقة بالفعل
+    """يضيف ميزة ترتيب الآيات 🔀 للملفات اللي فيها AYAT (جزء عم).
+    كل جزء (CSS/الزر/الـHTML/دوال الـJS) بيتفحص ويتضاف لوحده —
+    عشان لو ملف اتوقف نصه في نص العملية قبل كده، الباقي يكمل صح
+    مش يفضل ناقص للأبد."""
     # صفحات البقرة مستثناة تمامًا — AYAT عندها بصيغة {num,text} مختلفة
     # وغير متوافقة مع كود الترتيب اللي بيفترض إن كل عنصر نص بسيط
     if filename.startswith('albaqara_'):
@@ -470,12 +471,13 @@ def add_ordering_feature(out, filename=''):
         changed = True
 
     # 2. زر رابع في منتقي المستوى
-    new_out, n = BTN_CLOSE_PATTERN.subn(
-        lambda m: ORDER_BTN_HTML + m.group(2), out, count=1
-    )
-    if n:
-        out = new_out
-        changed = True
+    if 'btn-order' not in out:
+        new_out, n = BTN_CLOSE_PATTERN.subn(
+            lambda m: ORDER_BTN_HTML + m.group(2), out, count=1
+        )
+        if n:
+            out = new_out
+            changed = True
 
     # توسيع الشبكة عشان تستوعب 4 أزرار على الموبايل
     out = out.replace(
@@ -497,23 +499,15 @@ def add_ordering_feature(out, filename=''):
         )
         changed = True
 
-    # 4. selectLevel
-    if OLD_SELECT_LEVEL in out:
-        out = out.replace(OLD_SELECT_LEVEL, NEW_SELECT_LEVEL, 1)
-        changed = True
-
-    # 5. startQuiz
-    if OLD_START_QUIZ in out:
-        out = out.replace(OLD_START_QUIZ, NEW_START_QUIZ, 1)
-        changed = True
-
-    # 6. returnToLevels
+    # 4. returnToLevels — إخفاء order-area كمان لما نرجع لمنتقي المستوى
     if OLD_RETURN_LEVELS in out and "order-area').style.display='none'" not in out:
         out = out.replace(OLD_RETURN_LEVELS, NEW_RETURN_LEVELS, 1)
         changed = True
 
-    # 7. دوال JS للترتيب — قبل shareApp
-    if 'function shareApp(' in out and 'startOrderQuiz' not in out:
+    # 5. دوال JS للترتيب — قبل shareApp (الفحص على تعريف الدالة الفعلي
+    #    مش استدعائها، عشان ensure_order_wiring ممكن يضيف نداء استدعاء
+    #    قبل ما نوصل هنا في تشغيلات تانية)
+    if 'function shareApp(' in out and 'function startOrderQuiz(' not in out:
         out = out.replace('function shareApp(', ORDER_JS + '\nfunction shareApp(', 1)
         changed = True
 
