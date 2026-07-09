@@ -334,7 +334,7 @@ function updateBadges(){
   document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;
   document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;
 }
-function selectLevel(lvl){
+function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(AYAT.length);return;}
   currentLevel=lvl;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('btn-'+lvl).classList.add('active');
@@ -342,7 +342,7 @@ function selectLevel(lvl){
   const totals={easy:toArabicNum(EASY_Q.length),medium:toArabicNum(MEDIUM_Q.length),hard:toArabicNum(HARD_Q.length)};
   document.getElementById('total-q').textContent=totals[lvl];
 }
-function startQuiz(){
+function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}
   if(!currentLevel)return;
   if(currentLevel==='easy')questions=[...EASY_Q];
   if(currentLevel==='medium')questions=[...MEDIUM_Q];

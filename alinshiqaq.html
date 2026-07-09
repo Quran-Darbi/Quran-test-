@@ -335,7 +335,7 @@ function updateBadges(){
   document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;
 }
 
-function selectLevel(lvl){
+function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(AYAT.length);return;}
   currentLevel=lvl;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('btn-'+lvl).classList.add('active');
@@ -344,7 +344,7 @@ function selectLevel(lvl){
   document.getElementById('total-q').textContent=toArabicNum(q.length);
 }
 
-function startQuiz(){
+function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}
   if(!currentLevel)return;
   questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];
   qIndex=correctCount=wrongCount=0;
