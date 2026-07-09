@@ -418,6 +418,39 @@ def remove_broken_order_for_baqara(path, out):
     return out, changed
 
 
+def ensure_order_wiring(path, out):
+    """يتأكد إن startQuiz و selectLevel بيتعاملوا مع مستوى 'order' صح،
+    حتى لو الملف مكتوب بتنسيق كود مختلف عن القالب المرجعي (زي annaziat.html)
+    وده خلّى الاستبدال النصي الحرفي القديم يفشل بصمت."""
+    fn = os.path.splitext(os.path.basename(path))[0]
+    if fn.startswith('albaqara_'):
+        return out, False
+    if 'order-area' not in out:
+        return out, False
+    changed = False
+
+    if "startOrderQuiz();return;}" not in out:
+        m = re.search(r"function startQuiz\(\)\s*\{", out)
+        if m:
+            out = out[:m.end()] + "if(currentLevel==='order'){startOrderQuiz();return;}" + out[m.end():]
+            changed = True
+
+    if "textContent=toArabicNum(AYAT.length);return;}" not in out:
+        m = re.search(r"function selectLevel\(lvl\)\s*\{", out)
+        if m:
+            patch = (
+                "if(lvl==='order'){currentLevel=lvl;"
+                "document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));"
+                "var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');"
+                "document.getElementById('start-btn').classList.add('ready');"
+                "document.getElementById('total-q').textContent=toArabicNum(AYAT.length);return;}"
+            )
+            out = out[:m.end()] + patch + out[m.end():]
+            changed = True
+
+    return out, changed
+
+
 def add_ordering_feature(out, filename=''):
     """يضيف ميزة ترتيب الآيات 🔀 للملفات اللي فيها AYAT (جزء عم)."""
     if 'order-area' in out:
@@ -814,6 +847,11 @@ def fix_file(path):
     # ====================================================
     # 9. ميزة ترتيب الآيات 🔀 (جزء عم فقط — الملفات اللي فيها AYAT)
     out, order_changed = add_ordering_feature(out, os.path.basename(path))
+
+    # ====================================================
+    # 9ب. تصحيح قوي: تأكيد ربط startQuiz/selectLevel بالترتيب
+    # حتى لو الاستبدال النصي الحرفي فوق فشل بصمت بسبب اختلاف التنسيق
+    out, wiring_fixed = ensure_order_wiring(path, out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
