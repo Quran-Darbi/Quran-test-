@@ -626,5 +626,25 @@ def main():
 
     print(f'Done: {fixed} fixed')
 
+    # ====================================================
+    # تقرير تشخيصي: أي ملفات جزء عم لسه ناقصة AYAT
+    # (يطبع في لوج الـ GitHub Action في كل تشغيل، مفيش داعي بحث يدوي)
+    missing_ayat = []
+    for fn in sorted(os.listdir(root)):
+        if fn.endswith('.html') and fn not in skip and not fn.startswith('albaqara_'):
+            fp = os.path.join(root, fn)
+            if os.path.isfile(fp):
+                with open(fp, encoding='utf-8') as f:
+                    c = f.read()
+                if 'const AYAT=' not in c and 'const AYAT =' not in c:
+                    missing_ayat.append(fn)
+    print('\n=== تقرير AYAT (جزء عم) ===')
+    if missing_ayat:
+        print(f'{len(missing_ayat)} ملف لسه ناقص AYAT (ميزة الترتيب مش هتشتغل عليهم):')
+        for fn in missing_ayat:
+            print('  -', fn)
+    else:
+        print('كل ملفات جزء عم فيها AYAT ✅')
+
 if __name__ == '__main__':
     main()
