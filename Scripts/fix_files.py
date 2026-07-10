@@ -596,29 +596,65 @@ NEXT_SEQUENCE = (
 NEXT_MAP = {NEXT_SEQUENCE[i]: NEXT_SEQUENCE[i + 1] for i in range(len(NEXT_SEQUENCE) - 1)}
 
 NEXT_BTN_RE = re.compile(r'(<button class="start-btn"[^>]*>[^<]*</button>)')
+LEVEL_RETURN_BTN_RE = re.compile(r'<button class="level-return-btn"[^>]*>[^<]*</button>')
 
 
 def add_next_page_button(path, out):
-    """يضيف زر ⏭️ التالي في شاشة اختيار المستوى، للانتقال مباشرة
-    للصفحة/السورة التالية في ترتيب المصحف من غير الرجوع للفهرس."""
+    """يضيف زر ⏭️ التالي — في شاشة اختيار المستوى وكمان جنب زر
+    'اختر مستوى آخر' في كل شاشة (الاختبار العادي وشاشة الترتيب)،
+    عشان يكون متاح للانتقال للصفحة/السورة التالية أينما كانت المستخدمة
+    من غير ما تحتاج ترجع للفهرس."""
     fn = os.path.splitext(os.path.basename(path))[0]
     if fn not in NEXT_MAP:
         return out, False  # آخر ملف في السلسلة (الناس) أو ملف مش داخل السلسلة
-    if 'id="next-page-btn"' in out:
+    if 'next-page-btn' in out:
         return out, False  # مضاف بالفعل
-    m = NEXT_BTN_RE.search(out)
-    if not m:
-        return out, False
     next_file = NEXT_MAP[fn] + '.html'
     btn_html = (
-        '\n<a href="' + next_file + '" id="next-page-btn" '
+        '\n<a href="' + next_file + '" class="next-page-btn" '
         'style="display:block;text-align:center;text-decoration:none;'
         'margin-top:10px;padding:12px;border-radius:12px;'
         'background:var(--surface2);color:var(--accent);'
         'border:1.5px solid var(--border);font-family:inherit;font-size:15px;">'
         '⏭️ التالي</a>'
     )
-    out = out[:m.end()] + btn_html + out[m.end():]
+    changed = False
+
+    # بعد زر "ابدأ الاختبار" في شاشة اختيار المستوى
+    m = NEXT_BTN_RE.search(out)
+    if m:
+        out = out[:m.end()] + btn_html + out[m.end():]
+        changed = True
+
+    # بعد كل زر "اختر مستوى آخر" (في شاشة الاختبار وشاشة الترتيب)
+    matches = list(LEVEL_RETURN_BTN_RE.finditer(out))
+    for mm in reversed(matches):
+        out = out[:mm.end()] + btn_html + out[mm.end():]
+        changed = True
+
+    return out, changed
+
+
+def fix_missing_nav_btn_css(out):
+    """يضيف كلاس .nav-btn لو مستخدم في الـHTML (زر تحقق/أظهر الترتيب)
+    لكن تعريفه ناقص من الـCSS — بيخلي الزر يبان بشكل المتصفح الافتراضي
+    (أبيض بحدود رفيعة) بدل تصميم الموقع (زي alfatiha_p1.html)."""
+    if 'class="nav-btn' not in out:
+        return out, False
+    if '.nav-btn{' in out or '.nav-btn {' in out:
+        return out, False
+    if '</style>' not in out:
+        return out, False
+    css = (
+        ".nav-btn{flex:1;background:var(--surface2);color:var(--accent);"
+        "border:1.5px solid var(--border);border-radius:12px;padding:13px;"
+        "font-size:17px;font-family:inherit;cursor:pointer;}"
+        ".nav-btn:hover:not(:disabled){background:var(--surface-hover);}"
+        ".nav-btn:disabled{opacity:0.4;cursor:default;}"
+        ".nav-btn.primary{background:var(--accent);color:var(--card);border-color:var(--accent);}"
+        ".nav-btn.primary:hover{background:var(--accent-dark);}"
+    )
+    out = out.replace('</style>', css + '\n</style>', 1)
     return out, True
 
 
@@ -1053,6 +1089,10 @@ def fix_file(path):
     # ====================================================
     # 9د. تصحيح كلاس nav-row الناقص (بيوضّح شكل أزرار الترتيب/التنقل)
     out, navrow_fixed = fix_missing_nav_row_css(out)
+
+    # ====================================================
+    # 9و. تصحيح كلاس nav-btn الناقص (زر تحقق/أظهر الترتيب الصحيح)
+    out, navbtn_fixed = fix_missing_nav_btn_css(out)
 
     # ====================================================
     # 9هـ. زر ⏭️ التالي — انتقال مباشر للصفحة/السورة التالية
