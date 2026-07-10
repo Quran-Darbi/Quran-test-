@@ -8,6 +8,15 @@ import os, re
 # بتتحقن تلقائيًا في الملف المناسب لو الملف من غير AYAT أصلاً.
 # ====================================================
 AYAT_DATA = {
+"alfatiha_p1": [
+  "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+  "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ",
+  "ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+  "مَٰلِكِ يَوْمِ ٱلدِّينِ",
+  "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+  "ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ",
+  "صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ"
+],
 "atteen": [
   "وَٱلتِّينِ وَٱلزَّيْتُونِ",
   "وَطُورِ سِينِينَ",
@@ -568,6 +577,51 @@ def ensure_order_wiring(path, out):
     return out, changed
 
 
+# ====================================================
+# سلسلة ترتيب المصحف لزر "التالي ⏭️" — من البقرة p2 لحد الناس
+# ====================================================
+NEXT_SEQUENCE = (
+    ['alfatiha_p1'] +
+    [f'albaqara_p{i}' for i in range(2, 50)] +
+    [
+        'annaba', 'annaziat', 'abasa', 'attakwir', 'al-infitar',
+        'almutaffifin', 'alinshiqaq', 'alburuj', 'altariq', 'alaala',
+        'alghasiya', 'alfajr', 'albalad', 'alshams', 'allayl', 'alduha',
+        'alsharh', 'atteen', 'alalaq', 'alqadr', 'albayyina', 'alzalzala',
+        'alaadiyat', 'alqaria', 'altakathur', 'alasr', 'alhumaza', 'alfiyl',
+        'aquraysh', 'almaoon', 'alkawthur', 'alkafirun', 'alnnasr',
+        'almasad', 'alikhlas', 'alfalaq', 'alnnas',
+    ]
+)
+NEXT_MAP = {NEXT_SEQUENCE[i]: NEXT_SEQUENCE[i + 1] for i in range(len(NEXT_SEQUENCE) - 1)}
+
+NEXT_BTN_RE = re.compile(r'(<button class="start-btn"[^>]*>[^<]*</button>)')
+
+
+def add_next_page_button(path, out):
+    """يضيف زر ⏭️ التالي في شاشة اختيار المستوى، للانتقال مباشرة
+    للصفحة/السورة التالية في ترتيب المصحف من غير الرجوع للفهرس."""
+    fn = os.path.splitext(os.path.basename(path))[0]
+    if fn not in NEXT_MAP:
+        return out, False  # آخر ملف في السلسلة (الناس) أو ملف مش داخل السلسلة
+    if 'id="next-page-btn"' in out:
+        return out, False  # مضاف بالفعل
+    m = NEXT_BTN_RE.search(out)
+    if not m:
+        return out, False
+    next_file = NEXT_MAP[fn] + '.html'
+    btn_html = (
+        '\n<a href="' + next_file + '" id="next-page-btn" '
+        'style="display:block;text-align:center;text-decoration:none;'
+        'margin-top:10px;padding:12px;border-radius:12px;'
+        'background:var(--surface2);color:var(--accent);'
+        'border:1.5px solid var(--border);font-family:inherit;font-size:15px;">'
+        '⏭️ التالي</a>'
+    )
+    out = out[:m.end()] + btn_html + out[m.end():]
+    return out, True
+
+
 def fix_missing_nav_row_css(out):
     """يضيف كلاس .nav-row لو مستخدم في الـHTML (class="nav-row")
     لكن تعريفه ناقص من الـCSS — بيخلي الأزرار جواه تاخد شكل افتراضي
@@ -999,6 +1053,10 @@ def fix_file(path):
     # ====================================================
     # 9د. تصحيح كلاس nav-row الناقص (بيوضّح شكل أزرار الترتيب/التنقل)
     out, navrow_fixed = fix_missing_nav_row_css(out)
+
+    # ====================================================
+    # 9هـ. زر ⏭️ التالي — انتقال مباشر للصفحة/السورة التالية
+    out, next_btn_added = add_next_page_button(path, out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
