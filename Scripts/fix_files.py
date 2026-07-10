@@ -188,6 +188,96 @@ AYAT_DATA = {
 ],
 }
 
+OLD_RENDER_ORDER_QUIZ = (
+    "function renderOrderQuiz(){\n"
+    "  const slotsDiv=document.getElementById('order-slots');\n"
+    "  const poolDiv=document.getElementById('order-pool');\n"
+    "  slotsDiv.innerHTML='';\n"
+    "  poolDiv.innerHTML='';\n"
+    "  orderPlaced.forEach((idx,pos)=>{\n"
+    "    const div=document.createElement('div');\n"
+    "    if(idx===null){\n"
+    "      const active=(pos===orderCursor);\n"
+    "      div.className='order-slot empty'+(active?' active-slot':'');\n"
+    "      div.innerHTML='<span class=\"order-badge\">'+toArabicNum(pos+1)+'</span><span class=\"order-slot-placeholder\">'+(active?'— الخانة النشطة الآن —':'— خانة فاضية، اضغط للمتابعة من هنا —')+'</span>';\n"
+    "      div.onclick=()=>{orderCursor=pos;renderOrderQuiz();};\n"
+    "    }else{\n"
+    "      div.className='order-slot filled';\n"
+    "      div.innerHTML='<span class=\"order-badge\">'+toArabicNum(pos+1)+'</span><span>'+AYAT[idx]+'</span>';\n"
+    "      div.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};\n"
+    "    }\n"
+    "    slotsDiv.appendChild(div);\n"
+    "  });\n"
+    "  orderPoolOrder.forEach(idx=>{\n"
+    "    if(orderPlaced.includes(idx))return;\n"
+    "    const btn=document.createElement('button');\n"
+    "    btn.className='order-item';\n"
+    "    btn.textContent=AYAT[idx];\n"
+    "    btn.onclick=()=>{\n"
+    "      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}\n"
+    "      if(orderCursor===-1)return;\n"
+    "      orderPlaced[orderCursor]=idx;\n"
+    "      orderCursor=nextEmptyFrom(orderCursor+1);\n"
+    "      document.getElementById('order-feedback').style.display='none';\n"
+    "      renderOrderQuiz();\n"
+    "    };\n"
+    "    poolDiv.appendChild(btn);\n"
+    "  });\n"
+    "  const allFilled=!orderPlaced.includes(null);\n"
+    "  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';\n"
+    "}\n"
+)
+
+NEW_RENDER_ORDER_QUIZ = (
+    "function renderOrderQuiz(){\n"
+    "  const slotsDiv=document.getElementById('order-slots');\n"
+    "  const poolDiv=document.getElementById('order-pool');\n"
+    "  slotsDiv.innerHTML='';\n"
+    "  poolDiv.innerHTML='';\n"
+    "  const filledGrid=document.createElement('div');\n"
+    "  filledGrid.className='order-filled-grid';\n"
+    "  const emptyStrip=document.createElement('div');\n"
+    "  emptyStrip.className='order-empty-strip';\n"
+    "  orderPlaced.forEach((idx,pos)=>{\n"
+    "    if(idx===null){\n"
+    "      const active=(pos===orderCursor);\n"
+    "      const dot=document.createElement('span');\n"
+    "      dot.className='order-dot'+(active?' active':'');\n"
+    "      dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';\n"
+    "      dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';\n"
+    "      dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};\n"
+    "      emptyStrip.appendChild(dot);\n"
+    "    }else{\n"
+    "      const card=document.createElement('div');\n"
+    "      card.className='order-slot filled';\n"
+    "      card.innerHTML='<span class=\"order-badge\">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+AYAT[idx]+'</span>';\n"
+    "      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};\n"
+    "      filledGrid.appendChild(card);\n"
+    "    }\n"
+    "  });\n"
+    "  if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);\n"
+    "  if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);\n"
+    "  orderPoolOrder.forEach(idx=>{\n"
+    "    if(orderPlaced.includes(idx))return;\n"
+    "    const btn=document.createElement('button');\n"
+    "    btn.className='order-item';\n"
+    "    btn.textContent=AYAT[idx];\n"
+    "    btn.onclick=()=>{\n"
+    "      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}\n"
+    "      if(orderCursor===-1)return;\n"
+    "      orderPlaced[orderCursor]=idx;\n"
+    "      orderCursor=nextEmptyFrom(orderCursor+1);\n"
+    "      document.getElementById('order-feedback').style.display='none';\n"
+    "      renderOrderQuiz();\n"
+    "    };\n"
+    "    poolDiv.appendChild(btn);\n"
+    "  });\n"
+    "  const allFilled=!orderPlaced.includes(null);\n"
+    "  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';\n"
+    "}\n"
+)
+
+
 def inject_ayat_from_data(path, out):
     """يحقن AYAT تلقائيًا في الملف لو اسمه موجود في AYAT_DATA ومفيهوش AYAT أصلاً."""
     fn = os.path.splitext(os.path.basename(path))[0]
@@ -236,6 +326,24 @@ def ar2en(text):
 # ====================================================
 
 ORDER_CSS = (
+    ".order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}"
+    ".order-item:hover{background:var(--surface-hover);border-color:var(--accent);}"
+    ".order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}"
+    ".order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}"
+    ".order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}"
+    ".order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}"
+    ".order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}"
+    ".order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}"
+    ".order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}"
+    ".order-dot:hover{border-color:var(--accent);}"
+    ".order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}"
+    ".order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;}"
+    ".mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}"
+    ".ayah-end{color:var(--gold);font-size:15px;}"
+)
+
+# نسخة قديمة من CSS الترتيب (قبل التصميم المضغوط) — لازمة للترقية التلقائية
+OLD_ORDER_CSS = (
     ".order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}"
     ".order-item:hover{background:var(--surface-hover);border-color:var(--accent);}"
     ".order-slot{display:flex;gap:10px;align-items:center;border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:17px;line-height:1.8;cursor:pointer;}"
@@ -300,20 +408,29 @@ function renderOrderQuiz(){
   const poolDiv=document.getElementById('order-pool');
   slotsDiv.innerHTML='';
   poolDiv.innerHTML='';
+  const filledGrid=document.createElement('div');
+  filledGrid.className='order-filled-grid';
+  const emptyStrip=document.createElement('div');
+  emptyStrip.className='order-empty-strip';
   orderPlaced.forEach((idx,pos)=>{
-    const div=document.createElement('div');
     if(idx===null){
       const active=(pos===orderCursor);
-      div.className='order-slot empty'+(active?' active-slot':'');
-      div.innerHTML='<span class="order-badge">'+toArabicNum(pos+1)+'</span><span class="order-slot-placeholder">'+(active?'— الخانة النشطة الآن —':'— خانة فاضية، اضغط للمتابعة من هنا —')+'</span>';
-      div.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
+      const dot=document.createElement('span');
+      dot.className='order-dot'+(active?' active':'');
+      dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';
+      dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';
+      dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
+      emptyStrip.appendChild(dot);
     }else{
-      div.className='order-slot filled';
-      div.innerHTML='<span class="order-badge">'+toArabicNum(pos+1)+'</span><span>'+AYAT[idx]+'</span>';
-      div.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      const card=document.createElement('div');
+      card.className='order-slot filled';
+      card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+AYAT[idx]+'</span>';
+      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      filledGrid.appendChild(card);
     }
-    slotsDiv.appendChild(div);
   });
+  if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);
+  if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);
   orderPoolOrder.forEach(idx=>{
     if(orderPlaced.includes(idx))return;
     const btn=document.createElement('button');
@@ -448,6 +565,20 @@ def ensure_order_wiring(path, out):
             out = out[:m.end()] + patch + out[m.end():]
             changed = True
 
+    return out, changed
+
+
+def upgrade_order_ui_to_compact(out):
+    """يرقّي أي ملف اتطبقت عليه ميزة الترتيب قبل التصميم المضغوط
+    (annaba/annaziat/abasa/alburuj وغيرهم) للتصميم الجديد —
+    دوائر مضغوطة للخانات الفاضية + شبكة للخانات المليانة."""
+    changed = False
+    if OLD_ORDER_CSS in out and '.order-filled-grid' not in out:
+        out = out.replace(OLD_ORDER_CSS, ORDER_CSS, 1)
+        changed = True
+    if OLD_RENDER_ORDER_QUIZ in out:
+        out = out.replace(OLD_RENDER_ORDER_QUIZ, NEW_RENDER_ORDER_QUIZ, 1)
+        changed = True
     return out, changed
 
 
@@ -846,6 +977,10 @@ def fix_file(path):
     # 9ب. تصحيح قوي: تأكيد ربط startQuiz/selectLevel بالترتيب
     # حتى لو الاستبدال النصي الحرفي فوق فشل بصمت بسبب اختلاف التنسيق
     out, wiring_fixed = ensure_order_wiring(path, out)
+
+    # ====================================================
+    # 9ج. ترقية تصميم الترتيب للنسخة المضغوطة (لو ملف قديم بالتصميم الأول)
+    out, order_ui_upgraded = upgrade_order_ui_to_compact(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
