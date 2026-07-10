@@ -461,7 +461,7 @@ function renderOrderQuiz(){
 function checkOrderAnswer(){
   let correct=0;
   document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
-    const ok=(orderPlaced[pos]===pos);
+    const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);
     if(ok)correct++;
     el.classList.remove('correct-slot','wrong-slot');
     el.classList.add(ok?'correct-slot':'wrong-slot');
@@ -670,6 +670,20 @@ def fix_missing_nav_row_css(out):
         return out, False
     out = out.replace('</style>', '.nav-row{display:flex;gap:10px;margin-top:14px;}\n</style>', 1)
     return out, True
+
+
+OLD_CHECK_ORDER_ANSWER_LINE = "    const ok=(orderPlaced[pos]===pos);"
+NEW_CHECK_ORDER_ANSWER_LINE = "    const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);"
+
+
+def upgrade_order_answer_check(out):
+    """يرقّي منطق التحقق من الترتيب: المقارنة تبقى بنص الآية مش برقمها،
+    عشان الآيات المتطابقة نصيًا (زي آية 3 و5 في الكافرون) تتقبل في أي
+    ترتيب بينهم بدل ما تتحسب خطأ."""
+    if OLD_CHECK_ORDER_ANSWER_LINE in out:
+        out = out.replace(OLD_CHECK_ORDER_ANSWER_LINE, NEW_CHECK_ORDER_ANSWER_LINE, 1)
+        return out, True
+    return out, False
 
 
 def upgrade_order_ui_to_compact(out):
@@ -1085,6 +1099,10 @@ def fix_file(path):
     # ====================================================
     # 9ج. ترقية تصميم الترتيب للنسخة المضغوطة (لو ملف قديم بالتصميم الأول)
     out, order_ui_upgraded = upgrade_order_ui_to_compact(out)
+
+    # ====================================================
+    # 9ز. ترقية منطق فحص الترتيب لمقارنة بالنص (يقبل الآيات المتطابقة نصيًا)
+    out, order_answer_upgraded = upgrade_order_answer_check(out)
 
     # ====================================================
     # 9د. تصحيح كلاس nav-row الناقص (بيوضّح شكل أزرار الترتيب/التنقل)
