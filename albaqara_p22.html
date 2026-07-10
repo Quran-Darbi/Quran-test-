@@ -384,7 +384,6 @@
   @keyframes confetti-fall { to { transform: translateY(110vh) rotate(540deg); opacity: 0.3; } }
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
-
 </style>
 <link rel="manifest" href="/Quran-test-/manifest.json">
 <meta name="theme-color" content="#4a7c4a">
@@ -445,7 +444,6 @@
     </button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
-<a href="albaqara_p23.html" id="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
 </div>
 
 <div class="quiz-area" id="quiz-area">
@@ -515,7 +513,7 @@ const EASY_Q = [
 
 const MEDIUM_Q = [
   { q: "«سَيَقُولُ السُّفَهَآءُ مِنَ النَّاسِ مَا وَلَّاهُمْ عَن _____»", answer: "قِبْلَتِهِمُ", hint: "الجهة التي كانوا يتوجهون إليها" },
-  { q: "«قُل لِّلَّهِ الْمَشْرِقُ وَ_____»", answer: "الْمَغْرِبُ", hint: "ضد المشرق" },
+  { q: "«وَمَا كَانَ اللَّهُ لِيُضِيعَ _____»", answer: "إِيمَانَكُمْ", hint: "ما لا يضيعه الله من صلاة المؤمن" },
   { q: "«وَكَذَٰلِكَ جَعَلْنَاكُمْ أُمَّةً _____»", answer: "وَسَطًا", hint: "عادلة خيارًا" },
   { q: "«وَمَا جَعَلْنَا الْقِبْلَةَ الَّتِي كُنتَ عَلَيْهَآ إِلَّا لِنَعْلَمَ مَن _____ الرَّسُولَ»", answer: "يَتَّبِعُ", hint: "فعل مضارع من الاتباع" },
   { q: "«وَإِن كَانَتْ لَكَبِيرَةً إِلَّا عَلَى الَّذِينَ _____ اللَّهُ»", answer: "هَدَى", hint: "فعل ماضٍ من الهداية" },
@@ -756,7 +754,7 @@ function normalize(str){
     .replace(/ي\u0653?ـ\u064E\u0654/g,'ي')
     .replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')
     .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'')
-    .replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
+    .replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
     .replace(/وٱ(?!ل)/g,'و')
@@ -919,7 +917,7 @@ function showResult() {
   var __pct = Math.round((correctCount/questions.length)*100); if (__pct === 100) spawnConfetti();
 }
 
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz() {
   document.getElementById('result-area').style.display = 'none';
   document.getElementById('level-card').style.display  = 'block';
@@ -936,7 +934,6 @@ function retryQuiz() {
 // ══════════════════════════════════════════════
 //  الوضع الليلي
 // ══════════════════════════════════════════════
-
 function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
