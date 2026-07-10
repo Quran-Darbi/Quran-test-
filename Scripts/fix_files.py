@@ -568,6 +568,20 @@ def ensure_order_wiring(path, out):
     return out, changed
 
 
+def fix_missing_nav_row_css(out):
+    """يضيف كلاس .nav-row لو مستخدم في الـHTML (class="nav-row")
+    لكن تعريفه ناقص من الـCSS — بيخلي الأزرار جواه تاخد شكل افتراضي
+    مختلف عن باقي الصفحات (زي annaziat.html)."""
+    if 'class="nav-row"' not in out and "class='nav-row'" not in out:
+        return out, False
+    if '.nav-row{' in out or '.nav-row {' in out:
+        return out, False
+    if '</style>' not in out:
+        return out, False
+    out = out.replace('</style>', '.nav-row{display:flex;gap:10px;margin-top:14px;}\n</style>', 1)
+    return out, True
+
+
 def upgrade_order_ui_to_compact(out):
     """يرقّي أي ملف اتطبقت عليه ميزة الترتيب قبل التصميم المضغوط
     (annaba/annaziat/abasa/alburuj وغيرهم) للتصميم الجديد —
@@ -981,6 +995,10 @@ def fix_file(path):
     # ====================================================
     # 9ج. ترقية تصميم الترتيب للنسخة المضغوطة (لو ملف قديم بالتصميم الأول)
     out, order_ui_upgraded = upgrade_order_ui_to_compact(out)
+
+    # ====================================================
+    # 9د. تصحيح كلاس nav-row الناقص (بيوضّح شكل أزرار الترتيب/التنقل)
+    out, navrow_fixed = fix_missing_nav_row_css(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
