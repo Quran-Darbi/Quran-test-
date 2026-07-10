@@ -313,7 +313,7 @@ function renderOrderQuiz(){
 function checkOrderAnswer(){
   let correct=0;
   document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
-    const ok=(orderPlaced[pos]===pos);
+    const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);
     if(ok)correct++;
     el.classList.remove('correct-slot','wrong-slot');
     el.classList.add(ok?'correct-slot':'wrong-slot');
