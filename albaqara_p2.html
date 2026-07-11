@@ -518,7 +518,7 @@ const AYAT = [
 ];
 
 // ══════════════════════════════════════════════
-//  أسئلة المستوى السهل (15 سؤال MCQ)
+//  أسئلة المستوى السهل (5 أسئلة MCQ)
 // ══════════════════════════════════════════════
 const EASY_Q=[
   {q:"«ذَٰلِكَ الْكِتَابُ لَا _____ فِيهِ هُدًى لِّلْمُتَّقِينَ»",choices:["رَيْبَ","شَكَّ","خَوْفَ"],answer:0},
@@ -529,13 +529,13 @@ const EASY_Q=[
 ];
 
 // ══════════════════════════════════════════════
-//  أسئلة المستوى المتوسط (10 أسئلة فراغ)
+//  أسئلة المستوى المتوسط (10 أسئلة فراغ) — كلمات مختلفة عن السهل
 // ══════════════════════════════════════════════
 const MEDIUM_Q = [
   {
-    q: "«ذَٰلِكَ الْكِتَابُ لَا _____ فِيهِ هُدًى لِّلْمُتَّقِينَ»",
-    answer: "رَيْبَ",
-    hint: "كلمة بمعنى شك"
+    q: "«ذَٰلِكَ _____ لَا رَيْبَ فِيهِ هُدًى لِّلْمُتَّقِينَ»",
+    answer: "الْكِتَابُ",
+    hint: "المصحف"
   },
   {
     q: "«ذَٰلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ هُدًى لِّلـ_____»",
@@ -553,9 +553,9 @@ const MEDIUM_Q = [
     hint: "ركن من أركان الإسلام"
   },
   {
-    q: "«وَمِمَّا رَزَقْنَٰهُمْ _____»",
-    answer: "يُنفِقُونَ",
-    hint: "فعل مضارع من الإنفاق"
+    q: "«وَمِمَّا _____ يُنفِقُونَ»",
+    answer: "رَزَقْنَٰهُمْ",
+    hint: "فعل من الرزق"
   },
   {
     q: "«وَالَّذِينَ يُؤْمِنُونَ بِمَآ أُنزِلَ _____ وَمَآ أُنزِلَ مِن قَبْلِكَ»",
@@ -563,14 +563,14 @@ const MEDIUM_Q = [
     hint: "جار ومجرور"
   },
   {
-    q: "«وَمَآ أُنزِلَ مِن _____»",
-    answer: "قَبْلِكَ",
-    hint: "ظرف زمان"
+    q: "«وَالَّذِينَ يُؤْمِنُونَ بِمَآ _____ إِلَيْكَ»",
+    answer: "أُنزِلَ",
+    hint: "فعل ماضٍ مبني للمجهول"
   },
   {
-    q: "«وَبِالْأَخِرَةِ هُمْ _____»",
-    answer: "يُوقِنُونَ",
-    hint: "فعل من اليقين"
+    q: "«وَمَآ أُنزِلَ مِن قَبْلِكَ _____ هُمْ يُوقِنُونَ»",
+    answer: "وَبِالْأَخِرَةِ",
+    hint: "جار ومجرور بمعنى الآخرة"
   },
   {
     q: "«أُولَٰئِكَ عَلَىٰ _____ مِّن رَّبِّهِمْ»",
@@ -578,9 +578,9 @@ const MEDIUM_Q = [
     hint: "مصدر من الهداية"
   },
   {
-    q: "«وَأُولَٰئِكَ هُمُ _____»",
-    answer: "الْمُفْلِحُونَ",
-    hint: "اسم فاعل من الفلاح"
+    q: "«أُولَٰئِكَ عَلَىٰ هُدًى مِّن _____»",
+    answer: "رَّبِّهِمْ",
+    hint: "اسم مضاف لضمير الغائبين"
   }
 ];
 
@@ -631,7 +631,7 @@ function selectLevel(lvl) {
   const btn = document.getElementById('start-btn');
   btn.classList.add('ready');
 
-  const totals = { easy: '5', medium: '10', hard: '5' };
+  const totals = { easy: EASY_Q.length.toString(), medium: MEDIUM_Q.length.toString(), hard: HARD_Q.length.toString() };
   document.getElementById('total-q').textContent = totals[lvl];
 }
 
@@ -840,10 +840,10 @@ function normalize(str){
     .replace(/يٓ?ـَٔ/g,'ي')
     // همزة على كشيدة غير كده = صوت ألف (لتسألن)
     .replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا')
-    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
+    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
     .replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     // حذف التشكيل (عدا الألف الخنجرية ٰ ولها معالجة خاصة تحت)
-    .replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')
+    .replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
     // ألف الوصل بعد الواو (واتبعوا، واسمعوا، واستعينوا، واركعوا...)
     .replace(/وٱ(?!ل)/g,'و')
@@ -890,8 +890,6 @@ function checkMCQ(chosen, correct, btn) {
     wrongCount++;
     statuses[qIndex] = 'wrong';
     wrongIndices.push(qIndex);
-    document.querySelectorAll('.choice-btn')[correct];
-    // highlight correct
     document.querySelectorAll('.choice-btn').forEach(b => {
       if (b.textContent === questions[qIndex].choices[correct]) b.classList.add('correct');
     });
@@ -1038,7 +1036,7 @@ function retryQuiz() {
   currentLevel = null;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('start-btn').classList.remove('ready');
-  document.getElementById('total-q').textContent = '15';
+  document.getElementById('total-q').textContent = '5';
   document.getElementById('wrong-badge').innerHTML   = '0 ✗<br>خطأ';
   document.getElementById('correct-badge').innerHTML = '0 ✓<br>صحيح';
   document.getElementById('qnum-badge').innerHTML    = 'السؤال 1 /<br>5';

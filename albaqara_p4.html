@@ -227,16 +227,18 @@ const EASY_Q=[
 ];
 
 const MEDIUM_Q = [
-  { q:"«فَلَمَّآ أَضَآءَتْ مَا حَوْلَهُ ذَهَبَ اللَّهُ بِنُورِهِمْ وَتَرَكَهُمْ فِي ظُلُمَٰتٍ لَّا _____»", answer:"يُبْصِرُونَ" },
-  { q:"«صُمٌّۢ بُكْمٌ عُمْىٌ فَهُمْ لَا _____»", answer:"يَرْجِعُونَ" },
-  { q:"«يَجْعَلُونَ أَصَٰبِعَهُمْ فِىٓ ءَاذَانِهِم مِّنَ الصَّوَٰعِقِ حَذَرَ _____»", answer:"الْمَوْتِ" },
-  { q:"«يَكَادُ الْبَرْقُ يَخْطَفُ _____»", answer:"أَبْصَٰرَهُمْ" },
-  { q:"«اعْبُدُوا رَبَّكُمُ الَّذِي خَلَقَكُمْ وَالَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ _____»", answer:"تَتَّقُونَ" },
-  { q:"«الَّذِي جَعَلَ لَكُمُ الْأَرْضَ فِرَٰشًا وَالسَّمَآءَ _____»", answer:"بِنَآءً" },
-  { q:"«وَأَنزَلَ مِنَ السَّمَآءِ مَآءً فَأَخْرَجَ بِهِ مِنَ الثَّمَرَٰتِ رِزْقًا لَّكُمْ فَلَا تَجْعَلُوا لِلَّهِ أَندَادًا وَأَنتُمْ _____»", answer:"تَعْلَمُونَ" },
-  { q:"«وَإِن كُنتُمْ فِي رَيْبٍ مِّمَّا نَزَّلْنَا عَلَىٰ عَبْدِنَا فَأْتُوا بِسُورَةٍ مِّن _____»", answer:"مِّثْلِهِ" },
-  { q:"«وَادْعُوا شُهَدَآءَكُم مِّن دُونِ اللَّهِ إِن كُنتُمْ _____»", answer:"صَٰدِقِينَ" },
-  { q:"«فَاتَّقُوا النَّارَ الَّتِي وَقُودُهَا النَّاسُ وَالْحِجَارَةُ أُعِدَّتْ _____»", answer:"لِلْكَٰفِرِينَ" }
+  { q:"«مَثَلُهُمْ كَمَثَلِ الَّذِي اسْتَوْقَدَ _____»", answer:"نَارًا" },
+  { q:"«فَلَمَّآ أَضَآءَتْ مَا حَوْلَهُ ذَهَبَ اللَّهُ بِنُورِهِمْ وَتَرَكَهُمْ فِي _____ لَّا يُبْصِرُونَ»", answer:"ظُلُمَٰتٍ" },
+  { q:"«صُمٌّۢ بُكْمٌ _____ فَهُمْ لَا يَرْجِعُونَ»", answer:"عُمْىٌ" },
+  { q:"«يَجْعَلُونَ أَصَٰبِعَهُمْ فِىٓ ءَاذَانِهِم مِّنَ _____ حَذَرَ الْمَوْتِ»", answer:"الصَّوَٰعِقِ" },
+  { q:"«يَكَادُ _____ يَخْطَفُ أَبْصَٰرَهُمْ»", answer:"الْبَرْقُ" },
+  { q:"«كُلَّمَآ أَضَآءَ لَهُم مَّشَوْا فِيهِ وَإِذَآ أَظْلَمَ عَلَيْهِمْ _____»", answer:"قَامُوا" },
+  { q:"«يَٰٓأَيُّهَا النَّاسُ _____ رَبَّكُمُ الَّذِي خَلَقَكُمْ»", answer:"اعْبُدُوا" },
+  { q:"«الَّذِي جَعَلَ لَكُمُ الْأَرْضَ _____»", answer:"فِرَٰشًا" },
+  { q:"«فَأَخْرَجَ بِهِ مِنَ الثَّمَرَٰتِ _____ لَّكُمْ»", answer:"رِزْقًا" },
+  { q:"«فَلَا تَجْعَلُوا لِلَّهِ _____ وَأَنتُمْ تَعْلَمُونَ»", answer:"أَندَادًا" },
+  { q:"«وَإِن كُنتُمْ فِي رَيْبٍ مِّمَّا نَزَّلْنَا عَلَىٰ _____»", answer:"عَبْدِنَا" },
+  { q:"«فَأْتُوا بِسُورَةٍ مِّن مِّثْلِهِ وَادْعُوا _____ مِّن دُونِ اللَّهِ»", answer:"شُهَدَآءَكُم" }
 ];
 
 const HARD_Q = [
@@ -253,7 +255,7 @@ let wrongIndices = [];
 const PAGE_ID = 'p4';
 
 function toArabicNum(n){return n;}
-function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:'10',medium:'10',hard:'5'};document.getElementById('total-q').textContent=t[lvl];}
+function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:EASY_Q.length.toString(),medium:MEDIUM_Q.length.toString(),hard:HARD_Q.length.toString()};document.getElementById('total-q').textContent=t[lvl];}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 function startQuiz(){if(!currentLevel)return;if(currentLevel==='easy')questions=[...EASY_Q];if(currentLevel==='medium')questions=[...MEDIUM_Q];if(currentLevel==='hard')questions=[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses = questions.map(() => 'pending'); wrongIndices = []; var rb=document.getElementById('resume-banner'); if(rb) rb.style.display='none'; document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
@@ -384,10 +386,10 @@ function normalize(str){
     .replace(/يٓ?ـَٔ/g,'ي')
     // همزة على كشيدة غير كده = صوت ألف (لتسألن)
     .replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا')
-    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
+    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
     .replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     // حذف التشكيل (عدا الألف الخنجرية ٰ ولها معالجة خاصة تحت)
-    .replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')
+    .replace(/[ًٌٍَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
     // ألف الوصل بعد الواو (واتبعوا، واسمعوا، واستعينوا، واركعوا...)
     .replace(/وٱ(?!ل)/g,'و')
