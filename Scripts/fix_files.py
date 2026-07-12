@@ -763,6 +763,138 @@ def add_ordering_feature(out, filename=''):
     return out, changed
 
 
+# ====================================================
+# ترقية التسجيل الصوتي (مستوى الصعب) إلى الشكل الموحّد:
+# كل كلمة متعرَّف عليها في span منفصل قابل للنقر لحذفها فرديًا،
+# بدل النص الكامل اللي كان بيتمسح مرة واحدة. (يوليو ٢٠٢٦)
+# ====================================================
+
+VOICE_CSS_ADD = (
+    ".rec-transcript{background:var(--surface3);border:1.5px solid var(--border);"
+    "border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;"
+    "color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;"
+    "display:none;min-height:60px;white-space:pre-wrap;}"
+    ".rec-word{display:inline-block;margin:2px 1px;padding:2px 6px;border-radius:5px;cursor:pointer;}"
+    ".rec-word:hover{opacity:0.8;text-decoration:line-through;}"
+)
+
+# يلتقط كل نسخ الشكل القديم (المسافّة زي p37 بمتغيرات savedText/currentText،
+# والمضغوطة زي p43 بمتغيرات _saved/_cur) — من إنشاء recBtn وحتى إغلاق
+# الـ if/else الخاص بدعم/عدم دعم المتصفح، مهما اختلفت المسافات بينهم.
+OLD_VOICE_RE = re.compile(
+    r"const\s+recBtn\s*=\s*document\.createElement\('button'\);.*?"
+    r"recBtn\.style\.opacity\s*=\s*['\"]0\.65['\"]\s*;\s*\}",
+    re.DOTALL
+)
+
+NEW_VOICE_JS = r'''const recBtn=document.createElement('button');recBtn.className='rec-btn';
+      recBtn.style.cssText='width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';
+      recBtn.textContent='🎤 اضغط للتسجيل';
+
+      const txBox=document.createElement('div');txBox.className='rec-transcript';
+      txBox.title='انقري على أي كلمة لحذفها';
+
+      const clrBtn=document.createElement('button');
+      clrBtn.style.cssText='width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);margin-bottom:8px;display:none;';
+      clrBtn.textContent='🗑️ مسح الكل والبدء من جديد';
+
+      const vSub=document.createElement('button');vSub.className='submit-btn';vSub.textContent='تحقق ✓';vSub.style.display='none';
+
+      vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(clrBtn);vZone.appendChild(vSub);
+
+      let _rec=null,_recog=false,_words=[],_cur='';
+      const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
+      const _secure=location.protocol==='https:'||location.hostname==='localhost';
+
+      function renderWords(){
+        if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}
+        txBox.style.display='block';
+        txBox.innerHTML='';
+        _words.forEach((w,i)=>{
+          const span=document.createElement('span');span.className='rec-word';
+          span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';
+          span.textContent=w;span.title='انقري للحذف';
+          span.onclick=()=>{_words.splice(i,1);renderWords();};
+          txBox.appendChild(span);
+        });
+        if(_cur){
+          const cur=document.createElement('span');cur.style.cssText='color:var(--text-soft);font-style:italic;';
+          cur.textContent=' '+_cur;txBox.appendChild(cur);
+        }
+        clrBtn.style.display='block';
+        vSub.style.display=_words.length?'block':'none';
+      }
+
+      function _setB(s){
+        recBtn.disabled=false;
+        if(s==='rec'){recBtn.textContent='⏸ إيقاف التسجيل';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}
+        else if(s==='pause'){recBtn.textContent='▶️ استمر في التسجيل';recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22';}
+        else{recBtn.textContent='🎤 اضغط للتسجيل';recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)';}
+      }
+
+      function _mkRec(){
+        const r=new _SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;
+        r.onstart=()=>{_recog=true;_cur='';_setB('rec');renderWords();};
+        r.onresult=e=>{
+          for(let i=e.resultIndex;i<e.results.length;i++){
+            if(e.results[i].isFinal){
+              const newWords=e.results[i][0].transcript.trim().split(/\s+/);
+              _words=_words.concat(newWords);_cur='';
+            }
+          }
+          renderWords();
+        };
+        r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};
+        r.onend=()=>{_recog=false;if(_cur){_words=_words.concat(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
+        return r;
+      }
+
+      clrBtn.onclick=()=>{
+        if(_recog){try{_rec.stop();}catch(e){}}
+        _recog=false;_rec=null;
+        _words=[];_cur='';
+        txBox.innerHTML='';txBox.style.display='none';
+        clrBtn.style.display='none';
+        vSub.style.display='none';
+        _setB('idle');
+        recBtn.disabled=false;
+      };
+
+      vSub.onclick=()=>{
+        const t=_words.join(' ').trim();if(!t)return;
+        vSub.disabled=true;
+        checkTextVal(q,t);
+        setTimeout(()=>{
+          recBtn.disabled=false;
+          vSub.disabled=false;
+        },300);
+      };
+
+      if(_SpeechAPI&&_secure){
+        recBtn.onclick=()=>{
+          if(_recog){_recog=false;try{_rec.stop();}catch(e){}_setB('pause');return;}
+          _rec=_mkRec();
+          try{_rec.start();}catch(e){_setB(_words.length?'pause':'idle');}
+        };
+      }else{
+        recBtn.textContent=_secure?'⚠️ المتصفح لا يدعم التسجيل':'🔒 يعمل على الموقع الرسمي فقط';
+        recBtn.disabled=true;recBtn.style.opacity='0.65';
+      }'''
+
+def upgrade_voice_recording(out):
+    """يستبدل كود التسجيل الصوتي القديم (نص كامل يتمسح مرة واحدة)
+    بالنسخة الموحّدة (كل كلمة span منفصل قابل للحذف فرديًا)."""
+    changed = False
+    if 'const recBtn' in out and 'renderWords' not in out:
+        new_out, n = OLD_VOICE_RE.subn(lambda m: NEW_VOICE_JS, out)
+        if n > 0:
+            out = new_out
+            changed = True
+    if changed and '.rec-transcript{' not in out and '</style>' in out:
+        out = out.replace('</style>', VOICE_CSS_ADD + '\n</style>', 1)
+    return out, changed
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -1115,6 +1247,10 @@ def fix_file(path):
     # ====================================================
     # 9هـ. زر ⏭️ التالي — انتقال مباشر للصفحة/السورة التالية
     out, next_btn_added = add_next_page_button(path, out)
+
+    # ====================================================
+    # 9ح. ترقية التسجيل الصوتي (الصعب) لشكل الكلمات القابلة للحذف فرديًا
+    out, voice_upgraded = upgrade_voice_recording(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
