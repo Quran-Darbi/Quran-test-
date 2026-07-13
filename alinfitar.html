@@ -4,7 +4,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار حفظ سورة التكوير</title>
+<title>اختبار حفظ سورة الانفطار</title>
 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f0f4f0;--text:#2d4a2d;--card:#fff;--border:#c8d9c0;--gold:#c4a84a;--text-soft:#7a9a7a;--accent:#4a7c4a;--surface2:#f4f8f2;--surface-hover:#e0edd8;--correct-bg:#d4edda;--correct-text:#1a5c1a;--wrong-bg:#f8d7da;--wrong-text:#7a1a1a;--wrong-border:#c0392b;--surface3:#f8fbf6;--text-faint:#6a8a6a;--accent-light:#9db89d;--accent-dark:#3a6a3a;--hint-bg:#f0f5ec;--hint-border:#9bbf8a;--hint-btn-bg:#fff7e6;--hint-btn-text:#9a7b1f;--hint-btn-border:#e8d28a;}
@@ -73,8 +73,6 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .rec-transcript{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;display:none;min-height:60px;white-space:pre-wrap;}
 .rec-word{display:inline-block;background:var(--surface-hover);border-radius:4px;padding:2px 6px;margin:2px 1px;cursor:pointer;}
 .rec-word:hover{opacity:0.8;text-decoration:line-through;}
-.rec-controls{display:flex;gap:8px;flex-wrap:wrap;}
-.rec-btn{flex:1;min-width:100px;padding:12px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;border:1.5px solid var(--border);transition:all .2s;}
 .hint-btn{width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;}
 .hint-box{display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;direction:rtl;line-height:2;}
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
@@ -96,8 +94,8 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 </div>
 
 <div class="info-card">
-  <div class="surah-title">سورة التكوير</div>
-  <div class="ayat-range">الآيات 1 إلى 29</div>
+  <div class="surah-title">سورة الانفطار</div>
+  <div class="ayat-range">الآيات 1 إلى 19</div>
   <div class="page-info">اختبار الحفظ | جزء عمّ</div>
   <div class="stats-row">
     <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
@@ -115,7 +113,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 </div>
 
 <div style="margin:0 16px 16px;">
-  <a href="recitation.html?surah=attakwir" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:13px 20px;font-size:16px;font-family:inherit;color:var(--accent);text-decoration:none;">
+  <a href="recitation.html?surah=alinfitar" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:13px 20px;font-size:16px;font-family:inherit;color:var(--accent);text-decoration:none;">
     🎤 اختبر تلاوتك
   </a>
 </div>
@@ -130,7 +128,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
     <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
-<a href="al-infitar.html" id="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
+<a href="almutaffifin.html" id="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
 </div>
 
 <div class="quiz-area" id="quiz-area">
@@ -139,7 +137,6 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div class="q-number" id="q-number">السؤال 1</div>
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
-  <!-- أزرار التنقل ثابتة -->
   <div class="nav-row" id="nav-row">
     <button class="nav-btn" id="prev-btn" onclick="prevQuestion()">→ السابق</button>
     <button class="nav-btn" id="skip-btn" onclick="skipQuestion()">⏭ تخطي</button>
@@ -185,95 +182,79 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <div id="confetti-container" style="position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;display:none;"></div>
 
 <script>
-const RESUME_KEY='quranResume_attakwir';
+const RESUME_KEY='quranResume_alinfitar';
 
-// ===== الآيات =====
 const AYAT=[
-  "إِذَا ٱلشَّمْسُ كُوِّرَتْ",
-  "وَإِذَا ٱلنُّجُومُ ٱنكَدَرَتْ",
-  "وَإِذَا ٱلْجِبَالُ سُيِّرَتْ",
-  "وَإِذَا ٱلْعِشَارُ عُطِّلَتْ",
-  "وَإِذَا ٱلْوُحُوشُ حُشِرَتْ",
-  "وَإِذَا ٱلْبِحَارُ سُجِّرَتْ",
-  "وَإِذَا ٱلنُّفُوسُ زُوِّجَتْ",
-  "وَإِذَا ٱلْمَوْءُۥدَةُ سُئِلَتْ",
-  "بِأَىِّ ذَنۢبٍ قُتِلَتْ",
-  "وَإِذَا ٱلصُّحُفُ نُشِرَتْ",
-  "وَإِذَا ٱلسَّمَآءُ كُشِطَتْ",
-  "وَإِذَا ٱلْجَحِيمُ سُعِّرَتْ",
-  "وَإِذَا ٱلْجَنَّةُ أُزْلِفَتْ",
-  "عَلِمَتْ نَفْسٌ مَّآ أَحْضَرَتْ",
-  "فَلَآ أُقْسِمُ بِٱلْخُنَّسِ",
-  "ٱلْجَوَارِ ٱلْكُنَّسِ",
-  "وَٱلَّيْلِ إِذَا عَسْعَسَ",
-  "وَٱلصُّبْحِ إِذَا تَنَفَّسَ",
-  "إِنَّهُۥ لَقَوْلُ رَسُولٍ كَرِيمٍ",
-  "ذِى قُوَّةٍ عِندَ ذِى ٱلْعَرْشِ مَكِينٍ",
-  "مُّطَاعٍ ثَمَّ أَمِينٍ",
-  "وَمَا صَاحِبُكُم بِمَجْنُونٍ",
-  "وَلَقَدْ رَءَاهُ بِٱلْأُفُقِ ٱلْمُبِينِ",
-  "وَمَا هُوَ عَلَى ٱلْغَيْبِ بِضَنِينٍ",
-  "وَمَا هُوَ بِقَوْلِ شَيْطَٰنٍ رَّجِيمٍ",
-  "فَأَيْنَ تَذْهَبُونَ",
-  "إِنْ هُوَ إِلَّا ذِكْرٌ لِّلْعَٰلَمِينَ",
-  "لِمَن شَآءَ مِنكُمْ أَن يَسْتَقِيمَ",
-  "وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ ٱلْعَٰلَمِينَ"
+  "إِذَا ٱلسَّمَآءُ ٱنفَطَرَتْ",
+  "وَإِذَا ٱلْكَوَاكِبُ ٱنتَثَرَتْ",
+  "وَإِذَا ٱلْبِحَارُ فُجِّرَتْ",
+  "وَإِذَا ٱلْقُبُورُ بُعْثِرَتْ",
+  "عَلِمَتْ نَفْسٌ مَّا قَدَّمَتْ وَأَخَّرَتْ",
+  "يَٰٓأَيُّهَا ٱلْإِنسَٰنُ مَا غَرَّكَ بِرَبِّكَ ٱلْكَرِيمِ",
+  "ٱلَّذِى خَلَقَكَ فَسَوَّىٰكَ فَعَدَلَكَ",
+  "فِىٓ أَىِّ صُورَةٍ مَّا شَآءَ رَكَّبَكَ",
+  "كَلَّا بَلْ تُكَذِّبُونَ بِٱلدِّينِ",
+  "وَإِنَّ عَلَيْكُمْ لَحَٰفِظِينَ",
+  "كِرَامًا كَٰتِبِينَ",
+  "يَعْلَمُونَ مَا تَفْعَلُونَ",
+  "إِنَّ ٱلْأَبْرَارَ لَفِى نَعِيمٍ",
+  "وَإِنَّ ٱلْفُجَّارَ لَفِى جَحِيمٍ",
+  "يَصْلَوْنَهَا يَوْمَ ٱلدِّينِ",
+  "وَمَا هُمْ عَنْهَا بِغَآئِبِينَ",
+  "وَمَآ أَدْرَىٰكَ مَا يَوْمُ ٱلدِّينِ",
+  "ثُمَّ مَآ أَدْرَىٰكَ مَا يَوْمُ ٱلدِّينِ",
+  "يَوْمَ لَا تَمْلِكُ نَفْسٌ لِّنَفْسٍ شَيْـًٔا وَٱلْأَمْرُ يَوْمَئِذٍ لِّلَّهِ"
 ];
 
-// ===== أسئلة سهل (15 سؤال — تركز على المتشابهات) =====
+// ===== أسئلة سهل (15 سؤال — كما هي، بدون تكرار داخلي) =====
 const EASY_Q=[
-  {q:"«إِذَا ٱلشَّمْسُ _____»",choices:["كُوِّرَتْ","كُسِرَتْ","كُبِّرَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلنُّجُومُ _____»",choices:["ٱنكَدَرَتْ","ٱنتَثَرَتْ","ٱنفَطَرَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلْجِبَالُ _____»",choices:["سُيِّرَتْ","نُسِفَتْ","هُدَّتْ"],answer:0},
-  {q:"«وَإِذَا ٱلْعِشَارُ _____»",choices:["عُطِّلَتْ","أُهْمِلَتْ","تُرِكَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلْوُحُوشُ _____»",choices:["حُشِرَتْ","نُشِرَتْ","سُيِّرَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلْبِحَارُ _____»",choices:["سُجِّرَتْ","فُجِّرَتْ","سُيِّرَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلنُّفُوسُ _____»",choices:["زُوِّجَتْ","حُشِرَتْ","جُمِعَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلْمَوْءُۥدَةُ سُئِلَتْ بِأَىِّ ذَنۢبٍ _____»",choices:["قُتِلَتْ","أُوذِيَتْ","ظُلِمَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلصُّحُفُ _____»",choices:["نُشِرَتْ","نُثِرَتْ","سُطِّرَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلسَّمَآءُ _____»",choices:["كُشِطَتْ","فُرِجَتْ","شُقَّتْ"],answer:0},
-  {q:"«وَإِذَا ٱلْجَحِيمُ _____»",choices:["سُعِّرَتْ","أُوقِدَتْ","فُتِحَتْ"],answer:0},
-  {q:"«وَإِذَا ٱلْجَنَّةُ _____»",choices:["أُزْلِفَتْ","قُرِّبَتْ","فُتِحَتْ"],answer:0},
-  {q:"«إِنَّهُۥ لَقَوْلُ رَسُولٍ _____»",choices:["كَرِيمٍ","عَظِيمٍ","أَمِينٍ"],answer:0},
-  {q:"«ذِى قُوَّةٍ عِندَ ذِى ٱلْعَرْشِ _____»",choices:["مَكِينٍ","أَمِينٍ","مَتِينٍ"],answer:0},
-  {q:"«وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ _____»",choices:["ٱلْعَٰلَمِينَ","ٱلسَّمَٰوَٰتِ","ٱلْعَرْشِ"],answer:0}
+  {q:"«إِذَا ٱلسَّمَآءُ _____»",choices:["ٱنفَطَرَتْ","ٱنشَقَّتْ","ٱنكَدَرَتْ"],answer:0},
+  {q:"«وَإِذَا ٱلْكَوَاكِبُ _____»",choices:["ٱنتَثَرَتْ","ٱنكَدَرَتْ","ٱنفَطَرَتْ"],answer:0},
+  {q:"«وَإِذَا ٱلْبِحَارُ _____»",choices:["فُجِّرَتْ","سُجِّرَتْ","فُرِّقَتْ"],answer:0},
+  {q:"«وَإِذَا ٱلْقُبُورُ _____»",choices:["بُعْثِرَتْ","نُشِرَتْ","فُتِحَتْ"],answer:0},
+  {q:"«عَلِمَتْ نَفْسٌ مَّا _____ وَأَخَّرَتْ»",choices:["قَدَّمَتْ","كَسَبَتْ","عَمِلَتْ"],answer:0},
+  {q:"«يَٰٓأَيُّهَا ٱلْإِنسَٰنُ مَا غَرَّكَ بِرَبِّكَ _____»",choices:["ٱلْكَرِيمِ","ٱلرَّحِيمِ","ٱلْعَظِيمِ"],answer:0},
+  {q:"«ٱلَّذِى خَلَقَكَ فَسَوَّىٰكَ _____»",choices:["فَعَدَلَكَ","فَرَكَّبَكَ","فَكَمَّلَكَ"],answer:0},
+  {q:"«فِىٓ أَىِّ صُورَةٍ مَّا شَآءَ _____»",choices:["رَكَّبَكَ","خَلَقَكَ","صَوَّرَكَ"],answer:0},
+  {q:"«كَلَّا بَلْ تُكَذِّبُونَ _____»",choices:["بِٱلدِّينِ","بِٱلْحِسَابِ","بِٱلْبَعْثِ"],answer:0},
+  {q:"«وَإِنَّ عَلَيْكُمْ _____»",choices:["لَحَٰفِظِينَ","لَشَٰهِدِينَ","لَرَقِيبًا"],answer:0},
+  {q:"«كِرَامًا _____»",choices:["كَٰتِبِينَ","حَٰفِظِينَ","شَٰهِدِينَ"],answer:0},
+  {q:"«إِنَّ ٱلْأَبْرَارَ لَفِى _____»",choices:["نَعِيمٍ","جَنَّٰتٍ","فِرْدَوْسٍ"],answer:0},
+  {q:"«وَإِنَّ ٱلْفُجَّارَ لَفِى _____»",choices:["جَحِيمٍ","نَارٍ","عَذَابٍ"],answer:0},
+  {q:"«وَمَآ أَدْرَىٰكَ مَا _____»",choices:["يَوْمُ ٱلدِّينِ","يَوْمُ ٱلْحِسَابِ","يَوْمُ ٱلْقِيَٰمَةِ"],answer:0},
+  {q:"«وَٱلْأَمْرُ يَوْمَئِذٍ _____»",choices:["لِّلَّهِ","لِلرَّحْمَٰنِ","لِلْمَلِكِ"],answer:0}
 ];
 
-// ===== أسئلة متوسط (14 سؤال — صفر تكرار مع السهل) =====
+// ===== أسئلة متوسط (13 سؤال — صفر تكرار مع السهل) =====
 const MEDIUM_Q=[
-  {q:"«وَإِذَا ٱلْمَوْءُۥدَةُ _____»",answer:"سُئِلَتْ"},
-  {q:"«عَلِمَتْ نَفْسٌ مَّآ _____»",answer:"أَحْضَرَتْ"},
-  {q:"«ٱلْجَوَارِ _____»",answer:"ٱلْكُنَّسِ"},
-  {q:"«فَلَآ أُقْسِمُ _____»",answer:"بِٱلْخُنَّسِ"},
-  {q:"«وَٱلَّيْلِ إِذَا _____»",answer:"عَسْعَسَ"},
-  {q:"«وَٱلصُّبْحِ إِذَا _____»",answer:"تَنَفَّسَ"},
-  {q:"«مُّطَاعٍ ثَمَّ _____»",answer:"أَمِينٍ"},
-  {q:"«وَمَا صَاحِبُكُم _____»",answer:"بِمَجْنُونٍ"},
-  {q:"«وَلَقَدْ رَءَاهُ بِٱلْأُفُقِ _____»",answer:"ٱلْمُبِينِ"},
-  {q:"«وَمَا هُوَ عَلَى ٱلْغَيْبِ _____»",answer:"بِضَنِينٍ"},
-  {q:"«وَمَا هُوَ بِقَوْلِ شَيْطَٰنٍ _____»",answer:"رَّجِيمٍ"},
-  {q:"«فَأَيْنَ _____»",answer:"تَذْهَبُونَ"},
-  {q:"«لِمَن شَآءَ مِنكُمْ أَن _____»",answer:"يَسْتَقِيمَ"},
-  {q:"«وَمَا _____ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ ٱلْعَٰلَمِينَ»",answer:"تَشَآءُونَ"}
+  {q:"«إِذَا _____ ٱنفَطَرَتْ»",answer:"ٱلسَّمَآءُ"},
+  {q:"«وَإِذَا _____ ٱنتَثَرَتْ»",answer:"ٱلْكَوَاكِبُ"},
+  {q:"«وَإِذَا _____ فُجِّرَتْ»",answer:"ٱلْبِحَارُ"},
+  {q:"«وَإِذَا _____ بُعْثِرَتْ»",answer:"ٱلْقُبُورُ"},
+  {q:"«عَلِمَتْ نَفْسٌ مَّا قَدَّمَتْ _____»",answer:"وَأَخَّرَتْ"},
+  {q:"«يَٰٓأَيُّهَا ٱلْإِنسَٰنُ مَا _____ بِرَبِّكَ ٱلْكَرِيمِ»",answer:"غَرَّكَ"},
+  {q:"«ٱلَّذِى خَلَقَكَ _____ فَعَدَلَكَ»",answer:"فَسَوَّىٰكَ"},
+  {q:"«فِىٓ أَىِّ _____ مَّا شَآءَ رَكَّبَكَ»",answer:"صُورَةٍ"},
+  {q:"«كَلَّا بَلْ _____ بِٱلدِّينِ»",answer:"تُكَذِّبُونَ"},
+  {q:"«يَعْلَمُونَ مَا _____»",answer:"تَفْعَلُونَ"},
+  {q:"«_____ يَوْمَ ٱلدِّينِ»",answer:"يَصْلَوْنَهَا"},
+  {q:"«وَمَا هُمْ عَنْهَا _____»",answer:"بِغَآئِبِينَ"},
+  {q:"«يَوْمَ لَا تَمْلِكُ نَفْسٌ لِّنَفْسٍ _____ وَٱلْأَمْرُ يَوْمَئِذٍ لِّلَّهِ»",answer:"شَيْـًٔا"}
 ];
 
-// ===== أسئلة صعب (10 أسئلة — تغطي السورة كاملة) =====
 const HARD_Q=[
-  {ayah:1, q:"اكتبي الآية 1",answer:"إِذَا ٱلشَّمْسُ كُوِّرَتْ"},
-  {ayah:2, q:"اكتبي الآية 2",answer:"وَإِذَا ٱلنُّجُومُ ٱنكَدَرَتْ"},
-  {ayah:3, q:"اكتبي الآيات 3–5",answer:"وَإِذَا ٱلْجِبَالُ سُيِّرَتْ وَإِذَا ٱلْعِشَارُ عُطِّلَتْ وَإِذَا ٱلْوُحُوشُ حُشِرَتْ"},
-  {ayah:6, q:"اكتبي الآيات 6–7",answer:"وَإِذَا ٱلْبِحَارُ سُجِّرَتْ وَإِذَا ٱلنُّفُوسُ زُوِّجَتْ"},
-  {ayah:8, q:"اكتبي الآيات 8–9",answer:"وَإِذَا ٱلْمَوْءُۥدَةُ سُئِلَتْ بِأَىِّ ذَنۢبٍ قُتِلَتْ"},
-  {ayah:10, q:"اكتبي الآيات 10–11",answer:"وَإِذَا ٱلصُّحُفُ نُشِرَتْ وَإِذَا ٱلسَّمَآءُ كُشِطَتْ"},
-  {ayah:12, q:"اكتبي الآيات 12–14",answer:"وَإِذَا ٱلْجَحِيمُ سُعِّرَتْ وَإِذَا ٱلْجَنَّةُ أُزْلِفَتْ عَلِمَتْ نَفْسٌ مَّآ أَحْضَرَتْ"},
-  {ayah:15, q:"اكتبي الآيات 15–18",answer:"فَلَآ أُقْسِمُ بِٱلْخُنَّسِ ٱلْجَوَارِ ٱلْكُنَّسِ وَٱلَّيْلِ إِذَا عَسْعَسَ وَٱلصُّبْحِ إِذَا تَنَفَّسَ"},
-  {ayah:19, q:"اكتبي الآيات 19–22",answer:"إِنَّهُۥ لَقَوْلُ رَسُولٍ كَرِيمٍ ذِى قُوَّةٍ عِندَ ذِى ٱلْعَرْشِ مَكِينٍ مُّطَاعٍ ثَمَّ أَمِينٍ وَمَا صَاحِبُكُم بِمَجْنُونٍ"},
-  {ayah:23, q:"اكتبي الآيات 23–29",answer:"وَلَقَدْ رَءَاهُ بِٱلْأُفُقِ ٱلْمُبِينِ وَمَا هُوَ عَلَى ٱلْغَيْبِ بِضَنِينٍ وَمَا هُوَ بِقَوْلِ شَيْطَٰنٍ رَّجِيمٍ فَأَيْنَ تَذْهَبُونَ إِنْ هُوَ إِلَّا ذِكْرٌ لِّلْعَٰلَمِينَ لِمَن شَآءَ مِنكُمْ أَن يَسْتَقِيمَ وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ ٱلْعَٰلَمِينَ"}
+  {ayah:1,q:"اكتبي الآيات 1–2",answer:"إِذَا ٱلسَّمَآءُ ٱنفَطَرَتْ وَإِذَا ٱلْكَوَاكِبُ ٱنتَثَرَتْ"},
+  {ayah:3,q:"اكتبي الآيات 3–4",answer:"وَإِذَا ٱلْبِحَارُ فُجِّرَتْ وَإِذَا ٱلْقُبُورُ بُعْثِرَتْ"},
+  {ayah:5,q:"اكتبي الآية 5",answer:"عَلِمَتْ نَفْسٌ مَّا قَدَّمَتْ وَأَخَّرَتْ"},
+  {ayah:6,q:"اكتبي الآيات 6–8",answer:"يَٰٓأَيُّهَا ٱلْإِنسَٰنُ مَا غَرَّكَ بِرَبِّكَ ٱلْكَرِيمِ ٱلَّذِى خَلَقَكَ فَسَوَّىٰكَ فَعَدَلَكَ فِىٓ أَىِّ صُورَةٍ مَّا شَآءَ رَكَّبَكَ"},
+  {ayah:9,q:"اكتبي الآيات 9–12",answer:"كَلَّا بَلْ تُكَذِّبُونَ بِٱلدِّينِ وَإِنَّ عَلَيْكُمْ لَحَٰفِظِينَ كِرَامًا كَٰتِبِينَ يَعْلَمُونَ مَا تَفْعَلُونَ"},
+  {ayah:13,q:"اكتبي الآيات 13–16",answer:"إِنَّ ٱلْأَبْرَارَ لَفِى نَعِيمٍ وَإِنَّ ٱلْفُجَّارَ لَفِى جَحِيمٍ يَصْلَوْنَهَا يَوْمَ ٱلدِّينِ وَمَا هُمْ عَنْهَا بِغَآئِبِينَ"},
+  {ayah:17,q:"اكتبي الآيات 17–18 (آيتان متطابقتان نصًّا)",answer:"وَمَآ أَدْرَىٰكَ مَا يَوْمُ ٱلدِّينِ ثُمَّ مَآ أَدْرَىٰكَ مَا يَوْمُ ٱلدِّينِ"},
+  {ayah:19,q:"اكتبي الآية 19",answer:"يَوْمَ لَا تَمْلِكُ نَفْسٌ لِّنَفْسٍ شَيْـًٔا وَٱلْأَمْرُ يَوْمَئِذٍ لِّلَّهِ"}
 ];
 
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
 
-// ===== normalize =====
 function normalize(str){
   if(!str)return'';
   return str
@@ -300,32 +281,17 @@ function normalize(str){
     .trim();
 }
 
-// ===== wordDiff بـ LCS =====
 function wordDiff(userVal,correctAnswer){
   const nm=s=>{
     if(!s)return'';
     return s
       .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'ا').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')
-      .replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي')
-      .replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا')
-      .replace(/نٰ/g,'نا')
-      .replace(/ٰ/g,'ا')
-      .replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
-      .replace(/[آأإٱا]/g,'ا')
-      .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'')
-      .replace(/ة/g,'ه')
-      .replace(/[ىی]/g,'ي')
-      .replace(/ه[ۥۦ]/g,'ه')
-      .replace(/[ۥۦ]/g,'')
-      .replace(/واه(?=\s|$)/g,'اه')
-      .replace(/رحمان/g,'رحمن')
-      .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
-      .replace(/نب/g,'مب')
-      .replace(/لل/g,'ل')
-      .replace(/(.)\1+/g,'$1')
-      .replace(/ا(?=\s|$)/g,'ي')
-      .replace(/\s+/g,' ')
-      .trim();
+      .replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا')
+      .replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه')
+      .replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')
+      .replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
+      .replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1')
+      .replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();
   };
   const uWords=userVal.trim().split(/\s+/);
   const cWords=correctAnswer.split(/\s+/);
@@ -337,21 +303,20 @@ function wordDiff(userVal,correctAnswer){
   }
   const aligned=[];let i=n,j=m;
   while(i>0||j>0){
-    if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],user:uWords[j-1],ok:true});i--;j--;}
+    if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}
     else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}
-    else{aligned.push({ref:cWords[i-1],user:'',ok:false});i--;}
+    else{aligned.push({ref:cWords[i-1],ok:false});i--;}
   }
   aligned.reverse();
   const correct=aligned.filter(x=>x.ok).length;
   const html=aligned.map(x=>x.ok
     ?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;">${x.ref}</span>`
-    :`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" title="${x.user||'محذوف'}">${x.ref}</span>`
+    :`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;">${x.ref}</span>`
   ).join(' ');
   return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة</div>`
         +`<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;
 }
 
-function normalizeHurufMuqattaa(str){return str;}
 function toArabicNum(n){return n;}
 
 function updateBadges(){
@@ -436,7 +401,6 @@ function renderMedium(q,zone){
 }
 
 function renderHard(q,zone){
-  // عرض رقم الآية
   const ayahNum=document.createElement('div');
   ayahNum.style.cssText='text-align:center;font-size:13px;color:var(--text-soft);margin-bottom:8px;';
   ayahNum.textContent=`الآية ${toArabicNum(q.ayah)}`;
@@ -452,22 +416,10 @@ function renderHard(q,zone){
   const vZone=document.createElement('div');zone.appendChild(vZone);
   const tZone=document.createElement('div');tZone.style.display='none';zone.appendChild(tZone);
 
-  function activateVoice(){
-    vZone.style.display='';tZone.style.display='none';
-    bVoice.style.background='var(--accent)';bVoice.style.color='#fff';
-    bText.style.background='var(--surface2)';bText.style.color='var(--text)';
-    if(_SpeechAPI&&_secure&&!_recog){_rec=_mkRec();try{_rec.start();}catch(e){_setB('idle');}}
-  }
-  function activateText(){
-    vZone.style.display='none';tZone.style.display='';
-    bText.style.background='var(--accent)';bText.style.color='#fff';
-    bVoice.style.background='var(--surface2)';bVoice.style.color='var(--text)';
-    if(_recog){try{_rec.stop();}catch(e){}_recog=false;}
-    setTimeout(()=>{const el=document.getElementById('user-input');if(el)el.focus();},100);
-  }
-  bVoice.onclick=activateVoice;bText.onclick=activateText;
+  let _rec=null,_recog=false,_words=[],_cur='';
+  const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
-  // منطقة التسجيل
   const recBtn=document.createElement('button');
   recBtn.style.cssText='width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';
   recBtn.textContent='🎤 اضغط للتسجيل';
@@ -477,10 +429,6 @@ function renderHard(q,zone){
   clrBtn.textContent='🗑️ مسح الكل والبدء من جديد';
   const vSub=document.createElement('button');vSub.className='submit-btn';vSub.textContent='تحقق ✓';vSub.style.display='none';
   vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(clrBtn);vZone.appendChild(vSub);
-
-  let _rec=null,_recog=false,_words=[],_cur='';
-  const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
   function renderWords(){
     if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}
@@ -540,13 +488,26 @@ function renderHard(q,zone){
     recBtn.disabled=true;recBtn.style.opacity='0.65';
   }
 
-  // منطقة الكتابة
+  function activateVoice(){
+    vZone.style.display='';tZone.style.display='none';
+    bVoice.style.background='var(--accent)';bVoice.style.color='#fff';
+    bText.style.background='var(--surface2)';bText.style.color='var(--text)';
+    if(_SpeechAPI&&_secure&&!_recog){_rec=_mkRec();try{_rec.start();}catch(e){_setB('idle');}}
+  }
+  function activateText(){
+    vZone.style.display='none';tZone.style.display='';
+    bText.style.background='var(--accent)';bText.style.color='#fff';
+    bVoice.style.background='var(--surface2)';bVoice.style.color='var(--text)';
+    if(_recog){try{_rec.stop();}catch(e){}_recog=false;}
+    setTimeout(()=>{const el=document.getElementById('user-input');if(el)el.focus();},100);
+  }
+  bVoice.onclick=activateVoice;bText.onclick=activateText;
+
   const ta2=document.createElement('textarea');ta2.className='answer-input';ta2.placeholder='اكتب الآية كاملة...';ta2.id='user-input';
   tZone.appendChild(ta2);
   const tSub=document.createElement('button');tSub.className='submit-btn';tSub.textContent='تحقق ✓';
   tSub.onclick=()=>checkText(q);tZone.appendChild(tSub);
 
-  // زر المساعدة
   const hBox=document.createElement('div');hBox.className='hint-box';zone.appendChild(hBox);
   const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول 3 كلمات)';
   hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};
