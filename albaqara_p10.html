@@ -187,8 +187,11 @@ const MEDIUM_Q=[
 const HARD_Q=[
   {q:"اكتب الآية الثانية والستين من سورة البقرة كاملة",answer:"إِنَّ الَّذِينَ ءَامَنُوا وَالَّذِينَ هَادُوا وَالنَّصَارَىٰ وَالصَّٰبِئِينَ مَنْ ءَامَنَ بِاللَّهِ وَالْيَوْمِ الْآخِرِ وَعَمِلَ صَٰلِحًا فَلَهُمْ أَجْرُهُمْ عِندَ رَبِّهِمْ وَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ"},
   {q:"اكتب الآية الثالثة والستين من سورة البقرة كاملة",answer:"وَإِذْ أَخَذْنَا مِيثَاقَكُمْ وَرَفَعْنَا فَوْقَكُمُ الطُّورَ خُذُوا مَآ ءَاتَيْنَٰكُم بِقُوَّةٍ وَاذْكُرُوا مَا فِيهِ لَعَلَّكُمْ تَتَّقُونَ"},
+  {q:"اكتب الآية الرابعة والستين من سورة البقرة كاملة",answer:"ثُمَّ تَوَلَّيْتُم مِّن بَعْدِ ذَٰلِكَ فَلَوْلَا فَضْلُ اللَّهِ عَلَيْكُمْ وَرَحْمَتُهُ لَكُنتُم مِّنَ الْخَٰسِرِينَ"},
   {q:"اكتب الآية الخامسة والستين من سورة البقرة كاملة",answer:"وَلَقَدْ عَلِمْتُمُ الَّذِينَ اعْتَدَوْا مِنكُمْ فِي السَّبْتِ فَقُلْنَا لَهُمْ كُونُوا قِرَدَةً خَٰسِئِينَ"},
+  {q:"اكتب الآية السادسة والستين من سورة البقرة كاملة",answer:"فَجَعَلْنَٰهَا نَكَٰلًا لِّمَا بَيْنَ يَدَيْهَا وَمَا خَلْفَهَا وَمَوْعِظَةً لِّلْمُتَّقِينَ"},
   {q:"اكتب الآية السابعة والستين من سورة البقرة كاملة",answer:"وَإِذْ قَالَ مُوسَىٰ لِقَوْمِهِ إِنَّ اللَّهَ يَأْمُرُكُمْ أَن تَذْبَحُوا بَقَرَةً قَالُوا أَتَتَّخِذُنَا هُزُوًا قَالَ أَعُوذُ بِاللَّهِ أَنْ أَكُونَ مِنَ الْجَاهِلِينَ"},
+  {q:"اكتب الآية الثامنة والستين من سورة البقرة كاملة",answer:"قَالُوا ادْعُ لَنَا رَبَّكَ يُبَيِّن لَّنَا مَا هِىَ قَالَ إِنَّهُ يَقُولُ إِنَّهَا بَقَرَةٌ لَّا فَارِضٌ وَلَا بِكْرٌ عَوَانٌ بَيْنَ ذَٰلِكَ فَافْعَلُوا مَا تُؤْمَرُونَ"},
   {q:"اكتب الآية التاسعة والستين من سورة البقرة كاملة",answer:"قَالُوا ادْعُ لَنَا رَبَّكَ يُبَيِّن لَّنَا مَا لَوْنُهَا قَالَ إِنَّهُ يَقُولُ إِنَّهَا بَقَرَةٌ صَفْرَآءُ فَاقِعٌ لَّوْنُهَا تَسُرُّ النَّاظِرِينَ"}
 ];
 let currentLevel=null,questions=[],qIndex=0,correctCount=0,wrongCount=0;
@@ -197,7 +200,7 @@ let wrongIndices = [];
 const PAGE_ID = 'p10';
 
 function toArabicNum(n){return n;}
-function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:'10',medium:'10',hard:'5'};document.getElementById('total-q').textContent=t[lvl];}
+function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:'10',medium:'10',hard:'8'};document.getElementById('total-q').textContent=t[lvl];}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 function startQuiz(){if(!currentLevel)return;if(currentLevel==='easy')questions=[...EASY_Q];if(currentLevel==='medium')questions=[...MEDIUM_Q];if(currentLevel==='hard')questions=[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses = questions.map(() => 'pending'); wrongIndices = []; var rb=document.getElementById('resume-banner'); if(rb) rb.style.display='none'; document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
