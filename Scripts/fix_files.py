@@ -806,6 +806,26 @@ NEW_VOICE_JS = r'''const recBtn=document.createElement('button');recBtn.classNam
       const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
       const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
+      function _fixWords(words){
+        const out=[];
+        for(let i=0;i<words.length;i++){
+          if(i<words.length-2 && normalize(words[i])==='او' && normalize(words[i+1])==='كل' && normalize(words[i+2])==='ما'){
+            out.push(words[i]+words[i+1]+words[i+2]);i+=2;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='او' && normalize(words[i+1])==='كلما'){
+            out.push(words[i]+words[i+1]);i++;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='ولا' && normalize(words[i+1])==='تجدنهم'){
+            out.push('ولتجدنهم');i++;continue;
+          }
+          if(words[i]==='ممنع'){out.push('ممن','منع');continue;}
+          if(words[i]==='بلا'){out.push('بلى');continue;}
+          if(words[i]==='بن'){out.push('ابن');continue;}
+          out.push(words[i]);
+        }
+        return out;
+      }
+
       function renderWords(){
         if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}
         txBox.style.display='block';
@@ -839,13 +859,13 @@ NEW_VOICE_JS = r'''const recBtn=document.createElement('button');recBtn.classNam
           for(let i=e.resultIndex;i<e.results.length;i++){
             if(e.results[i].isFinal){
               const newWords=e.results[i][0].transcript.trim().split(/\s+/);
-              _words=_words.concat(newWords);_cur='';
+              _words=_fixWords(_words.concat(newWords));_cur='';
             }
           }
           renderWords();
         };
         r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};
-        r.onend=()=>{_recog=false;if(_cur){_words=_words.concat(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
+        r.onend=()=>{_recog=false;if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\s+/)));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
         return r;
       }
 
@@ -893,6 +913,51 @@ def upgrade_voice_recording(out):
     if changed and '.rec-transcript{' not in out and '</style>' in out:
         out = out.replace('</style>', VOICE_CSS_ADD + '\n</style>', 1)
     return out, changed
+
+
+def retrofit_fixwords(out):
+    """يضيف دالة _fixWords (تصحيح عرض بلا/بن/ولا+تجدنهم/ممنع في اختبار الصعب
+    بالتسجيل الصوتي) للملفات اللي عندها renderWords بالفعل من ترقية سابقة
+    قبل ما تُكتشف هذه الإصلاحات (يوليو ٢٠٢٦ الجزء ٤)."""
+    if 'renderWords' not in out or '_fixWords' in out:
+        return out, False
+    FIXWORDS_FN = (
+        "function _fixWords(words){\n"
+        "        const out=[];\n"
+        "        for(let i=0;i<words.length;i++){\n"
+        "          if(i<words.length-2 && normalize(words[i])==='او' && normalize(words[i+1])==='كل' && normalize(words[i+2])==='ما'){\n"
+        "            out.push(words[i]+words[i+1]+words[i+2]);i+=2;continue;\n"
+        "          }\n"
+        "          if(i<words.length-1 && normalize(words[i])==='او' && normalize(words[i+1])==='كلما'){\n"
+        "            out.push(words[i]+words[i+1]);i++;continue;\n"
+        "          }\n"
+        "          if(i<words.length-1 && normalize(words[i])==='ولا' && normalize(words[i+1])==='تجدنهم'){\n"
+        "            out.push('ولتجدنهم');i++;continue;\n"
+        "          }\n"
+        "          if(words[i]==='ممنع'){out.push('ممن','منع');continue;}\n"
+        "          if(words[i]==='بلا'){out.push('بلى');continue;}\n"
+        "          if(words[i]==='بن'){out.push('ابن');continue;}\n"
+        "          out.push(words[i]);\n"
+        "        }\n"
+        "        return out;\n"
+        "      }\n\n"
+        "      function renderWords("
+    )
+    if 'function renderWords(' not in out:
+        return out, False
+    out2 = out.replace('function renderWords(', FIXWORDS_FN, 1)
+    OLD_ONRESULT = "_words=_words.concat(newWords);_cur='';"
+    NEW_ONRESULT = "_words=_fixWords(_words.concat(newWords));_cur='';"
+    OLD_ONEND = "if(_cur){_words=_words.concat(_cur.trim().split(/\\s+/));_cur='';}"
+    NEW_ONEND = "if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\\s+/)));_cur='';}"
+    changed = False
+    if OLD_ONRESULT in out2:
+        out2 = out2.replace(OLD_ONRESULT, NEW_ONRESULT)
+        changed = True
+    if OLD_ONEND in out2:
+        out2 = out2.replace(OLD_ONEND, NEW_ONEND)
+        changed = True
+    return (out2, True) if changed else (out, False)
 
 
 def fix_file(path):
@@ -1161,12 +1226,13 @@ def fix_file(path):
         "    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n"
         "    .replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما')\n"
         "    .replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما')\n"
-        "    .replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فاداراتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فاداراتم')\n"
+        "    .replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم')\n"
         "    .replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن')\n"
         "    .replace(/نصاري(?=\\s|$)/g,'نصارا')\n"
         "    .replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات')\n"
         "    .replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم')\n"
         "    .replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما')\n"
+        "    .replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')\n"
         "    .replace(/\\s+/g,' ')\n"
         "    .trim();\n"
         "}"
@@ -1272,12 +1338,13 @@ def fix_file(path):
             EXTRA_ALIASES = (
                 ".replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما')"
                 ".replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما')"
-                ".replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فاداراتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فاداراتم')"
+                ".replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم')"
                 ".replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن')"
                 ".replace(/نصاري(?=\\s|$)/g,'نصارا')"
                 ".replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات')"
                 ".replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم')"
                 ".replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما')"
+                ".replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')"
             )
             out = out.replace(
                 ".replace(/رحمان/g,'رحمن')",
@@ -1292,6 +1359,23 @@ def fix_file(path):
                 ".replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما')",
                 1
             )
+        # بلي: العرض دلوقتي بيصحح "بلا" لـ"بلى" (يوليو ٢٠٢٦ الجزء ٤) فمحتاجين
+        # نتأكد إن "بلي" (بعد قاعدة ى→ي العامة) برضه توصل لنفس مرجع بَلَىٰ
+        if "بلي(?=\\s|$)" not in out:
+            marker = ".replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما')"
+            if marker in out:
+                out = out.replace(
+                    marker,
+                    marker + ".replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')",
+                    1
+                )
+        # فادراتم/فادرأتم: كانوا بيوصلوا لهدف غلط "فاداراتم" (رسم الكلمة مختلف
+        # شوية بين الملفات — بعضها فيه ألف خنجرية زيادة عن غيره)، الهدف الصح
+        # الموحّد هو "فادارتم" (يوليو ٢٠٢٦ الجزء ٣)
+        OLD_FADARATM_TARGET = r".replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فاداراتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فاداراتم')"
+        NEW_FADARATM_TARGET = r".replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم')"
+        if OLD_FADARATM_TARGET in out:
+            out = out.replace(OLD_FADARATM_TARGET, NEW_FADARATM_TARGET)
 
     # ====================================================
     # 8ج. تنظيف ميزة الترتيب المكسورة من صفحات البقرة (لو اتضافت غلط)
@@ -1333,6 +1417,10 @@ def fix_file(path):
     # ====================================================
     # 9ح. ترقية التسجيل الصوتي (الصعب) لشكل الكلمات القابلة للحذف فرديًا
     out, voice_upgraded = upgrade_voice_recording(out)
+
+    # 9ط. ترقية رجعية: حقن _fixWords للملفات اللي عندها renderWords بالفعل
+    #      لكن من غير تصحيحات العرض (بلا/بن/ولا+تجدنهم/ممنع)
+    out, fixwords_added = retrofit_fixwords(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
