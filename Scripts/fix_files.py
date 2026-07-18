@@ -322,6 +322,44 @@ if('serviceWorker' in navigator){
 }
 </script>"""
 
+# ===== وضع المطوّر (يوليو ٢٠٢٦) =====
+# يخفي مستوى "صعب" وزر التلاوة الصوتية عن أي زائر ما عندوش فلاج
+# darbi_dev محفوظ في localStorage. تفعيل الفلاج: فتح أي صفحة بالرابط
+# ?dev=1 مرة واحدة على المتصفح — وبعدها كل حاجة تفضل ظاهرة تلقائيًا.
+DEV_MODE_LOCK = """<script>
+(function(){
+  try{
+    var p=new URLSearchParams(location.search);
+    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
+    if(localStorage.getItem('darbi_dev')!=='1'){
+      document.documentElement.classList.add('darbi-locked');
+    }
+  }catch(e){}
+})();
+</script>
+<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}</style>"""
+
+# نسخة خاصة بـ recitation.html: بدل ما تخفي جزء من الصفحة، بترجّع
+# أي زائر من غير الفلاج لصفحة index.html مباشرة (الصفحة كلها ميزة واحدة).
+DEV_MODE_REDIRECT = """<script>
+(function(){
+  try{
+    var p=new URLSearchParams(location.search);
+    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
+    if(localStorage.getItem('darbi_dev')!=='1'){
+      location.replace('index.html');
+    }
+  }catch(e){}
+})();
+</script>"""
+
+def add_dev_mode(out):
+    """يحقن كود إخفاء المستوى الصعب/زر التلاوة (صفحات السور وindex.html)"""
+    if 'darbi_dev' in out or '<head>' not in out:
+        return out, False
+    out = out.replace('<head>', '<head>\n' + DEV_MODE_LOCK, 1)
+    return out, True
+
 def ar2en(text):
     """تحويل الأرقام العربية-الهندية إلى غربية"""
     for i, c in enumerate('٠١٢٣٤٥٦٧٨٩'):
@@ -1422,6 +1460,9 @@ def fix_file(path):
     #      لكن من غير تصحيحات العرض (بلا/بن/ولا+تجدنهم/ممنع)
     out, fixwords_added = retrofit_fixwords(out)
 
+    # 9ي. وضع المطوّر: إخفاء مستوى "صعب" وزر التلاوة عن الزوار العاديين
+    out, dev_mode_added = add_dev_mode(out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -1433,10 +1474,18 @@ def fix_file(path):
     return False
 
 def fix_index_recitation(path):
-    """index.html و recitation.html — PWA + زر مشاركة"""
+    """index.html و recitation.html — PWA + زر مشاركة + وضع المطوّر"""
     with open(path, encoding='utf-8') as f:
         src = f.read()
     out = ar2en(src)
+
+    # وضع المطوّر: recitation.html بترجّع أي زائر من غير الفلاج لـ index.html
+    # (الصفحة كلها ميزة واحدة)، وindex.html بتخفي أي رابط/زر تلاوة فيها لو موجود
+    if 'darbi_dev' not in out and '<head>' in out:
+        if os.path.basename(path) == 'recitation.html':
+            out = out.replace('<head>', '<head>\n' + DEV_MODE_REDIRECT, 1)
+        else:
+            out = out.replace('<head>', '<head>\n' + DEV_MODE_LOCK, 1)
 
     SHARE_FN = """function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick=\"shareApp()\"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
