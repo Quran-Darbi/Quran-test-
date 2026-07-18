@@ -215,7 +215,7 @@ function wordDiff(userVal,correctAnswer){
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'')
     .replace(/ة/g,'ه')
     .replace(/[ىئ]/g,'ي')
-    .replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فاداراتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فاداراتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما')
+    .replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)بلي(?=\s|$)/g,'بلا')
     .replace(/(.)(\1)+/g,'$1')
     .replace(/ +/g,' ').trim();
   const uWords=userVal.trim().split(/\s+/);
@@ -300,6 +300,26 @@ function showQuestion(){
       const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
       const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
+      function _fixWords(words){
+        const out=[];
+        for(let i=0;i<words.length;i++){
+          if(i<words.length-2 && normalize(words[i])==='او' && normalize(words[i+1])==='كل' && normalize(words[i+2])==='ما'){
+            out.push(words[i]+words[i+1]+words[i+2]);i+=2;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='او' && normalize(words[i+1])==='كلما'){
+            out.push(words[i]+words[i+1]);i++;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='ولا' && normalize(words[i+1])==='تجدنهم'){
+            out.push('ولتجدنهم');i++;continue;
+          }
+          if(words[i]==='ممنع'){out.push('ممن','منع');continue;}
+          if(words[i]==='بلا'){out.push('بلى');continue;}
+          if(words[i]==='بن'){out.push('ابن');continue;}
+          out.push(words[i]);
+        }
+        return out;
+      }
+
       function renderWords(){
         if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}
         txBox.style.display='block';
@@ -333,13 +353,13 @@ function showQuestion(){
           for(let i=e.resultIndex;i<e.results.length;i++){
             if(e.results[i].isFinal){
               const newWords=e.results[i][0].transcript.trim().split(/\s+/);
-              _words=_words.concat(newWords);_cur='';
+              _words=_fixWords(_words.concat(newWords));_cur='';
             }
           }
           renderWords();
         };
         r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};
-        r.onend=()=>{_recog=false;if(_cur){_words=_words.concat(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
+        r.onend=()=>{_recog=false;if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\s+/)));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
         return r;
       }
 
