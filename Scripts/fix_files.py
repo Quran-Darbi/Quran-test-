@@ -540,6 +540,8 @@ def remove_broken_order_for_baqara(path, out):
         return out, False
     if 'order-area' not in out:
         return out, False
+    if 'ORDER_AYAT' in out:
+        return out, False  # التنفيذ الجديد الصحيح للبقرة — ماينفعش يتشال (يوليو ٢٠٢٦)
     changed = False
 
     # 1. الزر الرابع في منتقي المستوى
@@ -802,6 +804,274 @@ def add_ordering_feature(out, filename=''):
 
 
 # ====================================================
+# ميزة ترتيب الآيات 🔀 لصفحات سورة البقرة (يوليو ٢٠٢٦)
+# ------------------------------------------------------
+# صفحات البقرة معندهاش AYAT array بصيغة نص بسيط زي جزء عم (بعضها
+# مفيهوش AYAT خالص، وواحدة بس فيها AYAT بصيغة {num,text} غير مستخدمة).
+# فبدل الاعتماد عليها، بنستخرج نص كل آيات الصفحة من HARD_Q نفسها
+# (اللي أصلاً موثّقة ومتحقق منها من المصحف)، بعد استبعاد أي سؤال
+# جزئي (زي "بداية الآية...حتى..."). العدد المستخرج لازم يطابق عدد
+# آيات الصفحة الحقيقي (من "الآيات X إلى Y") قبل أي إضافة — لو مطابقش،
+# الصفحة تتخطى تمامًا (تتسجل في تقرير آخر التشغيلة) بدل ما يترفع
+# ترتيب ناقص. المصفوفة الناتجة اسمها ORDER_AYAT (مش AYAT) عشان أي
+# استخدام قديم/غير متوافق لـAYAT في نفس الملف ما يتلخبطش معاها.
+# ====================================================
+
+BAQARA_ORDER_JS = '''
+/* ===== ترتيب الآيات 🔀 (البقرة) ===== */
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+function startOrderQuiz(){
+  orderPlaced=new Array(ORDER_AYAT.length).fill(null);
+  orderCursor=0;
+  orderPoolOrder=ORDER_AYAT.map((t,idx)=>idx);
+  shuffle(orderPoolOrder);
+  document.getElementById('level-card').style.display='none';
+  document.getElementById('order-area').style.display='block';
+  document.getElementById('order-feedback').style.display='none';
+  document.getElementById('order-reveal').style.display='none';
+  document.getElementById('order-check-btn').style.display='none';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=false;rb.style.opacity='1';
+  renderOrderQuiz();
+}
+function mushafHtml(){
+  return '<div class="mushaf-block">'+ORDER_AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
+}
+function nextEmptyFrom(start){
+  for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  return -1;
+}
+function renderOrderQuiz(){
+  const slotsDiv=document.getElementById('order-slots');
+  const poolDiv=document.getElementById('order-pool');
+  slotsDiv.innerHTML='';
+  poolDiv.innerHTML='';
+  const filledGrid=document.createElement('div');
+  filledGrid.className='order-filled-grid';
+  const emptyStrip=document.createElement('div');
+  emptyStrip.className='order-empty-strip';
+  orderPlaced.forEach((idx,pos)=>{
+    if(idx===null){
+      const active=(pos===orderCursor);
+      const dot=document.createElement('span');
+      dot.className='order-dot'+(active?' active':'');
+      dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';
+      dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';
+      dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
+      emptyStrip.appendChild(dot);
+    }else{
+      const card=document.createElement('div');
+      card.className='order-slot filled';
+      card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+ORDER_AYAT[idx]+'</span>';
+      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      filledGrid.appendChild(card);
+    }
+  });
+  if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);
+  if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);
+  orderPoolOrder.forEach(idx=>{
+    if(orderPlaced.includes(idx))return;
+    const btn=document.createElement('button');
+    btn.className='order-item';
+    btn.textContent=ORDER_AYAT[idx];
+    btn.onclick=()=>{
+      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}
+      if(orderCursor===-1)return;
+      orderPlaced[orderCursor]=idx;
+      orderCursor=nextEmptyFrom(orderCursor+1);
+      document.getElementById('order-feedback').style.display='none';
+      renderOrderQuiz();
+    };
+    poolDiv.appendChild(btn);
+  });
+  const allFilled=!orderPlaced.includes(null);
+  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';
+}
+function checkOrderAnswer(){
+  let correct=0;
+  document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
+    const ok=(orderPlaced[pos]!==null&&ORDER_AYAT[orderPlaced[pos]]===ORDER_AYAT[pos]);
+    if(ok)correct++;
+    el.classList.remove('correct-slot','wrong-slot');
+    el.classList.add(ok?'correct-slot':'wrong-slot');
+  });
+  const fb=document.getElementById('order-feedback');
+  const allCorrect=(correct===ORDER_AYAT.length);
+  fb.className='feedback '+(allCorrect?'correct':'wrong');
+  fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(ORDER_AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());
+  fb.style.display='block';
+  document.getElementById('order-check-btn').style.display='none';
+  if(allCorrect)spawnConfetti();
+}
+function revealOrderAnswer(){
+  document.getElementById('order-reveal').innerHTML=mushafHtml();
+  document.getElementById('order-reveal').style.display='block';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=true;rb.style.opacity='0.5';
+}
+/* ===== نهاية ترتيب الآيات (البقرة) ===== */
+'''
+
+BAQARA_ORDER_SKIPPED = []  # تقرير: صفحات بقرة اتخطّت لأن HARD_Q/AYAT عندها ناقصة
+
+
+def extract_baqara_order_ayat(out):
+    """يستخرج نصوص آيات الصفحة بالترتيب الصحيح، من AYAT (لو بصيغة object
+    زي p38) أو من HARD_Q (بعد استبعاد أي سؤال جزئي زي 'بداية الآية...حتى...').
+    يرجّع (None, سبب) لو العدد ما طابقش عدد آيات الصفحة الحقيقي المكتوب في
+    ayat-range، عشان مايتضافش ترتيب ناقص أبدًا."""
+    m_range = re.search(r'الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
+    if not m_range:
+        return None, 'no-range'
+    start, end = int(m_range.group(1)), int(m_range.group(2))
+    expected = end - start + 1
+
+    m_ayat = re.search(r'const\s+AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
+    if m_ayat:
+        entries = re.findall(r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', m_ayat.group(1))
+        if entries:
+            entries = [(int(n), t.replace('\\"', '"')) for n, t in entries]
+            entries.sort(key=lambda x: x[0])
+            texts = [t for n, t in entries]
+            if len(texts) == expected:
+                return texts, 'ok-AYAT'
+            return None, f'AYAT-count-mismatch:{len(texts)}/{expected}'
+
+    m_hard = re.search(r'const\s+HARD_Q\s*=\s*\[(.*?)\n\];', out, re.S)
+    if not m_hard:
+        return None, 'no-HARD_Q'
+    body = m_hard.group(1)
+    items = re.findall(
+        r'\{\s*(?:ayah:\s*\d+\s*,\s*)?q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"\s*\}',
+        body
+    )
+    if not items:
+        return None, 'HARD_Q-parse-fail'
+    texts = []
+    for q, ans in items:
+        if 'بداية' in q or 'حتى' in q:
+            continue
+        texts.append(ans.replace('\\"', '"'))
+    if len(texts) == expected:
+        return texts, 'ok-HARD_Q'
+    return None, f'HARD_Q-count-mismatch:{len(texts)}/{expected}'
+
+
+def fix_broken_order_area_reference(out):
+    """تنظيف بقايا محاولة قديمة فشلت لبعض صفحات البقرة (زي p38): سطر
+    كان بيحاول يخفي order-area وهي أصلًا مش موجودة، وده كان بيكسر
+    returnToLevels() بخطأ JS فعلي (Cannot read properties of null) لما
+    المستخدم يضغط 'اختر مستوى آخر'."""
+    broken = "document.getElementById('order-area').style.display='none';"
+    if broken in out and 'id="order-area"' not in out:
+        out = out.replace(broken, '', 1)
+        return out, True
+    return out, False
+
+
+def add_ordering_feature_baqara(path, out):
+    """يضيف ميزة ترتيب الآيات 🔀 لصفحة بقرة واحدة، بعد التحقق البرمجي
+    من اكتمال نص كل آياتها. لو الاستخراج فشل (نص ناقص عن عدد آيات
+    الصفحة)، الصفحة تتخطّى تمامًا ومفيش أي تعديل، وتتسجل في تقرير
+    آخر التشغيلة (BAQARA_ORDER_SKIPPED) عشان تُراجع يدويًا."""
+    fn = os.path.splitext(os.path.basename(path))[0]
+    if not fn.startswith('albaqara_'):
+        return out, False
+    if 'id="order-area"' in out:
+        return out, False  # مضافة بالفعل وشغالة
+
+    changed = False
+
+    out, fixed_broken = fix_broken_order_area_reference(out)
+    if fixed_broken:
+        changed = True
+
+    texts, status = extract_baqara_order_ayat(out)
+    if texts is None:
+        BAQARA_ORDER_SKIPPED.append(f'{os.path.basename(path)} ({status})')
+        return out, changed
+
+    # 1. CSS (نفس تصميم جزء عم بالظبط)
+    if '</style>' in out and '.order-slot' not in out:
+        out = out.replace('</style>', ORDER_CSS + '\n</style>', 1)
+        changed = True
+
+    # توسيع الشبكة لتستوعب 4 أزرار (تنسيقات البقرة مش موحّدة في المسافات)
+    out = re.sub(
+        r'\.levels-grid\s*\{\s*display:\s*flex;\s*gap:\s*10px;\s*justify-content:\s*center;\s*margin-bottom:\s*20px;\s*\}',
+        '.levels-grid{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}',
+        out
+    )
+    out = re.sub(
+        r'\.level-btn\s*\{\s*flex:\s*1;\s*max-width:\s*100px;\s*background:\s*var\(--surface2\);\s*border:\s*1\.5px solid var\(--border\);\s*border-radius:\s*14px;\s*padding:\s*16px 8px;',
+        '.level-btn{flex:1;min-width:76px;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 6px;',
+        out
+    )
+
+    # 2. الزر الرابع في منتقي المستوى
+    if 'btn-order' not in out:
+        new_out, n = BTN_CLOSE_PATTERN.subn(lambda m: ORDER_BTN_HTML + m.group(2), out, count=1)
+        if n:
+            out = new_out
+            changed = True
+
+    # 3. قسم order-area كامل — قبل result-area
+    if '<div class="result-area" id="result-area">' in out:
+        out = out.replace(
+            '<div class="result-area" id="result-area">',
+            ORDER_AREA_HTML + '<div class="result-area" id="result-area">',
+            1
+        )
+        changed = True
+
+    # 4. returnToLevels — إخفاء order-area كمان لما نرجع لمنتقي المستوى
+    if OLD_RETURN_LEVELS in out and "order-area').style.display='none'" not in out:
+        out = out.replace(OLD_RETURN_LEVELS, NEW_RETURN_LEVELS, 1)
+        changed = True
+
+    # 5. حقن ORDER_AYAT بعد HARD_Q مباشرة (اسم مختلف عن AYAT عمدًا)
+    if 'const ORDER_AYAT' not in out:
+        m_hard = re.search(r'const\s+HARD_Q\s*=\s*\[.*?\n\];', out, re.S)
+        if m_hard:
+            ayat_js = "\nconst ORDER_AYAT=[\n" + ",\n".join(
+                '  "' + t.replace('\\', '\\\\').replace('"', '\\"') + '"' for t in texts
+            ) + "\n];\n"
+            insert_pos = m_hard.end()
+            out = out[:insert_pos] + ayat_js + out[insert_pos:]
+            changed = True
+
+    # 6. دوال JS الترتيب — قبل shareApp
+    if 'function shareApp(' in out and 'function startOrderQuiz(' not in out:
+        out = out.replace('function shareApp(', BAQARA_ORDER_JS + '\nfunction shareApp(', 1)
+        changed = True
+
+    # 7. الربط: selectLevel و startQuiz — تنسيق كود البقرة مش موحّد
+    #    (بعضها ternary وبعضها if متتالية) فمحتاجين تصحيح بناءً على موقع
+    #    القوس الافتتاحي مش استبدال نص حرفي كامل زي جزء عم
+    if "startOrderQuiz();return;}" not in out:
+        m = re.search(r'function\s+startQuiz\(\)\s*\{', out)
+        if m:
+            out = out[:m.end()] + "if(currentLevel==='order'){startOrderQuiz();return;}" + out[m.end():]
+            changed = True
+
+    if "ORDER_AYAT.length);return;}" not in out:
+        m = re.search(r'function\s+selectLevel\(lvl\)\s*\{', out)
+        if m:
+            patch = (
+                "if(lvl==='order'){currentLevel=lvl;"
+                "document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));"
+                "var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');"
+                "document.getElementById('start-btn').classList.add('ready');"
+                "document.getElementById('total-q').textContent=toArabicNum(ORDER_AYAT.length);return;}"
+            )
+            out = out[:m.end()] + patch + out[m.end():]
+            changed = True
+
+    return out, changed
+
+
+# ====================================================
 # ترقية التسجيل الصوتي (مستوى الصعب) إلى الشكل الموحّد:
 # كل كلمة متعرَّف عليها في span منفصل قابل للنقر لحذفها فرديًا،
 # بدل النص الكامل اللي كان بيتمسح مرة واحدة. (يوليو ٢٠٢٦)
@@ -1002,6 +1272,14 @@ def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
     out = ar2en(src)
+
+    # ====================================================
+    # -1. تصحيح صيغة الأمر المؤنث لمذكر رسمي (يوليو ٢٠٢٦):
+    #    بعض أسئلة "الصعب" في دفعة قديمة من صفحات البقرة كانت بصيغة
+    #    "اكتبي" (مؤنث) بدل "اكتب" — مخالف لقاعدة الذكر الرسمي فصحى.
+    #    الكلمة دي بس تظهر في نص التعليمات اللي كتبناه احنا، مش في
+    #    القرآن نفسه، فالاستبدال المباشر آمن ومايلمسش النص القرآني.
+    out = out.replace('اكتبي', 'اكتب')
 
     # ====================================================
     # 0. إصلاح قائمة التشكيل (alburuj/altariq pattern):
@@ -1428,6 +1706,11 @@ def fix_file(path):
     out, order_changed = add_ordering_feature(out, os.path.basename(path))
 
     # ====================================================
+    # 9أ. ميزة ترتيب الآيات 🔀 لصفحات البقرة (تحقق برمجي من اكتمال
+    # النص قبل الإضافة — الصفحات الناقصة تتخطى وتتسجل في تقرير)
+    out, baqara_order_changed = add_ordering_feature_baqara(path, out)
+
+    # ====================================================
     # 9ب. تصحيح قوي: تأكيد ربط startQuiz/selectLevel بالترتيب
     # حتى لو الاستبدال النصي الحرفي فوق فشل بصمت بسبب اختلاف التنسيق
     out, wiring_fixed = ensure_order_wiring(path, out)
@@ -1566,6 +1849,19 @@ def main():
             print('  -', fn)
     else:
         print('كل ملفات جزء عم فيها AYAT ✅')
+
+    # ====================================================
+    # تقرير تشخيصي: صفحات البقرة اللي اتخطّت ميزة الترتيب لأن نص
+    # الآيات عندها ناقص (HARD_Q ما بيغطيش كل آيات الصفحة) — محتاجة
+    # صور مصحف لإكمالها يدويًا
+    # ====================================================
+    print('\n=== تقرير ترتيب البقرة 🔀 ===')
+    if BAQARA_ORDER_SKIPPED:
+        print(f'{len(BAQARA_ORDER_SKIPPED)} صفحة بقرة اتخطّت (محتاجة مراجعة/صور مصحف):')
+        for s in BAQARA_ORDER_SKIPPED:
+            print('  -', s)
+    else:
+        print('كل صفحات البقرة اللي اتفحصت اكتمل فيها الترتيب ✅')
 
 if __name__ == '__main__':
     main()
