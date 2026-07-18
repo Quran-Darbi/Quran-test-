@@ -12,7 +12,10 @@
   }catch(e){}
 })();
 </script>
-<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}</style>
+<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
+.nav-row{display:flex;gap:10px;margin-top:14px;}
+.nav-btn{flex:1;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:17px;font-family:inherit;cursor:pointer;}.nav-btn:hover:not(:disabled){background:var(--surface-hover);}.nav-btn:disabled{opacity:0.4;cursor:default;}.nav-btn.primary{background:var(--accent);color:var(--card);border-color:var(--accent);}.nav-btn.primary:hover{background:var(--accent-dark);}
+</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>
@@ -172,19 +175,8 @@
   .level-title { font-size: 22px; color: var(--text); margin-bottom: 6px; }
   .level-sub   { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
 
-  .levels-grid {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  .level-btn {
-    flex: 1;
-    max-width: 100px;
-    background: var(--surface2);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 8px;
+  .levels-grid{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+  .level-btn{flex:1;min-width:76px;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 6px;
     cursor: pointer;
     transition: all .2s;
     font-family: inherit;
@@ -455,6 +447,7 @@
       <span class="level-name">صعب</span>
       <span class="level-desc">اكتب الآية كاملة من الذاكرة بدون أي مساعدة</span>
     </button>
+    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
 <a href="albaqara_p23.html" class="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
@@ -478,6 +471,18 @@
   </div>
 </div>
 
+<div class="quiz-area" id="order-area">
+  <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
+  <div id="order-slots" style="margin-bottom:16px;"></div>
+  <div id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
+    <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
+  </div>
+  <div id="order-reveal" style="display:none;"></div>
+  <div class="feedback" id="order-feedback"></div>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+</div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
   <div class="result-title" id="result-title">أحسنت!</div>
@@ -545,6 +550,13 @@ const HARD_Q = [
   { q: "اكتب الآية رقم 144 من سورة البقرة كاملة", answer: AYAT[2].text },
   { q: "اكتب الآية رقم 145 من سورة البقرة كاملة", answer: AYAT[3].text }
 ];
+const ORDER_AYAT=[
+  "سَيَقُولُ السُّفَهَآءُ مِنَ النَّاسِ مَا وَلَّاهُمْ عَن قِبْلَتِهِمُ الَّتِي كَانُوا عَلَيْهَا ۚ قُل لِّلَّهِ الْمَشْرِقُ وَالْمَغْرِبُ ۚ يَهْدِي مَن يَشَآءُ إِلَىٰ صِرَٰطٍ مُّسْتَقِيمٍ",
+  "وَكَذَٰلِكَ جَعَلْنَاكُمْ أُمَّةً وَسَطًا لِّتَكُونُوا شُهَدَآءَ عَلَى النَّاسِ وَيَكُونَ الرَّسُولُ عَلَيْكُمْ شَهِيدًا ۗ وَمَا جَعَلْنَا الْقِبْلَةَ الَّتِي كُنتَ عَلَيْهَآ إِلَّا لِنَعْلَمَ مَن يَتَّبِعُ الرَّسُولَ مِمَّن يَنقَلِبُ عَلَىٰ عَقِبَيْهِ ۚ وَإِن كَانَتْ لَكَبِيرَةً إِلَّا عَلَى الَّذِينَ هَدَى اللَّهُ ۗ وَمَا كَانَ اللَّهُ لِيُضِيعَ إِيمَانَكُمْ ۚ إِنَّ اللَّهَ بِالنَّاسِ لَرَءُوفٌ رَّحِيمٌ",
+  "قَدْ نَرَىٰ تَقَلُّبَ وَجْهِكَ فِي السَّمَآءِ فَلَنُوَلِّيَنَّكَ قِبْلَةً تَرْضَىٰهَا فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ ۚ وَحَيْثُ مَا كُنتُمْ فَوَلُّوا وُجُوهَكُمْ شَطْرَهُ ۗ وَإِنَّ الَّذِينَ أُوتُوا الْكِتَٰبَ لَيَعْلَمُونَ أَنَّهُ الْحَقُّ مِن رَّبِّهِمْ ۗ وَمَا اللَّهُ بِغَافِلٍ عَمَّا يَعْمَلُونَ",
+  "وَلَئِنْ أَتَيْتَ الَّذِينَ أُوتُوا الْكِتَٰبَ بِكُلِّ ءَايَةٍ مَّا تَبِعُوا قِبْلَتَكَ ۚ وَمَآ أَنتَ بِتَابِعٍ قِبْلَتَهُمْ ۚ وَمَا بَعْضُهُم بِتَابِعٍ قِبْلَةَ بَعْضٍ ۚ وَلَئِنِ اتَّبَعْتَ أَهْوَآءَهُم مِّن بَعْدِ مَا جَآءَكَ مِنَ الْعِلْمِ إِنَّكَ إِذًا لَّمِنَ الظَّالِمِينَ"
+];
+
 
 let currentLevel = null;
 let statuses = [];
@@ -555,7 +567,7 @@ let qIndex       = 0;
 let correctCount = 0;
 let wrongCount   = 0;
 
-function selectLevel(lvl) {
+function selectLevel(lvl) {if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(ORDER_AYAT.length);return;}
   currentLevel = lvl;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('btn-' + lvl).classList.add('active');
@@ -577,7 +589,7 @@ function updateBadges() {
   document.getElementById('correct-badge').innerHTML = `${toArabicNum(correctCount)} ✓<br>صحيح`;
 }
 
-function startQuiz() {
+function startQuiz() {if(currentLevel==='order'){startOrderQuiz();return;}
   if (!currentLevel) return;
   if (currentLevel === 'easy')   questions = [...EASY_Q];
   if (currentLevel === 'medium') questions = [...MEDIUM_Q];
@@ -961,7 +973,7 @@ function showResult() {
   var __pct = Math.round((correctCount/questions.length)*100); if (__pct === 100) spawnConfetti();
 }
 
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz() {
   document.getElementById('result-area').style.display = 'none';
   document.getElementById('level-card').style.display  = 'block';
@@ -978,6 +990,101 @@ function retryQuiz() {
 // ══════════════════════════════════════════════
 //  الوضع الليلي
 // ══════════════════════════════════════════════
+
+/* ===== ترتيب الآيات 🔀 (البقرة) ===== */
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+function startOrderQuiz(){
+  orderPlaced=new Array(ORDER_AYAT.length).fill(null);
+  orderCursor=0;
+  orderPoolOrder=ORDER_AYAT.map((t,idx)=>idx);
+  shuffle(orderPoolOrder);
+  document.getElementById('level-card').style.display='none';
+  document.getElementById('order-area').style.display='block';
+  document.getElementById('order-feedback').style.display='none';
+  document.getElementById('order-reveal').style.display='none';
+  document.getElementById('order-check-btn').style.display='none';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=false;rb.style.opacity='1';
+  renderOrderQuiz();
+}
+function mushafHtml(){
+  return '<div class="mushaf-block">'+ORDER_AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
+}
+function nextEmptyFrom(start){
+  for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  return -1;
+}
+function renderOrderQuiz(){
+  const slotsDiv=document.getElementById('order-slots');
+  const poolDiv=document.getElementById('order-pool');
+  slotsDiv.innerHTML='';
+  poolDiv.innerHTML='';
+  const filledGrid=document.createElement('div');
+  filledGrid.className='order-filled-grid';
+  const emptyStrip=document.createElement('div');
+  emptyStrip.className='order-empty-strip';
+  orderPlaced.forEach((idx,pos)=>{
+    if(idx===null){
+      const active=(pos===orderCursor);
+      const dot=document.createElement('span');
+      dot.className='order-dot'+(active?' active':'');
+      dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';
+      dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';
+      dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
+      emptyStrip.appendChild(dot);
+    }else{
+      const card=document.createElement('div');
+      card.className='order-slot filled';
+      card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+ORDER_AYAT[idx]+'</span>';
+      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      filledGrid.appendChild(card);
+    }
+  });
+  if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);
+  if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);
+  orderPoolOrder.forEach(idx=>{
+    if(orderPlaced.includes(idx))return;
+    const btn=document.createElement('button');
+    btn.className='order-item';
+    btn.textContent=ORDER_AYAT[idx];
+    btn.onclick=()=>{
+      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}
+      if(orderCursor===-1)return;
+      orderPlaced[orderCursor]=idx;
+      orderCursor=nextEmptyFrom(orderCursor+1);
+      document.getElementById('order-feedback').style.display='none';
+      renderOrderQuiz();
+    };
+    poolDiv.appendChild(btn);
+  });
+  const allFilled=!orderPlaced.includes(null);
+  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';
+}
+function checkOrderAnswer(){
+  let correct=0;
+  document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
+    const ok=(orderPlaced[pos]!==null&&ORDER_AYAT[orderPlaced[pos]]===ORDER_AYAT[pos]);
+    if(ok)correct++;
+    el.classList.remove('correct-slot','wrong-slot');
+    el.classList.add(ok?'correct-slot':'wrong-slot');
+  });
+  const fb=document.getElementById('order-feedback');
+  const allCorrect=(correct===ORDER_AYAT.length);
+  fb.className='feedback '+(allCorrect?'correct':'wrong');
+  fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(ORDER_AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());
+  fb.style.display='block';
+  document.getElementById('order-check-btn').style.display='none';
+  if(allCorrect)spawnConfetti();
+}
+function revealOrderAnswer(){
+  document.getElementById('order-reveal').innerHTML=mushafHtml();
+  document.getElementById('order-reveal').style.display='block';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=true;rb.style.opacity='0.5';
+}
+/* ===== نهاية ترتيب الآيات (البقرة) ===== */
+
 function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
