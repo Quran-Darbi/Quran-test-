@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<script>
+(function(){
+  try{
+    var p=new URLSearchParams(location.search);
+    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
+    if(localStorage.getItem('darbi_dev')!=='1'){
+      location.replace('index.html');
+    }
+  }catch(e){}
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>اختبر تلاوتك — دربي لحفظ القرآن</title>
