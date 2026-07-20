@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<script>
+(function(){
+  try{
+    var p=new URLSearchParams(location.search);
+    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
+    if(localStorage.getItem('darbi_dev')!=='1'){
+      document.documentElement.classList.add('darbi-locked');
+    }
+  }catch(e){}
+})();
+</script>
+<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -248,14 +260,14 @@ const MEDIUM_Q=[
 
 // ===== أسئلة صعب (8 أسئلة — تغطي السورة كاملة) =====
 const HARD_Q=[
-  {ayah:1,q:"اكتبي الآيات 1–3",answer:"وَٱلسَّمَآءِ ذَاتِ ٱلْبُرُوجِ وَٱلْيَوْمِ ٱلْمَوْعُودِ وَشَاهِدٍ وَمَشْهُودٍ"},
-  {ayah:4,q:"اكتبي الآيات 4–7",answer:"قُتِلَ أَصْحَٰبُ ٱلْأُخْدُودِ ٱلنَّارِ ذَاتِ ٱلْوَقُودِ إِذْ هُمْ عَلَيْهَا قُعُودٌ وَهُمْ عَلَىٰ مَا يَفْعَلُونَ بِٱلْمُؤْمِنِينَ شُهُودٌ"},
-  {ayah:8,q:"اكتبي الآيتين 8–9",answer:"وَمَا نَقَمُوا۟ مِنْهُمْ إِلَّآ أَن يُؤْمِنُوا۟ بِٱللَّهِ ٱلْعَزِيزِ ٱلْحَمِيدِ ٱلَّذِى لَهُۥ مُلْكُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضِ وَٱللَّهُ عَلَىٰ كُلِّ شَىْءٍ شَهِيدٌ"},
-  {ayah:10,q:"اكتبي الآيتين 10–11",answer:"إِنَّ ٱلَّذِينَ فَتَنُوا۟ ٱلْمُؤْمِنِينَ وَٱلْمُؤْمِنَٰتِ ثُمَّ لَمْ يَتُوبُوا۟ فَلَهُمْ عَذَابُ جَهَنَّمَ وَلَهُمْ عَذَابُ ٱلْحَرِيقِ إِنَّ ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ لَهُمْ جَنَّٰتٌ تَجْرِى مِن تَحْتِهَا ٱلْأَنْهَٰرُ ذَٰلِكَ ٱلْفَوْزُ ٱلْكَبِيرُ"},
-  {ayah:12,q:"اكتبي الآيات 12–14",answer:"إِنَّ بَطْشَ رَبِّكَ لَشَدِيدٌ إِنَّهُۥ هُوَ يُبْدِئُ وَيُعِيدُ وَهُوَ ٱلْغَفُورُ ٱلْوَدُودُ"},
-  {ayah:15,q:"اكتبي الآيات 15–16",answer:"ذُو ٱلْعَرْشِ ٱلْمَجِيدُ فَعَّالٌ لِّمَا يُرِيدُ"},
-  {ayah:17,q:"اكتبي الآيات 17–20",answer:"هَلْ أَتَىٰكَ حَدِيثُ ٱلْجُنُودِ فِرْعَوْنَ وَثَمُودَ بَلِ ٱلَّذِينَ كَفَرُوا۟ فِى تَكْذِيبٍ وَٱللَّهُ مِن وَرَآئِهِم مُّحِيطٌ"},
-  {ayah:21,q:"اكتبي الآيتين 21–22",answer:"بَلْ هُوَ قُرْءَانٌ مَّجِيدٌ فِى لَوْحٍ مَّحْفُوظٍ"}
+  {ayah:1,q:"اكتب الآيات 1–3",answer:"وَٱلسَّمَآءِ ذَاتِ ٱلْبُرُوجِ وَٱلْيَوْمِ ٱلْمَوْعُودِ وَشَاهِدٍ وَمَشْهُودٍ"},
+  {ayah:4,q:"اكتب الآيات 4–7",answer:"قُتِلَ أَصْحَٰبُ ٱلْأُخْدُودِ ٱلنَّارِ ذَاتِ ٱلْوَقُودِ إِذْ هُمْ عَلَيْهَا قُعُودٌ وَهُمْ عَلَىٰ مَا يَفْعَلُونَ بِٱلْمُؤْمِنِينَ شُهُودٌ"},
+  {ayah:8,q:"اكتب الآيتين 8–9",answer:"وَمَا نَقَمُوا۟ مِنْهُمْ إِلَّآ أَن يُؤْمِنُوا۟ بِٱللَّهِ ٱلْعَزِيزِ ٱلْحَمِيدِ ٱلَّذِى لَهُۥ مُلْكُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضِ وَٱللَّهُ عَلَىٰ كُلِّ شَىْءٍ شَهِيدٌ"},
+  {ayah:10,q:"اكتب الآيتين 10–11",answer:"إِنَّ ٱلَّذِينَ فَتَنُوا۟ ٱلْمُؤْمِنِينَ وَٱلْمُؤْمِنَٰتِ ثُمَّ لَمْ يَتُوبُوا۟ فَلَهُمْ عَذَابُ جَهَنَّمَ وَلَهُمْ عَذَابُ ٱلْحَرِيقِ إِنَّ ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ لَهُمْ جَنَّٰتٌ تَجْرِى مِن تَحْتِهَا ٱلْأَنْهَٰرُ ذَٰلِكَ ٱلْفَوْزُ ٱلْكَبِيرُ"},
+  {ayah:12,q:"اكتب الآيات 12–14",answer:"إِنَّ بَطْشَ رَبِّكَ لَشَدِيدٌ إِنَّهُۥ هُوَ يُبْدِئُ وَيُعِيدُ وَهُوَ ٱلْغَفُورُ ٱلْوَدُودُ"},
+  {ayah:15,q:"اكتب الآيات 15–16",answer:"ذُو ٱلْعَرْشِ ٱلْمَجِيدُ فَعَّالٌ لِّمَا يُرِيدُ"},
+  {ayah:17,q:"اكتب الآيات 17–20",answer:"هَلْ أَتَىٰكَ حَدِيثُ ٱلْجُنُودِ فِرْعَوْنَ وَثَمُودَ بَلِ ٱلَّذِينَ كَفَرُوا۟ فِى تَكْذِيبٍ وَٱللَّهُ مِن وَرَآئِهِم مُّحِيطٌ"},
+  {ayah:21,q:"اكتب الآيتين 21–22",answer:"بَلْ هُوَ قُرْءَانٌ مَّجِيدٌ فِى لَوْحٍ مَّحْفُوظٍ"}
 ];
 
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
@@ -263,17 +275,17 @@ let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctC
 function normalize(str){
   if(!str)return'';
   return str
-    .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'ا').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')
-    .replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/^وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا')
-    .replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه')
+    .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'')
+    .replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا')
+    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه')
     .replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')
-    .replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
-    .replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1')
+    .replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)بلي(?=\s|$)/g,'بلا').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
+    .replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(?<=^|\s)ممنع(?=\s|$)/g,'ممن منع').replace(/(.)\1+/g,'$1')
     .replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();
 }
 
 function wordDiff(userVal,correctAnswer){
-  const nm=s=>{if(!s)return'';return s.replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'ا').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1').replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();};
+  const nm=s=>{if(!s)return'';return s.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1').replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();};
   const uWords=userVal.trim().split(/\s+/),cWords=correctAnswer.split(/\s+/),n=cWords.length,m=uWords.length;
   const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
   for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}
@@ -314,9 +326,29 @@ function renderHard(q,zone){
   const clrBtn=document.createElement('button');clrBtn.style.cssText='width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);margin-bottom:8px;display:none;';clrBtn.textContent='🗑️ مسح الكل والبدء من جديد';
   const vSub=document.createElement('button');vSub.className='submit-btn';vSub.textContent='تحقق ✓';vSub.style.display='none';
   vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(clrBtn);vZone.appendChild(vSub);
-  function renderWords(){if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}txBox.style.display='block';txBox.innerHTML='';_words.forEach((w,i)=>{const span=document.createElement('span');span.className='rec-word';span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';span.textContent=w;span.title='انقري للحذف';span.onclick=()=>{_words.splice(i,1);renderWords();};txBox.appendChild(span);});if(_cur){const cur=document.createElement('span');cur.style.cssText='color:var(--text-soft);font-style:italic;';cur.textContent=' '+_cur;txBox.appendChild(cur);}clrBtn.style.display='block';vSub.style.display=_words.length?'block':'none';}
+  function _fixWords(words){
+        const out=[];
+        for(let i=0;i<words.length;i++){
+          if(i<words.length-2 && normalize(words[i])==='او' && normalize(words[i+1])==='كل' && normalize(words[i+2])==='ما'){
+            out.push(words[i]+words[i+1]+words[i+2]);i+=2;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='او' && normalize(words[i+1])==='كلما'){
+            out.push(words[i]+words[i+1]);i++;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='ولا' && normalize(words[i+1])==='تجدنهم'){
+            out.push('ولتجدنهم');i++;continue;
+          }
+          if(words[i]==='ممنع'){out.push('ممن','منع');continue;}
+          if(words[i]==='بلا'){out.push('بلى');continue;}
+          if(words[i]==='بن'){out.push('ابن');continue;}
+          out.push(words[i]);
+        }
+        return out;
+      }
+
+      function renderWords(){if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}txBox.style.display='block';txBox.innerHTML='';_words.forEach((w,i)=>{const span=document.createElement('span');span.className='rec-word';span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';span.textContent=w;span.title='انقري للحذف';span.onclick=()=>{_words.splice(i,1);renderWords();};txBox.appendChild(span);});if(_cur){const cur=document.createElement('span');cur.style.cssText='color:var(--text-soft);font-style:italic;';cur.textContent=' '+_cur;txBox.appendChild(cur);}clrBtn.style.display='block';vSub.style.display=_words.length?'block':'none';}
   function _setB(s){recBtn.disabled=false;if(s==='rec'){recBtn.textContent='⏸ إيقاف التسجيل';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}else if(s==='pause'){recBtn.textContent='▶️ استمر في التسجيل';recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22';}else{recBtn.textContent='🎤 اضغط للتسجيل';recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)';}}
-  function _mkRec(){const r=new _SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;r.onstart=()=>{_recog=true;_cur='';_setB('rec');renderWords();};r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){_words=_words.concat(e.results[i][0].transcript.trim().split(/\s+/));_cur='';}}renderWords();};r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};r.onend=()=>{_recog=false;if(_cur){_words=_words.concat(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};return r;}
+  function _mkRec(){const r=new _SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;r.onstart=()=>{_recog=true;_cur='';_setB('rec');renderWords();};r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){_words=_words.concat(e.results[i][0].transcript.trim().split(/\s+/));_cur='';}}renderWords();};r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};r.onend=()=>{_recog=false;if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\s+/)));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};return r;}
   clrBtn.onclick=()=>{if(_recog){try{_rec.stop();}catch(e){}_recog=false;}_rec=null;_words=[];_cur='';txBox.innerHTML='';txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';_setB('idle');recBtn.disabled=false;};
   vSub.onclick=()=>{const t=_words.join(' ').trim();if(!t)return;vSub.disabled=true;checkTextVal(q,t);setTimeout(()=>{recBtn.disabled=false;vSub.disabled=false;},300);};
   if(_SpeechAPI&&_secure){recBtn.onclick=()=>{if(_recog){_recog=false;try{_rec.stop();}catch(e){}_setB('pause');return;}_rec=_mkRec();try{_rec.start();}catch(e){_setB(_words.length?'pause':'idle');}};}else{recBtn.textContent=_secure?'⚠️ المتصفح لا يدعم التسجيل':'🔒 يعمل على الموقع الرسمي فقط';recBtn.disabled=true;recBtn.style.opacity='0.65';}

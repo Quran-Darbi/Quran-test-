@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<script>
+(function(){
+  try{
+    var p=new URLSearchParams(location.search);
+    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
+    if(localStorage.getItem('darbi_dev')!=='1'){
+      document.documentElement.classList.add('darbi-locked');
+    }
+  }catch(e){}
+})();
+</script>
+<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>
@@ -81,8 +93,8 @@
   .level-card { margin: 0 16px 16px; background: var(--card); border: 1.5px solid var(--border); border-radius: 18px; padding: 24px 20px 20px; text-align: center; }
   .level-title { font-size: 22px; color: var(--text); margin-bottom: 6px; }
   .level-sub { font-size: 14px; color: var(--text-soft); margin-bottom: 20px; }
-  .levels-grid { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-  .level-btn { flex: 1; max-width: 100px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px 8px; cursor: pointer; transition: all .2s; font-family: inherit; color: var(--text); }
+  .levels-grid{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+  .level-btn{flex:1;min-width:76px;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 6px; cursor: pointer; transition: all .2s; font-family: inherit; color: var(--text); }
   .level-btn:hover, .level-btn.active { background: var(--surface-hover); border-color: var(--accent); }
   .level-icon { font-size: 28px; display: block; margin-bottom: 6px; }
   .level-name { font-weight: 700; font-size: 15px; display: block; margin-bottom: 6px; }
@@ -129,6 +141,9 @@
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
 .rec-transcript{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;display:none;min-height:60px;white-space:pre-wrap;}.rec-word{display:inline-block;margin:2px 1px;padding:2px 6px;border-radius:5px;cursor:pointer;}.rec-word:hover{opacity:0.8;text-decoration:line-through;}
+.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
+.nav-row{display:flex;gap:10px;margin-top:14px;}
+.nav-btn{flex:1;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:17px;font-family:inherit;cursor:pointer;}.nav-btn:hover:not(:disabled){background:var(--surface-hover);}.nav-btn:disabled{opacity:0.4;cursor:default;}.nav-btn.primary{background:var(--accent);color:var(--card);border-color:var(--accent);}.nav-btn.primary:hover{background:var(--accent-dark);}
 </style>
 <link rel="manifest" href="/Quran-test-/manifest.json">
 <meta name="theme-color" content="#4a7c4a">
@@ -188,6 +203,7 @@
       <span class="level-name">صعب</span>
       <span class="level-desc">آية كاملة</span>
     </button>
+    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
 <a href="albaqara_p43.html" id="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
@@ -210,6 +226,18 @@
   </div>
 </div>
 
+<div class="quiz-area" id="order-area">
+  <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
+  <div id="order-slots" style="margin-bottom:16px;"></div>
+  <div id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
+    <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
+  </div>
+  <div id="order-reveal" style="display:none;"></div>
+  <div class="feedback" id="order-feedback"></div>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+</div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
   <div class="result-title" id="result-title">أحسنتِ!</div>
@@ -270,12 +298,19 @@ const MEDIUM_Q = [
   {q:"«يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓا _____ مِمَّا رَزَقْنَٰكُم»",answer:"أَنفِقُوا"}
 ];
 const HARD_Q = [
-  {q:"اكتبي الآية رقم 253 من سورة البقرة كاملة",answer:"تِلْكَ ٱلرُّسُلُ فَضَّلْنَا بَعْضَهُمْ عَلَىٰ بَعْضٍ مِّنْهُم مَّن كَلَّمَ ٱللَّهُ وَرَفَعَ بَعْضَهُمْ دَرَجَٰتٍ وَءَاتَيْنَا عِيسَى ٱبْنَ مَرْيَمَ ٱلْبَيِّنَٰتِ وَأَيَّدْنَٰهُ بِرُوحِ ٱلْقُدُسِ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلَ ٱلَّذِينَ مِنۢ بَعْدِهِم مِّنۢ بَعْدِ مَا جَآءَتْهُمُ ٱلْبَيِّنَٰتُ وَلَٰكِنِ ٱخْتَلَفُوا فَمِنْهُم مَّنْ ءَامَنَ وَمِنْهُم مَّن كَفَرَ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلُوا وَلَٰكِنَّ ٱللَّهَ يَفْعَلُ مَا يُرِيدُ"},
-  {q:"اكتبي الآية رقم 254 من سورة البقرة كاملة",answer:"يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓا أَنفِقُوا مِمَّا رَزَقْنَٰكُم مِّن قَبْلِ أَن يَأْتِىَ يَوْمٌ لَّا بَيْعٌ فِيهِ وَلَا خُلَّةٌ وَلَا شَفَٰعَةٌ وَٱلْكَٰفِرُونَ هُمُ ٱلظَّٰلِمُونَ"},
-  {q:"اكتبي آية الكرسي (الآية 255) كاملة",answer:"ٱللَّهُ لَآ إِلَٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ لَا تَأْخُذُهُۥ سِنَةٌ وَلَا نَوْمٌ لَّهُۥ مَا فِى ٱلسَّمَٰوَٰتِ وَمَا فِى ٱلْأَرْضِ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَىْءٍ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ وَسِعَ كُرْسِيُّهُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضَ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ"},
-  {q:"اكتبي الآية رقم 256 من سورة البقرة كاملة",answer:"لَآ إِكْرَاهَ فِى ٱلدِّينِ قَد تَّبَيَّنَ ٱلرُّشْدُ مِنَ ٱلْغَىِّ فَمَن يَكْفُرْ بِٱلطَّٰغُوتِ وَيُؤْمِنۢ بِٱللَّهِ فَقَدِ ٱسْتَمْسَكَ بِٱلْعُرْوَةِ ٱلْوُثْقَىٰ لَا ٱنفِصَامَ لَهَا وَٱللَّهُ سَمِيعٌ عَلِيمٌ"},
-  {q:"اكتبي بداية الآية 253 من «تِلْكَ ٱلرُّسُلُ» حتى «وَلَٰكِنِ ٱخْتَلَفُوا»",answer:"تِلْكَ ٱلرُّسُلُ فَضَّلْنَا بَعْضَهُمْ عَلَىٰ بَعْضٍ مِّنْهُم مَّن كَلَّمَ ٱللَّهُ وَرَفَعَ بَعْضَهُمْ دَرَجَٰتٍ وَءَاتَيْنَا عِيسَى ٱبْنَ مَرْيَمَ ٱلْبَيِّنَٰتِ وَأَيَّدْنَٰهُ بِرُوحِ ٱلْقُدُسِ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلَ ٱلَّذِينَ مِنۢ بَعْدِهِم مِّنۢ بَعْدِ مَا جَآءَتْهُمُ ٱلْبَيِّنَٰتُ وَلَٰكِنِ ٱخْتَلَفُوا"}
+  {q:"اكتب الآية رقم 253 من سورة البقرة كاملة",answer:"تِلْكَ ٱلرُّسُلُ فَضَّلْنَا بَعْضَهُمْ عَلَىٰ بَعْضٍ مِّنْهُم مَّن كَلَّمَ ٱللَّهُ وَرَفَعَ بَعْضَهُمْ دَرَجَٰتٍ وَءَاتَيْنَا عِيسَى ٱبْنَ مَرْيَمَ ٱلْبَيِّنَٰتِ وَأَيَّدْنَٰهُ بِرُوحِ ٱلْقُدُسِ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلَ ٱلَّذِينَ مِنۢ بَعْدِهِم مِّنۢ بَعْدِ مَا جَآءَتْهُمُ ٱلْبَيِّنَٰتُ وَلَٰكِنِ ٱخْتَلَفُوا فَمِنْهُم مَّنْ ءَامَنَ وَمِنْهُم مَّن كَفَرَ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلُوا وَلَٰكِنَّ ٱللَّهَ يَفْعَلُ مَا يُرِيدُ"},
+  {q:"اكتب الآية رقم 254 من سورة البقرة كاملة",answer:"يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓا أَنفِقُوا مِمَّا رَزَقْنَٰكُم مِّن قَبْلِ أَن يَأْتِىَ يَوْمٌ لَّا بَيْعٌ فِيهِ وَلَا خُلَّةٌ وَلَا شَفَٰعَةٌ وَٱلْكَٰفِرُونَ هُمُ ٱلظَّٰلِمُونَ"},
+  {q:"اكتب آية الكرسي (الآية 255) كاملة",answer:"ٱللَّهُ لَآ إِلَٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ لَا تَأْخُذُهُۥ سِنَةٌ وَلَا نَوْمٌ لَّهُۥ مَا فِى ٱلسَّمَٰوَٰتِ وَمَا فِى ٱلْأَرْضِ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَىْءٍ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ وَسِعَ كُرْسِيُّهُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضَ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ"},
+  {q:"اكتب الآية رقم 256 من سورة البقرة كاملة",answer:"لَآ إِكْرَاهَ فِى ٱلدِّينِ قَد تَّبَيَّنَ ٱلرُّشْدُ مِنَ ٱلْغَىِّ فَمَن يَكْفُرْ بِٱلطَّٰغُوتِ وَيُؤْمِنۢ بِٱللَّهِ فَقَدِ ٱسْتَمْسَكَ بِٱلْعُرْوَةِ ٱلْوُثْقَىٰ لَا ٱنفِصَامَ لَهَا وَٱللَّهُ سَمِيعٌ عَلِيمٌ"},
+  {q:"اكتب بداية الآية 253 من «تِلْكَ ٱلرُّسُلُ» حتى «وَلَٰكِنِ ٱخْتَلَفُوا»",answer:"تِلْكَ ٱلرُّسُلُ فَضَّلْنَا بَعْضَهُمْ عَلَىٰ بَعْضٍ مِّنْهُم مَّن كَلَّمَ ٱللَّهُ وَرَفَعَ بَعْضَهُمْ دَرَجَٰتٍ وَءَاتَيْنَا عِيسَى ٱبْنَ مَرْيَمَ ٱلْبَيِّنَٰتِ وَأَيَّدْنَٰهُ بِرُوحِ ٱلْقُدُسِ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلَ ٱلَّذِينَ مِنۢ بَعْدِهِم مِّنۢ بَعْدِ مَا جَآءَتْهُمُ ٱلْبَيِّنَٰتُ وَلَٰكِنِ ٱخْتَلَفُوا"}
 ];
+const ORDER_AYAT=[
+  "تِلْكَ ٱلرُّسُلُ فَضَّلْنَا بَعْضَهُمْ عَلَىٰ بَعْضٍ مِّنْهُم مَّن كَلَّمَ ٱللَّهُ وَرَفَعَ بَعْضَهُمْ دَرَجَٰتٍ وَءَاتَيْنَا عِيسَى ٱبْنَ مَرْيَمَ ٱلْبَيِّنَٰتِ وَأَيَّدْنَٰهُ بِرُوحِ ٱلْقُدُسِ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلَ ٱلَّذِينَ مِنۢ بَعْدِهِم مِّنۢ بَعْدِ مَا جَآءَتْهُمُ ٱلْبَيِّنَٰتُ وَلَٰكِنِ ٱخْتَلَفُوا فَمِنْهُم مَّنْ ءَامَنَ وَمِنْهُم مَّن كَفَرَ وَلَوْ شَآءَ ٱللَّهُ مَا ٱقْتَتَلُوا وَلَٰكِنَّ ٱللَّهَ يَفْعَلُ مَا يُرِيدُ",
+  "يَٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓا أَنفِقُوا مِمَّا رَزَقْنَٰكُم مِّن قَبْلِ أَن يَأْتِىَ يَوْمٌ لَّا بَيْعٌ فِيهِ وَلَا خُلَّةٌ وَلَا شَفَٰعَةٌ وَٱلْكَٰفِرُونَ هُمُ ٱلظَّٰلِمُونَ",
+  "ٱللَّهُ لَآ إِلَٰهَ إِلَّا هُوَ ٱلْحَىُّ ٱلْقَيُّومُ لَا تَأْخُذُهُۥ سِنَةٌ وَلَا نَوْمٌ لَّهُۥ مَا فِى ٱلسَّمَٰوَٰتِ وَمَا فِى ٱلْأَرْضِ مَن ذَا ٱلَّذِى يَشْفَعُ عِندَهُۥٓ إِلَّا بِإِذْنِهِۦ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَىْءٍ مِّنْ عِلْمِهِۦٓ إِلَّا بِمَا شَآءَ وَسِعَ كُرْسِيُّهُ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضَ وَلَا يَـُٔودُهُۥ حِفْظُهُمَا وَهُوَ ٱلْعَلِىُّ ٱلْعَظِيمُ",
+  "لَآ إِكْرَاهَ فِى ٱلدِّينِ قَد تَّبَيَّنَ ٱلرُّشْدُ مِنَ ٱلْغَىِّ فَمَن يَكْفُرْ بِٱلطَّٰغُوتِ وَيُؤْمِنۢ بِٱللَّهِ فَقَدِ ٱسْتَمْسَكَ بِٱلْعُرْوَةِ ٱلْوُثْقَىٰ لَا ٱنفِصَامَ لَهَا وَٱللَّهُ سَمِيعٌ عَلِيمٌ"
+];
+
 
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
 
@@ -285,7 +320,7 @@ function normalize(str){
   if(!str)return'';
   return str
     // همزة على كشيدة بعد ياء = همزة تُحذف (خطيئة، سيئة)
-    .replace(/يٓ?ـَٔ/g,'ي')
+    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي')
     // همزة على كشيدة غير كده = صوت ألف (لتسألن)
     .replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا')
     .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
@@ -295,12 +330,12 @@ function normalize(str){
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
     // ألف الوصل بعد الواو (واتبعوا، واسمعوا، واستعينوا، واركعوا...)
     .replace(/وٱ(?!ل)/g,'و')
-    .replace(/^وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر)/g,'و')
+    .replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')
     // الألف الخنجرية فوق حروف خاصة
     .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')
     .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')
     .replace(/نٰ/g,'نا')
-    .replace(/ىٰ(?=\S)/g,'ا').replace(/ىٰ/g,'ي')
+    .replace(/(?<=^|\s)بلىٰ(?=\s|$)/g,'بلا').replace(/ىٰ(?=\S)/g,'ا').replace(/ىٰ/g,'ي')
     // الألف الخنجرية فوق أي حرف تاني = حرف + ألف
     .replace(/(.)ٰ/g,'$1ا')
     // هاء/واو الصلة الصامتة (بِإِذْنِهِۦ، يَـُٔودُهُۥ...)
@@ -314,8 +349,8 @@ function normalize(str){
     .replace(/[ىی]/g,'ي')
     .replace(/ة/g,'ه')
     // الشدة الفعلية (حروف مكررة)
-    .replace(/(.)\1+/g,'$1')
-    .replace(/رحمان/g,'رحمن')
+    .replace(/(?<=^|\s)ممنع(?=\s|$)/g,'ممن منع').replace(/(.)\1+/g,'$1')
+    .replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)بلي(?=\s|$)/g,'بلا')
     // استثناءات بعد التمديد العام للألف الخنجرية
     .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/لاكن/g,'لكن')
     .replace(/\s+/g,' ')
@@ -353,7 +388,7 @@ function updateBadges(){
   document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;
   document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;
 }
-function selectLevel(lvl){
+function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(ORDER_AYAT.length);return;}
   currentLevel=lvl;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('btn-'+lvl).classList.add('active');
@@ -361,7 +396,7 @@ function selectLevel(lvl){
   const totals={easy:String(EASY_Q.length),medium:String(MEDIUM_Q.length),hard:String(HARD_Q.length)};
   document.getElementById('total-q').textContent=totals[lvl];
 }
-function startQuiz(){
+function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}
   if(!currentLevel)return;
   if(currentLevel==='easy')questions=[...EASY_Q];
   if(currentLevel==='medium')questions=[...MEDIUM_Q];
@@ -457,6 +492,26 @@ function showQuestion(){
       const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
       const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
+      function _fixWords(words){
+        const out=[];
+        for(let i=0;i<words.length;i++){
+          if(i<words.length-2 && normalize(words[i])==='او' && normalize(words[i+1])==='كل' && normalize(words[i+2])==='ما'){
+            out.push(words[i]+words[i+1]+words[i+2]);i+=2;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='او' && normalize(words[i+1])==='كلما'){
+            out.push(words[i]+words[i+1]);i++;continue;
+          }
+          if(i<words.length-1 && normalize(words[i])==='ولا' && normalize(words[i+1])==='تجدنهم'){
+            out.push('ولتجدنهم');i++;continue;
+          }
+          if(words[i]==='ممنع'){out.push('ممن','منع');continue;}
+          if(words[i]==='بلا'){out.push('بلى');continue;}
+          if(words[i]==='بن'){out.push('ابن');continue;}
+          out.push(words[i]);
+        }
+        return out;
+      }
+
       function renderWords(){
         if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}
         txBox.style.display='block';
@@ -490,13 +545,13 @@ function showQuestion(){
           for(let i=e.resultIndex;i<e.results.length;i++){
             if(e.results[i].isFinal){
               const newWords=e.results[i][0].transcript.trim().split(/\s+/);
-              _words=_words.concat(newWords);_cur='';
+              _words=_fixWords(_words.concat(newWords));_cur='';
             }
           }
           renderWords();
         };
         r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};
-        r.onend=()=>{_recog=false;if(_cur){_words=_words.concat(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
+        r.onend=()=>{_recog=false;if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\s+/)));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
         return r;
       }
 
@@ -590,7 +645,7 @@ function showResult(){
   var rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');
   if(pct===100)spawnConfetti();
 }
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz(){
   document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';
   currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
@@ -599,6 +654,101 @@ function retryQuiz(){
   document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';
   document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';
 }
+
+/* ===== ترتيب الآيات 🔀 (البقرة) ===== */
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+function startOrderQuiz(){
+  orderPlaced=new Array(ORDER_AYAT.length).fill(null);
+  orderCursor=0;
+  orderPoolOrder=ORDER_AYAT.map((t,idx)=>idx);
+  shuffle(orderPoolOrder);
+  document.getElementById('level-card').style.display='none';
+  document.getElementById('order-area').style.display='block';
+  document.getElementById('order-feedback').style.display='none';
+  document.getElementById('order-reveal').style.display='none';
+  document.getElementById('order-check-btn').style.display='none';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=false;rb.style.opacity='1';
+  renderOrderQuiz();
+}
+function mushafHtml(){
+  return '<div class="mushaf-block">'+ORDER_AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
+}
+function nextEmptyFrom(start){
+  for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
+  return -1;
+}
+function renderOrderQuiz(){
+  const slotsDiv=document.getElementById('order-slots');
+  const poolDiv=document.getElementById('order-pool');
+  slotsDiv.innerHTML='';
+  poolDiv.innerHTML='';
+  const filledGrid=document.createElement('div');
+  filledGrid.className='order-filled-grid';
+  const emptyStrip=document.createElement('div');
+  emptyStrip.className='order-empty-strip';
+  orderPlaced.forEach((idx,pos)=>{
+    if(idx===null){
+      const active=(pos===orderCursor);
+      const dot=document.createElement('span');
+      dot.className='order-dot'+(active?' active':'');
+      dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';
+      dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';
+      dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
+      emptyStrip.appendChild(dot);
+    }else{
+      const card=document.createElement('div');
+      card.className='order-slot filled';
+      card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+ORDER_AYAT[idx]+'</span>';
+      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      filledGrid.appendChild(card);
+    }
+  });
+  if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);
+  if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);
+  orderPoolOrder.forEach(idx=>{
+    if(orderPlaced.includes(idx))return;
+    const btn=document.createElement('button');
+    btn.className='order-item';
+    btn.textContent=ORDER_AYAT[idx];
+    btn.onclick=()=>{
+      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}
+      if(orderCursor===-1)return;
+      orderPlaced[orderCursor]=idx;
+      orderCursor=nextEmptyFrom(orderCursor+1);
+      document.getElementById('order-feedback').style.display='none';
+      renderOrderQuiz();
+    };
+    poolDiv.appendChild(btn);
+  });
+  const allFilled=!orderPlaced.includes(null);
+  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';
+}
+function checkOrderAnswer(){
+  let correct=0;
+  document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
+    const ok=(orderPlaced[pos]!==null&&ORDER_AYAT[orderPlaced[pos]]===ORDER_AYAT[pos]);
+    if(ok)correct++;
+    el.classList.remove('correct-slot','wrong-slot');
+    el.classList.add(ok?'correct-slot':'wrong-slot');
+  });
+  const fb=document.getElementById('order-feedback');
+  const allCorrect=(correct===ORDER_AYAT.length);
+  fb.className='feedback '+(allCorrect?'correct':'wrong');
+  fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(ORDER_AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());
+  fb.style.display='block';
+  document.getElementById('order-check-btn').style.display='none';
+  if(allCorrect)spawnConfetti();
+}
+function revealOrderAnswer(){
+  document.getElementById('order-reveal').innerHTML=mushafHtml();
+  document.getElementById('order-reveal').style.display='block';
+  const rb=document.getElementById('order-reveal-btn');
+  rb.disabled=true;rb.style.opacity='0.5';
+}
+/* ===== نهاية ترتيب الآيات (البقرة) ===== */
+
 function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}
