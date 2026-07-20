@@ -360,6 +360,358 @@ def add_dev_mode(out):
     out = out.replace('<head>', '<head>\n' + DEV_MODE_LOCK, 1)
     return out, True
 
+# ===== ودجت "💬 شاركنا رأيك" (يوليو ٢٠٢٦) =====
+# زر عائم في كل صفحة يفتح نافذة صغيرة (نوع الملاحظة + تفاصيل) وعند
+# الإرسال يفتح واتساب برسالة جاهزة تتضمن اسم الصفحة تلقائيًا. الرقم
+# مكتوب داخل كود الصفحة (مش ظاهر كنص على الشاشة) بناءً على طلب هند —
+# ملحوظة: ده مش إخفاء كامل 100%، أي حد يفتح "عرض المصدر" هيقدر يشوفه.
+FEEDBACK_WIDGET = """<style>
+.fdbk-fab{position:fixed;bottom:20px;left:20px;background:#2E6B3E;color:#fff;border:none;border-radius:50px;width:52px;height:52px;font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,0.25);cursor:pointer;z-index:9999;display:flex;align-items:center;justify-content:center;}
+.fdbk-fab:hover{filter:brightness(1.1);}
+html[data-theme="dark"] .fdbk-fab{background:#4A9E40;}
+.fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
+.fdbk-overlay.open{display:flex;}
+.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
+html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
+.fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
+html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
+.fdbk-modal label{display:block;font-size:14px;margin:12px 0 6px;}
+.fdbk-modal select,.fdbk-modal textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #d8e0d8;background:#f7faf7;color:#222;font-family:inherit;font-size:14px;box-sizing:border-box;}
+html[data-theme="dark"] .fdbk-modal select,html[data-theme="dark"] .fdbk-modal textarea{background:#101810;color:#DCF0D8;border-color:#2A4028;}
+.fdbk-modal textarea{min-height:80px;resize:vertical;}
+.fdbk-actions{display:flex;gap:8px;margin-top:16px;}
+.fdbk-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
+.fdbk-send{background:#2E6B3E;color:#fff;}
+html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
+.fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
+</style>
+<button class="fdbk-fab" id="fdbk-fab-btn" onclick="fdbkOpen()" title="شاركنا رأيك">💬</button>
+<div class="fdbk-overlay" id="fdbk-overlay">
+  <div class="fdbk-modal">
+    <h3>💬 شاركنا رأيك</h3>
+    <label>نوع الملاحظة</label>
+    <select id="fdbk-type">
+      <option>خطأ في النص القرآني</option>
+      <option>خطأ في السؤال أو الإجابة</option>
+      <option>مشكلة في التسجيل الصوتي</option>
+      <option>مشكلة تصميم أو عرض</option>
+      <option>اقتراح تحسين</option>
+      <option>أخرى</option>
+    </select>
+    <label>تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <div class="fdbk-actions">
+      <button class="fdbk-send" onclick="fdbkSend()">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()">إلغاء</button>
+    </div>
+  </div>
+</div>
+<script>
+function fdbkOpen(){document.getElementById('fdbk-overlay').classList.add('open');}
+function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
+function fdbkSend(){
+  var type=document.getElementById('fdbk-type').value;
+  var note=document.getElementById('fdbk-note').value.trim();
+  var page=document.title||location.pathname.split('/').pop();
+  var msg='ملاحظة من دربي لحفظ القرآن\\nالصفحة: '+page+'\\nالنوع: '+type+(note?'\\nالتفاصيل: '+note:'');
+  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
+  fdbkClose();
+}
+</script>"""
+
+def add_feedback_widget(out):
+    """يحقن زر 💬 شاركنا رأيك العائم قبل </body> (كل الملفات — سور وindex وrecitation)"""
+    if 'fdbk-fab' in out or '</body>' not in out:
+        return out, False
+    out = out.replace('</body>', FEEDBACK_WIDGET + '\n</body>', 1)
+    return out, True
+
+# ===== ودجت اختيار اللغة (يوليو ٢٠٢٦) =====
+# زر عائم أسفل يمين الشاشة (مقابل زر شاركنا رأيك أسفل اليسار — بدون
+# تعارض). يعرض علم + اسم اللغة الحالية + سهم ▼. يترجم واجهة الموقع
+# فقط عبر Google Translate (تعليمات/أزرار/رسائل)، مع حماية أي عنصر
+# عليه class="notranslate" (نص الآيات وأسماء السور) من الترجمة نهائيًا.
+LANG_WIDGET = """<style>
+.lang-switch{position:fixed;bottom:20px;right:20px;z-index:9998;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.lang-btn{display:flex;align-items:center;gap:6px;background:var(--card,#fff);color:var(--green,var(--accent,#2E6B3E));border:1.5px solid var(--border,#E4EAE4);border-radius:24px;padding:10px 14px;font-size:0.85rem;box-shadow:0 4px 14px var(--shadow,rgba(45,90,39,0.12));cursor:pointer;font-family:inherit;}
+.lang-btn:hover{border-color:var(--green,var(--accent,#2E6B3E));}
+.lang-btn .lang-arrow{font-size:0.6rem;color:var(--gold,#B8963A);transition:transform .2s;margin-inline-start:2px;}
+.lang-switch.open .lang-arrow{transform:rotate(180deg);}
+.lang-menu{display:none;position:absolute;bottom:52px;right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px var(--shadow,rgba(45,90,39,0.18));overflow:hidden;min-width:150px;border-top:3px solid var(--gold,#B8963A);}
+.lang-switch.open .lang-menu{display:block;}
+.lang-menu button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:11px 14px;font-size:0.85rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.lang-menu button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
+.lang-menu button.lang-active{color:var(--green,var(--accent,#2E6B3E));font-weight:700;}
+#google_translate_element{display:none !important;}
+.goog-te-banner-frame.skiptranslate{display:none !important;}
+.goog-te-gadget{height:0;overflow:hidden;}
+body{top:0 !important;}
+</style>
+<div class="lang-switch" id="lang-switch">
+  <button class="lang-btn" id="lang-btn" onclick="langToggle(event)">
+    <span id="lang-flag">🇸🇦</span><span id="lang-label">العربية</span><span class="lang-arrow">▼</span>
+  </button>
+  <div class="lang-menu" id="lang-menu">
+    <button onclick="langSelect('ar','🇸🇦','العربية')" data-code="ar">🇸🇦 العربية</button>
+    <button onclick="langSelect('en','🇬🇧','English')" data-code="en">🇬🇧 English</button>
+    <button onclick="langSelect('fr','🇫🇷','Français')" data-code="fr">🇫🇷 Français</button>
+    <button onclick="langSelect('tr','🇹🇷','Türkçe')" data-code="tr">🇹🇷 Türkçe</button>
+    <button onclick="langSelect('fa','🇮🇷','فارسی')" data-code="fa">🇮🇷 فارسی</button>
+    <button onclick="langSelect('de','🇩🇪','Deutsch')" data-code="de">🇩🇪 Deutsch</button>
+    <button onclick="langSelect('es','🇪🇸','Español')" data-code="es">🇪🇸 Español</button>
+  </div>
+</div>
+<div id="google_translate_element"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script>
+function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
+function langApplyLabel(){
+  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français'],tr:['🇹🇷','Türkçe'],fa:['🇮🇷','فارسی'],de:['🇩🇪','Deutsch'],es:['🇪🇸','Español']};
+  var c=langCookie();var code='ar';
+  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
+  var d=map[code]||map.ar;
+  document.getElementById('lang-flag').textContent=d[0];
+  document.getElementById('lang-label').textContent=d[1];
+  document.querySelectorAll('#lang-menu button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
+}
+function langToggle(e){
+  if(e)e.stopPropagation();
+  document.getElementById('lang-switch').classList.toggle('open');
+}
+function langSelect(code){
+  document.getElementById('lang-switch').classList.remove('open');
+  if(code==='ar'){
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
+  }else{
+    document.cookie='googtrans=/ar/'+code+'; path=/;';
+  }
+  location.reload();
+}
+document.addEventListener('click',function(e){
+  var sw=document.getElementById('lang-switch');
+  if(sw && !sw.contains(e.target))sw.classList.remove('open');
+});
+langApplyLabel();
+</script>"""
+
+def add_language_switcher(out):
+    """يحقن زر 🇸🇦 اختيار اللغة العائم قبل </body> (كل الملفات)"""
+    if 'lang-switch' in out or '</body>' not in out:
+        return out, False
+    out = out.replace('</body>', LANG_WIDGET + '\n</body>', 1)
+    return out, True
+
+def upgrade_lang_switcher_languages(out):
+    """ترقية رجعية: ودجت اللغة القديم (عربي/إنجليزي/فرنسي بس) بيتحدث
+    للنسخة الجديدة اللي فيها تركي/فارسي/ألماني/إسباني كمان (يوليو ٢٠٢٦).
+    idempotent — بيتخطى أي ملف مُرقّى بالفعل."""
+    if 'lang-switch' not in out or "langSelect('tr'" in out:
+        return out, False
+
+    old_menu = """  <div class="lang-menu" id="lang-menu">
+    <button onclick="langSelect('ar','🇸🇦','العربية')" data-code="ar">🇸🇦 العربية</button>
+    <button onclick="langSelect('en','🇬🇧','English')" data-code="en">🇬🇧 English</button>
+    <button onclick="langSelect('fr','🇫🇷','Français')" data-code="fr">🇫🇷 Français</button>
+    <button onclick="langSelect('tr','🇹🇷','Türkçe')" data-code="tr">🇹🇷 Türkçe</button>
+    <button onclick="langSelect('fa','🇮🇷','فارسی')" data-code="fa">🇮🇷 فارسی</button>
+    <button onclick="langSelect('de','🇩🇪','Deutsch')" data-code="de">🇩🇪 Deutsch</button>
+    <button onclick="langSelect('es','🇪🇸','Español')" data-code="es">🇪🇸 Español</button>
+  </div>
+</div>
+<div id="google_translate_element"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script>
+function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
+function langApplyLabel(){
+  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français'],tr:['🇹🇷','Türkçe'],fa:['🇮🇷','فارسی'],de:['🇩🇪','Deutsch'],es:['🇪🇸','Español']};"""
+
+    new_menu = """  <div class="lang-menu" id="lang-menu">
+    <button onclick="langSelect('ar','🇸🇦','العربية')" data-code="ar">🇸🇦 العربية</button>
+    <button onclick="langSelect('en','🇬🇧','English')" data-code="en">🇬🇧 English</button>
+    <button onclick="langSelect('fr','🇫🇷','Français')" data-code="fr">🇫🇷 Français</button>
+    <button onclick="langSelect('tr','🇹🇷','Türkçe')" data-code="tr">🇹🇷 Türkçe</button>
+    <button onclick="langSelect('fa','🇮🇷','فارسی')" data-code="fa">🇮🇷 فارسی</button>
+    <button onclick="langSelect('de','🇩🇪','Deutsch')" data-code="de">🇩🇪 Deutsch</button>
+    <button onclick="langSelect('es','🇪🇸','Español')" data-code="es">🇪🇸 Español</button>
+  </div>
+</div>
+<div id="google_translate_element"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script>
+function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
+function langApplyLabel(){
+  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français'],tr:['🇹🇷','Türkçe'],fa:['🇮🇷','فارسی'],de:['🇩🇪','Deutsch'],es:['🇪🇸','Español']};"""
+
+    if old_menu not in out:
+        return out, False
+    out = out.replace(old_menu, new_menu, 1)
+    return out, True
+
+def protect_order_ayat_from_translation(out):
+    """ترقية رجعية: الملفات اللي أُضيفت فيها ميزة الترتيب 🔀 قبل ودجت
+    اللغة (يوليو ٢٠٢٦) كانت بتعرض نص الآية كامل من غير حماية من الترجمة.
+    الدالة دي بتصحح الأنماط القديمة الثلاثة لو موجودة (idempotent)."""
+    changed = False
+    old1 = "return '<div class=\"mushaf-block\">'+AYAT.map((t,i)=>t+' <span class=\"ayah-end\">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';"
+    new1 = "return '<div class=\"mushaf-block notranslate\" translate=\"no\">'+AYAT.map((t,i)=>t+' <span class=\"ayah-end\">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';"
+    if old1 in out:
+        out = out.replace(old1, new1, 1)
+        changed = True
+
+    old2 = "card.innerHTML='<span class=\"order-badge\">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+AYAT[idx]+'</span>';"
+    new2 = "card.setAttribute('translate','no');card.innerHTML='<span class=\"order-badge\">﴿'+toArabicNum(pos+1)+'﴾</span><span class=\"notranslate\">'+AYAT[idx]+'</span>';"
+    if old2 in out:
+        out = out.replace(old2, new2, 1)
+        changed = True
+
+    old3 = "btn.className='order-item';\n    btn.textContent=AYAT[idx];"
+    new3 = "btn.className='order-item notranslate';\n    btn.setAttribute('translate','no');\n    btn.textContent=AYAT[idx];"
+    if old3 in out:
+        out = out.replace(old3, new3, 1)
+        changed = True
+
+    return out, changed
+
+def protect_quiz_ayat_from_translation(out):
+    """يحمي كل نص قرآني في محرك الاختبار العادي (سهل/متوسط/صعب) من
+    الترجمة التلقائية (ودجت 🌐 اللغة). النص التعليمي (زي "اكتبي
+    الآيات 1–3" في مستوى الصعب) يفضل قابل للترجمة، أما نص الآية نفسه
+    (خيارات السهل، هدف المتوسط، إجابة الصعب، مقارنة wordDiff، تلميح
+    المساعدة) فبيتحمى دايمًا. الدالة idempotent وbest-effort — بتتعامل
+    مع نمطين معروفين من الكود (المضغوط الحديث + القديم المتباعد)."""
+    changed = False
+
+    # q-text: يُحمى في سهل/متوسط، ويُسمح بترجمته في صعب (نص تعليمي فقط)
+    old = "document.getElementById('q-text').textContent=q.q;"
+    if old in out:
+        new = ("var __qt=document.getElementById('q-text');__qt.textContent=q.q;"
+               "if(currentLevel==='hard'){__qt.classList.remove('notranslate');__qt.removeAttribute('translate');}"
+               "else{__qt.classList.add('notranslate');__qt.setAttribute('translate','no');}")
+        out = out.replace(old, new, 1)
+        changed = True
+
+    # review-q-text: نفس منطق q-text (نمط مضغوط + نمط قديم متباعد)
+    for old in (
+        "document.getElementById('review-q-text').textContent=q.q;",
+        "document.getElementById('review-q-text').textContent = q.q;",
+    ):
+        if old in out:
+            new = ("var __rqt=document.getElementById('review-q-text');__rqt.textContent=q.q;"
+                   "if(currentLevel==='hard'){__rqt.classList.remove('notranslate');__rqt.removeAttribute('translate');}"
+                   "else{__rqt.classList.add('notranslate');__rqt.setAttribute('translate','no');}")
+            out = out.replace(old, new, 1)
+            changed = True
+            break
+
+    # review-answer: دايمًا نص قرآني (إجابة صحيحة) — حماية دائمة
+    for old in (
+        "document.getElementById('review-answer').textContent='✓ '+answerText;",
+        "document.getElementById('review-answer').textContent = '✓ ' + answerText;",
+    ):
+        if old in out:
+            new = ("var __ra=document.getElementById('review-answer');__ra.textContent='✓ '+answerText;"
+                   "__ra.classList.add('notranslate');__ra.setAttribute('translate','no');")
+            out = out.replace(old, new, 1)
+            changed = True
+            break
+
+    # أزرار اختيار من متعدد (سهل) — كلمات/عبارات قرآنية دائمًا
+    old = "btn.className='choice-btn';btn.textContent=opt.text;"
+    new = old + "btn.classList.add('notranslate');btn.setAttribute('translate','no');"
+    if old in out and new not in out:
+        out = out.replace(old, new, 1)
+        changed = True
+
+    # checkMCQ — عرض الإجابة الصحيحة بعد اختيار خاطئ (سهل)
+    old = "fb.textContent=`✗ الإجابة الصحيحة: ${questions[qIndex].choices[correct]}`;"
+    if old in out:
+        new = "fb.innerHTML='✗ الإجابة الصحيحة: <span class=\"notranslate\" translate=\"no\">'+questions[qIndex].choices[correct]+'</span>';"
+        out = out.replace(old, new, 1)
+        changed = True
+
+    # skipQuestion — تخطي في مستوى سهل (يعرض الاختيار الصحيح)
+    old = "fb.innerHTML=`⬅ الإجابة الصحيحة: ${q.choices[q.answer]}`;"
+    if old in out:
+        new = "fb.innerHTML='⬅ الإجابة الصحيحة: <span class=\"notranslate\" translate=\"no\">'+q.choices[q.answer]+'</span>';"
+        out = out.replace(old, new, 1)
+        changed = True
+
+    # skipQuestion (متوسط/صعب) + checkText (صعب) — span مشترك بينهم
+    old = '<span style="font-size:18px;line-height:2">${q.answer}</span>'
+    if old in out:
+        new = '<span style="font-size:18px;line-height:2" class="notranslate" translate="no">${q.answer}</span>'
+        out = out.replace(old, new)
+        changed = True
+
+    # زر المساعدة (💡 أول 3 كلمات) في مستوى الصعب
+    old = "hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';"
+    new = old + "hBox.classList.add('notranslate');hBox.setAttribute('translate','no');"
+    if old in out and new not in out:
+        out = out.replace(old, new, 1)
+        changed = True
+
+    # wordDiff — نمط حديث (aligned/x.ref بـ template literals)
+    old = 'background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;">${x.ref}</span>'
+    if old in out:
+        new = 'background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>'
+        out = out.replace(old, new, 1)
+        changed = True
+    old = 'background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;">${x.ref}</span>'
+    if old in out:
+        new = 'background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>'
+        out = out.replace(old, new, 1)
+        changed = True
+
+    # wordDiff — نمط قديم (word بتجميع نصوص +word+)
+    old = "background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;\">'+word+'</span>'"
+    if old in out:
+        new = "background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;\" translate=\"no\" class=\"notranslate\">'+word+'</span>'"
+        out = out.replace(old, new, 1)
+        changed = True
+    old = "background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;\">'+word+'</span>'"
+    if old in out:
+        new = "background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;\" translate=\"no\" class=\"notranslate\">'+word+'</span>'"
+        out = out.replace(old, new, 1)
+        changed = True
+
+    return out, changed
+
+def fix_missing_progress_save_calls(out):
+    """إصلاح باج حقيقي في الملفات القديمة (نمط قبل التحديثات الحديثة):
+    بعد الإجابة في مستوى سهل (checkMCQ) أو متوسط/كتابة الصعب (checkText)،
+    الملفات دي ماكانتش بتستدعي renderDotProgress() و saveResumeState() —
+    يعني نقط التقدم ما بتتحدثش فورًا، وأهم من كده: تقدم المستخدم مش بيتحفظ
+    لو قفل الصفحة قبل ما يضغط 'التالي'. إضافة سطر واحد بس، من غير أي
+    تغيير في البنية أو الترتيب أو أي منطق تاني — نفس الاستدعاء المستخدم
+    بالفعل في كل مكان تاني بالملف."""
+    old = ("fb.style.display='block';updateBadges();"
+           "document.getElementById('next-btn').style.display='block';"
+           "document.getElementById('skip-btn').style.display='none';}")
+    if old not in out:
+        return out, False
+    new = ("fb.style.display='block';updateBadges();"
+           "document.getElementById('next-btn').style.display='block';"
+           "document.getElementById('skip-btn').style.display='none';"
+           "renderDotProgress();saveResumeState();}")
+    out = out.replace(old, new)
+    return out, True
+
 def ar2en(text):
     """تحويل الأرقام العربية-الهندية إلى غربية"""
     for i, c in enumerate('٠١٢٣٤٥٦٧٨٩'):
@@ -443,7 +795,7 @@ function startOrderQuiz(){
   renderOrderQuiz();
 }
 function mushafHtml(){
-  return '<div class="mushaf-block">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
+  return '<div class="mushaf-block notranslate" translate="no">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
 }
 function nextEmptyFrom(start){
   for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
@@ -471,7 +823,8 @@ function renderOrderQuiz(){
     }else{
       const card=document.createElement('div');
       card.className='order-slot filled';
-      card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+AYAT[idx]+'</span>';
+      card.setAttribute('translate','no');
+      card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';
       card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
       filledGrid.appendChild(card);
     }
@@ -481,7 +834,8 @@ function renderOrderQuiz(){
   orderPoolOrder.forEach(idx=>{
     if(orderPlaced.includes(idx))return;
     const btn=document.createElement('button');
-    btn.className='order-item';
+    btn.className='order-item notranslate';
+    btn.setAttribute('translate','no');
     btn.textContent=AYAT[idx];
     btn.onclick=()=>{
       if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}
@@ -634,42 +988,65 @@ NEXT_SEQUENCE = (
     ]
 )
 NEXT_MAP = {NEXT_SEQUENCE[i]: NEXT_SEQUENCE[i + 1] for i in range(len(NEXT_SEQUENCE) - 1)}
-
+PREV_MAP = {NEXT_SEQUENCE[i]: NEXT_SEQUENCE[i - 1] for i in range(1, len(NEXT_SEQUENCE))}
 NEXT_BTN_RE = re.compile(r'(<button class="start-btn"[^>]*>[^<]*</button>)')
 LEVEL_RETURN_BTN_RE = re.compile(r'<button class="level-return-btn"[^>]*>[^<]*</button>')
 
 
-def add_next_page_button(path, out):
-    """يضيف زر ⏭️ التالي — في شاشة اختيار المستوى وكمان جنب زر
-    'اختر مستوى آخر' في كل شاشة (الاختبار العادي وشاشة الترتيب)،
-    عشان يكون متاح للانتقال للصفحة/السورة التالية أينما كانت المستخدمة
-    من غير ما تحتاج ترجع للفهرس."""
+PAGE_NAV_OLD_A_RE = re.compile(
+    r'\s*<a href="[^"]*" (?:class|id)="(?:next|prev)-page-btn"[^>]*>[^<]*</a>'
+)
+
+
+def add_page_nav_row(path, out):
+    """يضيف صف واحد مضغوط فيه زرين جنب بعض: ⏮️ السابق و⏭️ التالي —
+    بيتحط في شاشة اختيار المستوى وجنب كل زر 'اختر مستوى آخر' (الاختبار
+    العادي وشاشة الترتيب). لو الملف فيه نسخة قديمة من الأزرار دي (شكل
+    مكدّس بعرض كامل)، الدالة بتشيلها وتستبدلها بالصف المضغوط الجديد —
+    آمن ويعمل مرة واحدة بس (idempotent)."""
     fn = os.path.splitext(os.path.basename(path))[0]
-    if fn not in NEXT_MAP:
-        return out, False  # آخر ملف في السلسلة (الناس) أو ملف مش داخل السلسلة
-    if 'next-page-btn' in out:
-        return out, False  # مضاف بالفعل
-    next_file = NEXT_MAP[fn] + '.html'
-    btn_html = (
-        '\n<a href="' + next_file + '" class="next-page-btn" '
-        'style="display:block;text-align:center;text-decoration:none;'
-        'margin-top:10px;padding:12px;border-radius:12px;'
-        'background:var(--surface2);color:var(--accent);'
-        'border:1.5px solid var(--border);font-family:inherit;font-size:15px;">'
-        '⏭️ التالي</a>'
-    )
+    next_key = NEXT_MAP.get(fn)
+    prev_key = PREV_MAP.get(fn)
+    if not next_key and not prev_key:
+        return out, False  # ملف مش داخل السلسلة أصلاً
+
+    if 'page-nav-row' in out:
+        return out, False  # مضاف بالفعل (الصف الجديد موجود) — منلمسش الملف تاني
+
     changed = False
+
+    # تنظيف أي نسخة قديمة (مكدّسة بعرض كامل) قبل الإضافة من جديد
+    # ملحوظة: بيتنفذ بس لو page-nav-row مش موجود أصلاً (فوق)، فمستحيل
+    # يمسح أزرار مضافة حديثًا بالغلط
+    if PAGE_NAV_OLD_A_RE.search(out):
+        out = PAGE_NAV_OLD_A_RE.sub('', out)
+        changed = True
+
+    btn_style = (
+        'flex:1;text-align:center;text-decoration:none;padding:10px 4px;'
+        'border-radius:12px;background:var(--surface2);color:var(--accent);'
+        'border:1.5px solid var(--border);font-family:inherit;font-size:14px;'
+    )
+    inner = ''
+    if prev_key:
+        inner += ('<a href="' + prev_key + '.html" class="prev-page-btn" '
+                   'style="' + btn_style + '">⏮️ السابق</a>')
+    if next_key:
+        inner += ('<a href="' + next_key + '.html" class="next-page-btn" '
+                   'style="' + btn_style + '">التالي ⏭️</a>')
+    row_html = ('\n<div class="page-nav-row" '
+                'style="display:flex;gap:8px;margin-top:10px;">' + inner + '</div>')
 
     # بعد زر "ابدأ الاختبار" في شاشة اختيار المستوى
     m = NEXT_BTN_RE.search(out)
     if m:
-        out = out[:m.end()] + btn_html + out[m.end():]
+        out = out[:m.end()] + row_html + out[m.end():]
         changed = True
 
     # بعد كل زر "اختر مستوى آخر" (في شاشة الاختبار وشاشة الترتيب)
     matches = list(LEVEL_RETURN_BTN_RE.finditer(out))
     for mm in reversed(matches):
-        out = out[:mm.end()] + btn_html + out[mm.end():]
+        out = out[:mm.end()] + row_html + out[mm.end():]
         changed = True
 
     return out, changed
@@ -1732,8 +2109,8 @@ def fix_file(path):
     out, navbtn_fixed = fix_missing_nav_btn_css(out)
 
     # ====================================================
-    # 9هـ. زر ⏭️ التالي — انتقال مباشر للصفحة/السورة التالية
-    out, next_btn_added = add_next_page_button(path, out)
+    # 9هـ. صف مضغوط: ⏮️ السابق / التالي ⏭️ — انتقال مباشر بين الصفحات
+    out, page_nav_added = add_page_nav_row(path, out)
 
     # ====================================================
     # 9ح. ترقية التسجيل الصوتي (الصعب) لشكل الكلمات القابلة للحذف فرديًا
@@ -1745,6 +2122,25 @@ def fix_file(path):
 
     # 9ي. وضع المطوّر: إخفاء مستوى "صعب" وزر التلاوة عن الزوار العاديين
     out, dev_mode_added = add_dev_mode(out)
+
+    # 9ك. زر 💬 شاركنا رأيك (واتساب)
+    out, feedback_added = add_feedback_widget(out)
+
+    # 9ل. زر 🌐 اختيار اللغة (ترجمة الواجهة فقط — الآيات وأسماء السور محمية)
+    out, lang_added = add_language_switcher(out)
+
+    # 9ل٢. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات)
+    out, lang_upgraded = upgrade_lang_switcher_languages(out)
+
+    # 9م. حماية نص الآيات الكامل في ميزة الترتيب من الترجمة (ملفات قديمة)
+    out, order_translate_protected = protect_order_ayat_from_translation(out)
+
+    # 9ن. حماية نص الآيات في محرك الاختبار العادي (سهل/متوسط/صعب) من الترجمة
+    out, quiz_translate_protected = protect_quiz_ayat_from_translation(out)
+
+    # 9س. إصلاح باج: استدعاءات renderDotProgress/saveResumeState الناقصة
+    # في الملفات القديمة (سهل/متوسط) — بدون أي تغيير في البنية
+    out, progress_save_fixed = fix_missing_progress_save_calls(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
@@ -1792,6 +2188,15 @@ def fix_index_recitation(path):
 
     if 'manifest.json' not in out:
         out = out.replace('</head>', PWA_HEAD + '\n</head>', 1)
+
+    # زر 💬 شاركنا رأيك (واتساب)
+    out, feedback_added = add_feedback_widget(out)
+
+    # زر 🌐 اختيار اللغة
+    out, lang_added = add_language_switcher(out)
+
+    # ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات)
+    out, lang_upgraded = upgrade_lang_switcher_languages(out)
 
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
