@@ -140,7 +140,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
     <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
-<a href="altariq.html" id="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alinshiqaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">⏮️ السابق</a><a href="altariq.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">التالي ⏭️</a></div>
 </div>
 
 <div class="quiz-area" id="quiz-area">
@@ -156,6 +156,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   </div>
   <div class="feedback" id="feedback"></div>
   <button class="level-return-btn" onclick="returnToLevels()">&#x1F504; &#x627;&#x62E;&#x62A;&#x631; &#x645;&#x633;&#x62A;&#x648;&#x649; &#x622;&#x62E;&#x631;</button>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alinshiqaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">⏮️ السابق</a><a href="altariq.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">التالي ⏭️</a></div>
 </div>
 
 <div class="quiz-area" id="order-area">
@@ -169,6 +170,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div id="order-reveal" style="display:none;"></div>
   <div class="feedback" id="order-feedback"></div>
   <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alinshiqaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">⏮️ السابق</a><a href="altariq.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">التالي ⏭️</a></div>
 </div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
@@ -565,19 +567,23 @@ body{top:0 !important;}
     <button onclick="langSelect('ar','🇸🇦','العربية')" data-code="ar">🇸🇦 العربية</button>
     <button onclick="langSelect('en','🇬🇧','English')" data-code="en">🇬🇧 English</button>
     <button onclick="langSelect('fr','🇫🇷','Français')" data-code="fr">🇫🇷 Français</button>
+    <button onclick="langSelect('tr','🇹🇷','Türkçe')" data-code="tr">🇹🇷 Türkçe</button>
+    <button onclick="langSelect('fa','🇮🇷','فارسی')" data-code="fa">🇮🇷 فارسی</button>
+    <button onclick="langSelect('de','🇩🇪','Deutsch')" data-code="de">🇩🇪 Deutsch</button>
+    <button onclick="langSelect('es','🇪🇸','Español')" data-code="es">🇪🇸 Español</button>
   </div>
 </div>
 <div id="google_translate_element"></div>
 <script>
 function googleTranslateElementInit(){
-  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr',autoDisplay:false},'google_translate_element');
+  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
 }
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 <script>
 function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
 function langApplyLabel(){
-  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français']};
+  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français'],tr:['🇹🇷','Türkçe'],fa:['🇮🇷','فارسی'],de:['🇩🇪','Deutsch'],es:['🇪🇸','Español']};
   var c=langCookie();var code='ar';
   if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
   var d=map[code]||map.ar;
