@@ -1,21 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<script>
-(function(){
-  try{
-    var p=new URLSearchParams(location.search);
-    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
-    if(localStorage.getItem('darbi_dev')!=='1'){
-      document.documentElement.classList.add('darbi-locked');
-    }
-  }catch(e){}
-})();
-</script>
-<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
-.nav-row{display:flex;gap:10px;margin-top:14px;}
-.nav-btn{flex:1;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:17px;font-family:inherit;cursor:pointer;}.nav-btn:hover:not(:disabled){background:var(--surface-hover);}.nav-btn:disabled{opacity:0.4;cursor:default;}.nav-btn.primary{background:var(--accent);color:var(--card);border-color:var(--accent);}.nav-btn.primary:hover{background:var(--accent-dark);}
-</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>
@@ -81,7 +66,7 @@
   .info-card, .level-card, .quiz-area, .result-area { transition: background-color .3s, border-color .3s; }
 
 
-  *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;}.top-bar{background:var(--bg);padding:12px 20px;}.back-btn{background:none;border:none;color:var(--accent);font-size:18px;cursor:pointer;text-decoration:none;font-family:inherit;}.info-card{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:22px 20px 18px;text-align:center;position:relative;}.info-card::before,.info-card::after{content:'✦';color:var(--gold);font-size:20px;position:absolute;top:16px;}.info-card::before{right:18px;}.info-card::after{left:18px;}.surah-title{font-size:28px;font-weight:700;color:var(--text);margin-bottom:4px;}.ayat-range{font-size:15px;color:var(--accent);margin-bottom:4px;}.page-info{font-size:14px;color:var(--text-soft);margin-bottom:14px;}.stats-row{display:flex;gap:10px;justify-content:center;}.stat-badge{background:var(--accent);color:var(--card);border-radius:12px;padding:8px 18px;font-size:14px;text-align:center;min-width:80px;line-height:1.4;}.level-card{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:24px 20px 20px;text-align:center;}.level-title{font-size:22px;color:var(--text);margin-bottom:6px;}.level-sub{font-size:14px;color:var(--text-soft);margin-bottom:20px;}.levels-grid{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}.level-btn{flex:1;min-width:76px;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 6px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--text);}.level-btn:hover,.level-btn.active{background:var(--surface-hover);border-color:var(--accent);}.level-icon{font-size:28px;display:block;margin-bottom:6px;}.level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;}.level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}.start-btn{width:100%;max-width:260px;background:var(--accent-light);color:var(--card);border:none;border-radius:14px;padding:14px 20px;font-size:17px;font-family:inherit;cursor:pointer;}.start-btn.ready{background:var(--accent);}.quiz-area{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:24px 20px;display:none;}.q-number{font-size:13px;color:var(--text-soft);margin-bottom:10px;text-align:center;}.q-text{font-size:19px;line-height:2;color:var(--text);text-align:center;margin-bottom:20px;background:var(--surface3);border-radius:12px;padding:16px;}.choices{display:flex;flex-direction:column;gap:10px;}.choice-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:17px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.8;}.choice-btn:hover:not(:disabled){background:var(--surface-hover);border-color:var(--accent);}.choice-btn.correct{background:var(--correct-bg);border-color:var(--accent);color:var(--correct-text);}.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong-border);color:var(--wrong-text);}.answer-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:18px;font-family:inherit;color:var(--text);background:var(--surface3);outline:none;resize:vertical;min-height:70px;text-align:right;direction:rtl;}.answer-input:focus{border-color:var(--accent);}.submit-btn{margin-top:14px;width:100%;background:var(--accent);color:var(--card);border:none;border-radius:12px;padding:13px;font-size:17px;font-family:inherit;cursor:pointer;}.feedback{margin-top:14px;padding:14px;border-radius:12px;font-size:16px;line-height:1.9;display:none;text-align:center;}.feedback.correct{background:var(--correct-bg);color:var(--correct-text);}.feedback.wrong{background:var(--wrong-bg);color:var(--wrong-text);}.next-btn{margin-top:12px;width:100%;background:var(--accent);color:var(--card);border:none;border-radius:12px;padding:13px;font-size:17px;font-family:inherit;cursor:pointer;display:none;}.result-area{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:30px 20px;text-align:center;display:none;}.result-icon{font-size:52px;margin-bottom:12px;}.result-title{font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px;}.result-score{font-size:18px;color:var(--accent);margin-bottom:20px;}.result-msg{font-size:16px;color:var(--text-faint);margin-bottom:24px;}.retry-btn{background:var(--accent);color:var(--card);border:none;border-radius:12px;padding:13px 30px;font-size:17px;font-family:inherit;cursor:pointer;margin:5px;}.home-link{display:inline-block;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);border-radius:12px;padding:12px 28px;font-size:17px;font-family:inherit;text-decoration:none;margin:5px;}.progress-bar-wrap{background:var(--surface-hover);border-radius:8px;height:8px;margin-bottom:18px;overflow:hidden;}.progress-bar-fill{height:100%;background:var(--accent);border-radius:8px;transition:width .3s;}.translate-bar{position:fixed;bottom:20px;left:16px;background:var(--accent);color:var(--card);border-radius:50px;padding:10px 16px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.15);}
+  *{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;}.top-bar{background:var(--bg);padding:12px 20px;}.back-btn{background:none;border:none;color:var(--accent);font-size:18px;cursor:pointer;text-decoration:none;font-family:inherit;}.info-card{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:22px 20px 18px;text-align:center;position:relative;}.info-card::before,.info-card::after{content:'✦';color:var(--gold);font-size:20px;position:absolute;top:16px;}.info-card::before{right:18px;}.info-card::after{left:18px;}.surah-title{font-size:28px;font-weight:700;color:var(--text);margin-bottom:4px;}.ayat-range{font-size:15px;color:var(--accent);margin-bottom:4px;}.page-info{font-size:14px;color:var(--text-soft);margin-bottom:14px;}.stats-row{display:flex;gap:10px;justify-content:center;}.stat-badge{background:var(--accent);color:var(--card);border-radius:12px;padding:8px 18px;font-size:14px;text-align:center;min-width:80px;line-height:1.4;}.level-card{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:24px 20px 20px;text-align:center;}.level-title{font-size:22px;color:var(--text);margin-bottom:6px;}.level-sub{font-size:14px;color:var(--text-soft);margin-bottom:20px;}.levels-grid{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}.level-btn{flex:1;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:16px 8px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--text);}.level-btn:hover,.level-btn.active{background:var(--surface-hover);border-color:var(--accent);}.level-icon{font-size:28px;display:block;margin-bottom:6px;}.level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;}.level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}.start-btn{width:100%;max-width:260px;background:var(--accent-light);color:var(--card);border:none;border-radius:14px;padding:14px 20px;font-size:17px;font-family:inherit;cursor:pointer;}.start-btn.ready{background:var(--accent);}.quiz-area{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:24px 20px;display:none;}.q-number{font-size:13px;color:var(--text-soft);margin-bottom:10px;text-align:center;}.q-text{font-size:19px;line-height:2;color:var(--text);text-align:center;margin-bottom:20px;background:var(--surface3);border-radius:12px;padding:16px;}.choices{display:flex;flex-direction:column;gap:10px;}.choice-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:17px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.8;}.choice-btn:hover:not(:disabled){background:var(--surface-hover);border-color:var(--accent);}.choice-btn.correct{background:var(--correct-bg);border-color:var(--accent);color:var(--correct-text);}.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong-border);color:var(--wrong-text);}.answer-input{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:18px;font-family:inherit;color:var(--text);background:var(--surface3);outline:none;resize:vertical;min-height:70px;text-align:right;direction:rtl;}.answer-input:focus{border-color:var(--accent);}.submit-btn{margin-top:14px;width:100%;background:var(--accent);color:var(--card);border:none;border-radius:12px;padding:13px;font-size:17px;font-family:inherit;cursor:pointer;}.feedback{margin-top:14px;padding:14px;border-radius:12px;font-size:16px;line-height:1.9;display:none;text-align:center;}.feedback.correct{background:var(--correct-bg);color:var(--correct-text);}.feedback.wrong{background:var(--wrong-bg);color:var(--wrong-text);}.next-btn{margin-top:12px;width:100%;background:var(--accent);color:var(--card);border:none;border-radius:12px;padding:13px;font-size:17px;font-family:inherit;cursor:pointer;display:none;}.result-area{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:30px 20px;text-align:center;display:none;}.result-icon{font-size:52px;margin-bottom:12px;}.result-title{font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px;}.result-score{font-size:18px;color:var(--accent);margin-bottom:20px;}.result-msg{font-size:16px;color:var(--text-faint);margin-bottom:24px;}.retry-btn{background:var(--accent);color:var(--card);border:none;border-radius:12px;padding:13px 30px;font-size:17px;font-family:inherit;cursor:pointer;margin:5px;}.home-link{display:inline-block;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);border-radius:12px;padding:12px 28px;font-size:17px;font-family:inherit;text-decoration:none;margin:5px;}.progress-bar-wrap{background:var(--surface-hover);border-radius:8px;height:8px;margin-bottom:18px;overflow:hidden;}.progress-bar-fill{height:100%;background:var(--accent);border-radius:8px;transition:width .3s;}.translate-bar{position:fixed;bottom:20px;left:16px;background:var(--accent);color:var(--card);border-radius:50px;padding:10px 16px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.15);}
   .skip-btn { margin-top:12px; width:100%; background:var(--surface2); color:var(--accent); border:1.5px solid var(--border); border-radius:12px; padding:14px 18px; font-size:17px; font-family:inherit; cursor:pointer; display:none; text-align:center; }
   .skip-btn:hover { background:var(--surface-hover); }
 
@@ -130,7 +115,6 @@
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name">سهل</span><span class="level-desc">اختيار من متعدد</span></button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name">متوسط</span><span class="level-desc">إكمال فراغ</span></button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard"><span class="level-icon">🌳</span><span class="level-name">صعب</span><span class="level-desc">اكتب الآية كاملة من الذاكرة بدون أي مساعدة</span></button>
-    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
 <a href="albaqara_p12.html" id="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
@@ -148,18 +132,6 @@
     <button class="next-btn" id="prev-btn" onclick="prevQuestion()" style="display:block; background:var(--surface2); color:var(--accent); border:1.5px solid var(--border); margin-top:0;">→ السابق</button>
     <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display:none; margin-top:0;">التالي ←</button>
   </div>
-</div>
-<div class="quiz-area" id="order-area">
-  <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
-  <div id="order-slots" style="margin-bottom:16px;"></div>
-  <div id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
-  <div class="nav-row">
-    <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
-    <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
-  </div>
-  <div id="order-reveal" style="display:none;"></div>
-  <div class="feedback" id="order-feedback"></div>
-  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
 </div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
@@ -220,28 +192,18 @@ const HARD_Q=[
   {q:"اكتب الآية الخامسة والسبعين من سورة البقرة كاملة",answer:"أَفَتَطْمَعُونَ أَن يُؤْمِنُوا لَكُمْ وَقَدْ كَانَ فَرِيقٌ مِّنْهُمْ يَسْمَعُونَ كَلَـٰمَ اللَّهِ ثُمَّ يُحَرِّفُونَهُۥ مِنۢ بَعْدِ مَا عَقَلُوهُ وَهُمْ يَعْلَمُونَ"},
   {q:"اكتب الآية السادسة والسبعين من سورة البقرة كاملة",answer:"وَإِذَا لَقُوا الَّذِينَ ءَامَنُوا قَالُوٓا ءَامَنَّا وَإِذَا خَلَا بَعْضُهُمْ إِلَىٰ بَعْضٍ قَالُوٓا أَتُحَدِّثُونَهُم بِمَا فَتَحَ اللَّهُ عَلَيْكُمْ لِيُحَآجُّوكُم بِهِۦ عِندَ رَبِّكُمْ أَفَلَا تَعْقِلُونَ"}
 ];
-const ORDER_AYAT=[
-  "قَالُوا ادْعُ لَنَا رَبَّكَ يُبَيِّن لَّنَا مَا هِىَ إِنَّ الْبَقَرَ تَشَـٰبَهَ عَلَيْنَا وَإِنَّآ إِن شَآءَ اللَّهُ لَمُهْتَدُونَ",
-  "قَالَ إِنَّهُۥ يَقُولُ إِنَّهَا بَقَرَةٌ لَّا ذَلُولٌ تُثِيرُ الْأَرْضَ وَلَا تَسْقِى الْحَرْثَ مُسَلَّمَةٌ لَّا شِيَةَ فِيهَا قَالُوا الْـَٔـٰنَ جِئْتَ بِالْحَقِّ فَذَبَحُوهَا وَمَا كَادُوا يَفْعَلُونَ",
-  "وَإِذْ قَتَلْتُمْ نَفْسًا فَادَّٰرَءْتُمْ فِيهَا وَاللَّهُ مُخْرِجٌ مَّا كُنتُمْ تَكْتُمُونَ",
-  "فَقُلْنَا اضْرِبُوهُ بِبَعْضِهَا كَذَٰلِكَ يُحْىِ اللَّهُ الْمَوْتَىٰ وَيُرِيكُمْ ءَايَـٰتِهِۦ لَعَلَّكُمْ تَعْقِلُونَ",
-  "ثُمَّ قَسَتْ قُلُوبُكُم مِّن بَعْدِ ذَٰلِكَ فَهِىَ كَالْحِجَارَةِ أَوْ أَشَدُّ قَسْوَةً وَإِنَّ مِنَ الْحِجَارَةِ لَمَا يَتَفَجَّرُ مِنْهُ الْأَنْهَـٰرُ وَإِنَّ مِنْهَا لَمَا يَشَّقَّقُ فَيَخْرُجُ مِنْهُ الْمَآءُ وَإِنَّ مِنْهَا لَمَا يَهْبِطُ مِنْ خَشْيَةِ اللَّهِ وَمَا اللَّهُ بِغَـٰفِلٍ عَمَّا تَعْمَلُونَ",
-  "أَفَتَطْمَعُونَ أَن يُؤْمِنُوا لَكُمْ وَقَدْ كَانَ فَرِيقٌ مِّنْهُمْ يَسْمَعُونَ كَلَـٰمَ اللَّهِ ثُمَّ يُحَرِّفُونَهُۥ مِنۢ بَعْدِ مَا عَقَلُوهُ وَهُمْ يَعْلَمُونَ",
-  "وَإِذَا لَقُوا الَّذِينَ ءَامَنُوا قَالُوٓا ءَامَنَّا وَإِذَا خَلَا بَعْضُهُمْ إِلَىٰ بَعْضٍ قَالُوٓا أَتُحَدِّثُونَهُم بِمَا فَتَحَ اللَّهُ عَلَيْكُمْ لِيُحَآجُّوكُم بِهِۦ عِندَ رَبِّكُمْ أَفَلَا تَعْقِلُونَ"
-];
-
 let currentLevel=null,questions=[],qIndex=0,correctCount=0,wrongCount=0;
 let statuses = [];
 let wrongIndices = [];
 const PAGE_ID = 'p11';
 
 function toArabicNum(n){return n;}
-function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(ORDER_AYAT.length);return;}currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:'10',medium:'10',hard:'7'};document.getElementById('total-q').textContent=t[lvl];}
+function selectLevel(lvl){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');const t={easy:'10',medium:'10',hard:'7'};document.getElementById('total-q').textContent=t[lvl];}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
-function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}if(!currentLevel)return;if(currentLevel==='easy')questions=[...EASY_Q];if(currentLevel==='medium')questions=[...MEDIUM_Q];if(currentLevel==='hard')questions=[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses = questions.map(() => 'pending'); wrongIndices = []; var rb=document.getElementById('resume-banner'); if(rb) rb.style.display='none'; document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
-function showQuestion(){const q=questions[qIndex];updateBadges();document.getElementById('progress-fill').style.width=((qIndex)/questions.length*100)+'%';document.getElementById('q-number').textContent=`السؤال ${toArabicNum(qIndex+1)} من ${toArabicNum(questions.length)}`;document.getElementById('q-text').textContent=q.q;document.getElementById('feedback').style.display='none';document.getElementById('next-btn').style.display='none';document.getElementById('skip-btn').style.display='block';renderDotProgress();
-  const zone=document.getElementById('answer-zone');zone.innerHTML='';if(currentLevel==='easy'){const div=document.createElement('div');div.className='choices';shuffle(q.choices.map((c,i)=>({text:c,idx:i}))).forEach(opt=>{const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=opt.text;btn.onclick=()=>checkMCQ(opt.idx,q.answer,btn);div.appendChild(btn);});zone.appendChild(div);
+function startQuiz(){if(!currentLevel)return;if(currentLevel==='easy')questions=[...EASY_Q];if(currentLevel==='medium')questions=[...MEDIUM_Q];if(currentLevel==='hard')questions=[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses = questions.map(() => 'pending'); wrongIndices = []; var rb=document.getElementById('resume-banner'); if(rb) rb.style.display='none'; document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
+function showQuestion(){const q=questions[qIndex];updateBadges();document.getElementById('progress-fill').style.width=((qIndex)/questions.length*100)+'%';document.getElementById('q-number').textContent=`السؤال ${toArabicNum(qIndex+1)} من ${toArabicNum(questions.length)}`;var __qt=document.getElementById('q-text');__qt.textContent=q.q;if(currentLevel==='hard'){__qt.classList.remove('notranslate');__qt.removeAttribute('translate');}else{__qt.classList.add('notranslate');__qt.setAttribute('translate','no');}document.getElementById('feedback').style.display='none';document.getElementById('next-btn').style.display='none';document.getElementById('skip-btn').style.display='block';renderDotProgress();
+  const zone=document.getElementById('answer-zone');zone.innerHTML='';if(currentLevel==='easy'){const div=document.createElement('div');div.className='choices';shuffle(q.choices.map((c,i)=>({text:c,idx:i}))).forEach(opt=>{const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=opt.text;btn.classList.add('notranslate');btn.setAttribute('translate','no');btn.onclick=()=>checkMCQ(opt.idx,q.answer,btn);div.appendChild(btn);});zone.appendChild(div);
   } else {
     if (currentLevel === 'hard') {
 
@@ -380,7 +342,7 @@ function showQuestion(){const q=questions[qIndex];updateBadges();document.getEle
       const tSub=document.createElement('button'); tSub.className='submit-btn'; tSub.textContent='تحقق ✓'; tSub.onclick=()=>checkText(q); tZone.appendChild(tSub);
 
       const hBox=document.createElement('div'); hBox.style.cssText='display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;'; zone.appendChild(hBox);
-      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول 3 كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
+      const hBtn=document.createElement('button'); hBtn.id='hint-btn'; hBtn.textContent='💡 مساعدة (أول 3 كلمات)'; hBtn.style.cssText='width:100%;background:var(--hint-btn-bg);color:var(--hint-btn-text);border:1.5px solid var(--hint-btn-border);border-radius:10px;padding:10px;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;'; hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.classList.add('notranslate');hBox.setAttribute('translate','no');hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';}; zone.appendChild(hBtn);
 
     } else {
       const ta=document.createElement('textarea'); ta.className='answer-input'; ta.placeholder='اكتب الكلمة الناقصة...'; ta.id='user-input'; zone.appendChild(ta);
@@ -430,13 +392,13 @@ function wordDiff(userVal, correctAnswer) {
     const ok = nm(uWords[i]||'') === nm(word);
     if(ok) correct++;
     return ok
-      ? '<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;">'+word+'</span>'
-      : '<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;">'+word+'</span>';
+      ? '<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">'+word+'</span>'
+      : '<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">'+word+'</span>';
   }).join(' ');
   return '<div style="margin-bottom:6px;font-size:13px;color:#666;">'+correct+' / '+cWords.length+' كلمة صحيحة</div>'
        + '<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;color:#333;">'+html+'</div>';
 }
-function checkMCQ(chosen,correct,btn){document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');if(chosen===correct){btn.classList.add('correct');correctCount++; statuses[qIndex]='correct';fb.className='feedback correct';fb.textContent='✓ أحسنت!';}else{btn.classList.add('wrong');wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});fb.className='feedback wrong';fb.textContent=`✗ الإجابة الصحيحة: ${questions[qIndex].choices[correct]}`;}fb.style.display='block';updateBadges();document.getElementById('next-btn').style.display='block';document.getElementById('skip-btn').style.display='none';}
+function checkMCQ(chosen,correct,btn){document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');if(chosen===correct){btn.classList.add('correct');correctCount++; statuses[qIndex]='correct';fb.className='feedback correct';fb.textContent='✓ أحسنت!';}else{btn.classList.add('wrong');wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+questions[qIndex].choices[correct]+'</span>';}fb.style.display='block';updateBadges();document.getElementById('next-btn').style.display='block';document.getElementById('skip-btn').style.display='none';renderDotProgress();saveResumeState();}
 function checkTextVal(q, userVal) {
   if (!userVal) return;
   const fb = document.getElementById('feedback');
@@ -455,114 +417,19 @@ function checkTextVal(q, userVal) {
   updateBadges();
   renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';
 }
-function checkText(q){const input=document.getElementById('user-input');const userVal=input.value.trim();if(!userVal)return;input.disabled=true;document.querySelector('.submit-btn').disabled=true;const fb=document.getElementById('feedback');if(normalize(userVal)===normalize(q.answer)){correctCount++; statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً';}else{wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML=`✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2">${q.answer}</span>`;}fb.style.display='block';updateBadges();document.getElementById('next-btn').style.display='block';document.getElementById('skip-btn').style.display='none';}
-function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML=`⬅ الإجابة الصحيحة: ${q.choices[q.answer]}`;}else{if(document.getElementById('user-input'))document.getElementById('user-input').disabled=true;const sub=document.querySelector('.submit-btn');if(sub)sub.disabled=true;fb.className='feedback wrong';fb.innerHTML=`⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2">${q.answer}</span>`;}wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);fb.style.display='block';updateBadges();document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';}
+function checkText(q){const input=document.getElementById('user-input');const userVal=input.value.trim();if(!userVal)return;input.disabled=true;document.querySelector('.submit-btn').disabled=true;const fb=document.getElementById('feedback');if(normalize(userVal)===normalize(q.answer)){correctCount++; statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً';}else{wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML=`✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2" class="notranslate" translate="no">${q.answer}</span>`;}fb.style.display='block';updateBadges();document.getElementById('next-btn').style.display='block';document.getElementById('skip-btn').style.display='none';renderDotProgress();saveResumeState();}
+function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';}else{if(document.getElementById('user-input'))document.getElementById('user-input').disabled=true;const sub=document.querySelector('.submit-btn');if(sub)sub.disabled=true;fb.className='feedback wrong';fb.innerHTML=`⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2" class="notranslate" translate="no">${q.answer}</span>`;}wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);fb.style.display='block';updateBadges();document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';}
 function nextQuestion(){qIndex++;if(qIndex>=questions.length)showResult();else showQuestion();}
 function showResult(){document.getElementById('quiz-area').style.display='none';document.getElementById('result-area').style.display='block';try{localStorage.setItem('quranProgress_p11', JSON.stringify({pct: Math.round((correctCount/questions.length)*100), level: currentLevel, date: Date.now()}));}catch(e){}const pct=Math.round((correctCount/questions.length)*100);document.getElementById('result-score').textContent=`${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} — ${toArabicNum(pct)}%`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت الصفحة بالكامل';}else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجع الصفحة مرة أخرى وأعد الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();
   try { localStorage.removeItem('quranResume_p11'); } catch(e) {}
   var __rb = document.getElementById('review-mistakes-btn'); if (__rb) __rb.style.display = (wrongIndices.length > 0 ? 'inline-block' : 'none');
   var __pct = Math.round((correctCount/questions.length)*100); if (__pct === 100) spawnConfetti();}
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='10';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>10';document.getElementById('progress-fill').style.width='0%';}
 
 // ══════════════════════════════════════════════
 //  الوضع الليلي
 // ══════════════════════════════════════════════
-
-/* ===== ترتيب الآيات 🔀 (البقرة) ===== */
-let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
-function startOrderQuiz(){
-  orderPlaced=new Array(ORDER_AYAT.length).fill(null);
-  orderCursor=0;
-  orderPoolOrder=ORDER_AYAT.map((t,idx)=>idx);
-  shuffle(orderPoolOrder);
-  document.getElementById('level-card').style.display='none';
-  document.getElementById('order-area').style.display='block';
-  document.getElementById('order-feedback').style.display='none';
-  document.getElementById('order-reveal').style.display='none';
-  document.getElementById('order-check-btn').style.display='none';
-  const rb=document.getElementById('order-reveal-btn');
-  rb.disabled=false;rb.style.opacity='1';
-  renderOrderQuiz();
-}
-function mushafHtml(){
-  return '<div class="mushaf-block">'+ORDER_AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';
-}
-function nextEmptyFrom(start){
-  for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
-  for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}
-  return -1;
-}
-function renderOrderQuiz(){
-  const slotsDiv=document.getElementById('order-slots');
-  const poolDiv=document.getElementById('order-pool');
-  slotsDiv.innerHTML='';
-  poolDiv.innerHTML='';
-  const filledGrid=document.createElement('div');
-  filledGrid.className='order-filled-grid';
-  const emptyStrip=document.createElement('div');
-  emptyStrip.className='order-empty-strip';
-  orderPlaced.forEach((idx,pos)=>{
-    if(idx===null){
-      const active=(pos===orderCursor);
-      const dot=document.createElement('span');
-      dot.className='order-dot'+(active?' active':'');
-      dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';
-      dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';
-      dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};
-      emptyStrip.appendChild(dot);
-    }else{
-      const card=document.createElement('div');
-      card.className='order-slot filled';
-      card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+ORDER_AYAT[idx]+'</span>';
-      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
-      filledGrid.appendChild(card);
-    }
-  });
-  if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);
-  if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);
-  orderPoolOrder.forEach(idx=>{
-    if(orderPlaced.includes(idx))return;
-    const btn=document.createElement('button');
-    btn.className='order-item';
-    btn.textContent=ORDER_AYAT[idx];
-    btn.onclick=()=>{
-      if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}
-      if(orderCursor===-1)return;
-      orderPlaced[orderCursor]=idx;
-      orderCursor=nextEmptyFrom(orderCursor+1);
-      document.getElementById('order-feedback').style.display='none';
-      renderOrderQuiz();
-    };
-    poolDiv.appendChild(btn);
-  });
-  const allFilled=!orderPlaced.includes(null);
-  document.getElementById('order-check-btn').style.display=allFilled?'block':'none';
-}
-function checkOrderAnswer(){
-  let correct=0;
-  document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{
-    const ok=(orderPlaced[pos]!==null&&ORDER_AYAT[orderPlaced[pos]]===ORDER_AYAT[pos]);
-    if(ok)correct++;
-    el.classList.remove('correct-slot','wrong-slot');
-    el.classList.add(ok?'correct-slot':'wrong-slot');
-  });
-  const fb=document.getElementById('order-feedback');
-  const allCorrect=(correct===ORDER_AYAT.length);
-  fb.className='feedback '+(allCorrect?'correct':'wrong');
-  fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(ORDER_AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());
-  fb.style.display='block';
-  document.getElementById('order-check-btn').style.display='none';
-  if(allCorrect)spawnConfetti();
-}
-function revealOrderAnswer(){
-  document.getElementById('order-reveal').innerHTML=mushafHtml();
-  document.getElementById('order-reveal').style.display='block';
-  const rb=document.getElementById('order-reveal-btn');
-  rb.disabled=true;rb.style.opacity='0.5';
-}
-/* ===== نهاية ترتيب الآيات (البقرة) ===== */
-
 function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
 function applyTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
@@ -655,9 +522,9 @@ function startReview() {
 function renderReviewQ() {
   const q = reviewQuestions[reviewIdx];
   document.getElementById('review-number').textContent = `مراجعة ${toArabicNum(reviewIdx + 1)} من ${toArabicNum(reviewQuestions.length)}`;
-  document.getElementById('review-q-text').textContent = q.q;
+  var __rqt=document.getElementById('review-q-text');__rqt.textContent=q.q;if(currentLevel==='hard'){__rqt.classList.remove('notranslate');__rqt.removeAttribute('translate');}else{__rqt.classList.add('notranslate');__rqt.setAttribute('translate','no');}
   const answerText = (currentLevel === 'easy') ? q.choices[q.answer] : q.answer;
-  document.getElementById('review-answer').textContent = '✓ ' + answerText;
+  var __ra=document.getElementById('review-answer');__ra.textContent='✓ '+answerText;__ra.classList.add('notranslate');__ra.setAttribute('translate','no');
 }
 function reviewNav(dir) {
   reviewIdx = Math.max(0, Math.min(reviewQuestions.length - 1, reviewIdx + dir));
@@ -726,6 +593,123 @@ if('serviceWorker' in navigator){
       .catch(e=>console.log('SW err:',e));
   });
 }
+</script>
+<style>
+.fdbk-fab{position:fixed;bottom:20px;left:20px;background:#2E6B3E;color:#fff;border:none;border-radius:50px;width:52px;height:52px;font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,0.25);cursor:pointer;z-index:9999;display:flex;align-items:center;justify-content:center;}
+.fdbk-fab:hover{filter:brightness(1.1);}
+html[data-theme="dark"] .fdbk-fab{background:#4A9E40;}
+.fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
+.fdbk-overlay.open{display:flex;}
+.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
+html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
+.fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
+html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
+.fdbk-modal label{display:block;font-size:14px;margin:12px 0 6px;}
+.fdbk-modal select,.fdbk-modal textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #d8e0d8;background:#f7faf7;color:#222;font-family:inherit;font-size:14px;box-sizing:border-box;}
+html[data-theme="dark"] .fdbk-modal select,html[data-theme="dark"] .fdbk-modal textarea{background:#101810;color:#DCF0D8;border-color:#2A4028;}
+.fdbk-modal textarea{min-height:80px;resize:vertical;}
+.fdbk-actions{display:flex;gap:8px;margin-top:16px;}
+.fdbk-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
+.fdbk-send{background:#2E6B3E;color:#fff;}
+html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
+.fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
+</style>
+<button class="fdbk-fab" id="fdbk-fab-btn" onclick="fdbkOpen()" title="شاركنا رأيك">💬</button>
+<div class="fdbk-overlay" id="fdbk-overlay">
+  <div class="fdbk-modal">
+    <h3>💬 شاركنا رأيك</h3>
+    <label>نوع الملاحظة</label>
+    <select id="fdbk-type">
+      <option>خطأ في النص القرآني</option>
+      <option>خطأ في السؤال أو الإجابة</option>
+      <option>مشكلة في التسجيل الصوتي</option>
+      <option>مشكلة تصميم أو عرض</option>
+      <option>اقتراح تحسين</option>
+      <option>أخرى</option>
+    </select>
+    <label>تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <div class="fdbk-actions">
+      <button class="fdbk-send" onclick="fdbkSend()">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()">إلغاء</button>
+    </div>
+  </div>
+</div>
+<script>
+function fdbkOpen(){document.getElementById('fdbk-overlay').classList.add('open');}
+function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
+function fdbkSend(){
+  var type=document.getElementById('fdbk-type').value;
+  var note=document.getElementById('fdbk-note').value.trim();
+  var page=document.title||location.pathname.split('/').pop();
+  var msg='ملاحظة من دربي لحفظ القرآن\nالصفحة: '+page+'\nالنوع: '+type+(note?'\nالتفاصيل: '+note:'');
+  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
+  fdbkClose();
+}
+</script>
+<style>
+.lang-switch{position:fixed;bottom:20px;right:20px;z-index:9998;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.lang-btn{display:flex;align-items:center;gap:6px;background:var(--card,#fff);color:var(--green,var(--accent,#2E6B3E));border:1.5px solid var(--border,#E4EAE4);border-radius:24px;padding:10px 14px;font-size:0.85rem;box-shadow:0 4px 14px var(--shadow,rgba(45,90,39,0.12));cursor:pointer;font-family:inherit;}
+.lang-btn:hover{border-color:var(--green,var(--accent,#2E6B3E));}
+.lang-btn .lang-arrow{font-size:0.6rem;color:var(--gold,#B8963A);transition:transform .2s;margin-inline-start:2px;}
+.lang-switch.open .lang-arrow{transform:rotate(180deg);}
+.lang-menu{display:none;position:absolute;bottom:52px;right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px var(--shadow,rgba(45,90,39,0.18));overflow:hidden;min-width:150px;border-top:3px solid var(--gold,#B8963A);}
+.lang-switch.open .lang-menu{display:block;}
+.lang-menu button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:11px 14px;font-size:0.85rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.lang-menu button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
+.lang-menu button.lang-active{color:var(--green,var(--accent,#2E6B3E));font-weight:700;}
+#google_translate_element{display:none !important;}
+.goog-te-banner-frame.skiptranslate{display:none !important;}
+.goog-te-gadget{height:0;overflow:hidden;}
+body{top:0 !important;}
+</style>
+<div class="lang-switch" id="lang-switch">
+  <button class="lang-btn" id="lang-btn" onclick="langToggle(event)">
+    <span id="lang-flag">🇸🇦</span><span id="lang-label">العربية</span><span class="lang-arrow">▼</span>
+  </button>
+  <div class="lang-menu" id="lang-menu">
+    <button onclick="langSelect('ar','🇸🇦','العربية')" data-code="ar">🇸🇦 العربية</button>
+    <button onclick="langSelect('en','🇬🇧','English')" data-code="en">🇬🇧 English</button>
+    <button onclick="langSelect('fr','🇫🇷','Français')" data-code="fr">🇫🇷 Français</button>
+  </div>
+</div>
+<div id="google_translate_element"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr',autoDisplay:false},'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script>
+function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
+function langApplyLabel(){
+  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français']};
+  var c=langCookie();var code='ar';
+  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
+  var d=map[code]||map.ar;
+  document.getElementById('lang-flag').textContent=d[0];
+  document.getElementById('lang-label').textContent=d[1];
+  document.querySelectorAll('#lang-menu button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
+}
+function langToggle(e){
+  if(e)e.stopPropagation();
+  document.getElementById('lang-switch').classList.toggle('open');
+}
+function langSelect(code){
+  document.getElementById('lang-switch').classList.remove('open');
+  if(code==='ar'){
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
+  }else{
+    document.cookie='googtrans=/ar/'+code+'; path=/;';
+  }
+  location.reload();
+}
+document.addEventListener('click',function(e){
+  var sw=document.getElementById('lang-switch');
+  if(sw && !sw.contains(e.target))sw.classList.remove('open');
+});
+langApplyLabel();
 </script>
 </body>
 </html>
