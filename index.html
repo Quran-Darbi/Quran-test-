@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<script>
-(function(){
-  try{
-    var p=new URLSearchParams(location.search);
-    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
-    if(localStorage.getItem('darbi_dev')!=='1'){
-      document.documentElement.classList.add('darbi-locked');
-    }
-  }catch(e){}
-})();
-</script>
-<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <meta charset="UTF-8">
@@ -151,12 +139,12 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
   <div class="hero-dots">✦ ✦ ✦</div>
   <div class="hero-dots2">✦ ✦ ✦</div>
   <div class="hero-inner">
-    <div class="hero-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <div class="hero-bismillah notranslate" translate="no">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     <div class="hero-title">دربي لحفظ القرآن</div>
     <div class="hero-sub">اختبر حفظك صفحةً بصفحة — 3 مستويات لكل اختبار</div>
     <div class="ayah-banner">
-      <div class="ayah-text">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
-      <div class="ayah-ref">سورة المزمل — آية 4</div>
+      <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
+      <div class="ayah-ref notranslate" translate="no">سورة المزمل — آية 4</div>
     </div>
     <div>
       <a href="recitation.html" class="hero-rec-btn">🎤 اختبر تلاوتك</a>
@@ -180,7 +168,7 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
       <div class="juz-badge" style="background:var(--gold);color:#fff;">الفاتحة</div>
-      <div class="juz-title">أم الكتاب</div>
+      <div class="juz-title notranslate" translate="no">أم الكتاب</div>
     </div>
     <div class="acc-right">
       <div class="juz-prog">1 متاح</div>
@@ -189,7 +177,7 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
   </button>
   <div class="acc-body">
     <div class="cards-grid">
-      <a href="alfatiha.html" class="quiz-card" data-s="الفاتحة أم الكتاب"><div class="card-bar"></div><div class="card-name">الفاتحة</div><div class="card-meta">الآيات 1–7</div><span class="card-badge badge-ok">✓ متاح</span></a>
+      <a href="alfatiha.html" class="quiz-card" data-s="الفاتحة أم الكتاب"><div class="card-bar"></div><div class="card-name notranslate" translate="no">الفاتحة</div><div class="card-meta">الآيات 1–7</div><span class="card-badge badge-ok">✓ متاح</span></a>
     </div>
   </div>
 </div>
@@ -199,7 +187,7 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
       <div class="juz-badge">الجزء 1–3</div>
-      <div class="juz-title">سورة البقرة</div>
+      <div class="juz-title notranslate" translate="no">سورة البقرة</div>
     </div>
     <div class="acc-right">
       <div class="juz-prog">48 متاح</div>
@@ -216,7 +204,7 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
       <div class="juz-badge amma">الجزء 30</div>
-      <div class="juz-title">جزء عمّ</div>
+      <div class="juz-title notranslate" translate="no">جزء عمّ</div>
     </div>
     <div class="acc-right">
       <div class="juz-prog">37 / 37 مكتمل ✓</div>
@@ -247,8 +235,8 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
         </div>
         <div style="margin-top:12px;font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--soft);">✦ هند هاني أبوبكر</div>
         <div style="margin-top:14px;background:var(--green3);border-radius:12px;padding:12px 14px;text-align:center;">
-          <div style="font-family:'Scheherazade New',serif;font-size:1rem;color:var(--green);line-height:1.9;">﴿ وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ ﴾</div>
-          <div style="font-size:0.72rem;color:var(--soft);margin-top:3px;">سورة القمر — آية 17</div>
+          <div style="font-family:'Scheherazade New',serif;font-size:1rem;color:var(--green);line-height:1.9;" class="notranslate" translate="no">﴿ وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ ﴾</div>
+          <div style="font-size:0.72rem;color:var(--soft);margin-top:3px;" class="notranslate" translate="no">سورة القمر — آية 17</div>
         </div>
       </div>
     </div>
@@ -256,8 +244,8 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
 </div>
 
 <footer>
-  <div class="footer-ayah">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾</div>
-  <div class="footer-ref">سورة الحجر — آية 9</div>
+  <div class="footer-ayah notranslate" translate="no">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾</div>
+  <div class="footer-ref notranslate" translate="no">سورة الحجر — آية 9</div>
   <div class="footer-copy">جميع الحقوق محفوظة © هند هاني أبوبكر — دربي لحفظ القرآن</div>
 </footer>
 
@@ -339,8 +327,8 @@ const remainingJuz=[
 
 function card(href,name,meta,ok){
   return ok
-    ? `<a href="${href}" class="quiz-card" data-s="${name} ${meta}"><div class="card-bar"></div><div class="card-name">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-ok">✓</span></a>`
-    : `<div class="quiz-card soon" data-s="${name}"><div class="card-bar"></div><div class="card-name">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
+    ? `<a href="${href}" class="quiz-card" data-s="${name} ${meta}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-ok">✓</span></a>`
+    : `<div class="quiz-card soon" data-s="${name}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
 }
 
 document.getElementById('baqara-grid').innerHTML =
@@ -352,7 +340,7 @@ document.getElementById('amma-grid').innerHTML =
 document.getElementById('remaining').innerHTML = remainingJuz.map(j=>`
 <div class="acc">
   <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left"><div class="juz-badge">الجزء ${j[0]}</div><div class="juz-title">${j[1]}</div></div>
+    <div class="acc-left"><div class="juz-badge">الجزء ${j[0]}</div><div class="juz-title notranslate" translate="no">${j[1]}</div></div>
     <div class="acc-right"><div class="juz-prog">${j[2]}</div><span class="acc-arrow">▾</span></div>
   </button>
   <div class="acc-body"><div class="cards-grid">${card('',j[1].split('—')[0].trim(),j[2],false)}</div></div>
@@ -394,6 +382,127 @@ if('serviceWorker' in navigator){
       .catch(e=>console.log('SW err:',e));
   });
 }
+</script>
+<style>
+.fdbk-fab{position:fixed;bottom:20px;left:20px;background:#2E6B3E;color:#fff;border:none;border-radius:50px;width:52px;height:52px;font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,0.25);cursor:pointer;z-index:9999;display:flex;align-items:center;justify-content:center;}
+.fdbk-fab:hover{filter:brightness(1.1);}
+html[data-theme="dark"] .fdbk-fab{background:#4A9E40;}
+.fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
+.fdbk-overlay.open{display:flex;}
+.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
+html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
+.fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
+html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
+.fdbk-modal label{display:block;font-size:14px;margin:12px 0 6px;}
+.fdbk-modal select,.fdbk-modal textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #d8e0d8;background:#f7faf7;color:#222;font-family:inherit;font-size:14px;box-sizing:border-box;}
+html[data-theme="dark"] .fdbk-modal select,html[data-theme="dark"] .fdbk-modal textarea{background:#101810;color:#DCF0D8;border-color:#2A4028;}
+.fdbk-modal textarea{min-height:80px;resize:vertical;}
+.fdbk-actions{display:flex;gap:8px;margin-top:16px;}
+.fdbk-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
+.fdbk-send{background:#2E6B3E;color:#fff;}
+html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
+.fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
+</style>
+<button class="fdbk-fab" id="fdbk-fab-btn" onclick="fdbkOpen()" title="شاركنا رأيك">💬</button>
+<div class="fdbk-overlay" id="fdbk-overlay">
+  <div class="fdbk-modal">
+    <h3>💬 شاركنا رأيك</h3>
+    <label>نوع الملاحظة</label>
+    <select id="fdbk-type">
+      <option>خطأ في النص القرآني</option>
+      <option>خطأ في السؤال أو الإجابة</option>
+      <option>مشكلة في التسجيل الصوتي</option>
+      <option>مشكلة تصميم أو عرض</option>
+      <option>اقتراح تحسين</option>
+      <option>أخرى</option>
+    </select>
+    <label>تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <div class="fdbk-actions">
+      <button class="fdbk-send" onclick="fdbkSend()">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()">إلغاء</button>
+    </div>
+  </div>
+</div>
+<script>
+function fdbkOpen(){document.getElementById('fdbk-overlay').classList.add('open');}
+function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
+function fdbkSend(){
+  var type=document.getElementById('fdbk-type').value;
+  var note=document.getElementById('fdbk-note').value.trim();
+  var page=document.title||location.pathname.split('/').pop();
+  var msg='ملاحظة من دربي لحفظ القرآن\nالصفحة: '+page+'\nالنوع: '+type+(note?'\nالتفاصيل: '+note:'');
+  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
+  fdbkClose();
+}
+</script>
+<style>
+.lang-switch{position:fixed;bottom:20px;right:20px;z-index:9998;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.lang-btn{display:flex;align-items:center;gap:6px;background:var(--card,#fff);color:var(--green,var(--accent,#2E6B3E));border:1.5px solid var(--border,#E4EAE4);border-radius:24px;padding:10px 14px;font-size:0.85rem;box-shadow:0 4px 14px var(--shadow,rgba(45,90,39,0.12));cursor:pointer;font-family:inherit;}
+.lang-btn:hover{border-color:var(--green,var(--accent,#2E6B3E));}
+.lang-btn .lang-arrow{font-size:0.6rem;color:var(--gold,#B8963A);transition:transform .2s;margin-inline-start:2px;}
+.lang-switch.open .lang-arrow{transform:rotate(180deg);}
+.lang-menu{display:none;position:absolute;bottom:52px;right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px var(--shadow,rgba(45,90,39,0.18));overflow:hidden;min-width:150px;border-top:3px solid var(--gold,#B8963A);}
+.lang-switch.open .lang-menu{display:block;}
+.lang-menu button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:11px 14px;font-size:0.85rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.lang-menu button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
+.lang-menu button.lang-active{color:var(--green,var(--accent,#2E6B3E));font-weight:700;}
+#google_translate_element{display:none !important;}
+.goog-te-banner-frame.skiptranslate{display:none !important;}
+.goog-te-gadget{height:0;overflow:hidden;}
+body{top:0 !important;}
+</style>
+<div class="lang-switch" id="lang-switch">
+  <button class="lang-btn" id="lang-btn" onclick="langToggle(event)">
+    <span id="lang-flag">🇸🇦</span><span id="lang-label">العربية</span><span class="lang-arrow">▼</span>
+  </button>
+  <div class="lang-menu" id="lang-menu">
+    <button onclick="langSelect('ar','🇸🇦','العربية')" data-code="ar">🇸🇦 العربية</button>
+    <button onclick="langSelect('en','🇬🇧','English')" data-code="en">🇬🇧 English</button>
+    <button onclick="langSelect('fr','🇫🇷','Français')" data-code="fr">🇫🇷 Français</button>
+    <button onclick="langSelect('tr','🇹🇷','Türkçe')" data-code="tr">🇹🇷 Türkçe</button>
+    <button onclick="langSelect('fa','🇮🇷','فارسی')" data-code="fa">🇮🇷 فارسی</button>
+    <button onclick="langSelect('de','🇩🇪','Deutsch')" data-code="de">🇩🇪 Deutsch</button>
+    <button onclick="langSelect('es','🇪🇸','Español')" data-code="es">🇪🇸 Español</button>
+  </div>
+</div>
+<div id="google_translate_element"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script>
+function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
+function langApplyLabel(){
+  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français'],tr:['🇹🇷','Türkçe'],fa:['🇮🇷','فارسی'],de:['🇩🇪','Deutsch'],es:['🇪🇸','Español']};
+  var c=langCookie();var code='ar';
+  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
+  var d=map[code]||map.ar;
+  document.getElementById('lang-flag').textContent=d[0];
+  document.getElementById('lang-label').textContent=d[1];
+  document.querySelectorAll('#lang-menu button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
+}
+function langToggle(e){
+  if(e)e.stopPropagation();
+  document.getElementById('lang-switch').classList.toggle('open');
+}
+function langSelect(code){
+  document.getElementById('lang-switch').classList.remove('open');
+  if(code==='ar'){
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
+  }else{
+    document.cookie='googtrans=/ar/'+code+'; path=/;';
+  }
+  location.reload();
+}
+document.addEventListener('click',function(e){
+  var sw=document.getElementById('lang-switch');
+  if(sw && !sw.contains(e.target))sw.classList.remove('open');
+});
+langApplyLabel();
 </script>
 </body>
 </html>
