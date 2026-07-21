@@ -419,13 +419,6 @@ function fdbkSend(){
 }
 </script>"""
 
-def add_feedback_widget(out):
-    """يحقن زر 💬 شاركنا رأيك العائم قبل </body> (كل الملفات — سور وindex وrecitation)"""
-    if 'fdbk-fab' in out or '</body>' not in out:
-        return out, False
-    out = out.replace('</body>', FEEDBACK_WIDGET + '\n</body>', 1)
-    return out, True
-
 # ===== ودجت اختيار اللغة (يوليو ٢٠٢٦) =====
 # زر عائم أسفل يمين الشاشة (مقابل زر شاركنا رأيك أسفل اليسار — بدون
 # تعارض). يعرض علم + اسم اللغة الحالية + سهم ▼. يترجم واجهة الموقع
@@ -500,12 +493,350 @@ document.addEventListener('click',function(e){
 langApplyLabel();
 </script>"""
 
-def add_language_switcher(out):
-    """يحقن زر 🇸🇦 اختيار اللغة العائم قبل </body> (كل الملفات)"""
-    if 'lang-switch' in out or '</body>' not in out:
-        return out, False
-    out = out.replace('</body>', LANG_WIDGET + '\n</body>', 1)
+# ===== قائمة "☰ الأدوات" الموحّدة (يوليو ٢٠٢٦) =====
+# بعد ما عدد الأزرار العائمة زاد (شاركنا رأيك + اللغة + مشاركة + QR في
+# الرئيسية)، دمجناهم كلهم في زر عائم واحد بيفتح قائمة، ماعدا 🌙 الوضع
+# الليلي اللي فضل مكانه في الشريط العلوي زي ما هو (استخدام متكرر جدًا
+# يستاهل نقرة واحدة مباشرة). القائمة نفس المنطق والدوال بالظبط
+# (fdbkOpen/fdbkSend/langSelect/shareApp) — بس نقطة الدخول اتغيرت.
+TOOLS_MENU_STYLE = """<style>
+.tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}
+.tools-fab-btn:hover{filter:brightness(1.05);}
+.tools-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
+.tools-fab.open .tools-menu{display:block;}
+.tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
+.tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
+.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}
+.tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
+.tools-item svg{flex-shrink:0;}
+.tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
+.tools-lang-list.open{display:block;}
+.tools-lang-list button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:10px 14px 10px 22px;font-size:0.82rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.tools-lang-list button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
+.tools-lang-list button.lang-active{color:var(--green,#2E6B3E);font-weight:700;}
+#google_translate_element{display:none !important;}
+.goog-te-banner-frame.skiptranslate{display:none !important;}
+.goog-te-gadget{height:0;overflow:hidden;}
+body{top:0 !important;}
+.fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
+.fdbk-overlay.open{display:flex;}
+.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
+html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
+.fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
+html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
+.fdbk-modal label{display:block;font-size:14px;margin:12px 0 6px;}
+.fdbk-modal select,.fdbk-modal textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #d8e0d8;background:#f7faf7;color:#222;font-family:inherit;font-size:14px;box-sizing:border-box;}
+html[data-theme="dark"] .fdbk-modal select,html[data-theme="dark"] .fdbk-modal textarea{background:#101810;color:#DCF0D8;border-color:#2A4028;}
+.fdbk-modal textarea{min-height:80px;resize:vertical;}
+.fdbk-actions{display:flex;gap:8px;margin-top:16px;}
+.fdbk-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
+.fdbk-send{background:#2E6B3E;color:#fff;}
+html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
+.fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
+.qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:center;justify-content:center;padding:16px;}
+.qr-overlay.open{display:flex;}
+.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.qr-title{font-size:1.05rem;color:#2E6B3E;font-weight:700;margin-bottom:14px;}
+html[data-theme="dark"] .qr-title{color:#6BBF5A;}
+.qr-img{border-radius:12px;border:1px solid var(--border,#E4EAE4);background:#fff;padding:8px;}
+.qr-caption{font-size:0.8rem;color:var(--text,#1A1A1A);margin-top:12px;line-height:1.6;}
+.qr-caption .qr-caption-en{direction:ltr;display:inline-block;font-size:0.72em;color:var(--soft,#888);margin-top:2px;}
+.qr-url{font-size:0.72rem;color:var(--soft,#888);margin-top:8px;direction:ltr;word-break:break-all;}
+.qr-actions{display:flex;gap:8px;margin-top:16px;}
+.qr-actions button{flex:1;padding:10px;border-radius:10px;font-size:0.85rem;font-family:inherit;cursor:pointer;}
+.qr-copy-btn{background:#2E6B3E;color:#fff;border:none;}
+html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
+.qr-close-btn{background:none;border:1px solid var(--border,#E4EAE4);color:var(--text,#1A1A1A);}
+</style>"""
+
+# جزء الزر + القائمة نفسها — بيتحط جوه الـnav جنب زر 🌙 مباشرة (مش عائم)
+NAV_TOOLS_BTN = """<div class="tools-fab" id="tools-fab">
+  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
+  <div class="tools-menu" id="tools-menu">
+    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
+    <div class="tools-lang-list" id="tools-lang-list">
+      <button onclick="langSelect('ar')" data-code="ar">🇸🇦 العربية</button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English</button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français</button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe</button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی</button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch</button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español</button>
+    </div>
+    <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
+    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
+    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> كود QR</button>
+  </div>
+</div>"""
+
+# باقي الودجت (المودالز + الاسكريبتات) — بتفضل تتحقن قبل </body> زي الأول
+TOOLS_MODALS_TEMPLATE = """<div class="fdbk-overlay" id="fdbk-overlay">
+  <div class="fdbk-modal">
+    <h3>💬 شاركنا رأيك</h3>
+    <label>نوع الملاحظة</label>
+    <select id="fdbk-type">
+      <option>خطأ في النص القرآني</option>
+      <option>خطأ في السؤال أو الإجابة</option>
+      <option>مشكلة في التسجيل الصوتي</option>
+      <option>مشكلة تصميم أو عرض</option>
+      <option>اقتراح تحسين</option>
+      <option>أخرى</option>
+    </select>
+    <label>تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <div class="fdbk-actions">
+      <button class="fdbk-send" onclick="fdbkSend()">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()">إلغاء</button>
+    </div>
+  </div>
+</div>
+<div class="qr-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
+  <div class="qr-modal">
+    <div class="qr-title">🔲 امسح الكود لفتح الصفحة</div>
+    <img class="qr-img" id="qr-img" src="" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
+    <div class="qr-caption">امسح الكود لفتح الموقع على موبايلك<br><span class="qr-caption-en">Scan to open Quran Darbi</span></div>
+    <div class="qr-url notranslate" translate="no" id="qr-url-text"></div>
+    <div class="qr-actions">
+      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn">📋 نسخ الرابط</button>
+      <button class="qr-close-btn" onclick="closeQR()">إغلاق</button>
+    </div>
+  </div>
+</div>
+<div id="google_translate_element"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script>
+function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-fab').classList.toggle('open');}
+function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
+function toolsLangToggle(e){if(e)e.stopPropagation();var l=document.getElementById('tools-lang-list');var a=document.getElementById('tools-lang-arrow');l.classList.toggle('open');a.style.transform=l.classList.contains('open')?'rotate(180deg)':'rotate(0)';}
+document.addEventListener('click',function(e){var w=document.getElementById('tools-fab');if(w&&!w.contains(e.target))toolsClose();});
+
+function fdbkOpen(){toolsClose();document.getElementById('fdbk-overlay').classList.add('open');}
+function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
+function fdbkSend(){
+  var type=document.getElementById('fdbk-type').value;
+  var note=document.getElementById('fdbk-note').value.trim();
+  var page=document.title||location.pathname.split('/').pop();
+  var msg='ملاحظة من دربي لحفظ القرآن\\nالصفحة: '+page+'\\nالنوع: '+type+(note?'\\nالتفاصيل: '+note:'');
+  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
+  fdbkClose();
+}
+
+function showQR(){
+  var url=location.href;
+  document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data='+encodeURIComponent(url);
+  document.getElementById('qr-url-text').textContent=url.replace(/^https?:\\/\\//,'');
+  document.getElementById('qr-overlay').classList.add('open');
+}
+function closeQR(){document.getElementById('qr-overlay').classList.remove('open');}
+function copyQRLink(){
+  var url=location.href;
+  var b=document.getElementById('qr-copy-btn');
+  navigator.clipboard.writeText(url).then(function(){b.textContent='✅ تم النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);}).catch(function(){b.textContent='تعذر النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);});
+}
+
+function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
+function langApplyLabel(){
+  var map={ar:'العربية',en:'English',fr:'Français',tr:'Türkçe',fa:'فارسی',de:'Deutsch',es:'Español'};
+  var c=langCookie();var code='ar';
+  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
+  var cur=document.getElementById('tools-lang-cur');
+  if(cur)cur.textContent=map[code]||map.ar;
+  document.querySelectorAll('#tools-lang-list button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
+}
+function langSelect(code){
+  if(code==='ar'){
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
+  }else{
+    document.cookie='googtrans=/ar/'+code+'; path=/;';
+  }
+  location.reload();
+}
+langApplyLabel();
+</script>"""
+
+SHARE_BTN_ANY_RE = re.compile(r'\s*<button[^>]*onclick="shareApp\(\)"[^>]*>🔗</button>')
+QR_NAV_BTN_RE = re.compile(r'\s*<button onclick="showQR\(\)"[^>]*>.*?</button>', re.S)
+
+
+def strip_div_block(html, start_marker):
+    """يشيل عنصر <div ...>...</div> بالكامل بداية من start_marker، مع
+    عدّ الأعماق الصحيح (مش regex ساذج) عشان ديف متداخلة جوه بعض متتقطعش
+    غلط. بيرجع (html_بعد_الحذف, تم_الحذف)."""
+    i = html.find(start_marker)
+    if i == -1:
+        return html, False
+    depth = 0
+    j = i
+    open_re = re.compile(r'<div\b')
+    close_tag = '</div>'
+    while j < len(html):
+        nxt_open = html.find('<div', j)
+        nxt_close = html.find(close_tag, j)
+        if nxt_close == -1:
+            return html, False  # مش متوازن — منعمل حاجة أسلم
+        if nxt_open != -1 and nxt_open < nxt_close:
+            depth += 1
+            j = nxt_open + 4
+        else:
+            depth -= 1
+            j = nxt_close + len(close_tag)
+            if depth == 0:
+                end = j
+                # ناكل أي سطر فاضي بعد الحذف
+                while end < len(html) and html[end] == '\n':
+                    end += 1
+                return html[:i] + html[end:], True
+    return html, False
+
+
+# الكود القديم اللي كان متكتوب يدويًا جوه index.html نفسها (قبل ما
+# ميزة الـQR تتحول لودجت مشتركة قابلة للتعميم على كل الملفات)
+OLD_INDEX_QR_CSS = (
+    ".qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9997;align-items:center;justify-content:center;padding:16px;}\n"
+    ".qr-overlay.open{display:flex;}\n"
+    ".qr-modal{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px var(--shadow);border-top:4px solid var(--gold);}\n"
+    ".qr-title{font-family:'Scheherazade New',serif;font-size:1.05rem;color:var(--green);font-weight:700;margin-bottom:14px;}\n"
+    ".qr-img{border-radius:12px;border:1px solid var(--border);background:#fff;padding:8px;}\n"
+    ".qr-url{font-size:0.78rem;color:var(--soft);margin-top:10px;direction:ltr;word-break:break-all;}\n"
+    ".qr-actions{display:flex;gap:8px;margin-top:16px;}\n"
+    ".qr-actions button{flex:1;padding:10px;border-radius:10px;font-size:0.85rem;font-family:'Amiri',serif;cursor:pointer;}\n"
+    ".qr-copy-btn{background:var(--green);color:#fff;border:none;}\n"
+    ".qr-close-btn{background:none;border:1px solid var(--border);color:var(--text);}"
+)
+OLD_INDEX_QR_JS = (
+    "function showQR(){document.getElementById('qr-overlay').classList.add('open');}\n"
+    "function closeQR(){document.getElementById('qr-overlay').classList.remove('open');}\n"
+    "function copyQRLink(){var url='https://quran-darbi.github.io/Quran-test-/';var b=document.getElementById('qr-copy-btn');navigator.clipboard.writeText(url).then(function(){b.textContent='✅ تم النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);}).catch(function(){b.textContent='تعذر النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);});}"
+)
+
+
+THEME_BTN_RE = re.compile(r'<button[^>]*id="theme-(?:btn|toggle)"[^>]*>[^<]*</button>')
+
+
+def add_tools_menu(path, out):
+    """يستبدل الودجتين المنفصلتين (شاركنا رأيك + اللغة) وزر المشاركة
+    وزر QR المنفصلين من الشريط العلوي، وكمان الزر العائم القديم لـ☰
+    الأدوات، بزر "☰" مدمج جوه الشريط العلوي نفسه جنب 🌙 مباشرة (مش
+    عائم فوق المحتوى). نفس الدوال والمنطق بالظبط (fdbkOpen/fdbkSend/
+    langSelect/shareApp/showQR)، بس مكان الزر اتغير. ميزة الـQR متاحة
+    في كل الصفحات وبتولّد رابط الصفحة الحالية ديناميكيًا."""
+    is_index = os.path.basename(path) == 'index.html'
+    changed = False
+
+    # إزالة الودجتين القديمتين المنفصلتين لو موجودين (نصوص طبق الأصل، آمن)
+    if FEEDBACK_WIDGET in out:
+        out = out.replace(FEEDBACK_WIDGET, '', 1)
+        changed = True
+    if LANG_WIDGET in out:
+        out = out.replace(LANG_WIDGET, '', 1)
+        changed = True
+
+    # إزالة زر المشاركة 🔗 القديم من الشريط العلوي (دالة shareApp() فضلت
+    # موجودة زي ما هي — بس نقطة استدعاءها بقت من قائمة الأدوات)
+    if SHARE_BTN_ANY_RE.search(out):
+        out = SHARE_BTN_ANY_RE.sub('', out, count=1)
+        changed = True
+
+    # index.html بس: إزالة زر QR ونافذة QR الثابتة القديمتين (كانت
+    # بتولّد رابط الرئيسية دايمًا) — النسخة الجديدة في القائمة الموحدة
+    # بتولّد رابط الصفحة الحالية ديناميكيًا وشغالة في كل الصفحات.
+    # الشرط التاني هنا مهم: من غيره الحذف ده بيتكرر كل مرة ويشيل
+    # qr-overlay بتاع القائمة الجديدة نفسها بالغلط بعد أول تشغيل
+    if is_index and '.tools-fab{position:relative' not in out:
+        if QR_NAV_BTN_RE.search(out):
+            out = QR_NAV_BTN_RE.sub('', out, count=1)
+            changed = True
+        out, qr_removed = strip_div_block(out, '<div class="qr-overlay" id="qr-overlay"')
+        if qr_removed:
+            changed = True
+        # الكود القديم المكتوب يدويًا (CSS + JS) قبل ما الميزة تتحول لودجت
+        if OLD_INDEX_QR_CSS in out:
+            out = out.replace(OLD_INDEX_QR_CSS, '', 1)
+            changed = True
+        if OLD_INDEX_QR_JS in out:
+            out = out.replace(OLD_INDEX_QR_JS, '', 1)
+            changed = True
+
+    # نسخة قديمة من القائمة موجودة (عائمة position:fixed، من قبل — بـQR
+    # أو من غيره) — نشيلها بالكامل (الـstyle + الزر العائم + المودالز +
+    # السكربتات) ونحقن النسخة الجديدة المقسّمة (زر جوه الـnav + مودالز
+    # قبل </body>) بدالها. لو النسخة الحالية أصلاً هي الجديدة
+    # (position:relative) منلمسهاش خالص.
+    _tools_needs_upgrade = (
+        '.tools-fab{position:fixed' in out  # نسخة عائمة قديمة
+        or 'class="tools-cur"' in out        # شكل قديم لسهم اللغة
+        or '📤 مشاركة</button>' in out        # أيقونة مشاركة قديمة
+        or '📱 QR Code</button>' in out       # أيقونة QR قديمة
+    )
+    if 'id="tools-fab"' in out and _tools_needs_upgrade:
+        # الحالة القديمة العائمة: الزر + الـstyle + المودالز كانوا كتلة
+        # واحدة قبل </body> مباشرة — شيلهم مع بعض
+        start = out.find('<style>\n.tools-fab{')
+        end_marker = 'langApplyLabel();\n</script>'
+        end_i = out.find(end_marker, start) if start != -1 else -1
+        if start != -1 and end_i != -1:
+            end = end_i + len(end_marker)
+            while end < len(out) and out[end] == '\n':
+                end += 1
+            out = out[:start] + out[end:]
+            changed = True
+        # الحالة الحالية (زر جوه الـnav + محتوى قديم): الزر منفصل عن
+        # الـstyle، لازم يتشال لوحده كمان عشان منسيبش نسخة قديمة مكررة
+        if 'id="tools-fab"' in out:
+            out, nav_btn_removed = strip_div_block(out, '<div class="tools-fab" id="tools-fab">')
+            if nav_btn_removed:
+                changed = True
+
+    if 'id="tools-fab"' in out:
+        return out, changed  # القائمة الجديدة (الشريط العلوي) موجودة بالفعل
+
+    if '</body>' not in out:
+        return out, changed
+
+    # 1) الزر نفسه — يتحط جنب 🌙 في الشريط العلوي
+    m = THEME_BTN_RE.search(out)
+    if m:
+        out = out[:m.end()] + NAV_TOOLS_BTN + out[m.end():]
+        changed = True
+    else:
+        # مفيش زر وضع ليلي؟ احتياطي: نحط الزر عائم زي الأول بدل ما يضيع
+        out = out.replace('</body>', NAV_TOOLS_BTN + '\n</body>', 1)
+        changed = True
+
+    # 2) الأنماط + المودالز + السكربتات — تفضل قبل </body>
+    out = out.replace('</body>', TOOLS_MENU_STYLE + '\n' + TOOLS_MODALS_TEMPLATE + '\n</body>', 1)
     return out, True
+
+SHARE_OLD_SINGLELINE = "function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick=\"shareApp()\"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}"
+SHARE_NEW_SINGLELINE = "function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"
+
+SHARE_OLD_RECITE = "function shareApp(){\n  const url='https://quran-darbi.github.io/Quran-test-/';\n  const title='دربي لحفظ القرآن';\n  if(navigator.share){\n    navigator.share({title,url}).catch(()=>{});\n  } else {\n    navigator.clipboard.writeText(url).then(()=>{\n      const btn=document.getElementById('share-btn');\n      btn.textContent='✅';\n      setTimeout(()=>btn.textContent='🔗',2000);\n    }).catch(()=>{});\n  }\n}"
+SHARE_NEW_RECITE = "function shareApp(){\n  const url=location.href;\n  const title=(typeof SURAH_NAMES!=='undefined'&&currentKey&&SURAH_NAMES[currentKey])?('دربي لحفظ القرآن — '+SURAH_NAMES[currentKey]):'دربي لحفظ القرآن';\n  if(navigator.share){\n    navigator.share({title,url}).catch(()=>{});\n  } else {\n    navigator.clipboard.writeText(url).then(()=>{\n      const btn=document.getElementById('tools-fab-btn');\n      if(btn){const old=btn.textContent;btn.textContent='✅';setTimeout(()=>btn.textContent=old,1800);}\n    }).catch(()=>{});\n  }\n}"
+
+
+def upgrade_share_current_page(out):
+    """زر المشاركة كان بيشارك رابط الرئيسية دايمًا مهما كانت الصفحة
+    المفتوحة. دلوقتي بيشارك رابط الصفحة الحالية نفسها (بما فيها
+    ?surah= في اختبار التلاوة)، والعنوان بقى ديناميكي من عنوان الصفحة
+    (أو اسم السورة الحالية في اختبار التلاوة) بدل نص ثابت. كمان بيصلح
+    مرجع 'share-btn' اللي اتشال من الشريط العلوي (بقى 'tools-fab-btn')."""
+    changed = False
+    if SHARE_OLD_SINGLELINE in out and SHARE_NEW_SINGLELINE not in out:
+        out = out.replace(SHARE_OLD_SINGLELINE, SHARE_NEW_SINGLELINE, 1)
+        changed = True
+    if SHARE_OLD_RECITE in out and SHARE_NEW_RECITE not in out:
+        out = out.replace(SHARE_OLD_RECITE, SHARE_NEW_RECITE, 1)
+        changed = True
+    return out, changed
+
 
 def upgrade_lang_switcher_languages(out):
     """ترقية رجعية: ودجت اللغة القديم (عربي/إنجليزي/فرنسي بس) بيتحدث
@@ -1837,7 +2168,7 @@ def fix_file(path):
     # ====================================================
     # 3. زر المشاركة في top-bar (كل صفحات السور)
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;margin-right:auto;">🔗</button>'
-    SHARE_FN = """function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick=\"shareApp()\"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}"""
+    SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     if 'shareApp' not in out:
         # أضف الزر في top-bar بعد زر الرجوع مباشرة
         out = out.replace(
@@ -2123,14 +2454,16 @@ def fix_file(path):
     # 9ي. وضع المطوّر: إخفاء مستوى "صعب" وزر التلاوة عن الزوار العاديين
     out, dev_mode_added = add_dev_mode(out)
 
-    # 9ك. زر 💬 شاركنا رأيك (واتساب)
-    out, feedback_added = add_feedback_widget(out)
-
-    # 9ل. زر 🌐 اختيار اللغة (ترجمة الواجهة فقط — الآيات وأسماء السور محمية)
-    out, lang_added = add_language_switcher(out)
-
-    # 9ل٢. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات)
+    # 9ك. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات) — لازم قبل
+    # قائمة الأدوات عشان تقدر تشيل النسخة القديمة بأمان لو موجودة
     out, lang_upgraded = upgrade_lang_switcher_languages(out)
+
+    # 9ك٢. زر المشاركة يشارك رابط الصفحة الحالية بدل الرئيسية دايمًا
+    out, share_upgraded = upgrade_share_current_page(out)
+
+    # 9ل. قائمة "☰ الأدوات" الموحدة (شاركنا رأيك + اللغة + مشاركة) —
+    # بتشيل الودجتين القديمتين المنفصلتين وزر المشاركة القديم لو موجودين
+    out, tools_menu_added = add_tools_menu(path, out)
 
     # 9م. حماية نص الآيات الكامل في ميزة الترتيب من الترجمة (ملفات قديمة)
     out, order_translate_protected = protect_order_ayat_from_translation(out)
@@ -2166,7 +2499,7 @@ def fix_index_recitation(path):
         else:
             out = out.replace('<head>', '<head>\n' + DEV_MODE_LOCK, 1)
 
-    SHARE_FN = """function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick=\"shareApp()\"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}"""
+    SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
 
     if 'shareApp' not in out:
@@ -2189,14 +2522,16 @@ def fix_index_recitation(path):
     if 'manifest.json' not in out:
         out = out.replace('</head>', PWA_HEAD + '\n</head>', 1)
 
-    # زر 💬 شاركنا رأيك (واتساب)
-    out, feedback_added = add_feedback_widget(out)
-
-    # زر 🌐 اختيار اللغة
-    out, lang_added = add_language_switcher(out)
-
-    # ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات)
+    # ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات) — قبل قائمة الأدوات
     out, lang_upgraded = upgrade_lang_switcher_languages(out)
+
+    # زر المشاركة يشارك رابط الصفحة الحالية بدل الرئيسية دايمًا (يشمل
+    # ?surah= في اختبار التلاوة)
+    out, share_upgraded = upgrade_share_current_page(out)
+
+    # قائمة "☰ الأدوات" الموحدة (شاركنا رأيك + اللغة + مشاركة + QR في
+    # index.html فقط) — بتشيل الودجتين القديمتين المنفصلتين لو موجودين
+    out, tools_menu_added = add_tools_menu(path, out)
 
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
