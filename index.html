@@ -422,12 +422,12 @@ if('serviceWorker' in navigator){
 .tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
 .tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}
 .tools-fab-btn:hover{filter:brightness(1.05);}
-.tools-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
+.tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
 .tools-fab.open .tools-menu{display:block;}
 .tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
 .tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
 .tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
-.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}
+.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:inherit;}
 .tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
 .tools-item svg{flex-shrink:0;}
 .tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
