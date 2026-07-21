@@ -508,14 +508,16 @@ TOOLS_MENU_STYLE = """<style>
 .tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
 .tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
 .tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
-.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:inherit;}
+.tools-item .tools-lang-inline span:first-child{font-size:1em;color:inherit;}
 .tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
 .tools-item svg{flex-shrink:0;}
 .tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
 .tools-lang-list.open{display:block;}
 .tools-lang-list button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:10px 14px 10px 22px;font-size:0.82rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
 .tools-lang-list button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
-.tools-lang-list button.lang-active{color:var(--green,#2E6B3E);font-weight:700;}
+.tools-lang-list button.lang-active{font-weight:700;}
+.tools-lang-list button .lang-check{margin-inline-start:auto;color:var(--green,#2E6B3E);font-weight:700;visibility:hidden;}
+.tools-lang-list button.lang-active .lang-check{visibility:visible;}
 #google_translate_element{display:none !important;}
 .goog-te-banner-frame.skiptranslate{display:none !important;}
 .goog-te-gadget{height:0;overflow:hidden;}
@@ -557,13 +559,13 @@ NAV_TOOLS_BTN = """<div class="tools-fab" id="tools-fab">
   <div class="tools-menu" id="tools-menu">
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
-      <button onclick="langSelect('ar')" data-code="ar">🇸🇦 العربية</button>
-      <button onclick="langSelect('en')" data-code="en">🇬🇧 English</button>
-      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français</button>
-      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe</button>
-      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی</button>
-      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch</button>
-      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español</button>
+      <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
     </div>
     <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
     <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
@@ -2017,6 +2019,8 @@ def fix_font_import_to_link(out):
 # 2) لون "العربية" في القائمة كان باهت (ذهبي فاتح #B8963A) بسبب قاعدة
 #    CSS بتلون أول عنصر جوه tools-lang-inline، وهو نص اللغة نفسه مش
 #    السهم بس. المفروض يبقى غامق زي باقي نصوص القائمة.
+# 3) حجم "العربية" كان أصغر من "اللغة" (0.75em) — كبرناه لـ1em عشان
+#    يبقى نفس حجم كلمة "اللغة" جنبه.
 # الدالة idempotent وشغالة على أي ملف فيه نفس الكود القديم بالظبط،
 # بغض النظر لو الملف اتعالج بـadd_tools_menu قبل كده أو لأ.
 # ====================================================
@@ -2027,10 +2031,65 @@ def fix_tools_menu_ui_bugs(out):
     if old_menu_css in out:
         out = out.replace(old_menu_css, new_menu_css)
         changed = True
-    old_lang_color = ".tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}"
-    new_lang_color = ".tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:inherit;}"
-    if old_lang_color in out:
-        out = out.replace(old_lang_color, new_lang_color)
+    lang_span_new = ".tools-item .tools-lang-inline span:first-child{font-size:1em;color:inherit;}"
+    lang_span_variants = (
+        ".tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}",
+        ".tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:inherit;}",
+    )
+    for old_lang_span in lang_span_variants:
+        if old_lang_span in out:
+            out = out.replace(old_lang_span, lang_span_new)
+            changed = True
+            break
+    return out, changed
+
+# ====================================================
+# ترتيب اللغات + علامة ✓ بدل التلوين الأخضر (يوليو ٢٠٢٦):
+# 1) العربية (اللغة الأساسية) فضلت الأولى، والباقي اترتب تقريبًا حسب
+#    الأكثر انتشارًا عالميًا (إنجليزي، إسباني، فرنسي، ألماني، تركي،
+#    فارسي).
+# 2) بدل ما اللغة الحالية تتلوّن أخضر بس (مش واضح كفاية)، بقى جنبها
+#    علامة ✓ ثابتة المكان (أقصى الطرف التاني من النص دايمًا، بمساعدة
+#    margin-inline-start:auto) — أوضح ومتسقة بصريًا مهما كان طول اسم
+#    اللغة.
+# idempotent: بيستبدل النسخة القديمة الكاملة بالجديدة لو لقاها، وميعملش
+# حاجة لو الملف اتحدث بالفعل.
+# ====================================================
+def fix_lang_list_order_and_checkmark(out):
+    changed = False
+    old_list = (
+        '    <div class="tools-lang-list" id="tools-lang-list">\n'
+        '      <button onclick="langSelect(\'ar\')" data-code="ar">العربية</button>\n'
+        '      <button onclick="langSelect(\'fa\')" data-code="fa">🇮🇷 فارسی</button>\n'
+        '      <button onclick="langSelect(\'en\')" data-code="en">🇬🇧 English</button>\n'
+        '      <button onclick="langSelect(\'fr\')" data-code="fr">🇫🇷 Français</button>\n'
+        '      <button onclick="langSelect(\'tr\')" data-code="tr">🇹🇷 Türkçe</button>\n'
+        '      <button onclick="langSelect(\'de\')" data-code="de">🇩🇪 Deutsch</button>\n'
+        '      <button onclick="langSelect(\'es\')" data-code="es">🇪🇸 Español</button>\n'
+        '    </div>'
+    )
+    new_list = (
+        '    <div class="tools-lang-list" id="tools-lang-list">\n'
+        '      <button onclick="langSelect(\'ar\')" data-code="ar">العربية<span class="lang-check">✓</span></button>\n'
+        '      <button onclick="langSelect(\'en\')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>\n'
+        '      <button onclick="langSelect(\'es\')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>\n'
+        '      <button onclick="langSelect(\'fr\')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>\n'
+        '      <button onclick="langSelect(\'de\')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>\n'
+        '      <button onclick="langSelect(\'tr\')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>\n'
+        '      <button onclick="langSelect(\'fa\')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>\n'
+        '    </div>'
+    )
+    if old_list in out:
+        out = out.replace(old_list, new_list, 1)
+        changed = True
+    old_css = '.tools-lang-list button.lang-active{color:var(--green,#2E6B3E);font-weight:700;}'
+    new_css = (
+        '.tools-lang-list button.lang-active{font-weight:700;}\n'
+        '.tools-lang-list button .lang-check{margin-inline-start:auto;color:var(--green,#2E6B3E);font-weight:700;visibility:hidden;}\n'
+        '.tools-lang-list button.lang-active .lang-check{visibility:visible;}'
+    )
+    if old_css in out:
+        out = out.replace(old_css, new_css, 1)
         changed = True
     return out, changed
 
@@ -2064,65 +2123,88 @@ def fix_page_nav_style_and_labels(out):
 # الكروت الأربعة، لأن الأيقونة (إيموجي) مالهاش ارتفاع سطر ثابت بين
 # الخطوط المختلفة. الحل: صندوق ثابت الارتفاع للأيقونة + .level-btn
 # نفسه flex column — كده اسم المستوى بيبدأ من نفس النقطة بالظبط في
-# كل الكروت. مع كده، أيقونة "ترتيب" 🔀 (برتقالي/أسود حسب نظام
-# الإيموجي) اتبدلت بـSVG بسيط بيورّث لون النص (currentColor) ومظبوط
-# على لون التمييز الأساسي، فيبقى متماشي مع باقي ألوان الموقع بدل
-# البرتقالي الغريب عن الهوية البصرية.
+# كل الكروت.
+# لون أيقونة "ترتيب" 🔀 (برتقالي حسب نظام الإيموجي): جرّبنا في الأول
+# نبدلها بـSVG، بس الشكل طلع مختلف عن شكل الإيموجي الأصلي ومش حلو.
+# الحل الصح: نسيب الإيموجي 🔀 زي ما هو بالظبط، ونستخدم CSS filter
+# (hue-rotate) يلوّنها أخضر بدل البرتقالي مع الحفاظ التام على شكلها
+# الأصلي — مينفعش نلوّن إيموجي بـcolor العادي لأنه رسمة ملوّنة جاهزة
+# مش نص عادي.
 # ====================================================
+LEVEL_CARD_CSS_RE = re.compile(
+    r'([ \t]*)\.level-icon\{font-size:28px;display:block;margin-bottom:6px;\}\n'
+    r'([ \t]*)\.level-name\{font-weight:700;font-size:15px;display:block;margin-bottom:6px;\}\n'
+    r'([ \t]*)\.level-desc\{font-size:12px;color:var\(--text-faint\);line-height:1\.5;\}'
+)
+LEVEL_BTN_TAIL_RE = re.compile(
+    r'font-family:inherit;color:var\(--text\);\}\n([ \t]*)\.level-btn:hover,\.level-btn\.active\{'
+)
+
 def fix_level_card_alignment(out):
     changed = False
-    old_css = (
-        ".level-icon{font-size:28px;display:block;margin-bottom:6px;}\n"
-        ".level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;}\n"
-        ".level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}"
-    )
-    new_css = (
-        ".level-icon{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}\n"
-        ".level-icon svg{width:1.15em;height:1.15em;}\n"
-        "#btn-order .level-icon{color:var(--accent);}\n"
-        ".level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}\n"
-        ".level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}"
-    )
-    if old_css in out:
-        out = out.replace(old_css, new_css, 1)
+    m = LEVEL_CARD_CSS_RE.search(out)
+    if m:
+        ind = m.group(1)
+        new_css = (
+            f"{ind}.level-icon{{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}}\n"
+            f"{ind}.level-icon svg{{width:1.15em;height:1.15em;}}\n"
+            f"{ind}#btn-order .level-icon{{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}}\n"
+            f"{ind}.level-name{{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}}\n"
+            f"{ind}.level-desc{{font-size:12px;color:var(--text-faint);line-height:1.5;}}"
+        )
+        out = out[:m.start()] + new_css + out[m.end():]
         changed = True
-    old_btn_tail = "font-family:inherit;color:var(--text);}\n.level-btn:hover,.level-btn.active{"
-    new_btn_tail = "font-family:inherit;color:var(--text);display:flex;flex-direction:column;align-items:center;}\n.level-btn:hover,.level-btn.active{"
-    if old_btn_tail in out:
-        out = out.replace(old_btn_tail, new_btn_tail, 1)
+    m2 = LEVEL_BTN_TAIL_RE.search(out)
+    if m2:
+        ind = m2.group(1)
+        new_tail = f"font-family:inherit;color:var(--text);display:flex;flex-direction:column;align-items:center;}}\n{ind}.level-btn:hover,.level-btn.active{{"
+        out = out[:m2.start()] + new_tail + out[m2.end():]
         changed = True
-    old_order_icon = '<span class="level-icon">🔀</span>'
-    new_order_icon = ('<span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
-                       'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
-                       '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>'
-                       '<polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>'
-                       '<line x1="4" y1="4" x2="9" y2="9"/></svg></span>')
-    if old_order_icon in out:
-        out = out.replace(old_order_icon, new_order_icon, 1)
+    return out, changed
+
+def fix_order_icon_revert_to_emoji(out):
+    """رجعة سريعة: لو ملف اتحقنله نسخة SVG قديمة (تجربة سابقة اتلغت)،
+    رجّعها لإيموجي 🔀 عادي + فلتر اللون الأخضر — الشكل الأصلي بلون
+    مختلف بس، مش رسمة جديدة."""
+    changed = False
+    old_svg = ('<span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+               'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+               '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>'
+               '<polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>'
+               '<line x1="4" y1="4" x2="9" y2="9"/></svg></span>')
+    new_emoji = '<span class="level-icon">🔀</span>'
+    if old_svg in out:
+        out = out.replace(old_svg, new_emoji, 1)
+        changed = True
+    old_color_rule = '#btn-order .level-icon{color:var(--accent);}'
+    new_filter_rule = '#btn-order .level-icon{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}'
+    if old_color_rule in out:
+        out = out.replace(old_color_rule, new_filter_rule, 1)
         changed = True
     return out, changed
 
 # ====================================================
 # إصلاح لخبطة زر تنقل الأسئلة مع زر تنقل الصفحات (يوليو ٢٠٢٦):
 # 1) تسمية أزرار الأسئلة بقت أوضح: "السؤال السابق/التالي" بدل
-#    "السابق/التالي" العامة (كانت شبه زر تنقل الصفحات).
+#    "السابق/التالي" العامة (كانت شبه زر تنقل الصفحات). الـregex هنا
+#    متسامح مع أي attributes زيادة (زي style=) عشان يشتغل على قوالب
+#    مختلفة (جزء عم والبقرة).
 # 2) زر تنقل الصفحات (بين السور) جوه شاشة الاختبار العادي بقى مخفي
 #    بالبداية، ويظهر بس عند آخر سؤال في الاختبار — بدل ما يفضل ظاهر
 #    طول الوقت جنب زر تنقل الأسئلة ويسبب لغبطة.
 # ملحوظة: زر تنقل الصفحات في شاشة اختيار المستوى (قبل بدء الاختبار)
 # وشاشة الترتيب 🔀 ما بيتلخبطوش مع حاجة تانية، فمتلمسوش.
 # ====================================================
+PREV_BTN_LABEL_RE = re.compile(r'(id="prev-btn" onclick="prevQuestion\(\)"[^>]*>)→ السابق(</button>)')
+NEXT_BTN_LABEL_RE = re.compile(r'(id="next-btn" onclick="nextQuestion\(\)"[^>]*>)التالي ←(</button>)')
+
 def fix_question_nav_and_page_nav_visibility(out):
     changed = False
-    old_prev = 'id="prev-btn" onclick="prevQuestion()">→ السابق</button>'
-    new_prev = 'id="prev-btn" onclick="prevQuestion()">→ السؤال السابق</button>'
-    if old_prev in out:
-        out = out.replace(old_prev, new_prev, 1)
+    if PREV_BTN_LABEL_RE.search(out):
+        out = PREV_BTN_LABEL_RE.sub(r'\1→ السؤال السابق\2', out, count=1)
         changed = True
-    old_next = 'id="next-btn" onclick="nextQuestion()" style="display:none;">التالي ←</button>'
-    new_next = 'id="next-btn" onclick="nextQuestion()" style="display:none;">السؤال التالي ←</button>'
-    if old_next in out:
-        out = out.replace(old_next, new_next, 1)
+    if NEXT_BTN_LABEL_RE.search(out):
+        out = NEXT_BTN_LABEL_RE.sub(r'\1السؤال التالي ←\2', out, count=1)
         changed = True
 
     anchor_old = (
@@ -2148,6 +2230,82 @@ def fix_question_nav_and_page_nav_visibility(out):
         changed = True
     return out, changed
 
+# ====================================================
+# نفس إصلاح ترتيب الأسئلة/الصفحات، بس لقالب صفحات البقرة القديم
+# (albaqara_p*.html) — بنية مختلفة تمامًا عن جزء عم:
+# الترتيب الحالي: feedback → 🔄 اختر مستوى آخر → [page-nav-row لو
+# مضاف] → ⏭ تخطي → صف السابق/التالي. ده معناه زر تنقل الصفحات (بين
+# صفحات البقرة) بيظهر *قبل* زر تنقل الأسئلة، عكس اللي المستخدم عايزه.
+# الحل: ننقل page-nav-row (لو موجود) لبعد صف السابق/التالي مباشرة،
+# ونضيفله نفس منطق الإخفاء إلا عند آخر سؤال.
+# ====================================================
+BAQARA_TRAILER_RE = re.compile(
+    r'(\s*<button class="skip-btn"[^>]*>.*?</button>\s*'
+    r'<div style="display:flex; gap:10px; margin-top:12px;">\s*'
+    r'<button class="next-btn" id="prev-btn".*?</button>\s*'
+    r'<button class="next-btn" id="next-btn".*?</button>\s*'
+    r'</div>\s*)', re.S
+)
+BAQARA_PAGE_NAV_RE = re.compile(r'<div class="page-nav-row"[^>]*>.*?</div>\n?', re.S)
+
+def fix_baqara_page_nav_placement(out):
+    changed = False
+    for nav_m in list(BAQARA_PAGE_NAV_RE.finditer(out)):
+        before = out[:nav_m.start()]
+        if not before.rstrip().endswith('</button>'):
+            continue
+        after = out[nav_m.end():]
+        trailer_m = BAQARA_TRAILER_RE.match(after)
+        if not trailer_m:
+            continue  # مش النسخة اللي جوه شاشة الاختبار (يمكن شاشة اختيار المستوى) — منلمسوش
+        page_nav_block = nav_m.group(0).rstrip('\n')
+        if 'id="quiz-page-nav"' not in page_nav_block:
+            page_nav_block = page_nav_block.replace(
+                '<div class="page-nav-row"',
+                '<div class="page-nav-row" id="quiz-page-nav"', 1
+            ).replace('style="display:flex;', 'style="display:none;', 1)
+        trailer = trailer_m.group(1)
+        rest = after[trailer_m.end():]
+        out = before + trailer + page_nav_block + '\n' + rest
+        changed = True
+        break  # اتصلح واحد بس (المفروض واحد بس بالنمط ده أصلاً) — نوقف هنا عشان انديكسات out اتغيرت
+    return out, changed
+
+BAQARA_SHOWQ_JS_RE = re.compile(
+    r"(document\.getElementById\('skip-btn'\)\.style\.display\s*=\s*'block';\s*renderDotProgress\(\);)"
+)
+
+def fix_baqara_page_nav_visibility_js(out):
+    changed = False
+    if 'quiz-page-nav' not in out or 'const qpn=document' in out:
+        return out, changed
+    m = BAQARA_SHOWQ_JS_RE.search(out)
+    if m:
+        out = out[:m.end()] + (
+            "const qpn=document.getElementById('quiz-page-nav');"
+            "if(qpn)qpn.style.display=(qIndex===questions.length-1)?'flex':'none';"
+        ) + out[m.end():]
+        changed = True
+    return out, changed
+
+# ====================================================
+# تقصير وصف مستوى "صعب" (يوليو ٢٠٢٦): بعض الملفات (صفحات البقرة
+# القديمة) لسه فيها الوصف الطويل "اكتب الآية كاملة من الذاكرة بدون أي
+# مساعدة" اللي بيكسر محاذاة الكرت مقارنة بباقي الكروت. نقصّره لنفس
+# النص المستخدم في باقي الملفات: "اكتب الآية كاملة".
+# ====================================================
+HARD_DESC_RE = re.compile(
+    r'(id="btn-hard".*?<span class="level-desc">)([^<]*)(</span>)', re.S
+)
+
+def fix_hard_level_desc(out):
+    changed = False
+    m = HARD_DESC_RE.search(out)
+    if m and ('بدون' in m.group(2) or 'الذاكرة' in m.group(2)) and m.group(2) != 'اكتب الآية كاملة':
+        out = out[:m.start(2)] + 'اكتب الآية كاملة' + out[m.end(2):]
+        changed = True
+    return out, changed
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -2167,6 +2325,9 @@ def fix_file(path):
     # إصلاح تراكب/تجاوز قائمة الأدوات ولون "العربية"
     out, _tools_ui_fixed = fix_tools_menu_ui_bugs(out)
 
+    # ترتيب اللغات + علامة ✓ بدل التلوين الأخضر بس
+    out, _lang_list_fixed = fix_lang_list_order_and_checkmark(out)
+
     # توضيح شكل وتسمية زر تنقل الصفحات (بين السور) عشان مايتلخبطش مع
     # زر تنقل الأسئلة
     out, _page_nav_fixed = fix_page_nav_style_and_labels(out)
@@ -2174,9 +2335,19 @@ def fix_file(path):
     # محاذاة كروت المستوى (سهل/متوسط/صعب/ترتيب) + لون أيقونة "ترتيب"
     out, _level_card_fixed = fix_level_card_alignment(out)
 
+    # رجعة أيقونة "ترتيب" لشكل الإيموجي الأصلي (بدل SVG) مع فلتر اللون
+    out, _order_icon_fixed = fix_order_icon_revert_to_emoji(out)
+
+    # تقصير وصف مستوى "صعب" لو لسه بالنسخة الطويلة القديمة
+    out, _hard_desc_fixed = fix_hard_level_desc(out)
+
     # توضيح تسمية زر تنقل الأسئلة + إخفاء زر تنقل الصفحات جوه الاختبار
     # إلا عند آخر سؤال
     out, _qnav_fixed = fix_question_nav_and_page_nav_visibility(out)
+
+    # نفس الفكرة بس لقالب صفحات البقرة (بنية مختلفة عن جزء عم)
+    out, _baqara_nav_fixed = fix_baqara_page_nav_placement(out)
+    out, _baqara_nav_js_fixed = fix_baqara_page_nav_visibility_js(out)
 
     # ====================================================
     # 0. إصلاح قائمة التشكيل (alburuj/altariq pattern):
@@ -2685,6 +2856,9 @@ def fix_index_recitation(path):
 
     # إصلاح تراكب/تجاوز قائمة الأدوات ولون "العربية"
     out, _tools_ui_fixed = fix_tools_menu_ui_bugs(out)
+
+    # ترتيب اللغات + علامة ✓ بدل التلوين الأخضر بس
+    out, _lang_list_fixed = fix_lang_list_order_and_checkmark(out)
 
     # وضع المطوّر: recitation.html بترجّع أي زائر من غير الفلاج لـ index.html
     # (الصفحة كلها ميزة واحدة)، وindex.html بتخفي أي رابط/زر تلاوة فيها لو موجود
