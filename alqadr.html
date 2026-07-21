@@ -101,8 +101,24 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <body>
 <div class="top-bar">
   <a href="index.html" class="back-btn">← الرجوع</a>
-  <button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;margin-right:auto;">🔗</button>
-  <button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;">🌙</button>
+  <button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;">🌙</button><div class="tools-fab" id="tools-fab">
+  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
+  <div class="tools-menu" id="tools-menu">
+    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
+    <div class="tools-lang-list" id="tools-lang-list">
+      <button onclick="langSelect('ar')" data-code="ar">🇸🇦 العربية</button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English</button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français</button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe</button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی</button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch</button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español</button>
+    </div>
+    <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
+    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
+    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> كود QR</button>
+  </div>
+</div>
 </div>
 <div class="info-card">
   <div class="surah-title">سورة القدر</div>
@@ -364,7 +380,7 @@ function revealOrderAnswer(){
 }
 /* ===== نهاية ترتيب الآيات ===== */
 
-function shareApp(){var url='https://quran-darbi.github.io/Quran-test-/';if(navigator.share){navigator.share({title:'دربي لحفظ القرآن',url:url}).catch(function(){});}else{navigator.clipboard.writeText(url).then(function(){var b=document.querySelector('[onclick="shareApp()"]');if(b){b.textContent='✅';setTimeout(function(){b.textContent='🔗';},2000);}}).catch(function(){});}}
+function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}
 (function initTheme(){let saved=null;try{saved=localStorage.getItem('quranTheme');}catch(e){}if(!saved)saved=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';applyTheme(saved);})();
@@ -386,10 +402,29 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+
+
 <style>
-.fdbk-fab{position:fixed;bottom:20px;left:20px;background:#2E6B3E;color:#fff;border:none;border-radius:50px;width:52px;height:52px;font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,0.25);cursor:pointer;z-index:9999;display:flex;align-items:center;justify-content:center;}
-.fdbk-fab:hover{filter:brightness(1.1);}
-html[data-theme="dark"] .fdbk-fab{background:#4A9E40;}
+.tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}
+.tools-fab-btn:hover{filter:brightness(1.05);}
+.tools-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
+.tools-fab.open .tools-menu{display:block;}
+.tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
+.tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
+.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}
+.tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
+.tools-item svg{flex-shrink:0;}
+.tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
+.tools-lang-list.open{display:block;}
+.tools-lang-list button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:10px 14px 10px 22px;font-size:0.82rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.tools-lang-list button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
+.tools-lang-list button.lang-active{color:var(--green,#2E6B3E);font-weight:700;}
+#google_translate_element{display:none !important;}
+.goog-te-banner-frame.skiptranslate{display:none !important;}
+.goog-te-gadget{height:0;overflow:hidden;}
+body{top:0 !important;}
 .fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
 .fdbk-overlay.open{display:flex;}
 .fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
@@ -405,8 +440,21 @@ html[data-theme="dark"] .fdbk-modal select,html[data-theme="dark"] .fdbk-modal t
 .fdbk-send{background:#2E6B3E;color:#fff;}
 html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
 .fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
+.qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:center;justify-content:center;padding:16px;}
+.qr-overlay.open{display:flex;}
+.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.qr-title{font-size:1.05rem;color:#2E6B3E;font-weight:700;margin-bottom:14px;}
+html[data-theme="dark"] .qr-title{color:#6BBF5A;}
+.qr-img{border-radius:12px;border:1px solid var(--border,#E4EAE4);background:#fff;padding:8px;}
+.qr-caption{font-size:0.8rem;color:var(--text,#1A1A1A);margin-top:12px;line-height:1.6;}
+.qr-caption .qr-caption-en{direction:ltr;display:inline-block;font-size:0.72em;color:var(--soft,#888);margin-top:2px;}
+.qr-url{font-size:0.72rem;color:var(--soft,#888);margin-top:8px;direction:ltr;word-break:break-all;}
+.qr-actions{display:flex;gap:8px;margin-top:16px;}
+.qr-actions button{flex:1;padding:10px;border-radius:10px;font-size:0.85rem;font-family:inherit;cursor:pointer;}
+.qr-copy-btn{background:#2E6B3E;color:#fff;border:none;}
+html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
+.qr-close-btn{background:none;border:1px solid var(--border,#E4EAE4);color:var(--text,#1A1A1A);}
 </style>
-<button class="fdbk-fab" id="fdbk-fab-btn" onclick="fdbkOpen()" title="شاركنا رأيك">💬</button>
 <div class="fdbk-overlay" id="fdbk-overlay">
   <div class="fdbk-modal">
     <h3>💬 شاركنا رأيك</h3>
@@ -427,46 +475,16 @@ html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
     </div>
   </div>
 </div>
-<script>
-function fdbkOpen(){document.getElementById('fdbk-overlay').classList.add('open');}
-function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
-function fdbkSend(){
-  var type=document.getElementById('fdbk-type').value;
-  var note=document.getElementById('fdbk-note').value.trim();
-  var page=document.title||location.pathname.split('/').pop();
-  var msg='ملاحظة من دربي لحفظ القرآن\nالصفحة: '+page+'\nالنوع: '+type+(note?'\nالتفاصيل: '+note:'');
-  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
-  fdbkClose();
-}
-</script>
-<style>
-.lang-switch{position:fixed;bottom:20px;right:20px;z-index:9998;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
-.lang-btn{display:flex;align-items:center;gap:6px;background:var(--card,#fff);color:var(--green,var(--accent,#2E6B3E));border:1.5px solid var(--border,#E4EAE4);border-radius:24px;padding:10px 14px;font-size:0.85rem;box-shadow:0 4px 14px var(--shadow,rgba(45,90,39,0.12));cursor:pointer;font-family:inherit;}
-.lang-btn:hover{border-color:var(--green,var(--accent,#2E6B3E));}
-.lang-btn .lang-arrow{font-size:0.6rem;color:var(--gold,#B8963A);transition:transform .2s;margin-inline-start:2px;}
-.lang-switch.open .lang-arrow{transform:rotate(180deg);}
-.lang-menu{display:none;position:absolute;bottom:52px;right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px var(--shadow,rgba(45,90,39,0.18));overflow:hidden;min-width:150px;border-top:3px solid var(--gold,#B8963A);}
-.lang-switch.open .lang-menu{display:block;}
-.lang-menu button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:11px 14px;font-size:0.85rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
-.lang-menu button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
-.lang-menu button.lang-active{color:var(--green,var(--accent,#2E6B3E));font-weight:700;}
-#google_translate_element{display:none !important;}
-.goog-te-banner-frame.skiptranslate{display:none !important;}
-.goog-te-gadget{height:0;overflow:hidden;}
-body{top:0 !important;}
-</style>
-<div class="lang-switch" id="lang-switch">
-  <button class="lang-btn" id="lang-btn" onclick="langToggle(event)">
-    <span id="lang-flag">🇸🇦</span><span id="lang-label">العربية</span><span class="lang-arrow">▼</span>
-  </button>
-  <div class="lang-menu" id="lang-menu">
-    <button onclick="langSelect('ar','🇸🇦','العربية')" data-code="ar">🇸🇦 العربية</button>
-    <button onclick="langSelect('en','🇬🇧','English')" data-code="en">🇬🇧 English</button>
-    <button onclick="langSelect('fr','🇫🇷','Français')" data-code="fr">🇫🇷 Français</button>
-    <button onclick="langSelect('tr','🇹🇷','Türkçe')" data-code="tr">🇹🇷 Türkçe</button>
-    <button onclick="langSelect('fa','🇮🇷','فارسی')" data-code="fa">🇮🇷 فارسی</button>
-    <button onclick="langSelect('de','🇩🇪','Deutsch')" data-code="de">🇩🇪 Deutsch</button>
-    <button onclick="langSelect('es','🇪🇸','Español')" data-code="es">🇪🇸 Español</button>
+<div class="qr-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
+  <div class="qr-modal">
+    <div class="qr-title">🔲 امسح الكود لفتح الصفحة</div>
+    <img class="qr-img" id="qr-img" src="" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
+    <div class="qr-caption">امسح الكود لفتح الموقع على موبايلك<br><span class="qr-caption-en">Scan to open Quran Darbi</span></div>
+    <div class="qr-url notranslate" translate="no" id="qr-url-text"></div>
+    <div class="qr-actions">
+      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn">📋 نسخ الرابط</button>
+      <button class="qr-close-btn" onclick="closeQR()">إغلاق</button>
+    </div>
   </div>
 </div>
 <div id="google_translate_element"></div>
@@ -477,22 +495,45 @@ function googleTranslateElementInit(){
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 <script>
+function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-fab').classList.toggle('open');}
+function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
+function toolsLangToggle(e){if(e)e.stopPropagation();var l=document.getElementById('tools-lang-list');var a=document.getElementById('tools-lang-arrow');l.classList.toggle('open');a.style.transform=l.classList.contains('open')?'rotate(180deg)':'rotate(0)';}
+document.addEventListener('click',function(e){var w=document.getElementById('tools-fab');if(w&&!w.contains(e.target))toolsClose();});
+
+function fdbkOpen(){toolsClose();document.getElementById('fdbk-overlay').classList.add('open');}
+function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
+function fdbkSend(){
+  var type=document.getElementById('fdbk-type').value;
+  var note=document.getElementById('fdbk-note').value.trim();
+  var page=document.title||location.pathname.split('/').pop();
+  var msg='ملاحظة من دربي لحفظ القرآن\nالصفحة: '+page+'\nالنوع: '+type+(note?'\nالتفاصيل: '+note:'');
+  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
+  fdbkClose();
+}
+
+function showQR(){
+  var url=location.href;
+  document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data='+encodeURIComponent(url);
+  document.getElementById('qr-url-text').textContent=url.replace(/^https?:\/\//,'');
+  document.getElementById('qr-overlay').classList.add('open');
+}
+function closeQR(){document.getElementById('qr-overlay').classList.remove('open');}
+function copyQRLink(){
+  var url=location.href;
+  var b=document.getElementById('qr-copy-btn');
+  navigator.clipboard.writeText(url).then(function(){b.textContent='✅ تم النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);}).catch(function(){b.textContent='تعذر النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);});
+}
+
 function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
 function langApplyLabel(){
-  var map={ar:['🇸🇦','العربية'],en:['🇬🇧','English'],fr:['🇫🇷','Français'],tr:['🇹🇷','Türkçe'],fa:['🇮🇷','فارسی'],de:['🇩🇪','Deutsch'],es:['🇪🇸','Español']};
+  var map={ar:'العربية',en:'English',fr:'Français',tr:'Türkçe',fa:'فارسی',de:'Deutsch',es:'Español'};
   var c=langCookie();var code='ar';
   if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
-  var d=map[code]||map.ar;
-  document.getElementById('lang-flag').textContent=d[0];
-  document.getElementById('lang-label').textContent=d[1];
-  document.querySelectorAll('#lang-menu button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
-}
-function langToggle(e){
-  if(e)e.stopPropagation();
-  document.getElementById('lang-switch').classList.toggle('open');
+  var cur=document.getElementById('tools-lang-cur');
+  if(cur)cur.textContent=map[code]||map.ar;
+  document.querySelectorAll('#tools-lang-list button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
 }
 function langSelect(code){
-  document.getElementById('lang-switch').classList.remove('open');
   if(code==='ar'){
     document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
@@ -501,10 +542,6 @@ function langSelect(code){
   }
   location.reload();
 }
-document.addEventListener('click',function(e){
-  var sw=document.getElementById('lang-switch');
-  if(sw && !sw.contains(e.target))sw.classList.remove('open');
-});
 langApplyLabel();
 </script>
 </body>
