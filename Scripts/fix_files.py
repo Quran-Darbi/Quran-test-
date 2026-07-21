@@ -503,12 +503,12 @@ TOOLS_MENU_STYLE = """<style>
 .tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
 .tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}
 .tools-fab-btn:hover{filter:brightness(1.05);}
-.tools-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
+.tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
 .tools-fab.open .tools-menu{display:block;}
 .tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
 .tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
 .tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
-.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}
+.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:inherit;}
 .tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
 .tools-item svg{flex-shrink:0;}
 .tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
@@ -1354,17 +1354,17 @@ def add_page_nav_row(path, out):
         changed = True
 
     btn_style = (
-        'flex:1;text-align:center;text-decoration:none;padding:10px 4px;'
-        'border-radius:12px;background:var(--surface2);color:var(--accent);'
-        'border:1.5px solid var(--border);font-family:inherit;font-size:14px;'
+        'flex:1;text-align:center;text-decoration:none;padding:8px 4px;'
+        'border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));'
+        'border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;'
     )
     inner = ''
     if prev_key:
         inner += ('<a href="' + prev_key + '.html" class="prev-page-btn" '
-                   'style="' + btn_style + '">⏮️ السابق</a>')
+                   'style="' + btn_style + '">⏮️ الصفحة السابقة</a>')
     if next_key:
         inner += ('<a href="' + next_key + '.html" class="next-page-btn" '
-                   'style="' + btn_style + '">التالي ⏭️</a>')
+                   'style="' + btn_style + '">الصفحة التالية ⏭️</a>')
     row_html = ('\n<div class="page-nav-row" '
                 'style="display:flex;gap:8px;margin-top:10px;">' + inner + '</div>')
 
@@ -2008,6 +2008,146 @@ def fix_font_import_to_link(out):
             out = out.replace('<style>', head_links + '<style>', 1)
     return out, changed
 
+# ====================================================
+# إصلاح قائمة "☰ الأدوات" (يوليو ٢٠٢٦):
+# 1) .tools-menu كانت right:0 — وزر الأدوات نفسه قريب من حافة الشاشة
+#    اليسرى (آخر عنصر في nav-right جوه dir=rtl)، فالقائمة كانت بتمتد
+#    لليسار وتخرج بره حدود الشاشة → سكرول أفقي يزيح الموقع كله جنب.
+#    الحل: left:0 (تمتد جوه الصفحة بأمان) + max-width احتياطي.
+# 2) لون "العربية" في القائمة كان باهت (ذهبي فاتح #B8963A) بسبب قاعدة
+#    CSS بتلون أول عنصر جوه tools-lang-inline، وهو نص اللغة نفسه مش
+#    السهم بس. المفروض يبقى غامق زي باقي نصوص القائمة.
+# الدالة idempotent وشغالة على أي ملف فيه نفس الكود القديم بالظبط،
+# بغض النظر لو الملف اتعالج بـadd_tools_menu قبل كده أو لأ.
+# ====================================================
+def fix_tools_menu_ui_bugs(out):
+    changed = False
+    old_menu_css = ".tools-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}"
+    new_menu_css = ".tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}"
+    if old_menu_css in out:
+        out = out.replace(old_menu_css, new_menu_css)
+        changed = True
+    old_lang_color = ".tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}"
+    new_lang_color = ".tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:inherit;}"
+    if old_lang_color in out:
+        out = out.replace(old_lang_color, new_lang_color)
+        changed = True
+    return out, changed
+
+def fix_page_nav_style_and_labels(out):
+    """يوضّح ويصغّر شكل زر تنقل الصفحات (بين السور) عشان يبقى بصريًا
+    مختلف عن زر تنقل الأسئلة جوه نفس شاشة الاختبار (كانا شكلهم متقارب
+    وبيلخبطوا المستخدم)، ويوضح التسمية: 'الصفحة السابقة/التالية' بدل
+    'السابق/التالي' العامة. idempotent — بيشتغل على الملفات اللي
+    اتحقنلها page-nav-row بالتصميم القديم بس."""
+    changed = False
+    old_style = ('flex:1;text-align:center;text-decoration:none;padding:10px 4px;'
+                 'border-radius:12px;background:var(--surface2);color:var(--accent);'
+                 'border:1.5px solid var(--border);font-family:inherit;font-size:14px;')
+    new_style = ('flex:1;text-align:center;text-decoration:none;padding:8px 4px;'
+                 'border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));'
+                 'border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;')
+    if old_style in out:
+        out = out.replace(old_style, new_style)
+        changed = True
+    if '⏮️ السابق</a>' in out and 'class="prev-page-btn"' in out:
+        out = out.replace('⏮️ السابق</a>', '⏮️ الصفحة السابقة</a>')
+        changed = True
+    if 'التالي ⏭️</a>' in out and 'class="next-page-btn"' in out:
+        out = out.replace('التالي ⏭️</a>', 'الصفحة التالية ⏭️</a>')
+        changed = True
+    return out, changed
+
+# ====================================================
+# إصلاح محاذاة كروت المستوى (يوليو ٢٠٢٦):
+# اسم كل مستوى (سهل/متوسط/صعب/ترتيب) ما كانش دايمًا على نفس الخط بين
+# الكروت الأربعة، لأن الأيقونة (إيموجي) مالهاش ارتفاع سطر ثابت بين
+# الخطوط المختلفة. الحل: صندوق ثابت الارتفاع للأيقونة + .level-btn
+# نفسه flex column — كده اسم المستوى بيبدأ من نفس النقطة بالظبط في
+# كل الكروت. مع كده، أيقونة "ترتيب" 🔀 (برتقالي/أسود حسب نظام
+# الإيموجي) اتبدلت بـSVG بسيط بيورّث لون النص (currentColor) ومظبوط
+# على لون التمييز الأساسي، فيبقى متماشي مع باقي ألوان الموقع بدل
+# البرتقالي الغريب عن الهوية البصرية.
+# ====================================================
+def fix_level_card_alignment(out):
+    changed = False
+    old_css = (
+        ".level-icon{font-size:28px;display:block;margin-bottom:6px;}\n"
+        ".level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;}\n"
+        ".level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}"
+    )
+    new_css = (
+        ".level-icon{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}\n"
+        ".level-icon svg{width:1.15em;height:1.15em;}\n"
+        "#btn-order .level-icon{color:var(--accent);}\n"
+        ".level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}\n"
+        ".level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}"
+    )
+    if old_css in out:
+        out = out.replace(old_css, new_css, 1)
+        changed = True
+    old_btn_tail = "font-family:inherit;color:var(--text);}\n.level-btn:hover,.level-btn.active{"
+    new_btn_tail = "font-family:inherit;color:var(--text);display:flex;flex-direction:column;align-items:center;}\n.level-btn:hover,.level-btn.active{"
+    if old_btn_tail in out:
+        out = out.replace(old_btn_tail, new_btn_tail, 1)
+        changed = True
+    old_order_icon = '<span class="level-icon">🔀</span>'
+    new_order_icon = ('<span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+                       'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+                       '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>'
+                       '<polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>'
+                       '<line x1="4" y1="4" x2="9" y2="9"/></svg></span>')
+    if old_order_icon in out:
+        out = out.replace(old_order_icon, new_order_icon, 1)
+        changed = True
+    return out, changed
+
+# ====================================================
+# إصلاح لخبطة زر تنقل الأسئلة مع زر تنقل الصفحات (يوليو ٢٠٢٦):
+# 1) تسمية أزرار الأسئلة بقت أوضح: "السؤال السابق/التالي" بدل
+#    "السابق/التالي" العامة (كانت شبه زر تنقل الصفحات).
+# 2) زر تنقل الصفحات (بين السور) جوه شاشة الاختبار العادي بقى مخفي
+#    بالبداية، ويظهر بس عند آخر سؤال في الاختبار — بدل ما يفضل ظاهر
+#    طول الوقت جنب زر تنقل الأسئلة ويسبب لغبطة.
+# ملحوظة: زر تنقل الصفحات في شاشة اختيار المستوى (قبل بدء الاختبار)
+# وشاشة الترتيب 🔀 ما بيتلخبطوش مع حاجة تانية، فمتلمسوش.
+# ====================================================
+def fix_question_nav_and_page_nav_visibility(out):
+    changed = False
+    old_prev = 'id="prev-btn" onclick="prevQuestion()">→ السابق</button>'
+    new_prev = 'id="prev-btn" onclick="prevQuestion()">→ السؤال السابق</button>'
+    if old_prev in out:
+        out = out.replace(old_prev, new_prev, 1)
+        changed = True
+    old_next = 'id="next-btn" onclick="nextQuestion()" style="display:none;">التالي ←</button>'
+    new_next = 'id="next-btn" onclick="nextQuestion()" style="display:none;">السؤال التالي ←</button>'
+    if old_next in out:
+        out = out.replace(old_next, new_next, 1)
+        changed = True
+
+    anchor_old = (
+        '<div class="feedback" id="feedback"></div>\n'
+        '  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>\n'
+        '<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;">'
+    )
+    anchor_new = (
+        '<div class="feedback" id="feedback"></div>\n'
+        '  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>\n'
+        '<div class="page-nav-row" id="quiz-page-nav" style="display:none;gap:8px;margin-top:10px;">'
+    )
+    if anchor_old in out:
+        out = out.replace(anchor_old, anchor_new, 1)
+        changed = True
+
+    js_old = "renderDotProgress();const zone=document.getElementById('answer-zone');"
+    js_new = ("renderDotProgress();const qpn=document.getElementById('quiz-page-nav');"
+              "if(qpn)qpn.style.display=(qIndex===questions.length-1)?'flex':'none';"
+              "const zone=document.getElementById('answer-zone');")
+    if js_old in out:
+        out = out.replace(js_old, js_new, 1)
+        changed = True
+    return out, changed
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -2023,6 +2163,20 @@ def fix_file(path):
 
     # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
     out, _font_fixed = fix_font_import_to_link(out)
+
+    # إصلاح تراكب/تجاوز قائمة الأدوات ولون "العربية"
+    out, _tools_ui_fixed = fix_tools_menu_ui_bugs(out)
+
+    # توضيح شكل وتسمية زر تنقل الصفحات (بين السور) عشان مايتلخبطش مع
+    # زر تنقل الأسئلة
+    out, _page_nav_fixed = fix_page_nav_style_and_labels(out)
+
+    # محاذاة كروت المستوى (سهل/متوسط/صعب/ترتيب) + لون أيقونة "ترتيب"
+    out, _level_card_fixed = fix_level_card_alignment(out)
+
+    # توضيح تسمية زر تنقل الأسئلة + إخفاء زر تنقل الصفحات جوه الاختبار
+    # إلا عند آخر سؤال
+    out, _qnav_fixed = fix_question_nav_and_page_nav_visibility(out)
 
     # ====================================================
     # 0. إصلاح قائمة التشكيل (alburuj/altariq pattern):
@@ -2528,6 +2682,9 @@ def fix_index_recitation(path):
 
     # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
     out, _font_fixed = fix_font_import_to_link(out)
+
+    # إصلاح تراكب/تجاوز قائمة الأدوات ولون "العربية"
+    out, _tools_ui_fixed = fix_tools_menu_ui_bugs(out)
 
     # وضع المطوّر: recitation.html بترجّع أي زائر من غير الفلاج لـ index.html
     # (الصفحة كلها ميزة واحدة)، وindex.html بتخفي أي رابط/زر تلاوة فيها لو موجود
