@@ -37,10 +37,12 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .level-title{font-size:22px;color:var(--text);margin-bottom:6px;}
 .level-sub{font-size:14px;color:var(--text-soft);margin-bottom:20px;}
 .levels-grid{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
-.level-btn{flex:1;min-width:76px;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 6px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--text);}
+.level-btn{flex:1;min-width:76px;max-width:100px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 6px;cursor:pointer;transition:all .2s;font-family:inherit;color:var(--text);display:flex;flex-direction:column;align-items:center;}
 .level-btn:hover,.level-btn.active{background:var(--surface-hover);border-color:var(--accent);}
-.level-icon{font-size:28px;display:block;margin-bottom:6px;}
-.level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;}
+.level-icon{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}
+.level-icon svg{width:1.15em;height:1.15em;}
+#btn-order .level-icon{color:var(--accent);}
+.level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}
 .level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}
 .start-btn{width:100%;max-width:260px;background:var(--accent-light);color:var(--card);border:none;border-radius:14px;padding:14px 20px;font-size:17px;font-family:inherit;cursor:pointer;transition:background .2s;}
 .start-btn.ready{background:var(--accent);}
@@ -140,10 +142,10 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name">سهل</span><span class="level-desc">اختيار من متعدد</span></button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name">متوسط</span><span class="level-desc">إكمال فراغ</span></button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard"><span class="level-icon">🌳</span><span class="level-name">صعب</span><span class="level-desc">اكتب الآية كاملة</span></button>
-    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
+    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
-<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alfalaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">⏮️ السابق</a></div>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alfalaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a></div>
 </div>
 <div class="quiz-area" id="quiz-area">
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
@@ -152,13 +154,13 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="nav-row">
-    <button class="nav-btn" id="prev-btn" onclick="prevQuestion()">→ السابق</button>
+    <button class="nav-btn" id="prev-btn" onclick="prevQuestion()">→ السؤال السابق</button>
     <button class="nav-btn" id="skip-btn" onclick="skipQuestion()">⏭ تخطي</button>
-    <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" style="display:none;">التالي ←</button>
+    <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" style="display:none;">السؤال التالي ←</button>
   </div>
   <div class="feedback" id="feedback"></div>
   <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
-<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alfalaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">⏮️ السابق</a></div>
+<div class="page-nav-row" id="quiz-page-nav" style="display:none;gap:8px;margin-top:10px;"><a href="alfalaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a></div>
 </div>
 <div class="quiz-area" id="order-area">
   <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
@@ -171,7 +173,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div id="order-reveal" style="display:none;"></div>
   <div class="feedback" id="order-feedback"></div>
   <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
-<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alfalaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">⏮️ السابق</a></div>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="alfalaq.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a></div>
 </div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
@@ -236,7 +238,7 @@ function renderDotProgress(){const wrap=document.getElementById('dot-progress');
 function saveResumeState(){try{localStorage.setItem(RESUME_KEY,JSON.stringify({level:currentLevel,qIndex,correctCount,wrongCount,statuses,wrongIndices,date:Date.now()}));}catch(e){}}
 function dismissResume(){try{localStorage.removeItem(RESUME_KEY);}catch(e){}const b=document.getElementById('resume-banner');if(b)b.style.display='none';}
 function resumeQuiz(){let saved=null;try{saved=JSON.parse(localStorage.getItem(RESUME_KEY));}catch(e){}if(!saved)return;currentLevel=saved.level;questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];qIndex=saved.qIndex;correctCount=saved.correctCount;wrongCount=saved.wrongCount;statuses=saved.statuses||questions.map(()=>'pending');wrongIndices=saved.wrongIndices||[];document.getElementById('resume-banner').style.display='none';document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
-function showQuestion(){const q=questions[qIndex];updateBadges();document.getElementById('progress-fill').style.width=(qIndex/questions.length)*100+'%';document.getElementById('q-number').textContent=`السؤال ${toArabicNum(qIndex+1)} من ${toArabicNum(questions.length)}`;var __qt=document.getElementById('q-text');__qt.textContent=q.q;if(currentLevel==='hard'){__qt.classList.remove('notranslate');__qt.removeAttribute('translate');}else{__qt.classList.add('notranslate');__qt.setAttribute('translate','no');}const fb=document.getElementById('feedback');fb.style.display='none';fb.className='feedback';const prevBtn=document.getElementById('prev-btn');prevBtn.disabled=(qIndex===0);prevBtn.style.opacity=(qIndex===0)?'0.4':'1';document.getElementById('skip-btn').style.display='';document.getElementById('next-btn').style.display='none';renderDotProgress();const zone=document.getElementById('answer-zone');zone.innerHTML='';if(currentLevel==='easy')renderEasy(q,zone);else if(currentLevel==='medium')renderMedium(q,zone);else renderHard(q,zone);}
+function showQuestion(){const q=questions[qIndex];updateBadges();document.getElementById('progress-fill').style.width=(qIndex/questions.length)*100+'%';document.getElementById('q-number').textContent=`السؤال ${toArabicNum(qIndex+1)} من ${toArabicNum(questions.length)}`;var __qt=document.getElementById('q-text');__qt.textContent=q.q;if(currentLevel==='hard'){__qt.classList.remove('notranslate');__qt.removeAttribute('translate');}else{__qt.classList.add('notranslate');__qt.setAttribute('translate','no');}const fb=document.getElementById('feedback');fb.style.display='none';fb.className='feedback';const prevBtn=document.getElementById('prev-btn');prevBtn.disabled=(qIndex===0);prevBtn.style.opacity=(qIndex===0)?'0.4':'1';document.getElementById('skip-btn').style.display='';document.getElementById('next-btn').style.display='none';renderDotProgress();const qpn=document.getElementById('quiz-page-nav');if(qpn)qpn.style.display=(qIndex===questions.length-1)?'flex':'none';const zone=document.getElementById('answer-zone');zone.innerHTML='';if(currentLevel==='easy')renderEasy(q,zone);else if(currentLevel==='medium')renderMedium(q,zone);else renderHard(q,zone);}
 function renderEasy(q,zone){const div=document.createElement('div');div.className='choices';shuffle(q.choices.map((c,i)=>({text:c,idx:i}))).forEach(opt=>{const btn=document.createElement('button');btn.className='choice-btn';btn.textContent=opt.text;btn.classList.add('notranslate');btn.setAttribute('translate','no');btn.onclick=()=>checkMCQ(opt.idx,q.answer,btn);div.appendChild(btn);});zone.appendChild(div);}
 function renderMedium(q,zone){const ta=document.createElement('textarea');ta.className='answer-input';ta.placeholder='اكتب الإجابة...';ta.id='user-input';zone.appendChild(ta);const sub=document.createElement('button');sub.className='submit-btn';sub.textContent='تحقق ✓';sub.onclick=()=>checkText(q);zone.appendChild(sub);setTimeout(()=>{const el=document.getElementById('user-input');if(el)el.focus();},100);}
 function renderHard(q,zone){const ayahNum=document.createElement('div');ayahNum.style.cssText='text-align:center;font-size:13px;color:var(--text-soft);margin-bottom:8px;';ayahNum.textContent=`الآية ${toArabicNum(q.ayah)}`;zone.appendChild(ayahNum);const modeRow=document.createElement('div');modeRow.style.cssText='display:flex;gap:10px;margin-bottom:12px;';const bVoice=document.createElement('button');bVoice.textContent='🎤 تسجيل صوتي';bVoice.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff;border:1.5px solid var(--accent);';const bText=document.createElement('button');bText.textContent='⌨️ كتابة';bText.style.cssText='flex:1;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);';modeRow.appendChild(bVoice);modeRow.appendChild(bText);zone.appendChild(modeRow);const vZone=document.createElement('div');zone.appendChild(vZone);const tZone=document.createElement('div');tZone.style.display='none';zone.appendChild(tZone);let _rec=null,_recog=false,_words=[],_cur='';const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;const _secure=location.protocol==='https:'||location.hostname==='localhost';const recBtn=document.createElement('button');recBtn.style.cssText='width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';recBtn.textContent='🎤 اضغط للتسجيل';const txBox=document.createElement('div');txBox.className='rec-transcript';txBox.style.cssText='background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.9;color:var(--text);direction:rtl;text-align:right;margin-bottom:10px;display:none;min-height:60px;white-space:pre-wrap;';const clrBtn=document.createElement('button');clrBtn.style.cssText='width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);margin-bottom:8px;display:none;';clrBtn.textContent='🗑️ مسح الكل والبدء من جديد';const vSub=document.createElement('button');vSub.className='submit-btn';vSub.textContent='تحقق ✓';vSub.style.display='none';vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(clrBtn);vZone.appendChild(vSub);function _fixWords(words){
@@ -402,12 +404,12 @@ if('serviceWorker' in navigator){
 .tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
 .tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}
 .tools-fab-btn:hover{filter:brightness(1.05);}
-.tools-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
+.tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
 .tools-fab.open .tools-menu{display:block;}
 .tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
 .tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
 .tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
-.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:#B8963A;}
+.tools-item .tools-lang-inline span:first-child{font-size:0.75em;color:inherit;}
 .tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
 .tools-item svg{flex-shrink:0;}
 .tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
