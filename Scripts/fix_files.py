@@ -1976,6 +1976,38 @@ def retrofit_fixwords(out):
     return (out2, True) if changed else (out, False)
 
 
+# ====================================================
+# إصلاح تحميل خط Google Fonts (يوليو ٢٠٢٦):
+# كان محمّل بطريقة @import جوه <style> — أسلوب بطيء وغير مضمون، أي
+# تقطيع بسيط في النت بيخلي المتصفح "يستسلم" ويفضل شغال بالخط الاحتياطي
+# (serif عادي) بدل ما يستنى الخط الأصلي (Amiri/Scheherazade New).
+# الحل: <link rel="preconnect"> + <link rel="stylesheet"> جوه <head> —
+# أسرع وأثبت بكتير. الدالة شغالة على أي ملف فيه @import لخطوط Google
+# بغض النظر عن العائلات المطلوبة بالظبط، وآمنة idempotent (لو الملف
+# اتصلح قبل كده، مفيش @import تاني تلاقيه، فمترجعش تضيف <link> تاني).
+# ====================================================
+FONT_IMPORT_RE = re.compile(r"@import\s+url\((['\"])(https://fonts\.googleapis\.com/css2\?[^'\")]+)\1\)\s*;?")
+
+def fix_font_import_to_link(out):
+    changed = False
+    m = FONT_IMPORT_RE.search(out)
+    if not m:
+        return out, changed
+    font_url = m.group(2)
+    out = FONT_IMPORT_RE.sub('', out, 1)
+    changed = True
+    if f'href="{font_url}"' not in out:
+        head_links = (
+            '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+            '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+            f'<link rel="stylesheet" href="{font_url}">\n'
+        )
+        if '</head>' in out:
+            out = out.replace('</head>', head_links + '</head>', 1)
+        elif '<style>' in out:
+            out = out.replace('<style>', head_links + '<style>', 1)
+    return out, changed
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -1988,6 +2020,9 @@ def fix_file(path):
     #    الكلمة دي بس تظهر في نص التعليمات اللي كتبناه احنا، مش في
     #    القرآن نفسه، فالاستبدال المباشر آمن ومايلمسش النص القرآني.
     out = out.replace('اكتبي', 'اكتب')
+
+    # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
+    out, _font_fixed = fix_font_import_to_link(out)
 
     # ====================================================
     # 0. إصلاح قائمة التشكيل (alburuj/altariq pattern):
@@ -2490,6 +2525,9 @@ def fix_index_recitation(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
     out = ar2en(src)
+
+    # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
+    out, _font_fixed = fix_font_import_to_link(out)
 
     # وضع المطوّر: recitation.html بترجّع أي زائر من غير الفلاج لـ index.html
     # (الصفحة كلها ميزة واحدة)، وindex.html بتخفي أي رابط/زر تلاوة فيها لو موجود
