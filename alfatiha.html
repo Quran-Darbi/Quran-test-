@@ -42,7 +42,7 @@
   .level-btn:hover,.level-btn.active{background:var(--surface-hover);border-color:var(--accent);}
   .level-icon{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}
   .level-icon svg{width:1.15em;height:1.15em;}
-  #btn-order .level-icon{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}
+  #btn-order .level-icon{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}
   .level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}
   .level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}
   .start-btn{width:100%;max-width:260px;background:var(--accent-light);color:var(--card);border:none;border-radius:14px;padding:14px 20px;font-size:17px;font-family:inherit;cursor:pointer;transition:background .2s;}
@@ -155,7 +155,7 @@
     <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
-<a href="albaqara_p2.html" id="next-page-btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px;padding:12px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:15px;">⏭️ التالي</a>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="albaqara_p2.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
 </div>
 
 <div class="quiz-area" id="quiz-area">
@@ -166,6 +166,7 @@
   <div id="answer-zone"></div>
   <div class="feedback" id="feedback"></div>
   <button class="level-return-btn" onclick="returnToLevels()">&#x1F504; &#x627;&#x62E;&#x62A;&#x631; &#x645;&#x633;&#x62A;&#x648;&#x649; &#x622;&#x62E;&#x631;</button>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="albaqara_p2.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
   <button class="skip-btn" id="skip-btn" onclick="skipQuestion()">⏭ تخطي — أظهر الإجابة</button>
   <div style="display:flex;gap:10px;margin-top:12px;">
     <button class="next-btn" id="prev-btn" onclick="prevQuestion()" style="display:block;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);margin-top:0;">→ السؤال السابق</button>
@@ -184,6 +185,7 @@
   <div id="order-reveal" style="display:none;"></div>
   <div class="feedback" id="order-feedback"></div>
   <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="albaqara_p2.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
 </div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
