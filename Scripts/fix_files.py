@@ -8,7 +8,7 @@ import os, re
 # بتتحقن تلقائيًا في الملف المناسب لو الملف من غير AYAT أصلاً.
 # ====================================================
 AYAT_DATA = {
-"alfatiha_p1": [
+"alfatiha": [
   "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
   "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ",
   "ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
@@ -1308,7 +1308,7 @@ def ensure_order_wiring(path, out):
 # سلسلة ترتيب المصحف لزر "التالي ⏭️" — من البقرة p2 لحد الناس
 # ====================================================
 NEXT_SEQUENCE = (
-    ['alfatiha_p1'] +
+    ['alfatiha'] +
     [f'albaqara_p{i}' for i in range(2, 50)] +
     [
         'annaba', 'annaziat', 'abasa', 'attakwir', 'al-infitar',
@@ -2148,7 +2148,7 @@ def fix_level_card_alignment(out):
         new_css = (
             f"{ind}.level-icon{{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}}\n"
             f"{ind}.level-icon svg{{width:1.15em;height:1.15em;}}\n"
-            f"{ind}#btn-order .level-icon{{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}}\n"
+            f"{ind}#btn-order .level-icon{{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}}\n"
             f"{ind}.level-name{{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}}\n"
             f"{ind}.level-desc{{font-size:12px;color:var(--text-faint);line-height:1.5;}}"
         )
@@ -2165,7 +2165,9 @@ def fix_level_card_alignment(out):
 def fix_order_icon_revert_to_emoji(out):
     """رجعة سريعة: لو ملف اتحقنله نسخة SVG قديمة (تجربة سابقة اتلغت)،
     رجّعها لإيموجي 🔀 عادي + فلتر اللون الأخضر — الشكل الأصلي بلون
-    مختلف بس، مش رسمة جديدة."""
+    مختلف بس، مش رسمة جديدة. كمان بيظبط درجة اللون لو كانت لسه من
+    نسخة قديمة زيادة في التشبع (شكلها فلورسنت بدل أخضر طبيعي زي باقي
+    الأيقونات)."""
     changed = False
     old_svg = ('<span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
                'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
@@ -2176,10 +2178,29 @@ def fix_order_icon_revert_to_emoji(out):
     if old_svg in out:
         out = out.replace(old_svg, new_emoji, 1)
         changed = True
-    old_color_rule = '#btn-order .level-icon{color:var(--accent);}'
-    new_filter_rule = '#btn-order .level-icon{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}'
-    if old_color_rule in out:
-        out = out.replace(old_color_rule, new_filter_rule, 1)
+    new_filter_rule = '#btn-order .level-icon{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}'
+    for old_rule in (
+        '#btn-order .level-icon{color:var(--accent);}',
+        '#btn-order .level-icon{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}',
+    ):
+        if old_rule in out:
+            out = out.replace(old_rule, new_filter_rule, 1)
+            changed = True
+            break
+    return out, changed
+
+# ====================================================
+# إصلاح رابط 404 عند الرجوع من أول صفحة بقرة للفاتحة (يوليو ٢٠٢٦):
+# اسم ملف الفاتحة الحقيقي هو alfatiha.html، بس سلسلة "السابق/التالي"
+# كانت فيها alfatiha_p1 غلط (اسم مش موجود) — فزر "⏮️ الصفحة السابقة"
+# في albaqara_p2.html كان بيودّي لصفحة 404. مصلّح دلوقتي في NEXT_SEQUENCE
+# نفسها، وده بيصلح أي ملف جديد. الدالة دي بتصلح الملفات اللي الرابط
+# الغلط اتحقن فيها بالفعل.
+# ====================================================
+def fix_alfatiha_broken_link(out):
+    changed = False
+    if 'alfatiha_p1.html' in out:
+        out = out.replace('alfatiha_p1.html', 'alfatiha.html')
         changed = True
     return out, changed
 
@@ -2337,6 +2358,9 @@ def fix_file(path):
 
     # رجعة أيقونة "ترتيب" لشكل الإيموجي الأصلي (بدل SVG) مع فلتر اللون
     out, _order_icon_fixed = fix_order_icon_revert_to_emoji(out)
+
+    # إصلاح رابط 404 (alfatiha_p1.html الغلط بدل alfatiha.html)
+    out, _fatiha_link_fixed = fix_alfatiha_broken_link(out)
 
     # تقصير وصف مستوى "صعب" لو لسه بالنسخة الطويلة القديمة
     out, _hard_desc_fixed = fix_hard_level_desc(out)
@@ -2859,6 +2883,9 @@ def fix_index_recitation(path):
 
     # ترتيب اللغات + علامة ✓ بدل التلوين الأخضر بس
     out, _lang_list_fixed = fix_lang_list_order_and_checkmark(out)
+
+    # إصلاح رابط 404 (alfatiha_p1.html الغلط بدل alfatiha.html) لو موجود هنا كمان
+    out, _fatiha_link_fixed = fix_alfatiha_broken_link(out)
 
     # وضع المطوّر: recitation.html بترجّع أي زائر من غير الفلاج لـ index.html
     # (الصفحة كلها ميزة واحدة)، وindex.html بتخفي أي رابط/زر تلاوة فيها لو موجود
