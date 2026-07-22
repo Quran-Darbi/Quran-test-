@@ -1045,6 +1045,33 @@ def fix_missing_progress_save_calls(out):
     out = out.replace(old, new)
     return out, True
 
+def fix_single_submit_btn_selector(out):
+    """إصلاح باج قديم فعلي: بعض الملفات (خصوصًا صفحات البقرة القديمة زي
+    p8) لسه فيها document.querySelector('.submit-btn') بصيغة المفرد بدل
+    querySelectorAll. في مستوى الصعب فيه زرارين .submit-btn (واحد لوضع
+    الكتابة وواحد لوضع الصوت)، فـquerySelector المفرد بيعطّل واحد بس
+    ويسيب التاني شغال وقت التحقق — ممكن يسمح بإرسال إجابة مرتين أو
+    يلخبط الحالة. الإصلاح آمن وidempotent: بيستهدف السطر بالظبط جوه
+    checkText() وskipQuestion() من غير ما يلمس أي منطق تاني."""
+    changed = False
+
+    # 1. جوه checkText(): "document.querySelector('.submit-btn').disabled = true;"
+    pattern1 = re.compile(r"document\.querySelector\(\s*['\"]\.submit-btn['\"]\s*\)\.disabled\s*=\s*true\s*;")
+    if pattern1.search(out):
+        out = pattern1.sub("document.querySelectorAll('.submit-btn').forEach(b => b.disabled = true);", out)
+        changed = True
+
+    # 2. جوه skipQuestion(): "const sub=document.querySelector('.submit-btn'); if(sub) sub.disabled=true;"
+    pattern2 = re.compile(
+        r"const\s+sub\s*=\s*document\.querySelector\(\s*['\"]\.submit-btn['\"]\s*\)\s*;\s*"
+        r"if\s*\(\s*sub\s*\)\s*sub\.disabled\s*=\s*true\s*;"
+    )
+    if pattern2.search(out):
+        out = pattern2.sub("document.querySelectorAll('.submit-btn').forEach(b=>b.disabled=true);", out)
+        changed = True
+
+    return out, changed
+
 def ar2en(text):
     """تحويل الأرقام العربية-الهندية إلى غربية"""
     for i, c in enumerate('٠١٢٣٤٥٦٧٨٩'):
@@ -2858,6 +2885,10 @@ def fix_file(path):
     # 9س. إصلاح باج: استدعاءات renderDotProgress/saveResumeState الناقصة
     # في الملفات القديمة (سهل/متوسط) — بدون أي تغيير في البنية
     out, progress_save_fixed = fix_missing_progress_save_calls(out)
+
+    # 9ش. إصلاح باج: querySelector('.submit-btn') بصيغة المفرد بدل
+    # querySelectorAll — بيسيب زرار واحد من زرارين شغال وقت التحقق
+    out, submit_btn_fixed = fix_single_submit_btn_selector(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
