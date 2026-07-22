@@ -476,7 +476,7 @@ function checkText(q) {
   if (!userVal) return;
 
   input.disabled = true;
-  document.querySelector('.submit-btn').disabled = true;
+  document.querySelectorAll('.submit-btn').forEach(b => b.disabled = true);
 
   const fb = document.getElementById('feedback');
   const correct = normalize(q.answer);
@@ -509,8 +509,7 @@ function skipQuestion(){
     fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';
   } else {
     if(document.getElementById('user-input')) document.getElementById('user-input').disabled=true;
-    const sub=document.querySelector('.submit-btn');
-    if(sub) sub.disabled=true;
+    document.querySelectorAll('.submit-btn').forEach(b=>b.disabled=true);
     fb.className='feedback wrong';
     fb.innerHTML=`⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2" class="notranslate" translate="no">${q.answer}</span>`;
   }
