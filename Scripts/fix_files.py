@@ -258,9 +258,9 @@ NEW_RENDER_ORDER_QUIZ = (
     "      emptyStrip.appendChild(dot);\n"
     "    }else{\n"
     "      const card=document.createElement('div');\n"
-    "      card.className='order-slot filled';\n"
+    "      card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');\n"
     "      card.innerHTML='<span class=\"order-badge\">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+AYAT[idx]+'</span>';\n"
-    "      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};\n"
+    "      card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};\n"
     "      filledGrid.appendChild(card);\n"
     "    }\n"
     "  });\n"
@@ -1096,7 +1096,7 @@ ORDER_CSS = (
     ".order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}"
     ".order-dot:hover{border-color:var(--accent);}"
     ".order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}"
-    ".order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;}"
+    ".order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}"
     ".mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}"
     ".ayah-end{color:var(--gold);font-size:15px;}"
 )
@@ -1126,7 +1126,7 @@ ORDER_BTN_HTML = (
 ORDER_AREA_HTML = '''<div class="quiz-area" id="order-area">
   <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
   <div id="order-slots" style="margin-bottom:16px;"></div>
-  <div id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+  <div id="order-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;"></div>
   <div class="nav-row">
     <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
     <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
@@ -1139,10 +1139,10 @@ ORDER_AREA_HTML = '''<div class="quiz-area" id="order-area">
 
 ORDER_JS = '''
 /* ===== ترتيب الآيات 🔀 ===== */
-let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
 function startOrderQuiz(){
   orderPlaced=new Array(AYAT.length).fill(null);
-  orderCursor=0;
+  orderCursor=0;orderSelected=-1;
   orderPoolOrder=AYAT.map((t,idx)=>idx);
   shuffle(orderPoolOrder);
   document.getElementById('level-card').style.display='none';
@@ -1182,10 +1182,10 @@ function renderOrderQuiz(){
       emptyStrip.appendChild(dot);
     }else{
       const card=document.createElement('div');
-      card.className='order-slot filled';
+      card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');
       card.setAttribute('translate','no');
       card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';
-      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
       filledGrid.appendChild(card);
     }
   });
@@ -1477,6 +1477,72 @@ def upgrade_order_ui_to_compact(out):
     return out, changed
 
 
+OLD_ORDER_POOL_STYLE = 'id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"'
+NEW_ORDER_POOL_STYLE = 'id="order-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;"'
+
+
+def upgrade_order_pool_layout(out):
+    """يرقّي حاوية بنك آيات الترتيب (order-pool) من عمود واحد (flex-column)
+    لشبكة (grid) — عشان الآيات القصيرة تقعد جنب بعض بدل سطر منفرد لكل
+    آية، وده بيقلل طول السكرول في السور القصيرة. الآيات الطويلة هتاخد
+    عرض أكبر تلقائيًا حسب مساحة الشبكة (auto-fill/minmax) من غير ما
+    نلمس order-filled-grid أو أي جزء تاني."""
+    if OLD_ORDER_POOL_STYLE in out:
+        out = out.replace(OLD_ORDER_POOL_STYLE, NEW_ORDER_POOL_STYLE)
+        return out, True
+    return out, False
+
+
+OLD_ORDER_SWAP_DECL = "let orderPlaced=[],orderCursor=0,orderPoolOrder=[];"
+NEW_ORDER_SWAP_DECL = "let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;"
+OLD_ORDER_SWAP_RESET = "orderCursor=0;"
+NEW_ORDER_SWAP_RESET = "orderCursor=0;orderSelected=-1;"
+OLD_ORDER_SWAP_CLASS = "card.className='order-slot filled';"
+NEW_ORDER_SWAP_CLASS = "card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');"
+OLD_ORDER_SWAP_CLICK = "card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};"
+NEW_ORDER_SWAP_CLICK = (
+    "card.onclick=(e)=>{if(e.target.closest('.order-badge')){"
+    "if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}"
+    "if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}"
+    "const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;"
+    "document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}"
+    "orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;"
+    "document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};"
+)
+ORDER_SWAP_CSS_RULE = ".order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}"
+
+
+def upgrade_order_tap_swap(out):
+    """يضيف خاصية "تبديل بالضغط 🔀" لمربعات الترتيب (يوليو ٢٠٢٦): الضغط على
+    رقم الآية (البادج ﴿١﴾) في مربع مليان يحدده (تظليل ذهبي)، والضغط على
+    بادج مربع مليان تاني يبدل مكان الآيتين فورًا — يحل مشكلة "آية اتحطت
+    غلط ونفس ترجع تعدلها من غير ما تفرّغ الخانة وتضيع مكانها في البنك".
+    الضغط على باقي المربع (مش البادج) يفضل زي ما هو تمامًا: يفرّغ الخانة
+    ويرجّع الآية للبنك — الآلية القديمة متلمستش خالص، الجديدة إضافة بس."""
+    if 'orderSelected' in out:
+        return out, False  # الميزة مضافة بالفعل (idempotent)
+    if OLD_ORDER_SWAP_CLICK not in out:
+        return out, False  # مفيش ميزة ترتيب أصلًا، أو تصميم قديم غير مدعوم
+
+    changed = False
+    if OLD_ORDER_SWAP_DECL in out:
+        out = out.replace(OLD_ORDER_SWAP_DECL, NEW_ORDER_SWAP_DECL, 1)
+        changed = True
+    if OLD_ORDER_SWAP_RESET in out:
+        out = out.replace(OLD_ORDER_SWAP_RESET, NEW_ORDER_SWAP_RESET, 1)
+        changed = True
+    if OLD_ORDER_SWAP_CLASS in out:
+        out = out.replace(OLD_ORDER_SWAP_CLASS, NEW_ORDER_SWAP_CLASS, 1)
+        changed = True
+    if OLD_ORDER_SWAP_CLICK in out:
+        out = out.replace(OLD_ORDER_SWAP_CLICK, NEW_ORDER_SWAP_CLICK, 1)
+        changed = True
+    if '</style>' in out and ORDER_SWAP_CSS_RULE not in out:
+        out = out.replace('</style>', ORDER_SWAP_CSS_RULE + '\n</style>', 1)
+        changed = True
+    return out, changed
+
+
 def add_ordering_feature(out, filename=''):
     """يضيف ميزة ترتيب الآيات 🔀 للملفات اللي فيها AYAT (جزء عم).
     كل جزء (CSS/الزر/الـHTML/دوال الـJS) بيتفحص ويتضاف لوحده —
@@ -1556,10 +1622,10 @@ def add_ordering_feature(out, filename=''):
 
 BAQARA_ORDER_JS = '''
 /* ===== ترتيب الآيات 🔀 (البقرة) ===== */
-let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
 function startOrderQuiz(){
   orderPlaced=new Array(ORDER_AYAT.length).fill(null);
-  orderCursor=0;
+  orderCursor=0;orderSelected=-1;
   orderPoolOrder=ORDER_AYAT.map((t,idx)=>idx);
   shuffle(orderPoolOrder);
   document.getElementById('level-card').style.display='none';
@@ -1599,9 +1665,9 @@ function renderOrderQuiz(){
       emptyStrip.appendChild(dot);
     }else{
       const card=document.createElement('div');
-      card.className='order-slot filled';
+      card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');
       card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span>'+ORDER_AYAT[idx]+'</span>';
-      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
       filledGrid.appendChild(card);
     }
   });
@@ -2447,7 +2513,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .hint-box{display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;direction:rtl;line-height:2;}
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
-.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
+.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
 </style>
 <link rel="manifest" href="/Quran-test-/manifest.json">
 <meta name="theme-color" content="#4a7c4a">
@@ -2525,7 +2591,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <div class="quiz-area" id="order-area">
   <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
   <div id="order-slots" style="margin-bottom:16px;"></div>
-  <div id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+  <div id="order-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;"></div>
   <div class="nav-row">
     <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
     <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
@@ -2634,11 +2700,11 @@ function nextQuestion(){qIndex++;if(qIndex>=questions.length)showResult();else s
 function showResult(){document.getElementById('quiz-area').style.display='none';document.getElementById('result-area').style.display='block';const pct=Math.round((correctCount/questions.length)*100);document.getElementById('result-score').textContent=`${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} — ${toArabicNum(pct)}%`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنتِ السورة بالكامل';}else if(pct>=80){icon='✨';title='أحسنتِ!';msg='نتيجة رائعة، استمري في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجعي السورة مرة أخرى وأعيدي الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأسي، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');if(pct===100)spawnConfetti();}
 function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
-let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
-function startOrderQuiz(){orderPlaced=new Array(AYAT.length).fill(null);orderCursor=0;orderPoolOrder=AYAT.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';renderOrderQuiz();}
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
+function startOrderQuiz(){orderPlaced=new Array(AYAT.length).fill(null);orderCursor=0;orderSelected=-1;orderPoolOrder=AYAT.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';renderOrderQuiz();}
 function mushafHtml(){return '<div class="mushaf-block notranslate" translate="no">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';}
 function nextEmptyFrom(start){for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}return -1;}
-function renderOrderQuiz(){const slotsDiv=document.getElementById('order-slots');const poolDiv=document.getElementById('order-pool');slotsDiv.innerHTML='';poolDiv.innerHTML='';const filledGrid=document.createElement('div');filledGrid.className='order-filled-grid';const emptyStrip=document.createElement('div');emptyStrip.className='order-empty-strip';orderPlaced.forEach((idx,pos)=>{if(idx===null){const active=(pos===orderCursor);const dot=document.createElement('span');dot.className='order-dot'+(active?' active':'');dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};emptyStrip.appendChild(dot);}else{const card=document.createElement('div');card.className='order-slot filled';card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};filledGrid.appendChild(card);}});if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);orderPoolOrder.forEach(idx=>{if(orderPlaced.includes(idx))return;const btn=document.createElement('button');btn.className='order-item notranslate';btn.setAttribute('translate','no');btn.textContent=AYAT[idx];btn.onclick=()=>{if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}if(orderCursor===-1)return;orderPlaced[orderCursor]=idx;orderCursor=nextEmptyFrom(orderCursor+1);document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};poolDiv.appendChild(btn);});const allFilled=!orderPlaced.includes(null);document.getElementById('order-check-btn').style.display=allFilled?'block':'none';}
+function renderOrderQuiz(){const slotsDiv=document.getElementById('order-slots');const poolDiv=document.getElementById('order-pool');slotsDiv.innerHTML='';poolDiv.innerHTML='';const filledGrid=document.createElement('div');filledGrid.className='order-filled-grid';const emptyStrip=document.createElement('div');emptyStrip.className='order-empty-strip';orderPlaced.forEach((idx,pos)=>{if(idx===null){const active=(pos===orderCursor);const dot=document.createElement('span');dot.className='order-dot'+(active?' active':'');dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};emptyStrip.appendChild(dot);}else{const card=document.createElement('div');card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};filledGrid.appendChild(card);}});if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);orderPoolOrder.forEach(idx=>{if(orderPlaced.includes(idx))return;const btn=document.createElement('button');btn.className='order-item notranslate';btn.setAttribute('translate','no');btn.textContent=AYAT[idx];btn.onclick=()=>{if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}if(orderCursor===-1)return;orderPlaced[orderCursor]=idx;orderCursor=nextEmptyFrom(orderCursor+1);document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};poolDiv.appendChild(btn);});const allFilled=!orderPlaced.includes(null);document.getElementById('order-check-btn').style.display=allFilled?'block':'none';}
 function checkOrderAnswer(){let correct=0;document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);if(ok)correct++;el.classList.remove('correct-slot','wrong-slot');el.classList.add(ok?'correct-slot':'wrong-slot');});const fb=document.getElementById('order-feedback');const allCorrect=(correct===AYAT.length);fb.className='feedback '+(allCorrect?'correct':'wrong');fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());fb.style.display='block';document.getElementById('order-check-btn').style.display='none';if(allCorrect)spawnConfetti();}
 function revealOrderAnswer(){document.getElementById('order-reveal').innerHTML=mushafHtml();document.getElementById('order-reveal').style.display='block';const rb=document.getElementById('order-reveal-btn');rb.disabled=true;rb.style.opacity='0.5';}
 function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}
@@ -3465,6 +3531,16 @@ def fix_file(path):
     # ====================================================
     # 9ز. ترقية منطق فحص الترتيب لمقارنة بالنص (يقبل الآيات المتطابقة نصيًا)
     out, order_answer_upgraded = upgrade_order_answer_check(out)
+
+    # ====================================================
+    # 9زأ. ترقية حاوية بنك آيات الترتيب لشبكة (grid) بدل عمود واحد —
+    # الآيات القصيرة تقعد جنب بعض فيقل طول السكرول (يوليو ٢٠٢٦)
+    out, order_pool_grid_upgraded = upgrade_order_pool_layout(out)
+
+    # ====================================================
+    # 9زب. إضافة خاصية التبديل بالضغط على البادج (رقم الآية) — تصحيح
+    # آية اتحطت غلط بضغطتين بدل تفريغ الخانة (يوليو ٢٠٢٦)
+    out, order_swap_added = upgrade_order_tap_swap(out)
 
     # ====================================================
     # 9د. تصحيح كلاس nav-row الناقص (بيوضّح شكل أزرار الترتيب/التنقل)
