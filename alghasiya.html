@@ -12,7 +12,8 @@
   }catch(e){}
 })();
 </script>
-<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}</style>
+<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}
+</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -179,7 +180,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <div class="quiz-area" id="order-area">
   <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
   <div id="order-slots" style="margin-bottom:16px;"></div>
-  <div id="order-pool" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+  <div id="order-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;"></div>
   <div class="nav-row">
     <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
     <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
@@ -636,10 +637,10 @@ function retryQuiz(){
 
 
 /* ===== ترتيب الآيات 🔀 ===== */
-let orderPlaced=[],orderCursor=0,orderPoolOrder=[];
+let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
 function startOrderQuiz(){
   orderPlaced=new Array(AYAT.length).fill(null);
-  orderCursor=0;
+  orderCursor=0;orderSelected=-1;
   orderPoolOrder=AYAT.map((t,idx)=>idx);
   shuffle(orderPoolOrder);
   document.getElementById('level-card').style.display='none';
@@ -679,9 +680,9 @@ function renderOrderQuiz(){
       emptyStrip.appendChild(dot);
     }else{
       const card=document.createElement('div');
-      card.className='order-slot filled';
+      card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');
       card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';
-      card.onclick=()=>{orderPlaced[pos]=null;orderCursor=pos;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
+      card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};
       filledGrid.appendChild(card);
     }
   });
