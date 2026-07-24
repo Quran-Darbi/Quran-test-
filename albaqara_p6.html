@@ -63,7 +63,7 @@
   .level-btn:hover,.level-btn.active{background:var(--surface-hover);border-color:var(--accent);}
   .level-icon{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}
   .level-icon svg{width:1.15em;height:1.15em;}
-  #btn-order .level-icon{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}
+  #btn-order .level-icon{color:var(--accent);}
   .level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}
   .level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}
   .start-btn{width:100%;max-width:260px;background:var(--accent-light);color:var(--card);border:none;border-radius:14px;padding:14px 20px;font-size:17px;font-family:inherit;cursor:pointer;}
@@ -118,13 +118,13 @@
   <div class="tools-menu" id="tools-menu">
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
-      <button onclick="langSelect('ar')" data-code="ar">🇸🇦 العربية</button>
-      <button onclick="langSelect('en')" data-code="en">🇬🇧 English</button>
-      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français</button>
-      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe</button>
-      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی</button>
-      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch</button>
-      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español</button>
+      <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
     </div>
     <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
     <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
@@ -456,7 +456,7 @@ function checkTextVal(q, userVal) {
   if (user === correct) {
     correctCount++; statuses[qIndex]='correct';
     fb.className = 'feedback correct';
-    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}
   } else {
     wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
     fb.className = 'feedback wrong';

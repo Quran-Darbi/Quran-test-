@@ -158,20 +158,19 @@
   <div class="tools-menu" id="tools-menu">
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
-      <button onclick="langSelect('ar')" data-code="ar">🇸🇦 العربية</button>
-      <button onclick="langSelect('en')" data-code="en">🇬🇧 English</button>
-      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français</button>
-      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe</button>
-      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی</button>
-      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch</button>
-      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español</button>
+      <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
     </div>
     <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
     <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
     <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> كود QR</button>
   </div>
-</div>
-</div>
+</div></div>
 
 <div class="info-card">
   <div class="surah-title">سورة البقرة</div>
@@ -567,7 +566,7 @@ function showQuestion(){
 }
 function checkTextVal(q,userVal){
   const fb=document.getElementById('feedback');
-  if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً 🌟';}
+  if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}}
   else{wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';}
   fb.style.display='block';updateBadges();renderDotProgress();saveResumeState();
   document.getElementById('next-btn').style.display='block';document.getElementById('skip-btn').style.display='none';
