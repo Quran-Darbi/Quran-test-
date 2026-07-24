@@ -509,6 +509,29 @@ const SURAH_NAMES = {
 
 let currentKey='',refWords=[];
 
+// ===== نظام تتبع التقدم الدائم (يوليو ٢٠٢٦) — نفس مفتاح localStorage
+// 'darbi_progress' المستخدم في صفحات الاختبار، تحت مستوى 'recitation' =====
+// مفاتيح recitation.html (مثل baqara_p2) تختلف عن مفاتيح صفحات الاختبار
+// (albaqara_p2) لسورة البقرة فقط؛ جزء عم والفاتحة متطابقين، فبنوحّدهم هنا
+function darbiProgressKey(key){
+  if(key==='fatiha')return'alfatiha';
+  if(key.indexOf('baqara_p')===0)return'al'+key;
+  return key;
+}
+function saveDarbiProgress(level,correct,total){
+  try{
+    var pk='darbi_progress';
+    var all=JSON.parse(localStorage.getItem(pk)||'{}');
+    var key=darbiProgressKey(currentKey);
+    var pct=total>0?Math.round((correct/total)*100):0;
+    if(!all[key])all[key]={};
+    var prev=(all[key][level]&&all[key][level].score)||0;
+    all[key][level]={done:pct>=70,score:Math.max(pct,prev)};
+    all[key].lastVisited=new Date().toISOString();
+    localStorage.setItem(pk,JSON.stringify(all));
+  }catch(e){}
+}
+
 // ===== normalize مُصلحة — تطابق القالب الرئيسي =====
 function norm(s){
   if(!s)return'';
@@ -915,6 +938,7 @@ function checkRecitation(){
   const bad=results.filter(r=>r.status!=='ok').length;
   const total=results.length;
   const pct=Math.round(ok/total*100);
+  saveDarbiProgress('recitation',ok,total);
   let where=startIdx===0?'بدأتِ من أول السورة':'📍 بدأتِ من الكلمة '+(startIdx+1)+' تقريباً';
   document.getElementById('resultCard').style.display='block';
   document.getElementById('whereMsg').textContent=where;
