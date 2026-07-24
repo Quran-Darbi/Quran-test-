@@ -500,8 +500,8 @@ langApplyLabel();
 # يستاهل نقرة واحدة مباشرة). القائمة نفس المنطق والدوال بالظبط
 # (fdbkOpen/fdbkSend/langSelect/shareApp) — بس نقطة الدخول اتغيرت.
 TOOLS_MENU_STYLE = """<style>
-.tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
-.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}
+.tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
 .tools-fab-btn:hover{filter:brightness(1.05);}
 .tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
 .tools-fab.open .tools-menu{display:block;}
@@ -723,6 +723,28 @@ OLD_INDEX_QR_JS = (
 THEME_BTN_RE = re.compile(r'<button[^>]*id="theme-(?:btn|toggle)"[^>]*>[^<]*</button>')
 
 
+OLD_TOOLS_FAB_POSITION = ".tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}"
+NEW_TOOLS_FAB_POSITION = ".tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}"
+OLD_TOOLS_FAB_BTN_STYLE = ".tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}"
+NEW_TOOLS_FAB_BTN_STYLE = ".tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}"
+
+
+def upgrade_tools_fab_fixed_position(out):
+    """يثبّت زر ☰ الأدوات في مكان عائم ثابت (أعلى الشاشة يسار) بدل ما
+    يكون جوه صف الهيدر — لأن صف الهيدر بيختلف شكله شوية بين قوالب
+    الصفحات المختلفة (البقرة/جزء عم/الفهرس)، فكان مكان الزر بيتزحلق
+    من صفحة لصفحة. بقى position:fixed فهيفضل في نفس البكسل بالظبط
+    في كل صفحات الموقع (يوليو ٢٠٢٦)."""
+    changed = False
+    if OLD_TOOLS_FAB_POSITION in out:
+        out = out.replace(OLD_TOOLS_FAB_POSITION, NEW_TOOLS_FAB_POSITION, 1)
+        changed = True
+    if OLD_TOOLS_FAB_BTN_STYLE in out:
+        out = out.replace(OLD_TOOLS_FAB_BTN_STYLE, NEW_TOOLS_FAB_BTN_STYLE, 1)
+        changed = True
+    return out, changed
+
+
 def add_tools_menu(path, out):
     """يستبدل الودجتين المنفصلتين (شاركنا رأيك + اللغة) وزر المشاركة
     وزر QR المنفصلين من الشريط العلوي، وكمان الزر العائم القديم لـ☰
@@ -752,7 +774,7 @@ def add_tools_menu(path, out):
     # بتولّد رابط الصفحة الحالية ديناميكيًا وشغالة في كل الصفحات.
     # الشرط التاني هنا مهم: من غيره الحذف ده بيتكرر كل مرة ويشيل
     # qr-overlay بتاع القائمة الجديدة نفسها بالغلط بعد أول تشغيل
-    if is_index and '.tools-fab{position:relative' not in out:
+    if is_index and 'id="tools-fab"' not in out:
         if QR_NAV_BTN_RE.search(out):
             out = QR_NAV_BTN_RE.sub('', out, count=1)
             changed = True
@@ -1539,6 +1561,47 @@ def upgrade_order_tap_swap(out):
         changed = True
     if '</style>' in out and ORDER_SWAP_CSS_RULE not in out:
         out = out.replace('</style>', ORDER_SWAP_CSS_RULE + '\n</style>', 1)
+        changed = True
+    return out, changed
+
+
+OLD_CHECKMCQ_CORRECT_BRANCH = "if(chosen===correct){btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';}else{"
+NEW_CHECKMCQ_CORRECT_BRANCH = "if(chosen===correct){btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}else{"
+
+OLD_CHECKTEXTVAL_CORRECT_BRANCH = "if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';}else{"
+NEW_CHECKTEXTVAL_CORRECT_BRANCH = "if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}}else{"
+
+OLD_CHECKTEXTVAL_FALLBACK_CORRECT = (
+    "    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';\n"
+    "  } else {\n"
+)
+NEW_CHECKTEXTVAL_FALLBACK_CORRECT = (
+    "    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';\n"
+    "    if (currentLevel === 'hard') {\n"
+    "      const __qi = qIndex;\n"
+    "      setTimeout(() => { if (qIndex === __qi) nextQuestion(); }, 1100);\n"
+    "    }\n"
+    "  } else {\n"
+)
+
+
+def upgrade_auto_advance_correct(out):
+    """ينقل تلقائيًا للسؤال التالي لو الإجابة صحيحة في مستويي سهل وصعب
+    بس (بعد تأخير بسيط ١.١ ثانية عشان المستخدم يشوف علامة الصح) —
+    الإجابة الغلط تفضل يدوية زي ما هي عشان يكون فيه وقت كافي لمراجعة
+    التصحيح. المستوى المتوسط متلمسش خالص، يفضل يدوي في الحالتين
+    (يوليو ٢٠٢٦). الحماية من التكرار: بنتأكد إن qIndex لسه زي وقت
+    الجدولة قبل ما ننفّذ — لو المستخدم ضغط "التالي" يدوي قبلها، الجدولة
+    القديمة بتبقى بلا أثر تلقائيًا."""
+    changed = False
+    if OLD_CHECKMCQ_CORRECT_BRANCH in out and 'setTimeout(()=>{if(qIndex===__qi)nextQuestion();}' not in out:
+        out = out.replace(OLD_CHECKMCQ_CORRECT_BRANCH, NEW_CHECKMCQ_CORRECT_BRANCH, 1)
+        changed = True
+    if OLD_CHECKTEXTVAL_CORRECT_BRANCH in out and "if(currentLevel==='hard'){const __qi=qIndex;" not in out:
+        out = out.replace(OLD_CHECKTEXTVAL_CORRECT_BRANCH, NEW_CHECKTEXTVAL_CORRECT_BRANCH, 1)
+        changed = True
+    if OLD_CHECKTEXTVAL_FALLBACK_CORRECT in out and "if (currentLevel === 'hard')" not in out:
+        out = out.replace(OLD_CHECKTEXTVAL_FALLBACK_CORRECT, NEW_CHECKTEXTVAL_FALLBACK_CORRECT, 1)
         changed = True
     return out, changed
 
@@ -2691,9 +2754,9 @@ function renderHard(q,zone){
   const hBox=document.createElement('div');hBox.className='hint-box';zone.appendChild(hBox);
   const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول 3 كلمات)';hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.classList.add('notranslate');hBox.setAttribute('translate','no');hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};zone.appendChild(hBtn);
 }
-function checkTextVal(q,userVal){const fb=document.getElementById('feedback');document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';}else{wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';}fb.style.display='block';updateBadges();renderDotProgress();saveResumeState();}
+function checkTextVal(q,userVal){const fb=document.getElementById('feedback');document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}}else{wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';}fb.style.display='block';updateBadges();renderDotProgress();saveResumeState();}
 function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,userVal);}
-function checkMCQ(chosen,correct,btn){document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');if(chosen===correct){btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';}else{btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+questions[qIndex].choices[correct]+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';updateBadges();renderDotProgress();saveResumeState();}
+function checkMCQ(chosen,correct,btn){document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');if(chosen===correct){btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}else{btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+questions[qIndex].choices[correct]+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';updateBadges();renderDotProgress();saveResumeState();}
 function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';}else{const inp=document.getElementById('user-input');if(inp)inp.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);fb.className='feedback wrong';fb.innerHTML=`⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2" class="notranslate" translate="no">${q.answer}</span>`;}wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.style.display='block';updateBadges();document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';}
 function prevQuestion(){if(qIndex===0)return;qIndex--;showQuestion();}
 function nextQuestion(){qIndex++;if(qIndex>=questions.length)showResult();else showQuestion();}
@@ -2730,8 +2793,8 @@ if('serviceWorker' in navigator){
 }
 </script>
 <style>
-.tools-fab{position:relative;display:inline-flex;z-index:60;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
-.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;}
+.tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
 .tools-fab-btn:hover{filter:brightness(1.05);}
 .tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
 .tools-fab.open .tools-menu{display:block;}
@@ -3417,6 +3480,10 @@ def fix_file(path):
             "    correctCount++; statuses[qIndex]='correct';\n"
             "    fb.className = 'feedback correct';\n"
             "    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';\n"
+            "    if (currentLevel === 'hard') {\n"
+            "      const __qi = qIndex;\n"
+            "      setTimeout(() => { if (qIndex === __qi) nextQuestion(); }, 1100);\n"
+            "    }\n"
             "  } else {\n"
             "    wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);\n"
             "    fb.className = 'feedback wrong';\n"
@@ -3576,6 +3643,10 @@ def fix_file(path):
     # بتشيل الودجتين القديمتين المنفصلتين وزر المشاركة القديم لو موجودين
     out, tools_menu_added = add_tools_menu(path, out)
 
+    # 9لأ. تثبيت زر الأدوات في مكان عائم ثابت (أعلى الشاشة يسار) في كل
+    # الصفحات — بدل ما يتزحلق حسب هيدر كل صفحة (يوليو ٢٠٢٦)
+    out, tools_fab_fixed = upgrade_tools_fab_fixed_position(out)
+
     # 9م. حماية نص الآيات الكامل في ميزة الترتيب من الترجمة (ملفات قديمة)
     out, order_translate_protected = protect_order_ayat_from_translation(out)
 
@@ -3589,6 +3660,10 @@ def fix_file(path):
     # 9ش. إصلاح باج: querySelector('.submit-btn') بصيغة المفرد بدل
     # querySelectorAll — بيسيب زرار واحد من زرارين شغال وقت التحقق
     out, submit_btn_fixed = fix_single_submit_btn_selector(out)
+
+    # 9ت. انتقال تلقائي للسؤال التالي لو الإجابة صحيحة (سهل وصعب بس،
+    # المتوسط يفضل يدوي في الحالتين) — يوليو ٢٠٢٦
+    out, auto_advance_added = upgrade_auto_advance_correct(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
@@ -3659,6 +3734,10 @@ def fix_index_recitation(path):
     # قائمة "☰ الأدوات" الموحدة (شاركنا رأيك + اللغة + مشاركة + QR في
     # index.html فقط) — بتشيل الودجتين القديمتين المنفصلتين لو موجودين
     out, tools_menu_added = add_tools_menu(path, out)
+
+    # تثبيت زر الأدوات في مكان عائم ثابت (أعلى الشاشة يسار) — بدل ما
+    # يتزحلق حسب هيدر كل صفحة (يوليو ٢٠٢٦)
+    out, tools_fab_fixed = upgrade_tools_fab_fixed_position(out)
 
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
