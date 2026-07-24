@@ -1141,7 +1141,7 @@ OLD_ORDER_CSS = (
 ORDER_BTN_HTML = (
     "</button>\n"
     "    <button class=\"level-btn\" onclick=\"selectLevel('order')\" id=\"btn-order\">"
-    "<span class=\"level-icon\">🔀</span><span class=\"level-name\">ترتيب</span>"
+    "<span class=\"level-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 8h3c3 0 5 6 8 6h5\"/><path d=\"M2 16h3c3 0 5-6 8-6h2\"/><polyline points=\"15 5 18 8 15 11\"/><polyline points=\"15 13 18 16 15 19\"/></svg></span><span class=\"level-name\">ترتيب</span>"
     "<span class=\"level-desc\">رتّب الآيات</span></button>"
 )
 
@@ -1584,6 +1584,17 @@ NEW_CHECKTEXTVAL_FALLBACK_CORRECT = (
     "  } else {\n"
 )
 
+# احتياطي بالـregex (متسامح مع المسافات/الأسطر والصيغ المختلفة) — لصفحات
+# البقرة القديمة اللي بتستخدم تنسيق "موسّع" (مش مضغوط) و/أو userNorm/
+# ansNorm مع normalizeHurufMuqattaa بدل normalize() مباشرة، واللي
+# المطابقة الحرفية فوق بتفوّتها بصمت (يوليو ٢٠٢٦)
+CHECKMCQ_SUCCESS_ANCHOR_RE = re.compile(
+    r"fb\.className\s*=\s*'feedback correct';\s*fb\.textContent\s*=\s*'✓ أحسنتِ!';"
+)
+CHECKTEXTVAL_SUCCESS_ANCHOR_RE = re.compile(
+    r"fb\.className\s*=\s*'feedback correct';\s*fb\.innerHTML\s*=\s*'✓ أحسنت[ِ]?! إجابة صحيحة تماماً 🌟';"
+)
+
 
 def upgrade_auto_advance_correct(out):
     """ينقل تلقائيًا للسؤال التالي لو الإجابة صحيحة في مستويي سهل وصعب
@@ -1592,7 +1603,11 @@ def upgrade_auto_advance_correct(out):
     التصحيح. المستوى المتوسط متلمسش خالص، يفضل يدوي في الحالتين
     (يوليو ٢٠٢٦). الحماية من التكرار: بنتأكد إن qIndex لسه زي وقت
     الجدولة قبل ما ننفّذ — لو المستخدم ضغط "التالي" يدوي قبلها، الجدولة
-    القديمة بتبقى بلا أثر تلقائيًا."""
+    القديمة بتبقى بلا أثر تلقائيًا.
+
+    المطابقة الحرفية (fast path) بتغطي الصيغة المضغوطة القياسية. تحتها
+    احتياطي بالـregex بيغطي صفحات قديمة بتنسيق موسّع أو منطق مقارنة
+    مختلف (userNorm/ansNorm) كانت المطابقة الحرفية بتفوّتها بصمت."""
     changed = False
     if OLD_CHECKMCQ_CORRECT_BRANCH in out and 'setTimeout(()=>{if(qIndex===__qi)nextQuestion();}' not in out:
         out = out.replace(OLD_CHECKMCQ_CORRECT_BRANCH, NEW_CHECKMCQ_CORRECT_BRANCH, 1)
@@ -1603,6 +1618,32 @@ def upgrade_auto_advance_correct(out):
     if OLD_CHECKTEXTVAL_FALLBACK_CORRECT in out and "if (currentLevel === 'hard')" not in out:
         out = out.replace(OLD_CHECKTEXTVAL_FALLBACK_CORRECT, NEW_CHECKTEXTVAL_FALLBACK_CORRECT, 1)
         changed = True
+
+    def _inject_if_missing(m, snippet):
+        tail = out[m.end():m.end() + 120]
+        if 'setTimeout' in tail or 'nextQuestion' in tail:
+            return m.group(0)  # متضاف بالفعل قريب من هنا — من غيره
+        return m.group(0) + snippet
+
+    m1 = CHECKMCQ_SUCCESS_ANCHOR_RE.search(out)
+    if m1:
+        new_out = out[:m1.start()] + _inject_if_missing(
+            m1, "const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);"
+        ) + out[m1.end():]
+        if new_out != out:
+            out = new_out
+            changed = True
+
+    m2 = CHECKTEXTVAL_SUCCESS_ANCHOR_RE.search(out)
+    if m2:
+        new_out = out[:m2.start()] + _inject_if_missing(
+            m2,
+            "if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}"
+        ) + out[m2.end():]
+        if new_out != out:
+            out = new_out
+            changed = True
+
     return out, changed
 
 
@@ -2304,7 +2345,7 @@ def fix_level_card_alignment(out):
         new_css = (
             f"{ind}.level-icon{{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}}\n"
             f"{ind}.level-icon svg{{width:1.15em;height:1.15em;}}\n"
-            f"{ind}#btn-order .level-icon{{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}}\n"
+            f"{ind}#btn-order .level-icon{{color:var(--accent);}}\n"
             f"{ind}.level-name{{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}}\n"
             f"{ind}.level-desc{{font-size:12px;color:var(--text-faint);line-height:1.5;}}"
         )
@@ -2330,11 +2371,11 @@ def fix_order_icon_revert_to_emoji(out):
                '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>'
                '<polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>'
                '<line x1="4" y1="4" x2="9" y2="9"/></svg></span>')
-    new_emoji = '<span class="level-icon">🔀</span>'
+    new_emoji = '<span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h3c3 0 5 6 8 6h5"/><path d="M2 16h3c3 0 5-6 8-6h2"/><polyline points="15 5 18 8 15 11"/><polyline points="15 13 18 16 15 19"/></svg></span>'
     if old_svg in out:
         out = out.replace(old_svg, new_emoji, 1)
         changed = True
-    new_filter_rule = '#btn-order .level-icon{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}'
+    new_filter_rule = '#btn-order .level-icon{color:var(--accent);}'
     for old_rule in (
         '#btn-order .level-icon{color:var(--accent);}',
         '#btn-order .level-icon{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}',
@@ -2345,8 +2386,36 @@ def fix_order_icon_revert_to_emoji(out):
             break
     return out, changed
 
-# ====================================================
-# إصلاح رابط 404 عند الرجوع من أول صفحة بقرة للفاتحة (يوليو ٢٠٢٦):
+
+OLD_ORDER_ICON_EMOJI_SPAN = '<span class="level-icon">🔀</span>'
+NEW_ORDER_ICON_SVG_SPAN = ('<span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+                            'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+                            '<path d="M2 8h3c3 0 5 6 8 6h5"/><path d="M2 16h3c3 0 5-6 8-6h2"/>'
+                            '<polyline points="15 5 18 8 15 11"/><polyline points="15 13 18 16 15 19"/>'
+                            '</svg></span>')
+OLD_ORDER_ICON_FILTER_RULES = (
+    '#btn-order .level-icon{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}',
+    '#btn-order .level-icon{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}',
+)
+NEW_ORDER_ICON_COLOR_RULE = '#btn-order .level-icon{color:var(--accent);}'
+
+
+def upgrade_order_icon_to_svg(out):
+    """يبدّل أيقونة "ترتيب" من إيموجي 🔀 (رسمة ملوّنة جاهزة من نظام
+    كل جهاز، فبتبان بألوان فعلية مختلفة من جهاز لجهاز حتى بعد فلتر
+    hue-rotate) لـSVG بخطوط بسيطة (سهمين متقاطعين) بلون
+    var(--accent) مباشر — نفس اللون الأخضر بالضبط في كل جهاز
+    ومتصفح، لأنه مش معتمد على خط إيموجي المنصة خالص (يوليو ٢٠٢٦)."""
+    changed = False
+    if OLD_ORDER_ICON_EMOJI_SPAN in out and NEW_ORDER_ICON_SVG_SPAN not in out:
+        out = out.replace(OLD_ORDER_ICON_EMOJI_SPAN, NEW_ORDER_ICON_SVG_SPAN, 1)
+        changed = True
+    for old_rule in OLD_ORDER_ICON_FILTER_RULES:
+        if old_rule in out:
+            out = out.replace(old_rule, NEW_ORDER_ICON_COLOR_RULE, 1)
+            changed = True
+            break
+    return out, changed
 # اسم ملف الفاتحة الحقيقي هو alfatiha.html، بس سلسلة "السابق/التالي"
 # كانت فيها alfatiha_p1 غلط (اسم مش موجود) — فزر "⏮️ الصفحة السابقة"
 # في albaqara_p2.html كان بيودّي لصفحة 404. مصلّح دلوقتي في NEXT_SEQUENCE
@@ -2527,7 +2596,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .level-btn:hover,.level-btn.active{background:var(--surface-hover);border-color:var(--accent);}
 .level-icon{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}
 .level-icon svg{width:1.15em;height:1.15em;}
-#btn-order .level-icon{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}
+#btn-order .level-icon{color:var(--accent);}
 .level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}
 .level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}
 .start-btn{width:100%;max-width:260px;background:var(--accent-light);color:var(--card);border:none;border-radius:14px;padding:14px 20px;font-size:17px;font-family:inherit;cursor:pointer;transition:background .2s;}
@@ -2631,7 +2700,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name">سهل</span><span class="level-desc">اختيار من متعدد</span></button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name">متوسط</span><span class="level-desc">إكمال فراغ</span></button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard"><span class="level-icon">🌳</span><span class="level-name">صعب</span><span class="level-desc">اكتب الآية كاملة</span></button>
-    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
+    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h3c3 0 5 6 8 6h5"/><path d="M2 16h3c3 0 5-6 8-6h2"/><polyline points="15 5 18 8 15 11"/><polyline points="15 13 18 16 15 19"/></svg></span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
 <div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="__PREV_PAGE__" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="__NEXT_PAGE__" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
@@ -3136,8 +3205,9 @@ def fix_file(path):
     # محاذاة كروت المستوى (سهل/متوسط/صعب/ترتيب) + لون أيقونة "ترتيب"
     out, _level_card_fixed = fix_level_card_alignment(out)
 
-    # رجعة أيقونة "ترتيب" لشكل الإيموجي الأصلي (بدل SVG) مع فلتر اللون
-    out, _order_icon_fixed = fix_order_icon_revert_to_emoji(out)
+    # ترقية أيقونة "ترتيب" من إيموجي 🔀 (لونه بيختلف حسب نظام كل جهاز)
+    # لـSVG بلون أخضر ثابت مطابق تمامًا في كل الأجهزة (يوليو ٢٠٢٦)
+    out, _order_icon_svg = upgrade_order_icon_to_svg(out)
 
     # إصلاح رابط 404 (alfatiha_p1.html الغلط بدل alfatiha.html)
     out, _fatiha_link_fixed = fix_alfatiha_broken_link(out)
