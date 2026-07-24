@@ -188,6 +188,8 @@
 <div id="confetti-container" style="position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;display:none;"></div>
 <script>
 const RESUME_KEY='quranResume_p47';
+function saveDarbiProgress(level,correct,total){try{var pk='darbi_progress';var all=JSON.parse(localStorage.getItem(pk)||'{}');var key=RESUME_KEY.replace('quranResume_','');var pct=total>0?Math.round((correct/total)*100):0;if(!all[key])all[key]={};var prev=(all[key][level]&&all[key][level].score)||0;all[key][level]={done:pct>=70,score:Math.max(pct,prev)};all[key].lastVisited=new Date().toISOString();localStorage.setItem(pk,JSON.stringify(all));}catch(e){}}
+
 const EASY_Q=[
   {q:"«ٱلَّذِينَ يَأْكُلُونَ ٱلرِّبَوٰا لَا يَقُومُونَ إِلَّا كَمَا يَقُومُ ٱلَّذِى يَتَخَبَّطُهُ ٱلشَّيْطَٰنُ مِنَ _____»",choices:["ٱلْمَسِّ","ٱلْجُنُونِ","ٱلْوَسْوَسَةِ"],answer:0},
   {q:"«ذَٰلِكَ بِأَنَّهُمْ قَالُوٓا إِنَّمَا ٱلْبَيْعُ مِثْلُ _____»",choices:["ٱلرِّبَوٰا","ٱلتِّجَارَةِ","ٱلْقَرْضِ"],answer:0},

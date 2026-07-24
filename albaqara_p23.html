@@ -1102,6 +1102,7 @@ function checkOrderAnswer(){
   fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(ORDER_AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());
   fb.style.display='block';
   document.getElementById('order-check-btn').style.display='none';
+  saveDarbiProgress('order',correct,AYAT.length);
   if(allCorrect)spawnConfetti();
 }
 function revealOrderAnswer(){

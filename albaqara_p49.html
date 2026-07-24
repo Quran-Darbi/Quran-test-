@@ -212,6 +212,8 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 
 <script>
 const RESUME_KEY='quranResume_p49';
+function saveDarbiProgress(level,correct,total){try{var pk='darbi_progress';var all=JSON.parse(localStorage.getItem(pk)||'{}');var key=RESUME_KEY.replace('quranResume_','');var pct=total>0?Math.round((correct/total)*100):0;if(!all[key])all[key]={};var prev=(all[key][level]&&all[key][level].score)||0;all[key][level]={done:pct>=70,score:Math.max(pct,prev)};all[key].lastVisited=new Date().toISOString();localStorage.setItem(pk,JSON.stringify(all));}catch(e){}}
+
 const EASY_Q=[
   {q:"«وَإِن كُنتُمْ عَلَىٰ سَفَرٍ وَلَمْ تَجِدُوا كَاتِبًا فَرِهَٰنٌ _____»",choices:["مَّقْبُوضَةٌ","مَحْفُوظَةٌ","مَضْمُونَةٌ"],answer:0},
   {q:"«فَإِنْ أَمِنَ بَعْضُكُم بَعْضًا فَلْيُؤَدِّ ٱلَّذِى ٱؤْتُمِنَ أَمَٰنَتَهُۥ وَلْيَتَّقِ ٱللَّهَ _____»",choices:["رَبَّهُۥ","خَالِقَهُۥ","مَوْلَاهُۥ"],answer:0},
