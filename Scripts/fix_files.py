@@ -1215,7 +1215,7 @@ OLD_ORDER_CSS = (
 ORDER_BTN_HTML = (
     "</button>\n"
     "    <button class=\"level-btn\" onclick=\"selectLevel('order')\" id=\"btn-order\">"
-    "<span class=\"level-icon\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M2 8h3c3 0 5 6 8 6h5\"/><path d=\"M2 16h3c3 0 5-6 8-6h2\"/><polyline points=\"15 5 18 8 15 11\"/><polyline points=\"15 13 18 16 15 19\"/></svg></span><span class=\"level-name\">ترتيب</span>"
+    "<span class=\"level-icon\">🔀</span><span class=\"level-name\">ترتيب</span>"
     "<span class=\"level-desc\">رتّب الآيات</span></button>"
 )
 
@@ -2490,6 +2490,40 @@ def upgrade_order_icon_to_svg(out):
             changed = True
             break
     return out, changed
+
+# ====================================================
+# تصحيح لاحق (يوليو ٢٠٢٦): تجربة تحويل أيقونة "ترتيب" لـSVG (الدالة
+# فوق) اتلغت — لأن السهمين المتقاطعين كانوا بيبانوا بسمك خط وحجم
+# مختلفين عن باقي أيقونات المستويات (🌱🌿🌳)، وهي إيموجي ملوّنة عادية،
+# فبقى شكل "ترتيب" شاذ وسط الكروت التانية. الحل: رجوع كامل للإيموجي
+# 🔀 عشان تبقى نفس أسلوب وحجم باقي المستويات بالظبط. الدالة دي بتلغي
+# أي نسخة SVG اتحقنت فعلاً (قديمة أو حديثة) في ملفات سابقة.
+# ====================================================
+OLD_STYLE_ORDER_ICON_SVG_SPAN = (
+    '<span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+    '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>'
+    '<polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>'
+    '<line x1="4" y1="4" x2="9" y2="9"/></svg></span>'
+)
+ORDER_ICON_EMOJI_SPAN = '<span class="level-icon">🔀</span>'
+ORDER_ICON_CSS_RULES_TO_STRIP = (
+    NEW_ORDER_ICON_COLOR_RULE,
+    '#btn-order .level-icon{filter:hue-rotate(80deg) saturate(0.55) brightness(0.95);}',
+    '#btn-order .level-icon{filter:hue-rotate(85deg) saturate(1.5) brightness(0.9);}',
+)
+
+def unify_order_icon_style(out):
+    changed = False
+    for svg_span in (NEW_ORDER_ICON_SVG_SPAN, OLD_STYLE_ORDER_ICON_SVG_SPAN):
+        if svg_span in out:
+            out = out.replace(svg_span, ORDER_ICON_EMOJI_SPAN, 1)
+            changed = True
+    for css_rule in ORDER_ICON_CSS_RULES_TO_STRIP:
+        if css_rule in out:
+            out = out.replace(css_rule, '', 1)
+            changed = True
+    return out, changed
 # اسم ملف الفاتحة الحقيقي هو alfatiha.html، بس سلسلة "السابق/التالي"
 # كانت فيها alfatiha_p1 غلط (اسم مش موجود) — فزر "⏮️ الصفحة السابقة"
 # في albaqara_p2.html كان بيودّي لصفحة 404. مصلّح دلوقتي في NEXT_SEQUENCE
@@ -2774,7 +2808,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name">سهل</span><span class="level-desc">اختيار من متعدد</span></button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name">متوسط</span><span class="level-desc">إكمال فراغ</span></button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard"><span class="level-icon">🌳</span><span class="level-name">صعب</span><span class="level-desc">اكتب الآية كاملة</span></button>
-    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h3c3 0 5 6 8 6h5"/><path d="M2 16h3c3 0 5-6 8-6h2"/><polyline points="15 5 18 8 15 11"/><polyline points="15 13 18 16 15 19"/></svg></span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
+    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
 <div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="__PREV_PAGE__" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="__NEXT_PAGE__" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
@@ -3281,7 +3315,7 @@ def fix_file(path):
 
     # ترقية أيقونة "ترتيب" من إيموجي 🔀 (لونه بيختلف حسب نظام كل جهاز)
     # لـSVG بلون أخضر ثابت مطابق تمامًا في كل الأجهزة (يوليو ٢٠٢٦)
-    out, _order_icon_svg = upgrade_order_icon_to_svg(out)
+    out, _order_icon_unified = unify_order_icon_style(out)
 
     # إصلاح رابط 404 (alfatiha_p1.html الغلط بدل alfatiha.html)
     out, _fatiha_link_fixed = fix_alfatiha_broken_link(out)
