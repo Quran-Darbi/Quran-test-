@@ -1047,6 +1047,80 @@ def protect_quiz_ayat_from_translation(out):
 
     return out, changed
 
+# ===== نظام تتبع التقدم الدائم عبر الصفحات (يوليو ٢٠٢٦) =====
+def add_progress_tracking(out):
+    """
+    نظام تتبع تقدم دائم منفصل تمامًا عن RESUME_KEY (اللي بيتمسح فور
+    انتهاء الاختبار ووظيفته بس "استكمل من حيث وقفتِ" داخل نفس الاختبار).
+
+    هنا بنسجّل في مفتاح localStorage دائم واحد 'darbi_progress' (JSON):
+      { "<page_key>": {
+          easy:{done,score}, medium:{...}, hard:{...}, order:{...},
+          lastVisited: "<ISO date>"
+      }, ... }
+    - "done" = وصل المستخدم لنسبة 70% فأكثر في المستوى ده.
+    - "score" = أفضل نتيجة وصلها المستخدم في المستوى ده (نحتفظ بالأعلى
+      لو حاول تاني وحسّن، مش بنستبدلها بنتيجة أقل).
+    - page_key بيتاستخرج من RESUME_KEY نفسه (quranResume_XXX -> XXX)
+      فمفيش داعي نحقن اسم الصفحة يدويًا لكل ملف.
+    """
+    changed = False
+
+    # 1. حقن دالة الحفظ نفسها مرة واحدة فقط، بعد سطر RESUME_KEY مباشرة
+    if 'function saveDarbiProgress' not in out:
+        m = re.search(r"const RESUME_KEY=[^;]+;", out)
+        if m:
+            fn = (
+                "function saveDarbiProgress(level,correct,total){"
+                "try{"
+                "var pk='darbi_progress';"
+                "var all=JSON.parse(localStorage.getItem(pk)||'{}');"
+                "var key=RESUME_KEY.replace('quranResume_','');"
+                "var pct=total>0?Math.round((correct/total)*100):0;"
+                "if(!all[key])all[key]={};"
+                "var prev=(all[key][level]&&all[key][level].score)||0;"
+                "all[key][level]={done:pct>=70,score:Math.max(pct,prev)};"
+                "all[key].lastVisited=new Date().toISOString();"
+                "localStorage.setItem(pk,JSON.stringify(all));"
+                "}catch(e){}"
+                "}\n"
+            )
+            insert_pos = m.end()
+            out = out[:insert_pos] + "\n" + fn + out[insert_pos:]
+            changed = True
+
+    # 2. استدعاء الحفظ في نهاية showResult() (سهل/متوسط/صعب) — قبل ما
+    #    RESUME_KEY المؤقت يتمسح، وبرضو قبل ما currentLevel يتصفّر
+    SHOWRESULT_OLD = "try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb="
+    SHOWRESULT_NEW = (
+        "saveDarbiProgress(currentLevel,correctCount,questions.length);"
+        "try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb="
+    )
+    if SHOWRESULT_OLD in out and 'saveDarbiProgress(currentLevel' not in out:
+        out = out.replace(SHOWRESULT_OLD, SHOWRESULT_NEW, 1)
+        changed = True
+
+    # 3. استدعاء الحفظ في نهاية checkOrderAnswer() — مستوى "ترتيب" له
+    #    منطق تصحيح منفصل بالكامل عن باقي المستويات (بيتحقق فورًا مش
+    #    عبر showResult). بيشتغل مع النسختين: الممتدة بأسطر (add_ordering_
+    #    feature) والمصغّرة سطر واحد (BAQARA_CLEAN_TEMPLATE)
+    ORDER_RE = re.compile(
+        r"(document\.getElementById\('order-check-btn'\)\.style\.display='none';)"
+        r"(\s*)"
+        r"(if\(allCorrect\)spawnConfetti\(\);)"
+    )
+    if "saveDarbiProgress('order'" not in out:
+        new_out, n = ORDER_RE.subn(
+            r"\1\2saveDarbiProgress('order',correct,AYAT.length);\2\3",
+            out
+        )
+        if n:
+            out = new_out
+            changed = True
+
+    return out, changed
+
+
 def fix_missing_progress_save_calls(out):
     """إصلاح باج حقيقي في الملفات القديمة (نمط قبل التحديثات الحديثة):
     بعد الإجابة في مستوى سهل (checkMCQ) أو متوسط/كتابة الصعب (checkText)،
@@ -3734,6 +3808,10 @@ def fix_file(path):
     # 9ت. انتقال تلقائي للسؤال التالي لو الإجابة صحيحة (سهل وصعب بس،
     # المتوسط يفضل يدوي في الحالتين) — يوليو ٢٠٢٦
     out, auto_advance_added = upgrade_auto_advance_correct(out)
+
+    # 9خ. نظام تتبع التقدم الدائم عبر الصفحات — مفتاح localStorage دائم
+    # منفصل تمامًا عن RESUME_KEY المؤقت (يوليو ٢٠٢٦)
+    out, progress_tracking_added = add_progress_tracking(out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
