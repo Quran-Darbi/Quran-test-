@@ -1965,9 +1965,28 @@ def extract_baqara_order_ayat(out):
     يدويًا من صورة المصحف). أي حالة تانية غير متعرف عليها تتسجّل
     كسؤال جزئي وتُستبعد زي الأول. يرجّع (None, سبب) لو العدد النهائي
     ما طابقش عدد آيات الصفحة الحقيقي المكتوب في ayat-range، عشان
-    مايتضافش ترتيب ناقص أبدًا."""
+    مايتضافش ترتيب ناقص أبدًا. حالة تالتة خاصة: صفحة آية واحدة طويلة
+    جدًا (زي آية الدَّين 282) مكتوب فيها 'الآية N' مفرد مش 'الآيات X
+    إلى Y' — هنا الترتيب مش بين آيات كاملة (مفيش غير آية واحدة) لكن
+    بين مقاطع الإملاء الطبيعية اللي HARD_Q أصلاً مقسّم عليها الآية
+    (بداية/من/نهاية)، وهي نص منسوخ حرفيًا وموجود ومتحقق منه بالفعل."""
     m_range = re.search(r'الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
     if not m_range:
+        m_single = re.search(r'<div class="ayat-range">الآية\s*(\d+)', out)
+        if m_single:
+            m_hard_single = re.search(r'const\s+HARD_Q\s*=\s*\[(.*?)\n\];', out, re.S)
+            if not m_hard_single:
+                return None, 'no-HARD_Q-single'
+            items_single = re.findall(
+                r'\{\s*(?:ayah:\s*\d+\s*,\s*)?q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"\s*\}',
+                m_hard_single.group(1)
+            )
+            if len(items_single) < 2:
+                return None, 'single-ayah-not-segmented'
+            if not all(('بداية' in q or 'نهاية' in q or 'من «' in q) for q, a in items_single):
+                return None, 'single-ayah-mixed-questions'
+            texts_single = [a.replace('\\"', '"') for q, a in items_single]
+            return texts_single, 'ok-single-ayah-segments'
         return None, 'no-range'
     start, end = int(m_range.group(1)), int(m_range.group(2))
     expected = end - start + 1
