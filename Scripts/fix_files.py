@@ -1217,7 +1217,7 @@ ORDER_CSS = (
     ".order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}"
     ".order-dot:hover{border-color:var(--accent);}"
     ".order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}"
-    ".order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}"
+    ".order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:4px;margin:-4px;border-radius:8px;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}"
     ".mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}"
     ".ayah-end{color:var(--gold);font-size:15px;}"
 )
@@ -1580,6 +1580,22 @@ def upgrade_order_answer_check(out):
     ترتيب بينهم بدل ما تتحسب خطأ."""
     if OLD_CHECK_ORDER_ANSWER_LINE in out:
         out = out.replace(OLD_CHECK_ORDER_ANSWER_LINE, NEW_CHECK_ORDER_ANSWER_LINE, 1)
+        return out, True
+    return out, False
+
+
+OLD_ORDER_BADGE_CSS = ".order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;}"
+NEW_ORDER_BADGE_CSS = ".order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:4px;margin:-4px;border-radius:8px;}"
+
+def upgrade_order_badge_tap_target(out):
+    """يكبّر مساحة اللمس لبادچ رقم الآية ﴿١﴾ في مربعات الترتيب (السويب).
+    قبل كده حجم البادچ كان بيتحدد بحجم النص جواه بس (من غير min-width/
+    min-height)، فرقم زي '١' مساحته أصغر بكتير من رقم زي '٨'، وأي لمسة
+    خارج الدائرة الصغيرة دي بتتسجل كضغطة على النص اللي بتمسح المربع
+    بدل التبديل — ده اللي حاسة بيه هند إنه 'بيشتغل أحيانًا ومش بيشتغل
+    أحيانًا' حسب رقم الآية اللي بتضغط عليه (يوليو ٢٠٢٦)."""
+    if OLD_ORDER_BADGE_CSS in out:
+        out = out.replace(OLD_ORDER_BADGE_CSS, NEW_ORDER_BADGE_CSS)
         return out, True
     return out, False
 
@@ -2828,7 +2844,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .hint-box{display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;direction:rtl;line-height:2;}
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
-.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
+.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:10px;padding:10px 12px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:1.5px solid var(--accent);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:4px;margin:-4px;border-radius:8px;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
 </style>
 <link rel="manifest" href="/Quran-test-/manifest.json">
 <meta name="theme-color" content="#4a7c4a">
@@ -3847,6 +3863,11 @@ def fix_file(path):
     # ====================================================
     # 9ج. ترقية تصميم الترتيب للنسخة المضغوطة (لو ملف قديم بالتصميم الأول)
     out, order_ui_upgraded = upgrade_order_ui_to_compact(out)
+
+    # ====================================================
+    # 9جأ. تكبير مساحة لمس بادچ رقم الآية في مربعات الترتيب (السويب)
+    # كانت متغيّرة الحجم حسب رقم الآية — بتسبب فشل عشوائي في التبديل
+    out, order_badge_tap_upgraded = upgrade_order_badge_tap_target(out)
 
     # ====================================================
     # 9ز. ترقية منطق فحص الترتيب لمقارنة بالنص (يقبل الآيات المتطابقة نصيًا)
