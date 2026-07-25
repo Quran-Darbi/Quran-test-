@@ -1474,33 +1474,57 @@ NEXT_BTN_RE = re.compile(r'(<button class="start-btn"[^>]*>[^<]*</button>)')
 LEVEL_RETURN_BTN_RE = re.compile(r'<button class="level-return-btn"[^>]*>[^<]*</button>')
 
 
-PAGE_NAV_OLD_A_RE = re.compile(
+PAGE_NAV_A_RE = re.compile(
     r'\s*<a href="[^"]*" (?:class|id)="(?:next|prev)-page-btn"[^>]*>[^<]*</a>'
 )
+
+
+def _page_nav_anchor_is_wrapped(out, start_idx):
+    """بيتأكد إن الـ<a> عند الموضع ده جوه <div class="page-nav-row">...</div>
+    سليم بالفعل (أول أو تاني زرار جواه) مش يتيم واقف لوحده من نسخة
+    قديمة مكدّسة بعرض كامل. بيدوّر لآخر فتحة page-nav-row قبل الموضع
+    ده ويتأكد إنها لسه مقفولاش قبل ما توصله."""
+    div_open = out.rfind('<div class="page-nav-row"', 0, start_idx)
+    if div_open == -1:
+        return False
+    # لازم مفيش </div> بين فتحة الصف دي والموضع الحالي (يعني لسه مقفولة)
+    return '</div>' not in out[div_open:start_idx]
 
 
 def add_page_nav_row(path, out):
     """يضيف صف واحد مضغوط فيه زرين جنب بعض: ⏮️ السابق و⏭️ التالي —
     بيتحط في شاشة اختيار المستوى وجنب كل زر 'اختر مستوى آخر' (الاختبار
     العادي وشاشة الترتيب). لو الملف فيه نسخة قديمة من الأزرار دي (شكل
-    مكدّس بعرض كامل)، الدالة بتشيلها وتستبدلها بالصف المضغوط الجديد —
-    آمن ويعمل مرة واحدة بس (idempotent)."""
+    مكدّس بعرض كامل، أزرار يتيمة مش ملفوفة جوه page-nav-row)، الدالة
+    بتشيلها وتستبدلها بالصف المضغوط الجديد. كل نقطة حقن (بعد 'ابدأ
+    الاختبار' وبعد كل 'اختر مستوى آخر') بتتفحص لوحدها بدل فحص عام واحد
+    للملف كله — عشان لو صفحة كان عندها بالفعل page-nav-row قبل ما ميزة
+    الترتيب تتضاف لها، وبعدين اتضافت الميزة وجابت زر 'اختر مستوى آخر'
+    جديد جوه order-area، الزر ده ياخد صف التنقل بتاعه هو كمان مش يتسيب
+    فاضي. الأزرار السليمة الملفوفة بالفعل جوه page-nav-row متتلمسش خالص
+    (يوليو ٢٠٢٦)."""
     fn = os.path.splitext(os.path.basename(path))[0]
     next_key = NEXT_MAP.get(fn)
     prev_key = PREV_MAP.get(fn)
     if not next_key and not prev_key:
         return out, False  # ملف مش داخل السلسلة أصلاً
 
-    if 'page-nav-row' in out:
-        return out, False  # مضاف بالفعل (الصف الجديد موجود) — منلمسش الملف تاني
-
     changed = False
 
-    # تنظيف أي نسخة قديمة (مكدّسة بعرض كامل) قبل الإضافة من جديد
-    # ملحوظة: بيتنفذ بس لو page-nav-row مش موجود أصلاً (فوق)، فمستحيل
-    # يمسح أزرار مضافة حديثًا بالغلط
-    if PAGE_NAV_OLD_A_RE.search(out):
-        out = PAGE_NAV_OLD_A_RE.sub('', out)
+    # تنظيف الأزرار اليتيمة بس (نسخة قديمة مكدّسة، مش ملفوفة جوه
+    # page-nav-row) — الأزرار السليمة الملفوفة فعلًا متتلمسش
+    matches = list(PAGE_NAV_A_RE.finditer(out))
+    for mm in reversed(matches):
+        if not _page_nav_anchor_is_wrapped(out, mm.start()):
+            out = out[:mm.start()] + out[mm.end():]
+            changed = True
+
+    # تنظيف أي غلاف page-nav-row فاضي بقى من غير أزرار (بقايا الغلطة
+    # القديمة، أو نتيجة تنظيف الأزرار اليتيمة فوق) — عشان نقدر نضيف
+    # نسخة سليمة مكانه تحت من غير ما يتسيب صف فاضي ظاهر في الصفحة
+    EMPTY_PAGE_NAV_RE = re.compile(r'\n?<div class="page-nav-row"[^>]*></div>')
+    if EMPTY_PAGE_NAV_RE.search(out):
+        out = EMPTY_PAGE_NAV_RE.sub('', out)
         changed = True
 
     btn_style = (
@@ -1518,15 +1542,19 @@ def add_page_nav_row(path, out):
     row_html = ('\n<div class="page-nav-row" '
                 'style="display:flex;gap:8px;margin-top:10px;">' + inner + '</div>')
 
-    # بعد زر "ابدأ الاختبار" في شاشة اختيار المستوى
+    # بعد زر "ابدأ الاختبار" في شاشة اختيار المستوى — فحص محلي: هل
+    # فيه page-nav-row سليم (فيه أزرار) موجود فعلًا مباشرة بعد الزر ده؟
     m = NEXT_BTN_RE.search(out)
-    if m:
+    if m and not out[m.end():m.end() + 30].lstrip().startswith('<div class="page-nav-row"'):
         out = out[:m.end()] + row_html + out[m.end():]
         changed = True
 
-    # بعد كل زر "اختر مستوى آخر" (في شاشة الاختبار وشاشة الترتيب)
-    matches = list(LEVEL_RETURN_BTN_RE.finditer(out))
-    for mm in reversed(matches):
+    # بعد كل زر "اختر مستوى آخر" (في شاشة الاختبار وشاشة الترتيب) —
+    # نفس الفحص المحلي لكل زر لوحده، مش شرط عام على الملف كله
+    return_matches = list(LEVEL_RETURN_BTN_RE.finditer(out))
+    for mm in reversed(return_matches):
+        if out[mm.end():mm.end() + 30].lstrip().startswith('<div class="page-nav-row"'):
+            continue
         out = out[:mm.end()] + row_html + out[mm.end():]
         changed = True
 
