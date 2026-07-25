@@ -745,6 +745,31 @@ def upgrade_tools_fab_fixed_position(out):
     return out, changed
 
 
+TRANSLATE_BAR_CSS_RE = re.compile(
+    r'\n?[ \t]*\.translate-bar\s*\{[^}]*\}\n?', re.S
+)
+TRANSLATE_BAR_DIV_RE = re.compile(
+    r'\n?<div class="translate-bar">.*?</div>\n?', re.S
+)
+
+def remove_legacy_translate_bar(out):
+    """يشيل زر '🌐 ترجمة' العائم القديم (.translate-bar) من الصفحات
+    القديمة اللي سبقت ودجت اللغة (LANG_WIDGET) وقائمة الأدوات الموحدة.
+    الزر ده عنصر ميت تمامًا (مالوش onclick ولا أي JS بيستهدفه) وفضل
+    باقي في بعض الصفحات (زي albaqara_p9/p26) لأنه مش جزء من أي نص
+    ثابت بتشيله add_tools_menu — فبنشيله هنا بريجيكس مستقل، بغض النظر
+    عن وجود قائمة الأدوات من عدمه، عشان يتغطى في أي صفحة لسه فيها."""
+    changed = False
+    if '.translate-bar' in out:
+        out, n = TRANSLATE_BAR_CSS_RE.subn('', out, count=1)
+        if n:
+            changed = True
+    if '<div class="translate-bar">' in out:
+        out, n = TRANSLATE_BAR_DIV_RE.subn('', out, count=1)
+        if n:
+            changed = True
+    return out, changed
+
 def add_tools_menu(path, out):
     """يستبدل الودجتين المنفصلتين (شاركنا رأيك + اللغة) وزر المشاركة
     وزر QR المنفصلين من الشريط العلوي، وكمان الزر العائم القديم لـ☰
@@ -3821,6 +3846,10 @@ def fix_file(path):
     # بتشيل الودجتين القديمتين المنفصلتين وزر المشاركة القديم لو موجودين
     out, tools_menu_added = add_tools_menu(path, out)
 
+    # 9لب. تنظيف بقايا زر '🌐 ترجمة' العائم القديم (.translate-bar) من
+    # صفحات ما قبل ودجت اللغة — عنصر ميت مالوش JS، لازم يتشال أينما وجد
+    out, translate_bar_removed = remove_legacy_translate_bar(out)
+
     # 9لأ. تثبيت زر الأدوات في مكان عائم ثابت (أعلى الشاشة يسار) في كل
     # الصفحات — بدل ما يتزحلق حسب هيدر كل صفحة (يوليو ٢٠٢٦)
     out, tools_fab_fixed = upgrade_tools_fab_fixed_position(out)
@@ -3916,6 +3945,10 @@ def fix_index_recitation(path):
     # قائمة "☰ الأدوات" الموحدة (شاركنا رأيك + اللغة + مشاركة + QR في
     # index.html فقط) — بتشيل الودجتين القديمتين المنفصلتين لو موجودين
     out, tools_menu_added = add_tools_menu(path, out)
+
+    # 9لب. تنظيف بقايا زر '🌐 ترجمة' العائم القديم (.translate-bar) من
+    # صفحات ما قبل ودجت اللغة — عنصر ميت مالوش JS، لازم يتشال أينما وجد
+    out, translate_bar_removed = remove_legacy_translate_bar(out)
 
     # تثبيت زر الأدوات في مكان عائم ثابت (أعلى الشاشة يسار) — بدل ما
     # يتزحلق حسب هيدر كل صفحة (يوليو ٢٠٢٦)
