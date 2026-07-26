@@ -1480,33 +1480,82 @@ const MUQATTAAT={
   'ق':['قاف'],
   'ن':['نون']
 };
-function expandMuqattaat(cWords,userVal){
-  if(!cWords.length)return cWords;
-  const key=normalize(cWords[0]);
-  if(!MUQATTAAT[key])return cWords;
-  const first=((userVal||'').trim().split(/\\s+/)[0])||'';
-  if(normalize(first)===key)return cWords;   /* كتبها كما هي — من غير توسيع */
-  return MUQATTAAT[key].concat(cWords.slice(1));
+function collapseMuqattaat(words,correctAnswer){
+  if(!words||!words.length||!correctAnswer)return words;
+  const cw=correctAnswer.trim().split(/\\s+/);
+  const names=MUQATTAAT[normalize(cw[0])];
+  if(!names||words.length<names.length)return words;
+  for(let k=0;k<names.length;k++){
+    if(normalize(words[k])!==normalize(names[k]))return words;
+  }
+  return [cw[0]].concat(words.slice(names.length));
 }
+/* ===== نهاية الحروف المقطعة ===== */
 """
 
 
 def add_muqattaat_support(out):
-    """يضيف دعم الحروف المقطعة لمقارنة المستوى الصعب. تعديل جراحي: بيحقن
-    الخريطة + دالة التوسيع قبل wordDiff، وبيلف تقسيم الإجابة الصحيحة
-    بالدالة. مبيغيّرش أي قاعدة من قواعد normalize() ولا منطق المقارنة
-    نفسه — بس بيوسّع أول كلمة لو كانت من فواتح السور والمستخدم نطقها
-    أسماء حروف. الملفات اللي متبدأش بحروف مقطعة مبيتغيّرش سلوكها."""
-    if 'MUQATTAAT' in out:
-        return out, False              # متحقون قبل كده (idempotent)
-    anchor = 'function wordDiff'
-    old_split = r'cWords=correctAnswer.split(/\s+/)'
-    if anchor not in out or old_split not in out:
-        return out, False              # صيغة غير متوقعة — مانلمسش حاجة
-    out = out.replace(old_split,
-                      r'cWords=expandMuqattaat(correctAnswer.split(/\s+/),userVal)', 1)
-    out = out.replace(anchor, MUQATTAAT_JS.strip() + '\n' + anchor, 1)
-    return out, True
+    """دعم الحروف المقطعة (فواتح السور) في المستوى الصعب.
+
+    المستخدم بينطق "الف لام ميم" فالتعرف الصوتي بيرجّع تلات كلمات، بينما
+    نص الآية كلمة واحدة "الٓمٓ". الحل: نجمّع كلمات المستخدم في صيغة المصحف
+    بدل ما نفكّك نص الآية — كده المقارنة تظبط **والعرض يفضل بالرسم
+    القرآني** (الٓمٓ) مش بالنطق (الف لام ميم).
+
+    تلات نقاط تعديل، كلها جراحية:
+      1. حقن الخريطة + collapseMuqattaat() قبل wordDiff
+      2. wordDiff: تجميع كلمات المستخدم قبل المقارنة
+      3. _fixWords + onresult: نفس التجميع وقت التقاط الصوت، عشان الكلمات
+         اللي بتظهر للمستخدم أثناء التسجيل تبان بالرسم القرآني من الأول
+
+    ولا قاعدة من قواعد normalize() اتغيّرت، ولا منطق المقارنة نفسه.
+    الملفات اللي متبدأش بحروف مقطعة مبيتغيّرش سلوكها إطلاقًا."""
+    if 'function wordDiff' not in out:
+        return out, False
+
+    changed = False
+
+    # --- 1) الخريطة والدالة (مع ترقية نسخة expandMuqattaat القديمة) ---
+    if 'function expandMuqattaat' in out:
+        out = re.sub(r'/\* ===== الحروف المقطعة.*?\nfunction expandMuqattaat\(cWords,userVal\)\{.*?\n\}\n',
+                     lambda _m: MUQATTAAT_JS.strip() + '\n', out, count=1, flags=re.S)
+        changed = True
+    elif 'MUQATTAAT' not in out:
+        out = out.replace('function wordDiff',
+                          MUQATTAAT_JS.strip() + '\nfunction wordDiff', 1)
+        changed = True
+
+    # --- 2) wordDiff: تجميع جهة المستخدم ---
+    OLD_EXPAND = (r'const uWords=userVal.trim().split(/\s+/),'
+                  r'cWords=expandMuqattaat(correctAnswer.split(/\s+/),userVal)')
+    OLD_PLAIN  = r'const uWords=userVal.trim().split(/\s+/),cWords=correctAnswer.split(/\s+/)'
+    NEW_DIFF   = (r'const uWords=collapseMuqattaat(userVal.trim().split(/\s+/),correctAnswer),'
+                  r'cWords=correctAnswer.split(/\s+/)')
+    for old in (OLD_EXPAND, OLD_PLAIN):
+        if old in out:
+            out = out.replace(old, NEW_DIFF, 1)
+            changed = True
+            break
+
+    # --- 3) التقاط الصوت: التجميع وقت التسجيل عشان العرض الحي ---
+    FIX_HEAD = 'function _fixWords(words){\n        const out=[];'
+    # ملحوظة: الحارس لازم يكون النداء بالظبط — مجرد 'collapseMuqattaat(words'
+    # موجود أصلاً في تعريف الدالة نفسها فبيدي إنذار كاذب ويتخطى الحقن
+    if FIX_HEAD in out and 'words=collapseMuqattaat(words,' not in out:
+        out = out.replace(FIX_HEAD,
+                          'function _fixWords(words){\n        '
+                          "words=collapseMuqattaat(words,"
+                          "(typeof q!=='undefined'&&q&&q.answer)||'');\n"
+                          '        const out=[];', 1)
+        changed = True
+
+    OLD_RES = ("_words=_words.concat(e.results[i][0].transcript.trim().split(/\\s+/));")
+    NEW_RES = ("_words=_fixWords(_words.concat(e.results[i][0].transcript.trim().split(/\\s+/)));")
+    if OLD_RES in out:
+        out = out.replace(OLD_RES, NEW_RES, 1)
+        changed = True
+
+    return out, changed
 
 
 def heal_missing_order_css(out):
