@@ -3171,8 +3171,8 @@ const EASY_Q=__EASY_Q_JSON__;
 const MEDIUM_Q=__MEDIUM_Q_JSON__;
 const HARD_Q=__HARD_Q_JSON__;
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
-function normalize(str){if(!str)return'';return str.replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED]/g,'').replace(/[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1').replace(/ا(?=\\s|$)/g,'ي').replace(/\\s+/g,' ').trim();}
-function wordDiff(userVal,correctAnswer){const nm=s=>{if(!s)return'';return s.replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED]/g,'').replace(/[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\\1+/g,'$1').replace(/ا(?=\\s|$)/g,'ي').replace(/\\s+/g,' ').trim();};const uWords=userVal.trim().split(/\\s+/),cWords=correctAnswer.split(/\\s+/),n=cWords.length,m=uWords.length;const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}const aligned=[];let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}else{aligned.push({ref:cWords[i-1],ok:false});i--;}}aligned.reverse();const correct=aligned.filter(x=>x.ok).length;const html=aligned.map(x=>x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`:`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`).join(' ');return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة</div><div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;}
+function normalize(str){if(!str)return'';return str.replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'').replace(/[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1').replace(/ا(?=\\s|$)/g,'ي').replace(/\\s+/g,' ').trim();}
+function wordDiff(userVal,correctAnswer){const nm=s=>{if(!s)return'';return s.replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'').replace(/[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\\1+/g,'$1').replace(/ا(?=\\s|$)/g,'ي').replace(/\\s+/g,' ').trim();};const uWords=userVal.trim().split(/\\s+/),cWords=correctAnswer.split(/\\s+/),n=cWords.length,m=uWords.length;const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}const aligned=[];let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}else{aligned.push({ref:cWords[i-1],ok:false});i--;}}aligned.reverse();const correct=aligned.filter(x=>x.ok).length;const html=aligned.map(x=>x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`:`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`).join(' ');return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة</div><div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;}
 function toArabicNum(n){return n;}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(AYAT.length);return;}currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');if(lvl==='order'){document.getElementById('total-q').textContent=toArabicNum(AYAT.length);}else{document.getElementById('total-q').textContent=toArabicNum((lvl==='easy'?EASY_Q:lvl==='medium'?MEDIUM_Q:HARD_Q).length);}}
@@ -3573,6 +3573,46 @@ def migrate_baqara_to_clean_template(path, out):
         return out, False
 
     return new_out, True
+
+
+def add_open_tanween_to_normalize(out):
+    """رسم التنوين في المصحف بيفرّق بين ثلاث حالات، ولكل واحدة كود مختلف:
+        إظهار (متراكب)        → U+064B / U+064C / U+064D
+        إدغام وإخفاء (متتابع) → U+08F0 / U+08F1 / U+08F2
+        إقلاب                 → حركة مفردة + U+06E2
+    النطاق 08F0–08F2 واقع في بلوك Arabic Extended-A، وهو خارج كل نطاقات
+    حذف التشكيل القديمة. يعني لو النص القرآني اتكتب بيه من غير التعديل ده
+    هتفضل العلامة موجودة بعد التطبيع، وكل إجابة صحيحة هتتحسب خطأ.
+
+    الإصلاح idempotent وبيلمس كلاس حذف التشكيل بس — لا يغيّر أي قاعدة
+    تطبيع تانية ولا يمس أي نص قرآني. بيتعامل مع الصيغتين الموجودتين في
+    المشروع: Unicode escapes (ملفات السور) وأحرف حرفية (recitation.html)."""
+    changed = False
+
+    # 1. الصيغة المكتوبة بـUnicode escapes — ملفات السور
+    old_esc = r"[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]"
+    new_esc = r"[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]"
+    if old_esc in out:
+        out = out.replace(old_esc, new_esc)
+        changed = True
+
+    # 2. الصيغة المكتوبة بأحرف حرفية — recitation.html
+    #    الشرط: كلاس بيبدأ بـ[ وجواه تنوين فتح وسكون (يعني كلاس التشكيل
+    #    الرئيسي) ولسه مش مترقّع. قاعدة الكشيدة بتبدأ بــ فمش هتتأثر.
+    pat = re.compile(r"(replace\(/\[)([^\]]*)(\]/g,\s*''\))")
+
+    def _add(m):
+        cls = m.group(2)
+        if '\u064B' in cls and '\u0652' in cls and '\u08F0' not in cls:
+            return m.group(1) + cls + '\u08F0\u08F1\u08F2' + m.group(3)
+        return m.group(0)
+
+    out2 = pat.sub(_add, out)
+    if out2 != out:
+        out = out2
+        changed = True
+
+    return out, changed
 
 
 def fix_file(path):
@@ -4173,6 +4213,10 @@ def fix_file(path):
     # منفصل تمامًا عن RESUME_KEY المؤقت (يوليو ٢٠٢٦)
     out, progress_tracking_added = add_progress_tracking(out)
 
+    # 9ث. رسم التنوين: إضافة نطاق U+08F0–U+08F2 (تنوين الإدغام والإخفاء
+    # المتتابع) لكلاس حذف التشكيل — مانع تقني لازم يسبق أي نص متغيّر
+    out, open_tanween_added = add_open_tanween_to_normalize(out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -4191,6 +4235,9 @@ def fix_index_recitation(path):
 
     # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
     out, _font_fixed = fix_font_import_to_link(out)
+
+    # رسم التنوين: نطاق U+08F0–U+08F2 لكلاس حذف التشكيل في norm()
+    out, _open_tanween = add_open_tanween_to_normalize(out)
 
     # إصلاح تراكب/تجاوز قائمة الأدوات ولون "العربية"
     out, _tools_ui_fixed = fix_tools_menu_ui_bugs(out)
