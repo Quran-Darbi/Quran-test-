@@ -1452,6 +1452,33 @@ def ensure_order_wiring(path, out):
     return out, changed
 
 
+def heal_missing_order_css(out):
+    """يداوي أي ملف ميزة الترتيب فيه شغّالة (order-area + دوال JS كاملة)
+    لكن كتلة CSS بتاعتها مفقودة تمامًا — فالخانات وبنك الآيات بيظهروا
+    بشكل المتصفح الخام بدل التصميم (اتكشفت في albaqara_p4 يوليو ٢٠٢٦).
+
+    السبب: الملف اترحّل لنسخة قديمة من القالب النضيف مكانش فيها الـCSS،
+    وبعد كده الملف بقى مقفول في الحالة دي للأبد لأن:
+      • add_ordering_feature_baqara() بتخرج فورًا (id="order-area" موجود)
+      • migrate_baqara_to_clean_template() بتخرج فورًا ({ayah: موجودة)
+      • upgrade_order_ui_to_compact() بتدوّر على CSS قديم مش موجود أصلًا
+    فمحدش بيحقن الـCSS ومحدش بيعيد بناء الملف.
+
+    الحقن بيتم في نهاية كتلة <style> الرئيسية (اللي فيها .quiz-area) مش
+    أول كتلة، عشان مايتحطش في كتلة فرعية صغيرة زي darbi-locked."""
+    if 'id="order-area"' not in out:
+        return out, False              # مفيش ميزة ترتيب في الملف أصلًا
+    if re.search(r'\.order-item\s*\{', out):
+        return out, False              # الـCSS موجود بالفعل (idempotent)
+
+    m = re.search(r'\.quiz-area\s*\{', out)
+    close = out.find('</style>', m.end()) if m else out.rfind('</style>')
+    if close == -1:
+        return out, False              # مفيش كتلة style — مانلمسش حاجة
+
+    return out[:close] + ORDER_CSS + '\n' + out[close:], True
+
+
 # ====================================================
 # سلسلة ترتيب المصحف لزر "التالي ⏭️" — من البقرة p2 لحد الناس
 # ====================================================
@@ -1554,6 +1581,15 @@ def add_page_nav_row(path, out):
     return_matches = list(LEVEL_RETURN_BTN_RE.finditer(out))
     for mm in reversed(return_matches):
         if out[mm.end():mm.end() + 30].lstrip().startswith('<div class="page-nav-row"'):
+            continue
+        # صفحات البقرة: fix_baqara_page_nav_placement() بتنقل صف التنقل
+        # لبعد صف "السابق/التالي" (عشان يظهر تحت تنقل الأسئلة مش فوقه).
+        # من غير الفحص ده كنا نضيف صف جديد مكانه القديم كل تشغيلة،
+        # فالدالتين يفضلوا يتخانقوا والملف يكبر ٦٩٦ بايت كل مرة
+        # (اتكشفت في p19/p21/p30 — يوليو ٢٠٢٦).
+        tail = out[mm.end():]
+        trailer_m = BAQARA_TRAILER_RE.match(tail)
+        if trailer_m and tail[trailer_m.end():].lstrip().startswith('<div class="page-nav-row"'):
             continue
         out = out[:mm.end()] + row_html + out[mm.end():]
         changed = True
@@ -3924,6 +3960,11 @@ def fix_file(path):
     out, wiring_fixed = ensure_order_wiring(path, out)
 
     # ====================================================
+    # 9بأ. مداواة كتلة CSS الترتيب المفقودة (يوليو ٢٠٢٦) — للملفات اللي
+    # اترحّلت لقالب قديم مكانش فيه الـCSS وبقت مقفولة على الحالة دي
+    out, order_css_healed = heal_missing_order_css(out)
+
+    # ====================================================
     # 9ج. ترقية تصميم الترتيب للنسخة المضغوطة (لو ملف قديم بالتصميم الأول)
     out, order_ui_upgraded = upgrade_order_ui_to_compact(out)
 
@@ -3962,6 +4003,7 @@ def fix_file(path):
     # ====================================================
     # 9هـ. صف مضغوط: ⏮️ السابق / التالي ⏭️ — انتقال مباشر بين الصفحات
     out, page_nav_added = add_page_nav_row(path, out)
+
 
     # ====================================================
     # 9ح. ترقية التسجيل الصوتي (الصعب) لشكل الكلمات القابلة للحذف فرديًا
