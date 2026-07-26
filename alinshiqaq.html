@@ -343,14 +343,17 @@ const MUQATTAAT={
   'ق':['قاف'],
   'ن':['نون']
 };
-function expandMuqattaat(cWords,userVal){
-  if(!cWords.length)return cWords;
-  const key=normalize(cWords[0]);
-  if(!MUQATTAAT[key])return cWords;
-  const first=((userVal||'').trim().split(/\s+/)[0])||'';
-  if(normalize(first)===key)return cWords;   /* كتبها كما هي — من غير توسيع */
-  return MUQATTAAT[key].concat(cWords.slice(1));
+function collapseMuqattaat(words,correctAnswer){
+  if(!words||!words.length||!correctAnswer)return words;
+  const cw=correctAnswer.trim().split(/\s+/);
+  const names=MUQATTAAT[normalize(cw[0])];
+  if(!names||words.length<names.length)return words;
+  for(let k=0;k<names.length;k++){
+    if(normalize(words[k])!==normalize(names[k]))return words;
+  }
+  return [cw[0]].concat(words.slice(names.length));
 }
+/* ===== نهاية الحروف المقطعة ===== */
 function wordDiff(userVal,correctAnswer){
   const nm=s=>{
     if(!s)return'';
@@ -501,6 +504,7 @@ function renderHard(q,zone){
   vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(clrBtn);vZone.appendChild(vSub);
 
   function _fixWords(words){
+        words=collapseMuqattaat(words,(typeof q!=='undefined'&&q&&q.answer)||'');
         const out=[];
         for(let i=0;i<words.length;i++){
           if(i<words.length-2 && normalize(words[i])==='او' && normalize(words[i+1])==='كل' && normalize(words[i+2])==='ما'){
@@ -547,7 +551,7 @@ function renderHard(q,zone){
     r.onstart=()=>{_recog=true;_cur='';_setB('rec');renderWords();};
     r.onresult=e=>{
       for(let i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal){_words=_words.concat(e.results[i][0].transcript.trim().split(/\s+/));_cur='';}
+        if(e.results[i].isFinal){_words=_fixWords(_words.concat(e.results[i][0].transcript.trim().split(/\s+/)));_cur='';}
       }
       renderWords();
     };
