@@ -3579,33 +3579,36 @@ def add_open_tanween_to_normalize(out):
     """رسم التنوين في المصحف بيفرّق بين ثلاث حالات، ولكل واحدة كود مختلف:
         إظهار (متراكب)        → U+064B / U+064C / U+064D
         إدغام وإخفاء (متتابع) → U+08F0 / U+08F1 / U+08F2
-        إقلاب                 → حركة مفردة + U+06E2
-    النطاق 08F0–08F2 واقع في بلوك Arabic Extended-A، وهو خارج كل نطاقات
-    حذف التشكيل القديمة. يعني لو النص القرآني اتكتب بيه من غير التعديل ده
-    هتفضل العلامة موجودة بعد التطبيع، وكل إجابة صحيحة هتتحسب خطأ.
+        إقلاب                 → حركة مفردة + U+06E2 (فوق) أو U+06ED (تحت)
+    النطاق 08F0–08F2 في بلوك Arabic Extended-A، وميم الإقلاب 06E2/06ED
+    برّه نطاقات حذف التشكيل القديمة. لو النص القرآني اتكتب بيهم من غير
+    التعديل ده، العلامة هتفضل بعد التطبيع وكل إجابة صحيحة هتتحسب خطأ.
 
-    الإصلاح idempotent وبيلمس كلاس حذف التشكيل بس — لا يغيّر أي قاعدة
-    تطبيع تانية ولا يمس أي نص قرآني. بيتعامل مع الصيغتين الموجودتين في
-    المشروع: Unicode escapes (ملفات السور) وأحرف حرفية (recitation.html)."""
+    الإصلاح idempotent وبيلمس كلاس حذف التشكيل بس — مش بيغيّر أي قاعدة
+    تطبيع تانية ولا يمسّ نص قرآني. بيتعامل مع الصيغتين: Unicode escapes
+    (ملفات السور) وأحرف حرفية (recitation.html وملفات الجيل القديم).
+    """
     changed = False
 
-    # 1. الصيغة المكتوبة بـUnicode escapes — ملفات السور
+    # 1. صيغة Unicode escapes
     old_esc = r"[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED]"
     new_esc = r"[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]"
     if old_esc in out:
         out = out.replace(old_esc, new_esc)
         changed = True
 
-    # 2. الصيغة المكتوبة بأحرف حرفية — recitation.html
-    #    الشرط: كلاس بيبدأ بـ[ وجواه تنوين فتح وسكون (يعني كلاس التشكيل
-    #    الرئيسي) ولسه مش مترقّع. قاعدة الكشيدة بتبدأ بــ فمش هتتأثر.
-    pat = re.compile(r"(replace\(/\[)([^\]]*)(\]/g,\s*''\))")
+    # 2. صيغة الأحرف الحرفية — بتقبل '' و "" (ملفات زي albaqara_p47 بتستخدم "")
+    pat = re.compile(r"""(replace\(/\[)([^\]]*)(\]/g,\s*(?:''|""))""")
+    NEEDED = '\u08F0\u08F1\u08F2\u06E2\u06ED'
 
     def _add(m):
         cls = m.group(2)
-        if '\u064B' in cls and '\u0652' in cls and '\u08F0' not in cls:
-            return m.group(1) + cls + '\u08F0\u08F1\u08F2' + m.group(3)
-        return m.group(0)
+        if '\u064B' not in cls or '\u0652' not in cls:
+            return m.group(0)              # مش كلاس التشكيل الرئيسي (قاعدة الكشيدة مثلاً)
+        add = ''.join(c for c in NEEDED if c not in cls)
+        if not add:
+            return m.group(0)
+        return m.group(1) + cls + add + m.group(3)
 
     out2 = pat.sub(_add, out)
     if out2 != out:
@@ -3613,6 +3616,341 @@ def add_open_tanween_to_normalize(out):
         changed = True
 
     return out, changed
+
+
+# ======================================================
+# رسم التنوين — محرك سياقي (يوليو ٢٠٢٦)
+# ------------------------------------------------------
+# حكم التنوين بيتحدد من أول حرف في الكلمة *التالية*، مش من
+# الكلمة نفسها. فخريطة "كلمة → بديل" غلط أصلاً: نفس الكلمة
+# ممكن تيجي مرتين في نفس الصفحة بحكمين مختلفين، زي:
+#     البلد ٥:  عَلَيۡهِ أَحَدٌ يَقُولُ   → (ي) متتابع
+#     البلد ٧:  يَرَهُۥٓ  أَحَدٌ أَلَمۡ    → (أ) متراكب
+# عشان كده كل كلمة بتتحسب من سياقها هي، ولو الكلمة التالية
+# مش ظاهرة (قبل فراغ _____) بيرجع لـAYAT بالكلمة السابقة.
+#
+# الخوارزمية متحقَّق منها ضد ٩٩٥ حالة في recitation.html
+# المصحح يدويًا من صور المصحف: تطابق ٩٩٤/٩٩٥.
+# ======================================================
+_T_OPEN  = {'F': '\u08F0', 'D': '\u08F1', 'K': '\u08F2'}   # متتابع: إدغام + إخفاء
+_T_STACK = {'F': '\u064B', 'D': '\u064C', 'K': '\u064D'}   # متراكب: إظهار
+_T_WRONG = {'\u0657': 'F', '\u065E': 'D', '\u0656': 'K'}   # هاكات خط KFGQPC — بترسم غلط في Amiri
+_T_HARAKA = {'F': '\u064E', 'D': '\u064F', 'K': '\u0650'}
+_T_MHI, _T_MLO = '\u06E2', '\u06ED'                        # ميم الإقلاب: فوق / تحت
+_T_IZHAR = set('ءأإآؤئهعحغخ')                              # حروف الحلق
+_T_DIAC = re.compile('[\u064B-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F3\u0640]')
+_T_AR = re.compile('[\u0621-\u064A]')
+_T_PUNCT = '«»/—-·|,.…"'
+_T_STR = re.compile(r'"((?:[^"\\]|\\.)*)"')
+
+TANWEEN_SKIPPED = []
+TANWEEN_UNRESOLVED = []
+_BAQARA_FIRST_WORD = {}
+
+
+def _t_bare(w):
+    return _T_DIAC.sub('', w)
+
+
+def _t_clean(t):
+    return t.strip(_T_PUNCT)
+
+
+def _t_is_word(t):
+    t = _t_clean(t)
+    return bool(t) and '_' not in t and bool(_T_AR.search(t))
+
+
+def _t_rule(next_bare, at_surah_end):
+    """الحكم من أول حرف في الكلمة التالية. الترتيب مهم: ألف الوصل تغلب اللام."""
+    if at_surah_end:
+        return 'IQLAB'                       # البسملة بعدها بتبدأ بباء
+    if not next_bare:
+        return None
+    c = next_bare[0]
+    if c == '\u0671':
+        return 'STACK'                       # تنوين قبل ألف وصل = إظهار (التقاء الساكنين)
+    if c == '\u0628':
+        return 'IQLAB'
+    if c in _T_IZHAR:
+        return 'STACK'
+    return 'OPEN'
+
+
+def _t_find(w):
+    """يرجّع (موضع, نوع, نوع الحركة) لتنوين آخر الكلمة، أو None."""
+    for i in range(len(w) - 1, -1, -1):
+        c = w[i]
+        if c in (_T_MHI, _T_MLO):
+            if (w[i + 1] if i + 1 < len(w) else '') == '\u0628':
+                continue                     # نۢب داخلية (أنۢبِيَآء) — مش تنوين
+            return (i, 'IQLAB', 'K' if c == _T_MLO else None)
+        if c in _T_WRONG:
+            return (i, 'OPEN', _T_WRONG[c])
+        for h, ch in _T_OPEN.items():
+            if c == ch:
+                return (i, 'OPEN', h)
+        for h, ch in _T_STACK.items():
+            if c == ch:
+                return (i, 'STACK', h)
+    return None
+
+
+def _t_rebuild(w, idx, kind, hk, target):
+    if target == kind and not any(c in _T_WRONG for c in w):
+        return w
+    if kind == 'IQLAB':
+        base = w[:idx] + w[idx + 1:]
+        m = re.search('([\u064E\u064F\u0650])(\u0627?)$', base)
+        if not m:
+            return None
+        h = {'\u064E': 'F', '\u064F': 'D', '\u0650': 'K'}[m.group(1)]
+        return base[:m.start()] + (_T_OPEN if target == 'OPEN' else _T_STACK)[h] + m.group(2)
+    if target in ('OPEN', 'STACK'):
+        return w[:idx] + (_T_OPEN if target == 'OPEN' else _T_STACK)[hk] + w[idx + 1:]
+    meem = _T_MLO if hk == 'K' else _T_MHI
+    return w[:idx] + _T_HARAKA[hk] + meem + w[idx + 1:]
+
+
+def _t_key(w):
+    """مفتاح محايد للتنوين — عشان البحث في AYAT ينجح قبل التصحيح وبعده."""
+    r = _t_find(w)
+    if not r:
+        return w
+    return w[:r[0]] + w[r[0] + 1:]
+
+
+class _TanweenPage:
+    def __init__(self, words, tail_next_word):
+        self.ws = words
+        self.tail = tail_next_word           # أول كلمة في الصفحة التالية، أو None = آخر السورة
+        self.after, self.byword = {}, {}
+        for n, w in enumerate(words):
+            nxt = words[n + 1] if n + 1 < len(words) else tail_next_word
+            prev = _t_key(words[n - 1]) if n > 0 else None
+            self.after.setdefault((prev, _t_key(w)), set()).add(nxt)
+            self.byword.setdefault(_t_key(w), set()).add(nxt)
+
+    def want(self, w, nextword, prevword):
+        if nextword is not None:
+            return _t_rule(_t_bare(_t_clean(nextword)), False)
+        kw = _t_key(w)
+        pk = _t_key(prevword) if prevword else None
+        cands = self.after.get((pk, kw)) or self.byword.get(kw)
+        if not cands:
+            # الكلمة في السؤال ممكن تكون من غير حرف عطف متصل (مَوْعِظَة / وَمَوْعِظَة)
+            hits = [v for k2, v in self.byword.items()
+                    if k2.endswith(kw) and 0 < len(k2) - len(kw) <= 6]
+            if len(hits) == 1:
+                cands = hits[0]
+        if not cands:
+            return None
+        outs = {(_t_rule(_t_bare(c), False) if c is not None else 'IQLAB') for c in cands}
+        outs.discard(None)
+        return outs.pop() if len(outs) == 1 else None
+
+
+def _t_fix_tokens(tokens, page, tail_next, tail_prev, unresolved):
+    out = list(tokens)
+    for i, t in enumerate(tokens):
+        w = _t_clean(t)
+        r = _t_find(w)
+        if not r:
+            continue
+        nxt = None
+        for j in range(i + 1, len(tokens)):
+            if '_' in tokens[j]:
+                break
+            if _t_is_word(tokens[j]):
+                nxt = _t_clean(tokens[j])
+                break
+        if nxt is None:
+            nxt = tail_next
+        prev = None
+        for j in range(i - 1, -1, -1):
+            if _t_is_word(tokens[j]):
+                prev = _t_clean(tokens[j])
+                break
+        if prev is None:
+            prev = tail_prev
+        target = page.want(w, nxt, prev)
+        if target is None:
+            if any(c in _T_WRONG for c in w):
+                unresolved.append(w)
+            continue
+        nw = _t_rebuild(w, r[0], r[1], r[2], target)
+        if nw and nw != w:
+            out[i] = t.replace(w, nw)
+    return out
+
+
+def _t_split_q(q):
+    """سياق الفراغ — من جوّه «» بس. التعليقات بره (— آية ٢٢٦) مش نص قرآني."""
+    m = re.search(r'«([^»]*)»', q)
+    if m:
+        q = m.group(1)
+    toks = q.split()
+    for i, t in enumerate(toks):
+        if '_' in t:
+            return (next((_t_clean(x) for x in reversed(toks[:i]) if _t_is_word(x)), None),
+                    next((_t_clean(x) for x in toks[i + 1:] if _t_is_word(x)), None))
+    return (next((_t_clean(x) for x in reversed(toks) if _t_is_word(x)), None), None)
+
+
+def _t_array_body(text, name):
+    """قصّ محتوى مصفوفة JS بمطابقة الأقواس — بيشتغل مع الصيغتين المضغوطة والمتباعدة."""
+    m = re.search(r'const\s+' + name + r'\s*=\s*\[', text)
+    if not m:
+        return None, None, None
+    st = text.index('[', m.start())
+    d, q, j = 0, None, st
+    while j < len(text):
+        c = text[j]
+        if q:
+            if c == '\\':
+                j += 2
+                continue
+            if c == q:
+                q = None
+        elif c in '"\'`':
+            q = c
+        elif c == '[':
+            d += 1
+        elif c == ']':
+            d -= 1
+            if d == 0:
+                j += 1
+                break
+        j += 1
+    return text[st:j], st, j
+
+
+def _t_ayat_words(out):
+    """كلمات AYAT بالترتيب. بيقبل صيغة النص المجرّد وصيغة {num,text}."""
+    for name in ('AYAT', 'ORDER_AYAT'):
+        body, _, _ = _t_array_body(out, name)
+        if not body:
+            continue
+        strs = [s for s in _T_STR.findall(body) if _T_AR.search(s)]
+        if strs:
+            return ' '.join(strs).split()
+    return None
+
+
+def _t_load_baqara_first_words(root):
+    """أول كلمة في كل صفحة بقرة — لازمة لحكم آخر كلمة في الصفحة اللي قبلها."""
+    if _BAQARA_FIRST_WORD:
+        return
+    for fn in os.listdir(root):
+        m = re.match(r'albaqara_p(\d+)\.html$', fn)
+        if not m:
+            continue
+        try:
+            with open(os.path.join(root, fn), encoding='utf-8') as f:
+                ws = _t_ayat_words(f.read())
+            if ws:
+                _BAQARA_FIRST_WORD[int(m.group(1))] = ws[0]
+        except Exception:
+            pass
+
+
+def fix_tanween_rasm(path, out):
+    """تصحيح رسم التنوين في AYAT وEASY_Q وMEDIUM_Q وHARD_Q وORDER_AYAT.
+
+    idempotent: التصحيح محسوب من القاعدة مش من الحالة الحالية، فتشغيله
+    مرتين بيدّي نفس النتيجة. لا يمس أي حرف — علامة التنوين بس، فالتطبيع
+    قبل وبعد بيفضل متطابق ١٠٠٪.
+    """
+    fn = os.path.basename(path)
+    words = _t_ayat_words(out)
+    if not words:
+        TANWEEN_SKIPPED.append(fn + ' (مفيش AYAT/ORDER_AYAT)')
+        return out, False
+
+    # آخر كلمة في صفحة البقرة حكمها من أول كلمة في الصفحة اللي بعدها
+    tail = None
+    m = re.match(r'albaqara_p(\d+)\.html$', fn)
+    if m:
+        _t_load_baqara_first_words(os.path.dirname(os.path.abspath(path)))
+        tail = _BAQARA_FIRST_WORD.get(int(m.group(1)) + 1)
+        if tail is None and (int(m.group(1)) + 1) <= 49:
+            TANWEEN_SKIPPED.append(fn + ' (الصفحة التالية مش متاحة — آخر كلمة اتساب)')
+    page = _TanweenPage(words, tail)
+
+    lines = out.split('\n')
+    idxs = [i for i, l in enumerate(lines)
+            if re.search(r'const\s+(AYAT|EASY_Q|MEDIUM_Q|HARD_Q|ORDER_AYAT)\s*=', l)]
+    if not idxs:
+        TANWEEN_SKIPPED.append(fn + ' (مفيش مصفوفات أسئلة)')
+        return out, False
+    lo = min(idxs)
+    j = max(idxs)
+    while j < len(lines) and not re.match(r'^\s*\];\s*$', lines[j]):
+        j += 1
+    hi = min(j, len(lines) - 1)
+
+    unresolved = []
+    for li in range(lo, hi + 1):
+        line = lines[li]
+        if not _T_AR.search(line):
+            continue
+        qm = re.search(r'q\s*:\s*"((?:[^"\\]|\\.)*)"', line)
+        tail_ctx = _t_split_q(qm.group(1)) if qm else (None, None)
+
+        def _one(mm, _qm=qm, _tc=tail_ctx):
+            s = mm.group(1)
+            if not _T_AR.search(s):
+                return mm.group(0)
+            is_q = _qm is not None and s == _qm.group(1)
+            tn, tp = (None, None) if is_q else (_tc[1], _tc[0])
+            return '"' + ' '.join(_t_fix_tokens(s.split(), page, tn, tp, unresolved)) + '"'
+
+        lines[li] = _T_STR.sub(_one, line)
+
+    # توحيد شكل تنوين المشتتات المخترَعة — الإجابة الصح مالهاش تبقى مميزة
+    # شكليًا. أي اختيار موجود في AYAT = نص قرآني ويُترك على حكمه الصحيح.
+    corrected = ' ' + ' '.join(
+        ' '.join(_t_fix_tokens(a.split(), page, None, None, []))
+        for a in [' '.join(words)]) + ' '
+
+    def _unify(mm):
+        items = re.findall(r'"([^"]*)"', mm.group(1))
+        if len(items) < 2:
+            return mm.group(0)
+        tgt = None
+        for it in items:
+            for w in it.split():
+                r = _t_find(w)
+                if r and not any(c in _T_WRONG for c in w):
+                    tgt = r[1]
+                    break
+            if tgt:
+                break
+        if not tgt:
+            return mm.group(0)
+        new = []
+        for it in items:
+            if it.strip() and (' ' + it.strip() + ' ') in corrected:
+                new.append(it)                 # نص قرآني — لا يُمسّ
+                continue
+            ws = []
+            for w in it.split():
+                r = _t_find(w)
+                if r:
+                    nw = _t_rebuild(w, r[0], r[1], r[2], tgt)
+                    if nw:
+                        w = nw
+                ws.append(w)
+            new.append(' '.join(ws))
+        return 'choices:[' + ','.join('"%s"' % x for x in new) + ']'
+
+    for li in range(lo, hi + 1):
+        lines[li] = re.sub(r'choices:\s*\[([^\]]*)\]', _unify, lines[li])
+
+    if unresolved:
+        TANWEEN_UNRESOLVED.append((fn, sorted(set(unresolved))))
+    new_out = '\n'.join(lines)
+    return new_out, new_out != out
 
 
 def fix_file(path):
@@ -4217,6 +4555,11 @@ def fix_file(path):
     # المتتابع) لكلاس حذف التشكيل — مانع تقني لازم يسبق أي نص متغيّر
     out, open_tanween_added = add_open_tanween_to_normalize(out)
 
+    # 9ج. رسم التنوين نفسه: تحويل كل تنوين لشكله الصحيح حسب الكلمة
+    # التالية (متراكب / متتابع / إقلاب). لازم يجي *بعد* توسعة كلاس
+    # حذف التشكيل فوق، وإلا الكلمات المصححة هتفشل في المقارنة.
+    out, tanween_rasm_fixed = fix_tanween_rasm(path, out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -4373,6 +4716,18 @@ def main():
     # إما صيغة غير مدعومة، أو HARD_Q ناقصة، أو فشل التحقق الحرفي بعد
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
+    print('\n=== تقرير رسم التنوين ===')
+    if TANWEEN_SKIPPED:
+        print(f'{len(TANWEEN_SKIPPED)} ملف اتخطّى تصحيح التنوين:')
+        for s in TANWEEN_SKIPPED:
+            print('  -', s)
+    else:
+        print('كل الملفات اتفحصت ✅')
+    if TANWEEN_UNRESOLVED:
+        print('كلمات فيها كود تنوين قديم ومش متحدد حكمها (مشتتات مخترَعة غالبًا):')
+        for fn, ws in TANWEEN_UNRESOLVED:
+            print('  -', fn, ':', ' '.join(ws))
+
     print('\n=== تقرير ترحيل قالب البقرة النضيف ===')
     if BAQARA_MIGRATION_SKIPPED:
         print(f'{len(BAQARA_MIGRATION_SKIPPED)} صفحة بقرة اتخطّت الترحيل:')
