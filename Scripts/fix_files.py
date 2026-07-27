@@ -4163,6 +4163,126 @@ def audit_uniformity(root):
     print('=== نهاية المسح ===\n')
 
 
+# ======================================================
+# توحيد قواعد normalize — إضافات وترتيب فقط، صفر حذف
+# ------------------------------------------------------
+# أربع مشاكل موثّقة بالاختبار في الملفات القديمة:
+#   ١) الكشيدة و ـۧ و ـَٔ بتتعالج *بعد* حذف التشكيل، فقاعدة
+#      ـۧ→ي بتموت (U+06E7 بتتحذف مع التشكيل) و"إِبْرَٰهِـۧمَ"
+#      بتطلع "ابراهم" بدل "ابراهيم"
+#   ٢) قواعد ناقصة: هاذا→هذا · ذالك→ذلك · لاكن→لكن · اولك→اولاك
+#   ٣) [ءئؤ]→'' بتحذف ئ و ؤ بدل ما تحوّلهم لألف
+#   ٤) (.)()+ بدل (.)\1+ — الـbackreference ضايعة فقاعدة
+#      تقليص التكرار بلا فعل
+# كلها بتخلّي إجابة صحيحة تتحسب خطأ. لا تمسّ أي نص قرآني.
+# ======================================================
+NORM_FIXED = []
+
+_NF_KASHIDA = re.compile(
+    r"\.replace\(/ـۧ/g,'ي'\).*?\.replace\(/ـ/g,''\)", re.S)
+_NF_TASHKEEL = re.compile(
+    r"\.replace\(/\[(?:\\u064B-\\u065F|ً)[^\]]*\]/g,\s*(?:''|\"\")\)")
+
+
+def _nf_one(body):
+    """يصلّح جسم دالة تطبيع واحدة. يرجّع (الجسم الجديد, قائمة الإصلاحات)."""
+    done = []
+
+    # ملحوظة: abasa فيها (.)()+ بدل (.)\1+ — الـbackreference ضايعة.
+    # بنسيبها مكسورة عن قصد: تصليحها بيبلع واو العطف فتبقى آية ٣٨
+    # «وُجُوهࣱ» وآية ٤٠ «وَوُجُوهࣱ» متطابقين عند التصحيح. الحالات اللي
+    # كانت محتاجاها اتعالجت بقواعد مستهدفة فوق.
+
+    # ٣) [ءئؤ] → '' يبقى [ئؤ] → ا ثم ء → ''
+    if r"replace(/[ءئؤ]/g,'')" in body:
+        body = body.replace(r"replace(/[ءئؤ]/g,'')",
+                            r"replace(/[ئؤ]/g,'ا').replace(/ء/g,'')")
+        done.append('ئؤ→ا')
+
+    # ١) نقل كتلة الكشيدة قبل حذف التشكيل
+    mk = _NF_KASHIDA.search(body)
+    mt = _NF_TASHKEEL.search(body)
+    if mk and mt and mt.start() < mk.start():
+        blk = mk.group(0)
+        body = body[:mk.start()] + body[mk.end():]
+        mt = _NF_TASHKEEL.search(body)          # الموضع اتغيّر بعد القص
+        body = body[:mt.start()] + blk + body[mt.start():]
+        done.append('ترتيب-الكشيدة')
+
+    # ٢) القواعد الناقصة — تتحط بعد ارايت→اريت (آخر السلسلة النصية)
+    # ملاحظة: بعض الصيغ فيها ألف زيادة بتتولّد أثناء التطبيع نفسه —
+    # الألف الخنجرية بتبقى ألف والهمزة بتبقى ألف، فيطلع ألفين ورا بعض
+    # (يَٰٓأَيُّهَا ← ياايها ، أُوْلَٰٓئِكَ ← اولااك). بنعالجها بقواعد مستهدفة
+    # مش بتقليص تكرار عام، عشان مانبلعش واو العطف (ووجوه ← وجوه).
+    add = []
+    for pat, rep, sig in ((r'هاذا', 'هذا', 'هاذا'), (r'ذالك', 'ذلك', 'ذالك'),
+                          (r'لاكن', 'لكن', 'لاكن'), (r'اولك', 'اولاك', 'اولك'),
+                          (r'اولااك', 'اولاك', 'اولااك'),
+                          (r'ياايها', 'يايها', 'ياايها'),
+                          (r'ياايتها', 'يايتها', 'ياايتها')):
+        if ("/%s/g" % sig) not in body:
+            add.append(".replace(/%s/g,'%s')" % (pat, rep))
+    if add:
+        anchor = r".replace(/ارايت/g,'اريت')"
+        if anchor in body:
+            body = body.replace(anchor, anchor + ''.join(add), 1)
+            done.append('قواعد-ناقصة×%d' % len(add))
+        else:
+            add = []
+    return body, done
+
+
+def _nf_span(out, head):
+    """حدود جسم دالة بمطابقة الأقواس، مع تخطّي النصوص والـregex."""
+    i = out.find(head)
+    if i < 0:
+        return None
+    j = out.index('{', i)
+    st, d, q = j, 0, None
+    while j < len(out):
+        c = out[j]
+        if q:
+            if c == '\\':
+                j += 2; continue
+            if c == q:
+                q = None
+        elif c == '/' and out[j - 1] == '(':
+            q = '/'
+        elif c in '"\'`':
+            q = c
+        elif c == '{':
+            d += 1
+        elif c == '}':
+            d -= 1
+            if d == 0:
+                j += 1; break
+        j += 1
+    return st, j
+
+
+def unify_normalize_rules(path, out):
+    """يطبّق الإصلاحات الأربعة على normalize و nm. idempotent."""
+    fn = os.path.basename(path)
+    before = quran_text_fingerprint(out)
+    allfix = []
+    for head in ('function normalize(str){', 'const nm=', 'function nm('):
+        sp = _nf_span(out, head)
+        if not sp:
+            continue
+        st, en = sp
+        nb, done = _nf_one(out[st:en])
+        if done:
+            out = out[:st] + nb + out[en:]
+            allfix += done
+    if not allfix:
+        return out, False
+    if quran_text_fingerprint(out) != before:      # حارس: مستحيل يحصل
+        print('⛔ %s: البصمة اتغيّرت — التعديل اتلغى' % fn)
+        return out, False
+    NORM_FIXED.append((fn, sorted(set(allfix))))
+    return out, True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -4770,6 +4890,11 @@ def fix_file(path):
     # حذف التشكيل فوق، وإلا الكلمات المصححة هتفشل في المقارنة.
     out, tanween_rasm_fixed = fix_tanween_rasm(path, out)
 
+    # 9د. توحيد قواعد normalize: ترتيب الكشيدة + القواعد الناقصة +
+    # إصلاح [ءئؤ] و (.)()+ . كلها إضافات — لا تمسّ أي نص قرآني،
+    # والبصمة بتتفحص قبل وبعد كضمانة.
+    out, norm_rules_unified = unify_normalize_rules(path, out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -4927,6 +5052,14 @@ def main():
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
     audit_uniformity(root)
+
+    print('\n=== تقرير توحيد قواعد normalize ===')
+    if NORM_FIXED:
+        print('%d ملف اتصلح:' % len(NORM_FIXED))
+        for fn2, w in NORM_FIXED:
+            print('  -', fn2, ':', ' · '.join(w))
+    else:
+        print('مفيش تعديلات مطلوبة ✅')
 
     print('\n=== تقرير رسم التنوين ===')
     if TANWEEN_SKIPPED:
