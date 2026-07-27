@@ -3735,25 +3735,63 @@ class _TanweenPage:
         self.ws = words
         self.tail = tail_next_word           # أول كلمة في الصفحة التالية، أو None = آخر السورة
         self.after, self.byword, self.byskel, self.afterskel = {}, {}, {}, {}
+        self.pos_by_key, self.pos_by_skel = {}, {}
         for n, w in enumerate(words):
             nxt = words[n + 1] if n + 1 < len(words) else tail_next_word
             prev = _t_key(words[n - 1]) if n > 0 else None
             pskel = _t_skel(words[n - 1]) if n > 0 else None
+            self.pos_by_key.setdefault(_t_key(w), []).append(n)
+            self.pos_by_skel.setdefault(_t_skel(w), []).append(n)
             self.after.setdefault((prev, _t_key(w)), set()).add(nxt)
             self.byword.setdefault(_t_key(w), set()).add(nxt)
             self.byskel.setdefault(_t_skel(w), set()).add(nxt)
             self.afterskel.setdefault((pskel, _t_skel(w)), set()).add(nxt)
 
-    def want(self, w, nextword, prevword):
+    def _longest_ctx(self, w, prevs):
+        """أطول سياق يساري مطابق.
+
+        بعض الكلمات بتتكرر في نفس السورة بحكمين مختلفين وسياقها القريب
+        واحد. مثال الشرح: «فَإِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرًا» و«إِنَّ مَعَ ٱلۡعُسۡرِ
+        يُسۡرًا» — الكلمتين السابقتين متطابقتين والفرق في التالتة. فبنقارن
+        أطول سياق متاح وناخد الموضع صاحب أطول تطابق.
+        """
+        cand = self.pos_by_key.get(_t_key(w)) or self.pos_by_skel.get(_t_skel(w))
+        if not cand or len(cand) < 2 or not prevs:
+            return None
+        pk = [(_t_key(x) if x else None) for x in prevs]
+        ps = [(_t_skel(x) if x else None) for x in prevs]
+        best, score = [], 0
+        for n in cand:
+            d = 0
+            while d < len(pk) and n - 1 - d >= 0:
+                a = self.ws[n - 1 - d]
+                if (pk[-1 - d] is None                       # فراغ = أي كلمة
+                        or _t_key(a) == pk[-1 - d]
+                        or _t_skel(a) == ps[-1 - d]):
+                    d += 1
+                else:
+                    break
+            if d > score:
+                best, score = [n], d
+            elif d == score:
+                best.append(n)
+        if score == 0 or len(best) != 1:
+            return None
+        n = best[0]
+        return self.ws[n + 1] if n + 1 < len(self.ws) else self.tail
+
+    def want(self, w, nextword, prevs):
         """الكلمة التالية لو ظاهرة، وإلا بحث متدرّج في AYAT.
 
         كل مصدر بيتجرّب لوحده: لو أدّى إجابة واحدة نرجّعها، ولو ملتبس
-        (نفس الكلمة بحكمين) نكمّل للمصدر اللي بعده. الترتيب من الأدق
-        للأعم — والمستويات بالهيكل المجرّد بتتخطّى اختلاف الرسم بين
-        AYAT والأسئلة (ْ U+0652 مقابل ۡ U+06E1).
+        نكمّل للمصدر اللي بعده. المستويات بالهيكل المجرّد بتتخطّى اختلاف
+        الرسم بين AYAT والأسئلة (ْ U+0652 مقابل ۡ U+06E1).
         """
         if nextword is not None:
             return _t_rule(_t_bare(_t_clean(nextword)), False)
+        if isinstance(prevs, str) or prevs is None:
+            prevs = [prevs] if prevs else []
+        prevword = next((x for x in reversed(prevs) if x), None)
         kw, sk = _t_key(w), _t_skel(w)
         pk = _t_key(prevword) if prevword else None
         ps = _t_skel(prevword) if prevword else None
@@ -3763,7 +3801,9 @@ class _TanweenPage:
                     if k2.endswith(k) and 0 < len(k2) - len(k) <= gap]
             return hits[0] if len(hits) == 1 else None
 
-        for cands in (self.after.get((pk, kw)),
+        lc = self._longest_ctx(w, prevs)
+        for cands in ({lc} if lc is not None else None,
+                      self.after.get((pk, kw)),
                       self.afterskel.get((ps, sk)),
                       self.byword.get(kw),
                       self.byskel.get(sk),
@@ -3794,14 +3834,13 @@ def _t_fix_tokens(tokens, page, tail_next, tail_prev, unresolved):
                 break
         if nxt is None:
             nxt = tail_next
-        prev = None
-        for j in range(i - 1, -1, -1):
-            if _t_is_word(tokens[j]):
-                prev = _t_clean(tokens[j])
-                break
-        if prev is None:
-            prev = tail_prev
-        target = page.want(w, nxt, prev)
+        prevs = [(None if '_' in t2 else _t_clean(t2))
+                 for t2 in tokens[:i] if _t_is_word(t2) or '_' in t2]
+        if not prevs and tail_prev:
+            prevs = tail_prev if isinstance(tail_prev, list) else [tail_prev]
+        elif tail_prev and isinstance(tail_prev, list):
+            prevs = tail_prev + prevs
+        target = page.want(w, nxt, prevs)
         if target is None:
             if any(c in _T_WRONG for c in w):
                 unresolved.append(w)
@@ -3820,9 +3859,9 @@ def _t_split_q(q):
     toks = q.split()
     for i, t in enumerate(toks):
         if '_' in t:
-            return (next((_t_clean(x) for x in reversed(toks[:i]) if _t_is_word(x)), None),
+            return ([_t_clean(x) for x in toks[:i] if _t_is_word(x)],
                     next((_t_clean(x) for x in toks[i + 1:] if _t_is_word(x)), None))
-    return (next((_t_clean(x) for x in reversed(toks) if _t_is_word(x)), None), None)
+    return ([_t_clean(x) for x in toks if _t_is_word(x)], None)
 
 
 def _t_array_body(text, name):
