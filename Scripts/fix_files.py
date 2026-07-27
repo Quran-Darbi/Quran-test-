@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, re, json
+import os, re, json, hashlib
 
 # ====================================================
 # بيانات AYAT للسور اللي كانت ناقصة (يوليو ٢٠٢٦)
@@ -3984,6 +3984,146 @@ def fix_tanween_rasm(path, out):
     return new_out, new_out != out
 
 
+_U_ARRAYS = ('AYAT', 'ORDER_AYAT', 'EASY_Q', 'MEDIUM_Q', 'HARD_Q')
+
+# (اسم القاعدة, بصمة وجودها في الكود, الحالة اللي تخلّيها لازمة في النص)
+_U_RULES = [
+    ('١ كشيدة',      r'\\u0640|ـ\]',                 '\u0640'),
+    ('٣ هؤلاء',      r'هالا',                        'هؤلاء|هاؤلاء|ه[ؤو]لا'),
+    ('٤ وٱ وصل',     r'وٱ|\\u0648\\u0671',            '\u0648\u0671'),
+    ('٥ وٰ→وا',      r'وٰ|\\u0648\\u0670',            '\u0648\u0670'),
+    ('٦ يٰ→يا',      r'يٰ|\\u064A\\u0670',            '\u064A\u0670'),
+    ('٧ ىٰ',         r'ىٰ|\\u0649\\u0670',            '\u0649\u0670'),
+    ('٩ ۥ/ۦ',        r'ۥ|ۦ|\\u06E5|\\u06E6',          '\u06E5|\u06E6'),
+    ('١٠ ئؤ→ا',      r'\[ئؤ\]|\[\\u0626\\u0624\]',    '\u0626|\u0624'),
+    ('١١ رحمان',     r'رحمان',                       'رَّحۡمَٰن|رَحۡمَٰن|رحمٰن'),
+    ('١٣ اولئك',     r'اولك|اولاك',                  '\u0623\u064F\u0648\u0652\u0644|أولئك|ولَٰٓئِك'),
+]
+
+
+def quran_text_fingerprint(html):
+    """بصمة كل النص القرآني — أي خطوة توحيد لازم تسيبها زي ما هي."""
+    parts = []
+    for name in _U_ARRAYS:
+        body, _, _ = _t_array_body(html, name)
+        if body:
+            parts.append(name + '\x00' + '\x01'.join(_T_STR.findall(body)))
+    return hashlib.md5('\x02'.join(parts).encode('utf-8')).hexdigest()
+
+
+def _u_quran_text(html):
+    out = []
+    for name in _U_ARRAYS:
+        body, _, _ = _t_array_body(html, name)
+        if body:
+            out.extend(s for s in _T_STR.findall(body) if _T_AR.search(s))
+    return ' '.join(out)
+
+
+def _u_probe(html, is_rec):
+    lines = html.split('\n')
+    p = {}
+    p['قالب'] = 'مضغوط' if sum(1 for l in lines if len(l) > 400) >= 25 else 'متباعد'
+    esc = bool(re.search(r'\\u064B-\\u065F', html))
+    lit = bool(re.search(r'replace\(/\[[ًٌٍَُِّْ]', html))
+    p['كلاس-التشكيل'] = ('escapes' if esc and not lit else 'حرفي' if lit and not esc
+                         else 'الاتنين' if esc and lit else 'غير معروف')
+    if is_rec:
+        p['دالة-التطبيع'] = 'norm' if 'function norm' in html else 'مفقودة'
+    else:
+        p['دالة-التطبيع'] = 'normalize' if 'function normalize(str){' in html else 'مفقودة'
+        p['nm'] = bool(re.search(r'const\s+nm\s*=', html)) or 'function nm' in html
+        p['wordDiff'] = 'function wordDiff' in html
+        p['returnToLevels'] = 'returnToLevels' in html
+        p['ترتيب'] = bool(re.search(r'const\s+ORDER_AYAT\s*=', html))
+        p['AYAT-كائن'] = bool(re.search(r'const\s+AYAT\s*=\s*\[\s*\{\s*num', html))
+        p['تنقّل'] = ('⏮️' in html) or ('nav-row' in html)
+    p['أدوات'] = 'tools-fab' in html
+    p['notranslate'] = html.count('notranslate') > 3
+
+    fname = 'function norm' if is_rec else 'function normalize'
+    i = html.find(fname)
+    seg = html[i:i + 8000] if i >= 0 else ''
+    txt = _u_quran_text(html) if not is_rec else html
+    need = []
+    for name, sig, trig in _U_RULES:
+        if not re.search(trig, txt):
+            continue                       # السورة مش محتاجة القاعدة دي
+        if not re.search(sig, seg):
+            need.append(name)
+    p['_ناقص_ومطلوب'] = need
+    a = b = 0
+    for nm2 in _U_ARRAYS:
+        body, _, _ = _t_array_body(html, nm2)
+        if body:
+            a += body.count('\u0652'); b += body.count('\u06E1')
+    p['سكون'] = 'مختلط' if a and b else ('0652' if a else ('06E1' if b else '—'))
+    return p
+
+
+def audit_uniformity(root):
+    """مسح كل ملفات HTML وطباعة خريطة الاختلافات. لا يكتب أي ملف إطلاقًا."""
+    files = sorted(f for f in os.listdir(root) if f.endswith('.html'))
+    quiz, rec = [], []
+    for fn in files:
+        if fn == 'index.html':
+            continue
+        try:
+            with open(os.path.join(root, fn), encoding='utf-8') as fh:
+                html = fh.read()
+        except Exception as e:
+            print('  تعذّرت قراءة', fn, e); continue
+        isr = (fn == 'recitation.html')
+        (rec if isr else quiz).append((fn, _u_probe(html, isr)))
+
+    print('\n=== مسح التوحيد (قراءة فقط — لم يتغيّر أي ملف) ===')
+    print('ملفات الاختبارات: %d   |   recitation: %d' % (len(quiz), len(rec)))
+
+    def show(title, key, rows):
+        d = {}
+        for fn, p in rows:
+            if key in p:
+                d.setdefault(str(p[key]), []).append(fn)
+        if not d:
+            return
+        print('\n-- %s --' % title)
+        for val, fs in sorted(d.items(), key=lambda x: -len(x[1])):
+            print('   %-12s : %3d' % (val, len(fs)))
+            if len(fs) <= 14:
+                print('      ' + ' · '.join(fs))
+
+    for t, k in (('جيل القالب', 'قالب'), ('كلاس حذف التشكيل', 'كلاس-التشكيل'),
+                 ('دالة التطبيع', 'دالة-التطبيع'), ('صيغة AYAT', 'AYAT-كائن'),
+                 ('السكون في النص', 'سكون')):
+        show(t, k, quiz)
+
+    print('\n-- ميزات ناقصة --')
+    any_miss = False
+    for key in ('nm', 'wordDiff', 'returnToLevels', 'ترتيب', 'تنقّل',
+                'أدوات', 'notranslate'):
+        miss = [fn for fn, p in quiz if p.get(key) is False]
+        if miss:
+            any_miss = True
+            print('   %-15s ناقصة في %3d' % (key, len(miss)))
+            if len(miss) <= 15:
+                print('      ' + ' · '.join(miss))
+    if not any_miss:
+        print('   مفيش ✅')
+
+    print('\n-- قواعد normalize ناقصة *والسورة محتاجاها* --')
+    bad = {}
+    for fn, p in quiz + rec:
+        for r in p.get('_ناقص_ومطلوب', []):
+            bad.setdefault(r, []).append(fn)
+    if not bad:
+        print('   كل الملفات كاملة ✅')
+    for r, fs in sorted(bad.items(), key=lambda x: -len(x[1])):
+        print('   %-14s ناقصة في %3d ملف' % (r, len(fs)))
+        if len(fs) <= 15:
+            print('      ' + ' · '.join(fs))
+    print('=== نهاية المسح ===\n')
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -4747,6 +4887,8 @@ def main():
     # إما صيغة غير مدعومة، أو HARD_Q ناقصة، أو فشل التحقق الحرفي بعد
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
+    audit_uniformity(os.path.dirname(os.path.abspath(__file__)) or '.')
+
     print('\n=== تقرير رسم التنوين ===')
     if TANWEEN_SKIPPED:
         print(f'{len(TANWEEN_SKIPPED)} ملف اتخطّى تصحيح التنوين:')
