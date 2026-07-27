@@ -833,21 +833,56 @@ function compareWords(userWords,ref){
 
 const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
 const isSecure=location.protocol==='https:'||location.hostname==='localhost';
-let recInst=null,recognizing=false,savedWords=[],currentText='';
+let recInst=null,recognizing=false,savedWords=[],currentText='',selWord=null;
 
+function addWords(newW){
+  if(!newW||!newW.length)return;
+  if(selWord!==null&&selWord<savedWords.length){
+    savedWords.splice(selWord,1);
+    savedWords.splice(selWord,0,...newW);
+    selWord=null;
+  }else{
+    savedWords=savedWords.concat(newW);
+  }
+  savedWords=mergeYaAyyuha(savedWords);
+}
 function renderTranscript(){
   const box=document.getElementById('transcriptBox');
   box.innerHTML='';
+  if(selWord!==null&&selWord>=savedWords.length)selWord=null;
   if(!savedWords.length&&!currentText){
     box.style.color='var(--border)';
     box.textContent='سيظهر النص هنا...';
+    selWord=null;
     return;
   }
   box.style.color='var(--text)';
+  if(selWord!==null){
+    const bar=document.createElement('div');
+    bar.style.cssText='width:100%;box-sizing:border-box;background:#fdf6e3;border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
+    const t=document.createElement('span');
+    t.appendChild(document.createTextNode('المحدَّدة: '));
+    const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
+    b.textContent=savedWords[selWord];t.appendChild(b);
+    t.appendChild(document.createTextNode(' — سجّلي البديل'));
+    const x=document.createElement('button');
+    x.type='button';x.textContent='✕ حذف';
+    x.style.cssText='background:#c0392b;color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
+    x.onclick=()=>{savedWords.splice(selWord,1);selWord=null;renderTranscript();updateBtns();};
+    bar.appendChild(t);bar.appendChild(x);box.appendChild(bar);
+  }
   savedWords.forEach((w,i)=>{
     const sp=document.createElement('span');sp.className='rec-word';
-    sp.textContent=w;sp.title='انقري للحذف';
-    sp.onclick=()=>{savedWords.splice(i,1);renderTranscript();updateBtns();};
+    sp.textContent=w;
+    if(i===selWord){
+      sp.style.outline='2px solid var(--gold)';
+      sp.style.background='#fdf6e3';
+      sp.style.fontWeight='700';
+      sp.title='اضغطي لإلغاء التحديد';
+    }else{
+      sp.title='اضغطي لتحديدها ثم سجّلي البديل';
+    }
+    sp.onclick=()=>{selWord=(selWord===i)?null:i;renderTranscript();updateBtns();};
     box.appendChild(sp);
   });
   if(currentText){
@@ -864,21 +899,25 @@ function updateBtns(){
 }
 
 function makeRec(){
-  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;
+  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=true;
   r.onstart=()=>{recognizing=true;currentText='';setBtn('rec');renderTranscript();};
   r.onresult=e=>{
+    let interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
+      const tr=e.results[i][0].transcript;
       if(e.results[i].isFinal){
-        const newW=e.results[i][0].transcript.trim().split(/\s+/).filter(w=>w);
-        savedWords=mergeYaAyyuha(savedWords.concat(newW));currentText='';
+        addWords(tr.trim().split(/\s+/).filter(w=>w));
+      }else{
+        interim+=tr;
       }
     }
+    currentText=mergeYaAyyuha(interim.trim().split(/\s+/).filter(w=>w)).join(' ');
     renderTranscript();updateBtns();
   };
   r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){recognizing=false;setBtn(savedWords.length?'paused':'idle');}};
   r.onend=()=>{
     recognizing=false;
-    if(currentText){savedWords=mergeYaAyyuha(savedWords.concat(currentText.trim().split(/\s+/).filter(w=>w)));currentText='';}
+    if(currentText){addWords(currentText.trim().split(/\s+/).filter(w=>w));currentText='';}
     renderTranscript();setBtn(savedWords.length?'paused':'idle');
   };
   return r;
@@ -913,7 +952,7 @@ function setBtn(state){
 
 function clearAll(){
   if(recognizing){try{recInst.stop();}catch(e){}recognizing=false;}
-  recInst=null;savedWords=[];currentText='';
+  recInst=null;savedWords=[];selWord=null;currentText='';
   renderTranscript();
   document.getElementById('checkBtn').className='check-btn';
   document.getElementById('clearBtn').className='clear-btn';
