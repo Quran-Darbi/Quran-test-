@@ -260,7 +260,7 @@ let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctC
 function toArabicNum(n){return n;}
 function normalize(str){
   return str
-    .replace(/[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,"")
+    .replace(/[ًࣰٌࣱٍࣲَُِّْٕٖٜٟۭٓٔٗ٘ٙٚٛٝٞۢ]/g,"")
     .replace(/ٰ/g,"ا")
     .replace(/ـ/g,"")
     .replace(/[آأإٱا]/g,"ا")
@@ -302,7 +302,7 @@ function collapseMuqattaat(words,correctAnswer){
 /* ===== نهاية الحروف المقطعة ===== */
 function wordDiff(userVal,correctAnswer){
     const nm=s=>s
-    .replace(/[ًࣰٌࣱٍࣲَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]/g,'')
+    .replace(/[ًࣰٌࣱٍࣲَُِّْٕٖٜٟۭٓٔٗ٘ٙٚٛٝٞۢ]/g,'')
     .replace(/ٰ/g,'ا')
     .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     .replace(/[آأإٱا]/g,'ا')
