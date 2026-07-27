@@ -899,14 +899,17 @@ function updateBtns(){
 }
 
 function makeRec(){
-  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=true;
+  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=true;let doneUpTo=0;
   r.onstart=()=>{recognizing=true;currentText='';setBtn('rec');renderTranscript();};
   r.onresult=e=>{
     let interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
       const tr=e.results[i][0].transcript;
       if(e.results[i].isFinal){
-        addWords(tr.trim().split(/\s+/).filter(w=>w));
+        if(i>=doneUpTo){
+          doneUpTo=i+1;
+          addWords(tr.trim().split(/\s+/).filter(w=>w));
+        }
       }else{
         interim+=tr;
       }
