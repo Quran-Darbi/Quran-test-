@@ -3720,35 +3720,63 @@ def _t_key(w):
     return w[:r[0]] + w[r[0] + 1:]
 
 
+def _t_skel(w):
+    """هيكل الكلمة من غير أي تشكيل — بيتخطّى اختلاف الرسم بين المصفوفات.
+    بعض الملفات AYAT بتاعتها متحقونة من AYAT_DATA وبتستخدم السكون العادي
+    U+0652، بينما الأسئلة في نفس الملف بتستخدم U+06E1. من غير المفتاح ده
+    البحث بيفشل وكلمات قرآنية حقيقية بتفضل بالكود القديم."""
+    w = _T_DIAC.sub('', w)
+    w = re.sub('[\u0622\u0623\u0625\u0671]', '\u0627', w)
+    return w.replace('\u0649', '\u064A').replace('\u0629', '\u0647')
+
+
 class _TanweenPage:
     def __init__(self, words, tail_next_word):
         self.ws = words
         self.tail = tail_next_word           # أول كلمة في الصفحة التالية، أو None = آخر السورة
-        self.after, self.byword = {}, {}
+        self.after, self.byword, self.byskel, self.afterskel = {}, {}, {}, {}
         for n, w in enumerate(words):
             nxt = words[n + 1] if n + 1 < len(words) else tail_next_word
             prev = _t_key(words[n - 1]) if n > 0 else None
+            pskel = _t_skel(words[n - 1]) if n > 0 else None
             self.after.setdefault((prev, _t_key(w)), set()).add(nxt)
             self.byword.setdefault(_t_key(w), set()).add(nxt)
+            self.byskel.setdefault(_t_skel(w), set()).add(nxt)
+            self.afterskel.setdefault((pskel, _t_skel(w)), set()).add(nxt)
 
     def want(self, w, nextword, prevword):
+        """الكلمة التالية لو ظاهرة، وإلا بحث متدرّج في AYAT.
+
+        كل مصدر بيتجرّب لوحده: لو أدّى إجابة واحدة نرجّعها، ولو ملتبس
+        (نفس الكلمة بحكمين) نكمّل للمصدر اللي بعده. الترتيب من الأدق
+        للأعم — والمستويات بالهيكل المجرّد بتتخطّى اختلاف الرسم بين
+        AYAT والأسئلة (ْ U+0652 مقابل ۡ U+06E1).
+        """
         if nextword is not None:
             return _t_rule(_t_bare(_t_clean(nextword)), False)
-        kw = _t_key(w)
+        kw, sk = _t_key(w), _t_skel(w)
         pk = _t_key(prevword) if prevword else None
-        cands = self.after.get((pk, kw)) or self.byword.get(kw)
-        if not cands:
-            # الكلمة في السؤال ممكن تكون من غير حرف عطف متصل (مَوْعِظَة / وَمَوْعِظَة)
-            hits = [v for k2, v in self.byword.items()
-                    if k2.endswith(kw) and 0 < len(k2) - len(kw) <= 6]
-            if len(hits) == 1:
-                cands = hits[0]
-        if not cands:
-            return None
-        outs = {(_t_rule(_t_bare(c), False) if c is not None else 'IQLAB') for c in cands}
-        outs.discard(None)
-        return outs.pop() if len(outs) == 1 else None
+        ps = _t_skel(prevword) if prevword else None
 
+        def _pref(idx, k, gap):
+            hits = [v for k2, v in idx.items()
+                    if k2.endswith(k) and 0 < len(k2) - len(k) <= gap]
+            return hits[0] if len(hits) == 1 else None
+
+        for cands in (self.after.get((pk, kw)),
+                      self.afterskel.get((ps, sk)),
+                      self.byword.get(kw),
+                      self.byskel.get(sk),
+                      _pref(self.byword, kw, 6),
+                      _pref(self.byskel, sk, 3)):
+            if not cands:
+                continue
+            outs = {(_t_rule(_t_bare(c), False) if c is not None else 'IQLAB')
+                    for c in cands}
+            outs.discard(None)
+            if len(outs) == 1:
+                return outs.pop()
+        return None
 
 def _t_fix_tokens(tokens, page, tail_next, tail_prev, unresolved):
     out = list(tokens)
@@ -3912,6 +3940,7 @@ def fix_tanween_rasm(path, out):
     corrected = ' ' + ' '.join(
         ' '.join(_t_fix_tokens(a.split(), page, None, None, []))
         for a in [' '.join(words)]) + ' '
+    corrected_skel = ' ' + ' '.join(_t_skel(x) for x in corrected.split()) + ' '
 
     def _unify(mm):
         items = re.findall(r'"([^"]*)"', mm.group(1))
@@ -3930,7 +3959,9 @@ def fix_tanween_rasm(path, out):
             return mm.group(0)
         new = []
         for it in items:
-            if it.strip() and (' ' + it.strip() + ' ') in corrected:
+            it_s = ' ' + ' '.join(_t_skel(x) for x in it.split()) + ' '
+            if it.strip() and ((' ' + it.strip() + ' ') in corrected
+                               or it_s.strip() and it_s in corrected_skel):
                 new.append(it)                 # نص قرآني — لا يُمسّ
                 continue
             ws = []
