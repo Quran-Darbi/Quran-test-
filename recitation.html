@@ -899,7 +899,7 @@ function updateBtns(){
 }
 
 function makeRec(){
-  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;let doneUpTo=0;
+  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=true;let doneUpTo=0;
   r.onstart=()=>{recognizing=true;currentText='';setBtn('rec');renderTranscript();};
   r.onresult=e=>{
     let interim='';
