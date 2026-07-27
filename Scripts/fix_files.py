@@ -4887,7 +4887,7 @@ def main():
     # إما صيغة غير مدعومة، أو HARD_Q ناقصة، أو فشل التحقق الحرفي بعد
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
-    audit_uniformity(os.path.dirname(os.path.abspath(__file__)) or '.')
+    audit_uniformity(root)
 
     print('\n=== تقرير رسم التنوين ===')
     if TANWEEN_SKIPPED:
