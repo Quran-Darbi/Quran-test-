@@ -4942,6 +4942,47 @@ def switch_to_word_based_score(path, out):
     return out, True
 
 
+# ======================================================
+# مدة عرض نتيجة السؤال قبل الانتقال التلقائي
+# ------------------------------------------------------
+# كانت 1100ms — كفاية أيام ما كانت الرسالة سطر واحد. دلوقتي
+# بنعرض تفصيل الكلمات + دقة الإجابة + النسبة الجارية + احتفال،
+# فالوقت ده مش كافي للقراءة. الانتقال التلقائي بيحصل في حالة
+# الإجابة الصحيحة بس؛ الغلط بيستنى ضغطة "التالي".
+# ======================================================
+DELAY_FIXED = []
+_HARD_MS = 3500      # الصعب: آية كاملة + تفصيل كلمة كلمة
+_MCQ_MS = 2200       # السهل: كلمة واحدة
+
+
+def widen_autoadvance_delay(path, out):
+    fn = os.path.basename(path)
+    before_src, before = out, quran_text_fingerprint(out)
+    n = 0
+    # الصعب: جوه checkTextVal
+    i = out.find('function checkTextVal')
+    if i >= 0:
+        seg_end = out.find('function checkText(', i)
+        if seg_end < 0:
+            seg_end = i + 4000
+        seg = out[i:seg_end]
+        seg2, c = re.subn(r"(if\(qIndex===__qi\)nextQuestion\(\);\},)\s*1100\s*\)",
+                          lambda m: m.group(1) + str(_HARD_MS) + ')', seg, count=1)
+        if c:
+            out = out[:i] + seg2 + out[seg_end:]
+            n += c
+    # السهل: باقي المواضع
+    out, c = re.subn(r"(if\(qIndex===__qi\)nextQuestion\(\);\},)\s*1100\s*\)",
+                     lambda m: m.group(1) + str(_MCQ_MS) + ')', out)
+    n += c
+    if not n:
+        return before_src, False
+    if quran_text_fingerprint(out) != before:
+        return before_src, False
+    DELAY_FIXED.append((fn, n))
+    return out, True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -5567,6 +5608,7 @@ def fix_file(path):
     out, verdict_fixed = fix_verdict_and_progress(path, out)
     out, pct_upgraded = upgrade_pct_display(path, out)
     out, word_score = switch_to_word_based_score(path, out)
+    out, delay_widened = widen_autoadvance_delay(path, out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
@@ -5740,6 +5782,10 @@ def main():
     if PCT_UPGRADED:
         print('\n=== ترقية عرض النسبة ===')
         print('اترقّت في %d ملف' % len(PCT_UPGRADED))
+
+    if DELAY_FIXED:
+        print('\n=== مدة عرض النتيجة ===')
+        print('اتوسّعت في %d ملف (صعب 3.5ث · سهل 2.2ث)' % len(DELAY_FIXED))
 
     print('\n=== النسبة على أساس الكلمات ===')
     print('اتطبّق في %d ملف | اتخطّى %d' % (len(WORDSCORE_FIXED), len(WORDSCORE_SKIPPED)))
