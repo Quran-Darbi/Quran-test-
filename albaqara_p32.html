@@ -686,7 +686,7 @@ function showQuestion() {
 
       vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(clrBtn);vZone.appendChild(vSub);
 
-      let _rec=null,_recog=false,_words=[],_cur='';
+      let _rec=null,_recog=false,_words=[],_cur='',_sel=null;
       const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
       const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
@@ -711,15 +711,40 @@ function showQuestion() {
         return out;
       }
 
+        function _addWords(nw){
+    if(!nw||!nw.length)return;
+    nw=_fixWords(nw);
+    if(_sel!==null&&_sel<_words.length){_words.splice(_sel,1);_words.splice(_sel,0,...nw);_sel=null;}
+    else{_addWords(nw);}
+  }
+
+
       function renderWords(){
         if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}
         txBox.style.display='block';
         txBox.innerHTML='';
+    if(_sel!==null&&_sel>=_words.length)_sel=null;
+    if(_sel!==null){
+      const bar=document.createElement('div');
+      bar.style.cssText='width:100%;box-sizing:border-box;background:var(--hint-btn-bg);border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
+      const t=document.createElement('span');
+      t.appendChild(document.createTextNode('المحدَّدة: '));
+      const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
+      b.textContent=_words[_sel];t.appendChild(b);
+      t.appendChild(document.createTextNode(' — سجّلي البديل'));
+      const x=document.createElement('button');x.type='button';x.textContent='✕ حذف';
+      x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
+      x.onclick=()=>{_words.splice(_sel,1);_sel=null;renderWords();};
+      bar.appendChild(t);bar.appendChild(x);txBox.appendChild(bar);
+    }
+
         _words.forEach((w,i)=>{
           const span=document.createElement('span');span.className='rec-word';
           span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';
-          span.textContent=w;span.title='انقري للحذف';
-          span.onclick=()=>{_words.splice(i,1);renderWords();};
+          span.textContent=w;
+      if(i===_sel){span.style.outline='2px solid var(--gold)';span.style.background='var(--hint-btn-bg)';span.style.fontWeight='700';span.title='اضغطي لإلغاء التحديد';}
+      else{span.title='اضغطي لتحديدها ثم سجّلي البديل';}
+      span.onclick=()=>{_sel=(_sel===i)?null:i;renderWords();};
           txBox.appendChild(span);
         });
         if(_cur){
@@ -750,7 +775,7 @@ function showQuestion() {
           renderWords();
         };
         r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};
-        r.onend=()=>{_recog=false;if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\s+/)));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
+        r.onend=()=>{_recog=false;if(_cur){_addWords(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
         return r;
       }
 

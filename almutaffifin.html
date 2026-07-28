@@ -380,6 +380,16 @@ function collapseMuqattaat(words,correctAnswer){
   return [cw[0]].concat(words.slice(names.length));
 }
 /* ===== نهاية الحروف المقطعة ===== */
+function expandMuqattaat(words){
+  const out=[];let i=0;
+  while(i<words.length&&i<2){
+    const key=normalize(words[i]);
+    if(MUQATTAAT[key]){out.push(...MUQATTAAT[key]);i++;}
+    else break;
+  }
+  for(;i<words.length;i++)out.push(words[i]);
+  return out;
+}
 function wordDiff(userVal,correctAnswer){
   const nm=s=>{
     if(!s)return'';
@@ -528,7 +538,7 @@ function renderHard(q,zone){
   const tZone=document.createElement('div');tZone.style.display='none';zone.appendChild(tZone);
 
   // ===== منطقة التسجيل الصوتي =====
-  let _rec=null,_recog=false,_words=[],_cur='';
+  let _rec=null,_recog=false,_words=[],_cur='',_sel=null;
   const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
   const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
@@ -596,7 +606,7 @@ function renderHard(q,zone){
 
   clrBtn.onclick=()=>{
     if(_recog){try{_rec.stop();}catch(e){}_recog=false;}
-    _rec=null;_words=[];_cur='';
+    _rec=null;_words=[];_cur='';_sel=null;
     txBox.innerHTML='';txBox.style.display='none';
     clrBtn.style.display='none';vSub.style.display='none';
     recBtn.disabled=false;_setB('idle');
