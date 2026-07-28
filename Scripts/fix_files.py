@@ -4296,6 +4296,7 @@ def unify_normalize_rules(path, out):
 # بـ normalize (اسم الدالة في ملفات الاختبارات).
 # ======================================================
 MUQ_FIXED = []
+MUQ_OK = []
 
 _MUQ_DEF = """function expandMuqattaat(words){
   const out=[];let i=0;
@@ -4315,6 +4316,7 @@ def fix_missing_expand_muqattaat(path, out):
     if 'expandMuqattaat(' not in out:
         return out, False
     if re.search(r'function\s+expandMuqattaat', out):
+        MUQ_OK.append(os.path.basename(path))
         return out, False
     if 'MUQATTAAT' not in out:
         MUQ_FIXED.append((os.path.basename(path), 'اتخطّى — MUQATTAAT مش موجودة'))
@@ -4339,6 +4341,8 @@ def fix_missing_expand_muqattaat(path, out):
 # القاعدة: أي تحديث في التلاوة يتطبّق على الصعب.
 # ======================================================
 SELWORD_FIXED = []
+SELWORD_ALREADY = []
+SELWORD_NOMATCH = []
 
 _SW_OLD_DECL = "let _rec=null,_recog=false,_words=[],_cur='';"
 _SW_NEW_DECL = "let _rec=null,_recog=false,_words=[],_cur='',_sel=null;"
@@ -4371,7 +4375,7 @@ _SW_ADD = """  function _addWords(nw){
     if(!nw||!nw.length)return;
     nw=_fixWords(nw);
     if(_sel!==null&&_sel<_words.length){_words.splice(_sel,1);_words.splice(_sel,0,...nw);_sel=null;}
-    else{_words=_fixWords(_words.concat(nw));}
+    else{_words=_fixWords([].concat(_words,nw));}
   }
 """
 
@@ -4384,7 +4388,8 @@ def port_selword_feature(path, out):
     """
     fn = os.path.basename(path)
     if '_sel=null' in out or 'المحدَّدة' in out:
-        return out, False                      # اتطبّقت قبل كده
+        SELWORD_ALREADY.append(fn)             # اتطبّقت في تشغيلة سابقة
+        return out, False
     before = quran_text_fingerprint(out)
     n = 0
 
@@ -4392,6 +4397,8 @@ def port_selword_feature(path, out):
                      "let _rec=null,_recog=false,_words=[],_cur='',_sel=null;", out, count=1)
     n += c
     if not c:
+        if 'renderHard' in out:
+            SELWORD_NOMATCH.append(fn)         # فيه مستوى صعب بس القالب مختلف
         return out, False
 
     out, c = re.subn(
@@ -4404,10 +4411,6 @@ def port_selword_feature(path, out):
                      lambda m: m.group(1) + '\n' + _SW_BAR, out, count=1)
     n += c
 
-    out, c = re.subn(r"(\n\s*)function renderWords\(\)\{",
-                     lambda m: m.group(1) + _SW_ADD + m.group(1) + 'function renderWords(){',
-                     out, count=1)
-    n += c
 
     # التقاط الصوت: بالصيغة المباشرة أو عبر متغيّر وسيط
     out, c = re.subn(
@@ -4422,6 +4425,13 @@ def port_selword_feature(path, out):
                      lambda m: "if(_cur){_addWords(_cur.trim().split(/\\s+/));_cur='';}", out, count=1)
     n += c
 
+    # الإدخال لازم يجي *بعد* كل الاستبدالات فوق، وإلا الـregex
+    # بتاعة الاحتياطي بتطابق السطر اللي جوه _addWords نفسها
+    # وتحوّله لاستدعاء ذاتي لا نهائي (اتكشف على الموقع — يوليو ٢٠٢٦)
+    out, c = re.subn(r"(\n\s*)function renderWords\(\)\{",
+                     lambda m: m.group(1) + _SW_ADD + m.group(1) + 'function renderWords(){',
+                     out, count=1)
+    n += c
     out = re.sub(r"_rec=null;_words=\[\];_cur='';", "_rec=null;_words=[];_cur='';_sel=null;", out, count=1)
 
     if quran_text_fingerprint(out) != before:
@@ -4528,6 +4538,25 @@ def fix_broken_page_nav_links(path, out):
     if fixed:
         BROKEN_NAV_FIXED.append((fn, sorted(set(fixed))))
     return out2, out2 != out
+
+
+
+SELWORD_REPAIRED = []
+
+
+def repair_broken_addwords(path, out):
+    """يصلّح _addWords اللي بتنادي نفسها (استدعاء ذاتي لا نهائي).
+
+    نسخة سابقة من port_selword_feature كانت بتولّد
+    else{_addWords(nw);} بدل ضم الكلمات — فأي تسجيل من غير كلمة
+    محدَّدة كان بيرمي RangeError ويوقف زر التسجيل.
+    """
+    if 'else{_addWords(nw);}' not in out:
+        return out, False
+    out = out.replace('else{_addWords(nw);}',
+                      'else{_words=_fixWords([].concat(_words,nw));}')
+    SELWORD_REPAIRED.append(os.path.basename(path))
+    return out, True
 
 
 def fix_file(path):
@@ -5148,6 +5177,7 @@ def fix_file(path):
 
     # 9و. ميزة تحديد الكلمة من التلاوة → مستوى الصعب
     out, selword_ported = port_selword_feature(path, out)
+    out, addwords_repaired = repair_broken_addwords(path, out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
@@ -5315,13 +5345,20 @@ def main():
         print('كل الروابط سليمة ✅')
 
     print('\n=== تقرير ميزة تحديد الكلمة (صعب) ===')
-    print('اتطبّقت في %d ملف' % len(SELWORD_FIXED))
+    print('اتطبّقت دلوقتي   : %d ملف' % len(SELWORD_FIXED))
+    if SELWORD_REPAIRED:
+        print('⛔ اتصلح استدعاء ذاتي مكسور في %d ملف' % len(SELWORD_REPAIRED))
+    print('كانت مطبّقة قبل  : %d ملف' % len(SELWORD_ALREADY))
+    print('القالب مااتطابقش : %d ملف' % len(SELWORD_NOMATCH))
+    if SELWORD_NOMATCH:
+        print('   ⚠', ' · '.join(SELWORD_NOMATCH[:15]))
     low=[x for x in SELWORD_FIXED if x[1]<6]
     if low:
         print('  ⚠ ملفات اتطبّق فيها جزء بس:')
         for fn2,c2 in low: print('   -',fn2,'(%d/7)'%c2)
 
     print('\n=== تقرير expandMuqattaat ===')
+    print('سليمة أصلاً: %d ملف' % len(MUQ_OK))
     if MUQ_FIXED:
         for fn2, st in MUQ_FIXED:
             print('  -', fn2, ':', st)
