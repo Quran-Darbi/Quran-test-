@@ -4430,6 +4430,66 @@ def port_selword_feature(path, out):
     SELWORD_FIXED.append((fn, n))
     return out, True
 
+# ======================================================
+# رسم التنوين في recitation.html
+# ------------------------------------------------------
+# بنية مختلفة عن ملفات الاختبارات: TEXTS قاموس بنصوص
+# backtick، ودالة التطبيع اسمها norm، وصفحات البقرة الـ48
+# كلها جوّه الملف الواحد فالربط بينها داخلي.
+# ======================================================
+REC_TANWEEN = []
+_REC_ENTRY = re.compile(r'(\w+)(\s*:\s*`)([^`]*)(`)')
+
+
+def fix_tanween_recitation(path, out):
+    i = out.find('const TEXTS')
+    if i < 0:
+        return out, False
+    j = out.find('const AYAH_START', i)
+    if j < 0:
+        j = len(out)
+    block = out[i:j]
+    texts = {m.group(1): m.group(3) for m in _REC_ENTRY.finditer(block)}
+    if not texts:
+        return out, False
+
+    def tail_for(key):
+        m = re.match(r'baqara_p(\d+)$', key)
+        if m:
+            nk = 'baqara_p%d' % (int(m.group(1)) + 1)
+            if nk in texts:
+                return texts[nk].split()[0]
+        return None                      # آخر السورة → إقلاب
+
+    changes = []
+
+    def fix_one(m):
+        key, sep, txt, end = m.groups()
+        ws = txt.split()
+        page = _TanweenPage(ws, tail_for(key))
+        out_ws = list(ws)
+        for n, w in enumerate(ws):
+            r = _t_find(w)
+            if not r:
+                continue
+            nxt = ws[n + 1] if n + 1 < len(ws) else page.tail
+            want = (_t_rule(_t_bare(nxt), False) if nxt is not None
+                    else 'IQLAB')
+            if not want:
+                continue
+            nw = _t_rebuild(w, r[0], r[1], r[2], want)
+            if nw and nw != w:
+                out_ws[n] = nw
+                changes.append((key, w, nw, nxt or '<آخر السورة>'))
+        return key + sep + ' '.join(out_ws) + end
+
+    newblock = _REC_ENTRY.sub(fix_one, block)
+    if not changes:
+        return out, False
+    REC_TANWEEN.extend(changes)
+    return out[:i] + newblock + out[j:], True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
