@@ -4859,6 +4859,89 @@ def upgrade_pct_display(path, out):
     return out, True
 
 
+# ======================================================
+# النسبة على أساس الكلمات بدل الأسئلة
+# ------------------------------------------------------
+# كان: نسبة = الأسئلة الصحيحة / إجمالي الأسئلة — فسؤال فيه
+# كلمة واحدة غلط بياخد صفر، و7/8 كلمة صحيحة بتظهر جنب 0%.
+# بقى: نسبة = إجمالي الكلمات الصحيحة / إجمالي الكلمات.
+# السهل (اختيار من متعدد) بيتحسب كلمة واحدة لكل سؤال.
+# ======================================================
+WORDSCORE_FIXED = []
+WORDSCORE_SKIPPED = []
+
+_WS_PCT = ('''function _pctNow(){const st=window._lastDiff||{};let a='';'''
+ '''if(st.total){const wp=Math.round(st.matched*100/st.total);'''
+ '''a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% '''
+ '''(${st.matched} من ${st.total} كلمة)</div>`;}'''
+ '''if(!wTotal)return a;const p=Math.round(wCorrect*100/wTotal);'''
+ '''return a+`<div style="margin-top:2px;font-size:13px;opacity:.75;">'''
+ '''النسبة حتى الآن: ${p}% (${wCorrect} من ${wTotal} كلمة)</div>`;}''')
+
+
+def switch_to_word_based_score(path, out):
+    fn = os.path.basename(path)
+    if 'wTotal' in out:
+        return out, False
+    if 'function _pctNow()' not in out:
+        WORDSCORE_SKIPPED.append(fn)
+        return out, False
+    before_src, before = out, quran_text_fingerprint(out)
+    n = 0
+
+    # ١) عدّادات الكلمات
+    out, c = re.subn(r"(let currentLevel\s*=\s*null[^;]*;)",
+                     lambda m: m.group(1) + 'let wCorrect=0,wTotal=0;', out, count=1)
+    n += c
+
+    # ٢) التصفير مع بداية أي اختبار
+    out, c = re.subn(r"qIndex\s*=\s*correctCount\s*=\s*wrongCount\s*=\s*0;",
+                     lambda m: m.group(0) + 'wCorrect=wTotal=0;', out, count=1)
+    n += c
+
+    # ٣) تجميع كلمات كل سؤال نصّي
+    out, c = re.subn(r"(const _st=window\._lastDiff\|\|\{\};)",
+                     lambda m: m.group(1) + 'if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}',
+                     out, count=1)
+    n += c
+
+    # ٤) السهل: كلمة واحدة لكل سؤال
+    out, c = re.subn(r"function checkMCQ\(\s*chosen\s*,\s*correct\s*,\s*btn\s*\)\s*\{",
+                     lambda m: m.group(0) + 'wTotal++;if(chosen===correct)wCorrect++;', out, count=1)
+    n += c
+
+    # ٥) التخطي: الكلمات تتحسب ناقصة
+    out, c = re.subn(r"(function skipQuestion\(\)\s*\{\s*const\s+q\s*=\s*questions\[qIndex\];)",
+                     lambda m: m.group(1) + "wTotal+=(currentLevel==='easy'?1:"
+                                            "String(q.answer||'').trim().split(/\\s+/).filter(Boolean).length||1);",
+                     out, count=1)
+    n += c
+
+    # ٦) عرض النسبة
+    out, c = re.subn(r"function _pctNow\(\)\{.*?\}\n", lambda m: _WS_PCT + '\n', out, count=1, flags=re.S)
+    n += c
+
+    # ٧) النتيجة النهائية بالكلمات
+    out, c = re.subn(r"const\s+pct\s*=\s*Math\.round\(\(\s*correctCount\s*/\s*questions\.length\s*\)\s*\*\s*100\);",
+                     lambda m: "const pct=wTotal?Math.round(wCorrect*100/wTotal):0;", out, count=1)
+    n += c
+    out = re.sub(r"(document\.getElementById\('result-score'\)\.textContent\s*=\s*)`[^`]*`;",
+                 lambda m: m.group(1) + "`${toArabicNum(wCorrect)} / ${toArabicNum(wTotal)} كلمة — "
+                                        "${toArabicNum(pct)}%  |  ${toArabicNum(correctCount)} / "
+                                        "${toArabicNum(questions.length)} سؤال`;", out, count=1)
+
+    required = ('let wCorrect=0,wTotal=0;', 'wCorrect+=_st.matched', 'wTotal++',
+                'wCorrect*100/wTotal')
+    if any(r not in out for r in required):
+        WORDSCORE_SKIPPED.append(fn)
+        return before_src, False
+    if quran_text_fingerprint(out) != before:
+        print('⛔ %s: البصمة اتغيّرت — التعديل اتلغى' % fn)
+        return before_src, False
+    WORDSCORE_FIXED.append((fn, n))
+    return out, True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -5483,6 +5566,7 @@ def fix_file(path):
     out, legacy_wd = upgrade_legacy_worddiff(path, out)
     out, verdict_fixed = fix_verdict_and_progress(path, out)
     out, pct_upgraded = upgrade_pct_display(path, out)
+    out, word_score = switch_to_word_based_score(path, out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
@@ -5656,6 +5740,11 @@ def main():
     if PCT_UPGRADED:
         print('\n=== ترقية عرض النسبة ===')
         print('اترقّت في %d ملف' % len(PCT_UPGRADED))
+
+    print('\n=== النسبة على أساس الكلمات ===')
+    print('اتطبّق في %d ملف | اتخطّى %d' % (len(WORDSCORE_FIXED), len(WORDSCORE_SKIPPED)))
+    if WORDSCORE_SKIPPED:
+        print('  ', ' · '.join(WORDSCORE_SKIPPED[:15]))
 
     print('\n=== تقرير الحكم والنسبة ===')
     print('اتطبّق كامل : %d ملف' % len(VERDICT_FIXED))
