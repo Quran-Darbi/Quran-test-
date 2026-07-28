@@ -4662,24 +4662,26 @@ def fix_verdict_and_progress(path, out):
     فالمطابقة بـregex.
     """
     fn = os.path.basename(path)
-    if 'window._lastDiff' in out:
-        return out, False
+    if 'const _ok=(userNorm===ansNorm)' in out:
+        return out, False                      # اتطبّق قبل كده
     before_src = out
     before = quran_text_fingerprint(out)
     n = 0
 
     # ١) الكلمات الزيادة تتسجّل بدل ما تتخطّى بصمت
-    out, c = re.subn(
-        r"else\s*if\(j>0&&\(i===0\|\|dp\[i\]\[j-1\]>=dp\[i-1\]\[j\]\)\)\s*\{\s*j--;\s*\}",
-        lambda m: "else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j]))"
-                  "{aligned.push({ref:uWords[j-1],user:uWords[j-1],extra:true});j--;}", out, count=1)
-    n += c
-    if not c:
-        VERDICT_SKIPPED.append((fn, 6))
-        return before_src, False
+    _already_modern = 'window._lastDiff' in out
+    if not _already_modern:
+        out, c = re.subn(
+            r"else\s*if\(j>0&&\(i===0\|\|dp\[i\]\[j-1\]>=dp\[i-1\]\[j\]\)\)\s*\{\s*j--;\s*\}",
+            lambda m: "else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j]))"
+                      "{aligned.push({ref:uWords[j-1],user:uWords[j-1],extra:true});j--;}", out, count=1)
+        n += c
+        if not c:
+            VERDICT_SKIPPED.append((fn, 6))
+            return before_src, False
 
     # ٢) الإحصاء يتخزن عالميًا عشان الحكم يستخدمه
-    out, c = re.subn(r"const correct=aligned\.filter\(x=>x\.ok\)\.length;",
+    out, c = (out, 0) if _already_modern else re.subn(r"const correct=aligned\.filter\(x=>x\.ok\)\.length;",
                      lambda m: "const correct=aligned.filter(x=>x.ok).length;"
                                "const extra=aligned.filter(x=>x.extra).length;"
                                "window._lastDiff={matched:correct,total:n,extra:extra};",
@@ -4687,14 +4689,14 @@ def fix_verdict_and_progress(path, out):
     n += c
 
     # ٣) عرض الكلمات الزيادة بلون مميز
-    out, c = re.subn(r"aligned\.map\(x\s*=>\s*x\.ok\s*\n?\s*\?",
+    out, c = (out, 0) if _already_modern else re.subn(r"aligned\.map\(x\s*=>\s*x\.ok\s*\n?\s*\?",
                      lambda m: "aligned.map(x=>x.extra?`<span style=\"color:#7a4a00;"
                                "background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;"
                                "display:inline-block;text-decoration:line-through;\" translate=\"no\" "
                                "class=\"notranslate\">${x.ref}</span>`:x.ok?", out, count=1)
     n += c
 
-    out, c = re.subn(r"\$\{correct\} / \$\{n\} كلمة صحيحة",
+    out, c = (out, 0) if _already_modern else re.subn(r"\$\{correct\} / \$\{n\} كلمة صحيحة",
                      lambda m: "${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}",
                      out, count=1)
     n += c
@@ -4714,6 +4716,14 @@ def fix_verdict_and_progress(path, out):
         r"if\(normalize\(userVal\)===normalize\(q\.answer\)\)\s*\{",
         lambda m: _JUDGE_BODY, out, count=1)
     n += c
+    # جيل تالت: const correct = normalize(q.answer); const user = normalize(userVal); if (user === correct) {
+    if not c:
+        out, c = re.subn(
+            r"const\s+correct\s*=\s*normalize\(q\.answer\);\s*"
+            r"const\s+user\s*=\s*normalize\(userVal\);\s*"
+            r"if\s*\(\s*user\s*===\s*correct\s*\)\s*\{",
+            lambda m: _JUDGE_BODY, out, count=1)
+        n += c
     out, c = re.subn(
         r"const userNorm=normalize\(userVal\)[,;]\s*(?:const\s+)?ansNorm=normalize\(q\.answer\);\s*"
         r"if\(userNorm===ansNorm\)\{",
@@ -4723,7 +4733,7 @@ def fix_verdict_and_progress(path, out):
                   "if(_ok){", out, count=1)
     n += c
 
-    out = re.sub(r"\+wordDiff\(userVal,q\.answer\)\+", "+_dh+", out, count=1)
+    out = re.sub(r"\+\s*wordDiff\(\s*userVal\s*,\s*q\.answer\s*\)\s*\+", "+_dh+", out, count=1)
 
     # ٥) النسبة الجارية
     if '_pctNow' not in out:
@@ -4741,8 +4751,9 @@ def fix_verdict_and_progress(path, out):
                       'for(let i=0;i<(count||45);i++){const piece=', 1)
 
     # ٧) النسبة + الاحتفال في رسائل النجاح والخطأ
-    out = re.sub(r"(fb\.className='feedback correct';fb\.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟')",
-                 lambda m: m.group(1) + "+_pctNow();spawnConfetti(18);", out, count=1)
+    out, _c2 = re.subn(r"(fb\.className\s*=\s*'feedback correct';\s*"
+                       r"fb\.innerHTML\s*=\s*'✓ أحسنتِ?! إجابة صحيحة تماماً 🌟')",
+                       lambda m: m.group(1) + "+_pctNow();spawnConfetti(18);", out, count=1)
     out = re.sub(r"fb\.className='feedback correct';fb\.textContent='✓ أحسنتِ!';",
                  lambda m: "fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! 🌟'+_pctNow();"
                            "spawnConfetti(18);", out, count=1)
@@ -4751,9 +4762,10 @@ def fix_verdict_and_progress(path, out):
 
     # كل التعديلات المطلوبة أو لا شيء — ملف نصّه متعدّل بيبقى
     # أخطر من ملف مالوش تعديل خالص
-    required = ('extra:true});j--;}', 'window._lastDiff={',
-                'x.extra?', 'كلمة زيادة',
-                'const _ok=(userNorm===ansNorm)', 'function _pctNow()')
+    required = (['const _ok=(userNorm===ansNorm)', 'function _pctNow()']
+                if _already_modern else
+                ['extra:true});j--;}', 'window._lastDiff', 'x.extra?', 'كلمة زيادة',
+                 'const _ok=(userNorm===ansNorm)', 'function _pctNow()'])
     missing = [r for r in required if r not in out]
     if missing:
         VERDICT_SKIPPED.append((fn, len(missing)))
@@ -4763,6 +4775,71 @@ def fix_verdict_and_progress(path, out):
         return before_src, False
     VERDICT_FIXED.append((fn, n))
     return out, True
+
+# ======================================================
+# ترقية wordDiff القديمة (مقارنة بالموضع) للنسخة الحديثة
+# ------------------------------------------------------
+# الجيل القديم بيقارن الكلمة رقم i بالكلمة رقم i — فكلمة
+# زيادة واحدة في الأول بتخلي كل اللي بعدها يبان غلط. النسخة
+# الحديثة بتعمل محاذاة (LCS) وبتحسب الزيادة والنقص بدقة.
+# الدالة عرض وحساب بس — مافيهاش نص قرآني، والبصمة بتتفحص.
+# ======================================================
+LEGACY_WD_UPGRADED = []
+
+_MODERN_WD = r'''function wordDiff(userVal, correctAnswer) {
+  const nm = s => normalize(s||'');
+  const uWords = nm(userVal).trim().split(/\s+/).filter(Boolean);
+  const cRaw = correctAnswer.trim().split(/\s+/).filter(Boolean);
+  const cWords = (typeof expandMuqattaat === 'function') ? expandMuqattaat(cRaw) : cRaw;
+  const n = cWords.length, m = uWords.length;
+  const dp = Array.from({length:n+1}, () => new Array(m+1).fill(0));
+  for (let i=1;i<=n;i++) for (let j=1;j<=m;j++) {
+    if (nm(cWords[i-1]) === nm(uWords[j-1])) dp[i][j] = dp[i-1][j-1] + 1;
+    else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+  }
+  const aligned = []; let i=n, j=m;
+  while (i>0 || j>0) {
+    if (i>0 && j>0 && nm(cWords[i-1]) === nm(uWords[j-1])) { aligned.push({ref:cWords[i-1],ok:true}); i--; j--; }
+    else if (j>0 && (i===0 || dp[i][j-1] >= dp[i-1][j])) { aligned.push({ref:uWords[j-1],extra:true}); j--; }
+    else { aligned.push({ref:cWords[i-1],ok:false}); i--; }
+  }
+  aligned.reverse();
+  const correct = aligned.filter(x=>x.ok).length;
+  const extra = aligned.filter(x=>x.extra).length;
+  window._lastDiff = {matched:correct, total:n, extra:extra};
+  const html = aligned.map(x => x.extra
+    ? '<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">'+x.ref+'</span>'
+    : x.ok
+    ? '<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">'+x.ref+'</span>'
+    : '<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">'+x.ref+'</span>'
+  ).join(' ');
+  return '<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft,#666);">'+correct+' / '+n+' كلمة صحيحة'+(extra?' — و'+extra+' كلمة زيادة':'')+'</div>'
+       + '<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">'+html+'</div>';
+}'''
+
+
+def upgrade_legacy_worddiff(path, out):
+    """يستبدل wordDiff القديمة (بدون محاذاة) بالنسخة الحديثة."""
+    fn = os.path.basename(path)
+    if 'window._lastDiff' in out:
+        return out, False                      # حديثة أصلاً
+    i = out.find('function wordDiff')
+    if i < 0:
+        return out, False
+    if 'const aligned' in out[i:i+2500]:
+        return out, False                      # فيها محاذاة — مش الجيل القديم
+    sp = _nf_span(out, 'function wordDiff')
+    if not sp:
+        return out, False
+    st, en = sp
+    before = quran_text_fingerprint(out)
+    new = out[:i] + _MODERN_WD + out[en:]
+    if quran_text_fingerprint(new) != before:
+        print('⛔ %s: البصمة اتغيّرت — الترقية اتلغت' % fn)
+        return out, False
+    LEGACY_WD_UPGRADED.append(fn)
+    return new, True
+
 
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
@@ -5385,6 +5462,7 @@ def fix_file(path):
     out, addwords_repaired = repair_broken_addwords(path, out)
 
     # 9ز. اتساق الحكم مع العرض + نسبة واحتفال لكل سؤال
+    out, legacy_wd = upgrade_legacy_worddiff(path, out)
     out, verdict_fixed = fix_verdict_and_progress(path, out)
 
     # 8. أضف Service Worker لو مش موجود
@@ -5551,6 +5629,10 @@ def main():
         for x in INDEX_NAV_FIXED: print('  - index.html :', x)
         for k, a, b, nx in REC_TANWEEN:
             print('  - recitation %s : %s → %s (التالية: %s)' % (k, a, b, nx))
+
+    if LEGACY_WD_UPGRADED:
+        print('\n=== ترقية wordDiff القديمة ===')
+        print('اترقّت في %d ملف' % len(LEGACY_WD_UPGRADED))
 
     print('\n=== تقرير الحكم والنسبة ===')
     print('اتطبّق كامل : %d ملف' % len(VERDICT_FIXED))
