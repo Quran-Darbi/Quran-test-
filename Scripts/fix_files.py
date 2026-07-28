@@ -4559,6 +4559,35 @@ def repair_broken_addwords(path, out):
     return out, True
 
 
+
+# ======================================================
+# تصادم شريط الأدوات مع الوضع الليلي في index.html
+# ------------------------------------------------------
+# .tools-fab بـ position:fixed;left:14px بتطلع برّه تدفّق
+# الصفحة وتقف في أقصى الشمال فوق. في صفحات السور المكان ده
+# فاضي (زر الرجوع على اليمين في RTL) فمافيش مشكلة — لكن في
+# index.html زر 🌙 آخر عنصر في nav-right يعني أقصى الشمال،
+# فالاتنين بيركبوا على بعض. الحل: نحجز مساحة على شمال الـnav
+# قد عرض الزرار العائم (14 + 34 + فاصل) فالمحتوى يبدأ بعده.
+# ======================================================
+INDEX_NAV_FIXED = []
+_NAV_RULE_RE = re.compile(r'(\bnav\s*\{[^}]*?padding:)(10px 18px)([^}]*\})')
+
+
+def fix_index_tools_overlap(path, out):
+    if os.path.basename(path) != 'index.html':
+        return out, False
+    if 'padding:10px 18px 10px 58px' in out:
+        return out, False                      # اتصلح قبل كده
+    new, n = _NAV_RULE_RE.subn(lambda m: m.group(1) + '10px 18px 10px 58px' + m.group(3),
+                               out, count=1)
+    if not n:
+        INDEX_NAV_FIXED.append('⚠ قاعدة nav مش متطابقة — اتخطّى')
+        return out, False
+    INDEX_NAV_FIXED.append('nav padding-left = 58px ✅')
+    return new, True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -5194,6 +5223,7 @@ def fix_index_recitation(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
     out = ar2en(src)
+    out, _idx_nav = fix_index_tools_overlap(path, out)
 
     # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
     out, _font_fixed = fix_font_import_to_link(out)
@@ -5336,6 +5366,12 @@ def main():
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
     audit_uniformity(root)
+
+    if INDEX_NAV_FIXED or REC_TANWEEN:
+        print('\n=== تقرير index/recitation ===')
+        for x in INDEX_NAV_FIXED: print('  - index.html :', x)
+        for k, a, b, nx in REC_TANWEEN:
+            print('  - recitation %s : %s → %s (التالية: %s)' % (k, a, b, nx))
 
     print('\n=== تقرير روابط التنقل ===')
     if BROKEN_NAV_FIXED:
