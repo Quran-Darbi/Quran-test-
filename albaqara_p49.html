@@ -268,17 +268,17 @@ const ORDER_AYAT=[
 ];
 
 
-let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
+let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;let wCorrect=0,wTotal=0;
 
 // ===== normalize مُصلحة =====
 function normalize(str){
   if(!str)return'';
   return str
-    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي')
-    .replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا')
-    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
-    .replace(/ـ\u064E\u0654/g,'ا').replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
-    .replace(/[ًࣰٌࣱٍࣲَُِّْٕٖٜٟۭٓٔٗ٘ٙٚٛٝٞۢ]/g,'')
+    .replace(/ي\u0653?ـ\u064E\u0654/g,'ي')
+    .replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')
+    .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'')
+    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
+    .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
     .replace(/وٱ(?!ل)/g,'و')
     .replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')
@@ -296,7 +296,8 @@ function normalize(str){
     .replace(/ة/g,'ه')
     .replace(/(?<=^|\s)ممنع(?=\s|$)/g,'ممن منع').replace(/(.)\1+/g,'$1')
     .replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)بلي(?=\s|$)/g,'بلا')
-    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك')
+    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')
+    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
     .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')
     .replace(/\s+/g,' ')
     .trim();
@@ -354,16 +355,15 @@ function wordDiff(userVal,correctAnswer){
   const aligned=[];let i=n,j=m;
   while(i>0||j>0){
     if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],user:uWords[j-1],ok:true});i--;j--;}
-    else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}
+    else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){aligned.push({ref:uWords[j-1],user:uWords[j-1],extra:true});j--;}
     else{aligned.push({ref:cWords[i-1],user:'',ok:false});i--;}
   }
   aligned.reverse();
-  const correct=aligned.filter(x=>x.ok).length;
-  const html=aligned.map(x=>x.ok
-    ?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`
+  const correct=aligned.filter(x=>x.ok).length;const extra=aligned.filter(x=>x.extra).length;window._lastDiff={matched:correct,total:n,extra:extra};
+  const html=aligned.map(x=>x.extra?`<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">${x.ref}</span>`:x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`
     :`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" title="${x.user||'محذوف'}">${x.ref}</span>`
   ).join(' ');
-  return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة</div>`
+  return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}</div>`
         +`<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;
 }
 
@@ -398,7 +398,7 @@ function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelec
 function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}
   if(!currentLevel)return;
   questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];
-  qIndex=correctCount=wrongCount=0;
+  qIndex=correctCount=wrongCount=0;wCorrect=wTotal=0;
   statuses=questions.map(()=>'pending');wrongIndices=[];
   const rb=document.getElementById('resume-banner');if(rb)rb.style.display='none';
   document.getElementById('level-card').style.display='none';
@@ -658,32 +658,45 @@ function renderHard(q,zone){
 }
 
 // ===== التحقق من الإجابات =====
+function _pctNow(){const st=window._lastDiff||{};let a='';if(st.total){const wp=Math.round(st.matched*100/st.total);a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% (${st.matched} من ${st.total} كلمة)</div>`;}// السطر التاني يظهر بس لو فيه أسئلة سابقة — من غير كده الرقمين واحد
+if(!wTotal||wTotal===st.total)return a;const p=Math.round(wCorrect*100/wTotal);return a+`<div style="margin-top:2px;font-size:13px;opacity:.75;">الإجمالي: ${p}% (${wCorrect} من ${wTotal} كلمة)</div>`;}
+
 function checkTextVal(q,userVal){
   const fb=document.getElementById('feedback');
-  // إعادة تفعيل الأزرار أولاً
-  document.getElementById('skip-btn').style.display='none';
-  document.getElementById('next-btn').style.display='';
-
-  const userNorm=normalize(normalizeHurufMuqattaa(userVal));
-  const ansNorm=normalize(normalizeHurufMuqattaa(q.answer));
-
-  if(userNorm===ansNorm){
+  const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
+  // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
+  const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
+  const userNorm=normalize(_pre(userVal));
+  const ansNorm=normalize(_pre(q.answer));
+  const _dh=wordDiff(userVal,q.answer);
+  const _st=window._lastDiff||{};
+  if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
+  // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
+  const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);
+  if(_ok){
     correctCount++;statuses[qIndex]='correct';
-    fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
+    fb.className='feedback correct';
+    fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟'+_pctNow();
+    if(typeof spawnConfetti==='function')spawnConfetti(18);
+    if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
   }else{
     wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
     fb.className='feedback wrong';
-    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';
+    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>'+_pctNow();
   }
-  fb.style.display='block';updateBadges();renderDotProgress();saveResumeState();
+  fb.style.display='block';
+  if(typeof updateBadges==='function')updateBadges();
+  if(typeof renderDotProgress==='function')renderDotProgress();
+  if(typeof saveResumeState==='function')saveResumeState();
 }
 
-function checkMCQ(chosen,correct,btn){
+function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;
   document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
   const fb=document.getElementById('feedback');
   if(chosen===correct){
     btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';
-    fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);
+    fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! 🌟'+_pctNow();spawnConfetti(18);const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);
   }else{
     btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
     document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});
@@ -704,7 +717,7 @@ function checkText(q){
 }
 
 function skipQuestion(){
-  const q=questions[qIndex];const fb=document.getElementById('feedback');
+  const q=questions[qIndex];wTotal+=(currentLevel==='easy'?1:String(q.answer||'').trim().split(/\s+/).filter(Boolean).length||1);const fb=document.getElementById('feedback');
   if(currentLevel==='easy'){
     document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});
     fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';
@@ -725,8 +738,8 @@ function nextQuestion(){qIndex++;if(qIndex>=questions.length){showResult();}else
 function showResult(){
   document.getElementById('quiz-area').style.display='none';
   document.getElementById('result-area').style.display='block';
-  const pct=Math.round((correctCount/questions.length)*100);
-  document.getElementById('result-score').textContent=`${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} — ${toArabicNum(pct)}%`;
+  const pct=wTotal?Math.round(wCorrect*100/wTotal):0;
+  document.getElementById('result-score').textContent=`${toArabicNum(wCorrect)} / ${toArabicNum(wTotal)} كلمة — ${toArabicNum(pct)}%  |  ${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} سؤال`;
   let icon,title,msg;
   if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنتِ الصفحة بالكامل';}
   else if(pct>=80){icon='✨';title='أحسنتِ!';msg='نتيجة رائعة، استمري في المراجعة';}
@@ -863,7 +876,7 @@ function renderReviewQ(){const q=reviewQuestions[reviewIdx];document.getElementB
 function reviewNav(dir){reviewIdx=Math.max(0,Math.min(reviewQuestions.length-1,reviewIdx+dir));renderReviewQ();}
 function endReview(){document.getElementById('review-area').style.display='none';document.getElementById('result-area').style.display='block';}
 
-function spawnConfetti(){const colors=['#4a7c4a','#c4a84a','#9db89d','#e0edd8','#7a9a7a'];const container=document.getElementById('confetti-container');if(!container)return;container.innerHTML='';container.style.display='block';for(let i=0;i<45;i++){const piece=document.createElement('div');piece.className='confetti-piece';piece.style.left=Math.random()*100+'vw';piece.style.background=colors[Math.floor(Math.random()*colors.length)];piece.style.animationDuration=(2+Math.random()*1.5)+'s';piece.style.animationDelay=(Math.random()*0.4)+'s';container.appendChild(piece);}setTimeout(()=>{container.style.display='none';container.innerHTML='';},4000);}
+function spawnConfetti(count){const colors=['#4a7c4a','#c4a84a','#9db89d','#e0edd8','#7a9a7a'];const container=document.getElementById('confetti-container');if(!container)return;container.innerHTML='';container.style.display='block';for(let i=0;i<(count||45);i++){const piece=document.createElement('div');piece.className='confetti-piece';piece.style.left=Math.random()*100+'vw';piece.style.background=colors[Math.floor(Math.random()*colors.length)];piece.style.animationDuration=(2+Math.random()*1.5)+'s';piece.style.animationDelay=(Math.random()*0.4)+'s';container.appendChild(piece);}setTimeout(()=>{container.style.display='none';container.innerHTML='';},4000);}
 
 (function enableSwipe(){const area=document.getElementById('quiz-area');if(!area)return;let startX=0,startY=0;area.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY;},{passive:true});area.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX;const dy=e.changedTouches[0].clientY-startY;if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy))return;const nextBtn=document.getElementById('next-btn');if(dx<0&&nextBtn&&nextBtn.style.display!=='none'){nextQuestion();}else if(dx>0){prevQuestion();}},{passive:true});})();
 

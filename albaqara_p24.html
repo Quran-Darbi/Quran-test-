@@ -954,21 +954,34 @@ function checkMCQ(chosen, correct, btn) {wTotal++;if(chosen===correct)wCorrect++
 function _pctNow(){const st=window._lastDiff||{};let a='';if(st.total){const wp=Math.round(st.matched*100/st.total);a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% (${st.matched} من ${st.total} كلمة)</div>`;}// السطر التاني يظهر بس لو فيه أسئلة سابقة — من غير كده الرقمين واحد
 if(!wTotal||wTotal===st.total)return a;const p=Math.round(wCorrect*100/wTotal);return a+`<div style="margin-top:2px;font-size:13px;opacity:.75;">الإجمالي: ${p}% (${wCorrect} من ${wTotal} كلمة)</div>`;}
 
-function checkTextVal(q, userVal) {
-  if (!userVal) return;
-  const fb = document.getElementById('feedback');
-  const userNorm=normalize(userVal),ansNorm=normalize(q.answer);const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);if(_ok){
-    correctCount++; statuses[qIndex]='correct';
-    fb.className = 'feedback correct';
-    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();spawnConfetti(18);;if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
-  } else {
-    wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
-    fb.className = 'feedback wrong';
-    fb.innerHTML = '✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>'+_pctNow();
+function checkTextVal(q,userVal){
+  const fb=document.getElementById('feedback');
+  const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
+  // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
+  const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
+  const userNorm=normalize(_pre(userVal));
+  const ansNorm=normalize(_pre(q.answer));
+  const _dh=wordDiff(userVal,q.answer);
+  const _st=window._lastDiff||{};
+  if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
+  // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
+  const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);
+  if(_ok){
+    correctCount++;statuses[qIndex]='correct';
+    fb.className='feedback correct';
+    fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟'+_pctNow();
+    if(typeof spawnConfetti==='function')spawnConfetti(18);
+    if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
+  }else{
+    wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
+    fb.className='feedback wrong';
+    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>'+_pctNow();
   }
-  fb.style.display = 'block';
-  updateBadges();
-  renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';
+  fb.style.display='block';
+  if(typeof updateBadges==='function')updateBadges();
+  if(typeof renderDotProgress==='function')renderDotProgress();
+  if(typeof saveResumeState==='function')saveResumeState();
 }
 function checkText(q) {
   const input = document.getElementById('user-input');
