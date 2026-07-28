@@ -855,18 +855,33 @@ function collapseMuqattaat(words,correctAnswer){
 /* ===== نهاية الحروف المقطعة ===== */
 function wordDiff(userVal, correctAnswer) {
   const nm = s => normalize(s||'');
-  const uWords = nm(userVal).split(' ');
-  const cWords = correctAnswer.split(' ');
-  let correct = 0;
-  const html = cWords.map((word, i) => {
-    const ok = nm(uWords[i]||'') === nm(word);
-    if(ok) correct++;
-    return ok
-      ? '<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">'+word+'</span>'
-      : '<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">'+word+'</span>';
-  }).join(' ');
-  return '<div style="margin-bottom:6px;font-size:13px;color:#666;">'+correct+' / '+cWords.length+' كلمة صحيحة</div>'
-       + '<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;color:#333;">'+html+'</div>';
+  const uWords = nm(userVal).trim().split(/\s+/).filter(Boolean);
+  const cRaw = correctAnswer.trim().split(/\s+/).filter(Boolean);
+  const cWords = (typeof expandMuqattaat === 'function') ? expandMuqattaat(cRaw) : cRaw;
+  const n = cWords.length, m = uWords.length;
+  const dp = Array.from({length:n+1}, () => new Array(m+1).fill(0));
+  for (let i=1;i<=n;i++) for (let j=1;j<=m;j++) {
+    if (nm(cWords[i-1]) === nm(uWords[j-1])) dp[i][j] = dp[i-1][j-1] + 1;
+    else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+  }
+  const aligned = []; let i=n, j=m;
+  while (i>0 || j>0) {
+    if (i>0 && j>0 && nm(cWords[i-1]) === nm(uWords[j-1])) { aligned.push({ref:cWords[i-1],ok:true}); i--; j--; }
+    else if (j>0 && (i===0 || dp[i][j-1] >= dp[i-1][j])) { aligned.push({ref:uWords[j-1],extra:true}); j--; }
+    else { aligned.push({ref:cWords[i-1],ok:false}); i--; }
+  }
+  aligned.reverse();
+  const correct = aligned.filter(x=>x.ok).length;
+  const extra = aligned.filter(x=>x.extra).length;
+  window._lastDiff = {matched:correct, total:n, extra:extra};
+  const html = aligned.map(x => x.extra
+    ? '<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">'+x.ref+'</span>'
+    : x.ok
+    ? '<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">'+x.ref+'</span>'
+    : '<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">'+x.ref+'</span>'
+  ).join(' ');
+  return '<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft,#666);">'+correct+' / '+n+' كلمة صحيحة'+(extra?' — و'+extra+' كلمة زيادة':'')+''+(extra?' — و'+extra+' كلمة زيادة':'')+'</div>'
+       + '<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">'+html+'</div>';
 }
 
 function normalize(str){
@@ -923,19 +938,19 @@ function checkMCQ(chosen, correct, btn) {
   renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';
 }
 
+function _pctNow(){const d=correctCount+wrongCount;if(!d)return'';const p=Math.round(correctCount*100/d);return `<div style="margin-top:6px;font-size:14px;opacity:.85;">النسبة حتى الآن: ${p}% (${correctCount}/${d})</div>`;}
+
 function checkTextVal(q, userVal) {
   if (!userVal) return;
   const fb = document.getElementById('feedback');
-  const correct = normalize(q.answer);
-  const user    = normalize(userVal);
-  if (user === correct) {
+  const userNorm=normalize(userVal),ansNorm=normalize(q.answer);const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);if(_ok){
     correctCount++; statuses[qIndex]='correct';
     fb.className = 'feedback correct';
-    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();spawnConfetti(18);;if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}
   } else {
     wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
     fb.className = 'feedback wrong';
-    fb.innerHTML = '✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';
+    fb.innerHTML = '✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>'+_pctNow();
   }
   fb.style.display = 'block';
   updateBadges();
