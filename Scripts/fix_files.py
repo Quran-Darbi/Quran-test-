@@ -4737,9 +4737,7 @@ def fix_verdict_and_progress(path, out):
 
     # ٥) النسبة الجارية
     if '_pctNow' not in out:
-        helper = ("\nfunction _pctNow(){const d=correctCount+wrongCount;if(!d)return'';"
-                  "const p=Math.round(correctCount*100/d);return `<div style=\"margin-top:6px;"
-                  "font-size:14px;opacity:.85;\">النسبة حتى الآن: ${p}% (${correctCount}/${d})</div>`;}\n")
+        helper = "\n" + _PCT_FN + "\n"
         out, c = re.subn(r"\nfunction checkTextVal\(", lambda m: helper + "\nfunction checkTextVal(",
                          out, count=1)
         n += c
@@ -4839,6 +4837,26 @@ def upgrade_legacy_worddiff(path, out):
         return out, False
     LEGACY_WD_UPGRADED.append(fn)
     return new, True
+
+
+
+_PCT_FN = 'function _pctNow(){const d=correctCount+wrongCount;const st=window._lastDiff||{};let a=\'\';if(st.total){const wp=Math.round(st.matched*100/st.total);a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% (${st.matched} من ${st.total} كلمة)</div>`;}if(!d)return a;return a+`<div style="margin-top:2px;font-size:13px;opacity:.7;">الأسئلة الصحيحة: ${correctCount} من ${d}</div>`;}'
+PCT_UPGRADED = []
+
+
+def upgrade_pct_display(path, out):
+    """النسبة القديمة كانت بتحسب الأسئلة بس — فإجابة فيها كلمة غلط
+    واحدة كانت بتطلّع 0% جنب "18/19 كلمة صحيحة". النسخة الجديدة
+    بتعرض دقة الإجابة الحالية بالكلمات + عدد الأسئلة الصحيحة."""
+    m = re.search(r"function _pctNow\(\)\{.*?\}\n", out, re.S)
+    if not m or 'دقة هذه الإجابة' in out:
+        return out, False
+    before = quran_text_fingerprint(out)
+    out = out[:m.start()] + _PCT_FN + '\n' + out[m.end():]
+    if quran_text_fingerprint(out) != before:
+        return out, False
+    PCT_UPGRADED.append(os.path.basename(path))
+    return out, True
 
 
 def fix_file(path):
@@ -5464,6 +5482,7 @@ def fix_file(path):
     # 9ز. اتساق الحكم مع العرض + نسبة واحتفال لكل سؤال
     out, legacy_wd = upgrade_legacy_worddiff(path, out)
     out, verdict_fixed = fix_verdict_and_progress(path, out)
+    out, pct_upgraded = upgrade_pct_display(path, out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
@@ -5633,6 +5652,10 @@ def main():
     if LEGACY_WD_UPGRADED:
         print('\n=== ترقية wordDiff القديمة ===')
         print('اترقّت في %d ملف' % len(LEGACY_WD_UPGRADED))
+
+    if PCT_UPGRADED:
+        print('\n=== ترقية عرض النسبة ===')
+        print('اترقّت في %d ملف' % len(PCT_UPGRADED))
 
     print('\n=== تقرير الحكم والنسبة ===')
     print('اتطبّق كامل : %d ملف' % len(VERDICT_FIXED))
