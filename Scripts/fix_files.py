@@ -4588,6 +4588,168 @@ def fix_index_tools_overlap(path, out):
     return new, True
 
 
+# ======================================================
+# اتساق الحكم مع العرض + نسبة واحتفال لكل سؤال
+# ------------------------------------------------------
+# ١) wordDiff كانت بتتخطّى الكلمات الزيادة من غير ما تعرضها،
+#    فالعداد يقول "23/23 صحيحة" والحكم يقول غلط. دلوقتي
+#    الكلمات الزيادة بتتعرض بلون مميز، والإحصاء بيتخزن.
+# ٢) الحكم بقى: تطابق الجملة كاملة *أو* كل كلمات الإجابة
+#    اتطابقت ومفيش كلمة زيادة — فمستحيل يظهر تناقض.
+# ٣) نسبة النجاح الجارية + احتفال بعد كل إجابة صحيحة.
+# ======================================================
+VERDICT_FIXED = []
+VERDICT_SKIPPED = []
+
+_VD_ALIGN_OLD = """  const aligned=[];let i=n,j=m;
+  while(i>0||j>0){
+    if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}
+    else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}
+    else{aligned.push({ref:cWords[i-1],ok:false});i--;}
+  }"""
+_VD_ALIGN_NEW = """  const aligned=[];let i=n,j=m;
+  while(i>0||j>0){
+    if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}
+    else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){aligned.push({ref:uWords[j-1],extra:true});j--;}
+    else{aligned.push({ref:cWords[i-1],ok:false});i--;}
+  }"""
+
+_VD_HTML_OLD = """  const correct=aligned.filter(x=>x.ok).length;
+  const html=aligned.map(x=>x.ok
+    ?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`
+    :`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`
+  ).join(' ');"""
+_VD_HTML_NEW = """  const correct=aligned.filter(x=>x.ok).length;
+  const extra=aligned.filter(x=>x.extra).length;
+  window._lastDiff={matched:correct,total:n,extra:extra};
+  const html=aligned.map(x=>x.extra
+    ?`<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">${x.ref}</span>`
+    :x.ok
+    ?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`
+    :`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`
+  ).join(' ');"""
+
+_VD_COUNT_OLD = """  return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة</div>`"""
+_VD_COUNT_NEW = """  return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}</div>`"""
+
+# الحكم: الجملة كاملة أو المطابقة الكاملة كلمة كلمة
+_VD_JUDGE_OLD = """  const userNorm=normalize(userVal);
+  const ansNorm=normalize(q.answer);
+  if(userNorm===ansNorm){"""
+_VD_JUDGE_NEW = """  const userNorm=normalize(userVal);
+  const ansNorm=normalize(q.answer);
+  const _dh=wordDiff(userVal,q.answer);
+  const _st=window._lastDiff||{};
+  // الحكم من نفس مصدر العرض: لو كل كلمات الإجابة اتطابقت ومفيش
+  // كلمة زيادة، تبقى صح — عشان مايحصلش تناقض بين "٢٣/٢٣ صحيحة"
+  // والنتيجة "خطأ"
+  const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);
+  if(_ok){"""
+
+_VD_WRONG_OLD = """    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';"""
+_VD_WRONG_NEW = """    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>';"""
+
+
+def _vd_progress_snippet(correct_msg):
+    """رسالة النجاح + النسبة الجارية + احتفال"""
+    return (correct_msg[:-1] + "+_pctNow();spawnConfetti(18);")
+
+
+def fix_verdict_and_progress(path, out):
+    """يخلي الحكم من نفس مصدر العرض، ويضيف نسبة واحتفال لكل سؤال.
+
+    فيه تلات أجيال قالب (مضغوط، متباعد، ومتباعد بحقل user زيادة)
+    فالمطابقة بـregex.
+    """
+    fn = os.path.basename(path)
+    if 'window._lastDiff' in out:
+        return out, False
+    before_src = out
+    before = quran_text_fingerprint(out)
+    n = 0
+
+    # ١) الكلمات الزيادة تتسجّل بدل ما تتخطّى بصمت
+    out, c = re.subn(
+        r"else if\(j>0&&\(i===0\|\|dp\[i\]\[j-1\]>=dp\[i-1\]\[j\]\)\)\{j--;\}",
+        lambda m: "else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j]))"
+                  "{aligned.push({ref:uWords[j-1],extra:true});j--;}", out, count=1)
+    n += c
+    if not c:
+        VERDICT_SKIPPED.append((fn, 6))
+        return before_src, False
+
+    # ٢) الإحصاء يتخزن عالميًا عشان الحكم يستخدمه
+    out, c = re.subn(r"const correct=aligned\.filter\(x=>x\.ok\)\.length;",
+                     lambda m: "const correct=aligned.filter(x=>x.ok).length;"
+                               "const extra=aligned.filter(x=>x.extra).length;"
+                               "window._lastDiff={matched:correct,total:n,extra:extra};",
+                     out, count=1)
+    n += c
+
+    # ٣) عرض الكلمات الزيادة بلون مميز
+    out, c = re.subn(r"aligned\.map\(x=>x\.ok\s*\n?\s*\?",
+                     lambda m: "aligned.map(x=>x.extra?`<span style=\"color:#7a4a00;"
+                               "background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;"
+                               "display:inline-block;text-decoration:line-through;\" translate=\"no\" "
+                               "class=\"notranslate\">${x.ref}</span>`:x.ok?", out, count=1)
+    n += c
+
+    out, c = re.subn(r"\$\{correct\} / \$\{n\} كلمة صحيحة",
+                     lambda m: "${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}",
+                     out, count=1)
+    n += c
+
+    # ٤) الحكم: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
+    out, c = re.subn(
+        r"const userNorm=normalize\(userVal\)[,;]\s*(?:const\s+)?ansNorm=normalize\(q\.answer\);\s*"
+        r"if\(userNorm===ansNorm\)\{",
+        lambda m: "const userNorm=normalize(userVal),ansNorm=normalize(q.answer);"
+                  "const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};"
+                  "const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);"
+                  "if(_ok){", out, count=1)
+    n += c
+
+    out = re.sub(r"\+wordDiff\(userVal,q\.answer\)\+", "+_dh+", out, count=1)
+
+    # ٥) النسبة الجارية
+    if '_pctNow' not in out:
+        helper = ("\nfunction _pctNow(){const d=correctCount+wrongCount;if(!d)return'';"
+                  "const p=Math.round(correctCount*100/d);return `<div style=\"margin-top:6px;"
+                  "font-size:14px;opacity:.85;\">النسبة حتى الآن: ${p}% (${correctCount}/${d})</div>`;}\n")
+        out, c = re.subn(r"\nfunction checkTextVal\(", lambda m: helper + "\nfunction checkTextVal(",
+                         out, count=1)
+        n += c
+
+    # ٦) احتفال بعدد قابل للتحكم
+    out = out.replace('function spawnConfetti(){const colors=',
+                      'function spawnConfetti(count){const colors=', 1)
+    out = out.replace('for(let i=0;i<45;i++){const piece=',
+                      'for(let i=0;i<(count||45);i++){const piece=', 1)
+
+    # ٧) النسبة + الاحتفال في رسائل النجاح والخطأ
+    out = re.sub(r"(fb\.className='feedback correct';fb\.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟')",
+                 lambda m: m.group(1) + "+_pctNow();spawnConfetti(18);", out, count=1)
+    out = re.sub(r"fb\.className='feedback correct';fb\.textContent='✓ أحسنتِ!';",
+                 lambda m: "fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! 🌟'+_pctNow();"
+                           "spawnConfetti(18);", out, count=1)
+    out = re.sub(r"(\+_dh\+'</span>')(;)", lambda m: m.group(1) + "+_pctNow()" + m.group(2),
+                 out, count=1)
+
+    # كل التعديلات المطلوبة أو لا شيء — ملف نصّه متعدّل بيبقى
+    # أخطر من ملف مالوش تعديل خالص
+    required = ('aligned.push({ref:uWords[j-1],extra:true})', 'window._lastDiff={',
+                'aligned.map(x=>x.extra?', 'كلمة زيادة',
+                'const _ok=(userNorm===ansNorm)', 'function _pctNow()')
+    missing = [r for r in required if r not in out]
+    if missing:
+        VERDICT_SKIPPED.append((fn, len(missing)))
+        return before_src, False
+    if quran_text_fingerprint(out) != before:
+        print('⛔ %s: البصمة اتغيّرت — التعديل اتلغى' % fn)
+        return before_src, False
+    VERDICT_FIXED.append((fn, n))
+    return out, True
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -5208,6 +5370,9 @@ def fix_file(path):
     out, selword_ported = port_selword_feature(path, out)
     out, addwords_repaired = repair_broken_addwords(path, out)
 
+    # 9ز. اتساق الحكم مع العرض + نسبة واحتفال لكل سؤال
+    out, verdict_fixed = fix_verdict_and_progress(path, out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -5372,6 +5537,12 @@ def main():
         for x in INDEX_NAV_FIXED: print('  - index.html :', x)
         for k, a, b, nx in REC_TANWEEN:
             print('  - recitation %s : %s → %s (التالية: %s)' % (k, a, b, nx))
+
+    print('\n=== تقرير الحكم والنسبة ===')
+    print('اتطبّق كامل : %d ملف' % len(VERDICT_FIXED))
+    print('اتخطّى      : %d ملف (قالب مختلف — اتساب زي ما هو)' % len(VERDICT_SKIPPED))
+    if VERDICT_SKIPPED:
+        print('  ', ' · '.join(x[0] for x in VERDICT_SKIPPED[:20]))
 
     print('\n=== تقرير روابط التنقل ===')
     if BROKEN_NAV_FIXED:
