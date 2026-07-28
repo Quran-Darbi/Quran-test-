@@ -1592,7 +1592,7 @@ NEXT_SEQUENCE = (
     ['alfatiha'] +
     [f'albaqara_p{i}' for i in range(2, 50)] +
     [
-        'annaba', 'annaziat', 'abasa', 'attakwir', 'al-infitar',
+        'annaba', 'annaziat', 'abasa', 'attakwir', 'alinfitar',
         'almutaffifin', 'alinshiqaq', 'alburuj', 'altariq', 'alaala',
         'alghasiya', 'alfajr', 'albalad', 'alshams', 'allayl', 'alduha',
         'alsharh', 'atteen', 'alalaq', 'alqadr', 'albayyina', 'alzalzala',
@@ -4490,6 +4490,46 @@ def fix_tanween_recitation(path, out):
     return out[:i] + newblock + out[j:], True
 
 
+
+# ======================================================
+# إصلاح روابط تنقل مكسورة
+# ------------------------------------------------------
+# NEXT_SEQUENCE كان فيه 'al-infitar' بشرطة والملف الحقيقي
+# اسمه alinfitar.html. النتيجة: alinfitar نفسه مكانش بياخد
+# صف تنقل خالص (المفتاح مش في الخريطة)، و attakwir/almutaffifin
+# كان عندهم روابط لملف مش موجود (404). دالة add_page_nav_row
+# بتسيب الأزرار الملفوفة صح من غير ما تلمسها، فالروابط الغلط
+# كانت هتفضل حتى بعد تصليح الاسم — عشان كده الإصلاح ده منفصل.
+# ======================================================
+BROKEN_NAV_FIXED = []
+_VALID_PAGE_KEYS = set(NEXT_SEQUENCE)
+
+
+def fix_broken_page_nav_links(path, out):
+    """يصلّح أي href في صف التنقل بيشاور على مفتاح مش في السلسلة."""
+    fn = os.path.basename(path)
+    fixed = []
+
+    def _one(m):
+        key = m.group(2)
+        if key in _VALID_PAGE_KEYS:
+            return m.group(0)
+        cand = key.replace('-', '')
+        if cand in _VALID_PAGE_KEYS:
+            fixed.append(key + ' → ' + cand)
+            return m.group(1) + cand + m.group(3)
+        fixed.append('⚠ ' + key + ' (مش معروف)')
+        return m.group(0)
+
+    out2 = re.sub(r'(href=")([\w\-]+)(\.html"[^>]*class="(?:next|prev)-page-btn")',
+                  _one, out)
+    out2 = re.sub(r'(href=")([\w\-]+)(\.html" class="(?:next|prev)-page-btn")',
+                  _one, out2)
+    if fixed:
+        BROKEN_NAV_FIXED.append((fn, sorted(set(fixed))))
+    return out2, out2 != out
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -5034,6 +5074,7 @@ def fix_file(path):
     # ====================================================
     # 9هـ. صف مضغوط: ⏮️ السابق / التالي ⏭️ — انتقال مباشر بين الصفحات
     out, page_nav_added = add_page_nav_row(path, out)
+    out, nav_links_fixed = fix_broken_page_nav_links(path, out)
 
 
     # ====================================================
@@ -5265,6 +5306,13 @@ def main():
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
     audit_uniformity(root)
+
+    print('\n=== تقرير روابط التنقل ===')
+    if BROKEN_NAV_FIXED:
+        for fn2, w in BROKEN_NAV_FIXED:
+            print('  -', fn2, ':', ' · '.join(w))
+    else:
+        print('كل الروابط سليمة ✅')
 
     print('\n=== تقرير ميزة تحديد الكلمة (صعب) ===')
     print('اتطبّقت في %d ملف' % len(SELWORD_FIXED))
