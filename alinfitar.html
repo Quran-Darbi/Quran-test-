@@ -290,21 +290,21 @@ let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctC
 function normalize(str){
   if(!str)return'';
   return str
-    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
+    .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
     .replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي')
     .replace(/وٱ(?!ل)/g,'و').replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و').replace(/اٰ/g,'ا')
     .replace(/نٰ/g,'نا')
     .replace(/ٰ/g,'ا')
-    
+    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     .replace(/[آأإٱا]/g,'ا')
-    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ئؤ]/g,'ا').replace(/ء/g,'')
+    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'')
     .replace(/ة/g,'ه')
     .replace(/[ىی]/g,'ي')
     .replace(/ه[ۥۦ]/g,'ه')
     .replace(/[ۥۦ]/g,'')
     .replace(/واه(?=\s|$)/g,'اه')
     .replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)بلي(?=\s|$)/g,'بلا')
-    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/هاذا/g,'هذا').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن').replace(/اولك/g,'اولاك').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها')
+    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
     .replace(/نب/g,'مب')
     .replace(/لل/g,'ل')
     .replace(/(?<=^|\s)ممنع(?=\s|$)/g,'ممن منع').replace(/(.)\1+/g,'$1')
@@ -341,15 +341,25 @@ function collapseMuqattaat(words,correctAnswer){
   return [cw[0]].concat(words.slice(names.length));
 }
 /* ===== نهاية الحروف المقطعة ===== */
+function expandMuqattaat(words){
+  const out=[];let i=0;
+  while(i<words.length&&i<2){
+    const key=normalize(words[i]);
+    if(MUQATTAAT[key]){out.push(...MUQATTAAT[key]);i++;}
+    else break;
+  }
+  for(;i<words.length;i++)out.push(words[i]);
+  return out;
+}
 function wordDiff(userVal,correctAnswer){
   const nm=s=>{
     if(!s)return'';
     return s
       .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
       .replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا')
-      .replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ئؤ]/g,'ا').replace(/ء/g,'').replace(/ة/g,'ه')
+      .replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه')
       .replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')
-      .replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/هاذا/g,'هذا').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن').replace(/اولك/g,'اولاك').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها')
+      .replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
       .replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1')
       .replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();
   };
@@ -476,7 +486,7 @@ function renderHard(q,zone){
   const vZone=document.createElement('div');zone.appendChild(vZone);
   const tZone=document.createElement('div');tZone.style.display='none';zone.appendChild(tZone);
 
-  let _rec=null,_recog=false,_words=[],_cur='';
+  let _rec=null,_recog=false,_words=[],_cur='',_sel=null;
   const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
   const _secure=location.protocol==='https:'||location.hostname==='localhost';
 
@@ -511,14 +521,39 @@ function renderHard(q,zone){
         return out;
       }
 
+        function _addWords(nw){
+    if(!nw||!nw.length)return;
+    nw=_fixWords(nw);
+    if(_sel!==null&&_sel<_words.length){_words.splice(_sel,1);_words.splice(_sel,0,...nw);_sel=null;}
+    else{_addWords(nw);}
+  }
+
+
       function renderWords(){
     if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}
     txBox.style.display='block';txBox.innerHTML='';
+    if(_sel!==null&&_sel>=_words.length)_sel=null;
+    if(_sel!==null){
+      const bar=document.createElement('div');
+      bar.style.cssText='width:100%;box-sizing:border-box;background:var(--hint-btn-bg);border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
+      const t=document.createElement('span');
+      t.appendChild(document.createTextNode('المحدَّدة: '));
+      const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
+      b.textContent=_words[_sel];t.appendChild(b);
+      t.appendChild(document.createTextNode(' — سجّلي البديل'));
+      const x=document.createElement('button');x.type='button';x.textContent='✕ حذف';
+      x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
+      x.onclick=()=>{_words.splice(_sel,1);_sel=null;renderWords();};
+      bar.appendChild(t);bar.appendChild(x);txBox.appendChild(bar);
+    }
+
     _words.forEach((w,i)=>{
       const span=document.createElement('span');span.className='rec-word';
       span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';
-      span.textContent=w;span.title='انقري للحذف';
-      span.onclick=()=>{_words.splice(i,1);renderWords();};
+      span.textContent=w;
+      if(i===_sel){span.style.outline='2px solid var(--gold)';span.style.background='var(--hint-btn-bg)';span.style.fontWeight='700';span.title='اضغطي لإلغاء التحديد';}
+      else{span.title='اضغطي لتحديدها ثم سجّلي البديل';}
+      span.onclick=()=>{_sel=(_sel===i)?null:i;renderWords();};
       txBox.appendChild(span);
     });
     if(_cur){const cur=document.createElement('span');cur.style.cssText='color:var(--text-soft);font-style:italic;';cur.textContent=' '+_cur;txBox.appendChild(cur);}
@@ -538,17 +573,17 @@ function renderHard(q,zone){
     r.onstart=()=>{_recog=true;_cur='';_setB('rec');renderWords();};
     r.onresult=e=>{
       for(let i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal){_words=_fixWords(_words.concat(e.results[i][0].transcript.trim().split(/\s+/)));_cur='';}
+        if(e.results[i].isFinal){_addWords(e.results[i][0].transcript.trim().split(/\s+/));_cur='';}
       }
       renderWords();
     };
     r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};
-    r.onend=()=>{_recog=false;if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\s+/)));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
+    r.onend=()=>{_recog=false;if(_cur){_addWords(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};
     return r;
   }
 
   clrBtn.onclick=()=>{
-    if(_recog){try{_rec.stop();}catch(e){}_recog=false;}_rec=null;_words=[];_cur='';
+    if(_recog){try{_rec.stop();}catch(e){}_recog=false;}_rec=null;_words=[];_cur='';_sel=null;
     txBox.innerHTML='';txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';
     _setB('idle');recBtn.disabled=false;
   };
