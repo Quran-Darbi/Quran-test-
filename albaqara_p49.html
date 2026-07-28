@@ -669,7 +669,7 @@ function checkTextVal(q,userVal){
 
   if(userNorm===ansNorm){
     correctCount++;statuses[qIndex]='correct';
-    fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}
+    fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
   }else{
     wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
     fb.className='feedback wrong';
@@ -683,7 +683,7 @@ function checkMCQ(chosen,correct,btn){
   const fb=document.getElementById('feedback');
   if(chosen===correct){
     btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';
-    fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);
+    fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);
   }else{
     btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
     document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});

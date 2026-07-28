@@ -947,7 +947,7 @@ function checkTextVal(q, userVal) {
   const userNorm=normalize(userVal),ansNorm=normalize(q.answer);const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);if(_ok){
     correctCount++; statuses[qIndex]='correct';
     fb.className = 'feedback correct';
-    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();spawnConfetti(18);;if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();spawnConfetti(18);;if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
   } else {
     wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
     fb.className = 'feedback wrong';
@@ -972,7 +972,7 @@ function checkText(q) {
   if (user === correct) {
     correctCount++; statuses[qIndex]='correct';
     fb.className = 'feedback correct';
-    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}
   } else {
     wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
     fb.className = 'feedback wrong';
