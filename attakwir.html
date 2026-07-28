@@ -670,7 +670,7 @@ function renderHard(q,zone){
   zone.appendChild(hBtn);
 }
 
-function _pctNow(){const d=correctCount+wrongCount;if(!d)return'';const p=Math.round(correctCount*100/d);return `<div style="margin-top:6px;font-size:14px;opacity:.85;">النسبة حتى الآن: ${p}% (${correctCount}/${d})</div>`;}
+function _pctNow(){const d=correctCount+wrongCount;const st=window._lastDiff||{};let a='';if(st.total){const wp=Math.round(st.matched*100/st.total);a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% (${st.matched} من ${st.total} كلمة)</div>`;}if(!d)return a;return a+`<div style="margin-top:2px;font-size:13px;opacity:.7;">الأسئلة الصحيحة: ${correctCount} من ${d}</div>`;}
 
 function checkTextVal(q,userVal){
   const fb=document.getElementById('feedback');

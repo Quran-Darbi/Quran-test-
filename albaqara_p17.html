@@ -845,6 +845,16 @@ function collapseMuqattaat(words,correctAnswer){
   return [cw[0]].concat(words.slice(names.length));
 }
 /* ===== نهاية الحروف المقطعة ===== */
+function expandMuqattaat(words){
+  const out=[];let i=0;
+  while(i<words.length&&i<2){
+    const key=normalize(words[i]);
+    if(MUQATTAAT[key]){out.push(...MUQATTAAT[key]);i++;}
+    else break;
+  }
+  for(;i<words.length;i++)out.push(words[i]);
+  return out;
+}
 function wordDiff(userVal, correctAnswer) {
   const nm = s => normalize(s||'');
   const uWords = nm(userVal).trim().split(/\s+/).filter(Boolean);
@@ -930,7 +940,7 @@ function checkMCQ(chosen, correct, btn) {
   renderDotProgress(); saveResumeState(); document.getElementById('next-btn').style.display = 'block'; document.getElementById('skip-btn').style.display = 'none';
 }
 
-function _pctNow(){const d=correctCount+wrongCount;if(!d)return'';const p=Math.round(correctCount*100/d);return `<div style="margin-top:6px;font-size:14px;opacity:.85;">النسبة حتى الآن: ${p}% (${correctCount}/${d})</div>`;}
+function _pctNow(){const d=correctCount+wrongCount;const st=window._lastDiff||{};let a='';if(st.total){const wp=Math.round(st.matched*100/st.total);a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% (${st.matched} من ${st.total} كلمة)</div>`;}if(!d)return a;return a+`<div style="margin-top:2px;font-size:13px;opacity:.7;">الأسئلة الصحيحة: ${correctCount} من ${d}</div>`;}
 
 function checkTextVal(q, userVal) {
   if (!userVal) return;
@@ -963,7 +973,7 @@ function checkText(q) {
   if (user === correct) {
     correctCount++; statuses[qIndex]='correct';
     fb.className = 'feedback correct';
-    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';
+    fb.innerHTML = '✓ أحسنت! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}
   } else {
     wrongCount++; statuses[qIndex]='wrong'; wrongIndices.push(qIndex);
     fb.className = 'feedback wrong';
