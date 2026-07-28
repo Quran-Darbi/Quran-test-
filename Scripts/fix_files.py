@@ -4026,18 +4026,40 @@ def fix_tanween_rasm(path, out):
 _U_ARRAYS = ('AYAT', 'ORDER_AYAT', 'EASY_Q', 'MEDIUM_Q', 'HARD_Q')
 
 # (اسم القاعدة, بصمة وجودها في الكود, الحالة اللي تخلّيها لازمة في النص)
+# (اسم القاعدة, حروف لازم تظهر كلها جوه *نفس* الـreplace,
+#  بديل مطلوب أو None, الحالة اللي تخلّي السورة محتاجاها)
+# ملحوظة: القواعد بتتكتب كفئات حروف زي [ىی]ٰ فالحرفين مش
+# متلاصقين — عشان كده الفحص بيتم على محتوى كل replace على حدة
+# مش بالبحث في النص الخام (ده كان بيدّي إنذارات كاذبة).
 _U_RULES = [
-    ('١ كشيدة',      r'\\u0640|ـ\]',                 '\u0640'),
-    ('٣ هؤلاء',      r'هالا',                        'هؤلاء|هاؤلاء|ه[ؤو]لا'),
-    ('٤ وٱ وصل',     r'وٱ|\\u0648\\u0671',            '\u0648\u0671'),
-    ('٥ وٰ→وا',      r'وٰ|\\u0648\\u0670',            '\u0648\u0670'),
-    ('٦ يٰ→يا',      r'يٰ|\\u064A\\u0670',            '\u064A\u0670'),
-    ('٧ ىٰ',         r'ىٰ|\\u0649\\u0670',            '\u0649\u0670'),
-    ('٩ ۥ/ۦ',        r'ۥ|ۦ|\\u06E5|\\u06E6',          '\u06E5|\u06E6'),
-    ('١٠ ئؤ→ا',      r'\[ئؤ\]|\[\\u0626\\u0624\]',    '\u0626|\u0624'),
-    ('١١ رحمان',     r'رحمان',                       'رَّحۡمَٰن|رَحۡمَٰن|رحمٰن'),
-    ('١٣ اولئك',     r'اولك|اولاك',                  '\u0623\u064F\u0648\u0652\u0644|أولئك|ولَٰٓئِك'),
+    ('١ كشيدة',  ['\u0640'],           None,     '\u0640'),
+    ('٣ هؤلاء',  [],                    'هالا',   'ه[ؤو]لا|ها[ؤو]لا'),
+    ('٤ وٱ وصل', ['\u0648', '\u0671'], None,     '\u0648\u0671'),
+    ('٥ وٰ→وا',  ['\u0648', '\u0670'], None,     '\u0648\u0670'),
+    ('٦ يٰ→يا',  ['\u064A', '\u0670'], 'يا',     '\u064A\u0670'),
+    ('٧ ىٰ',     ['\u0649', '\u0670'], None,     '\u0649\u0670'),
+    ('٩ ۥ/ۦ',    ['\u06E5'],           None,     '\u06E5'),
+    ('٩ ۦ',      ['\u06E6'],           None,     '\u06E6'),
+    ('١٠ ئؤ→ا',  ['\u0626'],           None,     '\u0626|\u0624'),
+    ('١١ رحمان', ['رحمان'],             None,     'رَّحۡمَٰن|رَحۡمَٰن|رحمٰن|رَّحْمَٰن'),
+    ('١٣ اولئك', [],                    'اولاك',  'ولَٰٓئِك|أولئك|أُوْلَٰٓئِك'),
 ]
+
+_U_REPL = re.compile(r"\.replace\(\s*/((?:[^/\\\n]|\\.)+)/[a-z]*\s*,\s*(?:'((?:[^'\\]|\\.)*)'|\"((?:[^\"\\]|\\.)*)\")")
+
+
+def _u_rule_present(body, chars, repl):
+    """القاعدة موجودة لو فيه replace واحد بيحقق الشرطين."""
+    for m in _U_REPL.finditer(body):
+        pat = m.group(1)
+        rep = m.group(2) if m.group(2) is not None else (m.group(3) or '')
+        if chars and not all(ch in pat for ch in chars):
+            continue
+        if repl is not None and repl not in rep:
+            continue
+        return True
+    return False
+
 
 
 def quran_text_fingerprint(html):
@@ -4085,10 +4107,10 @@ def _u_probe(html, is_rec):
     seg = html[i:i + 8000] if i >= 0 else ''
     txt = _u_quran_text(html) if not is_rec else html
     need = []
-    for name, sig, trig in _U_RULES:
+    for name, chars, repl, trig in _U_RULES:
         if not re.search(trig, txt):
             continue                       # السورة مش محتاجة القاعدة دي
-        if not re.search(sig, seg):
+        if not _u_rule_present(seg, chars, repl):
             need.append(name)
     p['_ناقص_ومطلوب'] = need
     a = b = 0
@@ -4716,6 +4738,18 @@ def fix_verdict_and_progress(path, out):
         r"if\(normalize\(userVal\)===normalize\(q\.answer\)\)\s*\{",
         lambda m: _JUDGE_BODY, out, count=1)
     n += c
+    # صيغة عامة: أي تعريفين لـuserNorm/ansNorm مهما كان اللي جواهم
+    # (بعض الملفات بتلفّ التطبيع بدالة زيادة زي normalizeHurufMuqattaa)
+    if not c:
+        out, c = re.subn(
+            r"(const\s+userNorm\s*=\s*[^;]+;\s*const\s+ansNorm\s*=\s*[^;]+;)\s*"
+            r"if\s*\(\s*userNorm\s*===\s*ansNorm\s*\)\s*\{",
+            lambda m: m.group(1) +
+                      "const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};"
+                      "const _ok=(userNorm===ansNorm)||"
+                      "(_st.total>0&&_st.matched===_st.total&&!_st.extra);if(_ok){",
+            out, count=1)
+        n += c
     # جيل تالت: const correct = normalize(q.answer); const user = normalize(userVal); if (user === correct) {
     if not c:
         out, c = re.subn(
@@ -4992,6 +5026,82 @@ def dedup_pct_lines(path, out):
         return out, False
     PCT_DEDUP.append(os.path.basename(path))
     return new, True
+
+
+# ======================================================
+# مكتبة الدوال القياسية
+# ------------------------------------------------------
+# بدل ما نلاحق ٥–٩ صيغ مختلفة بالـregex كل مرة، فيه نسخة
+# واحدة معتمدة لكل دالة والسكربت بيستبدلها في كل الملفات.
+# بعد كده أي تعديل = تعديل نص واحد هنا.
+# الدوال دي منطق عرض وتصحيح — مافيهاش نص قرآني، والبصمة
+# بتتفحص قبل وبعد كضمانة.
+# ======================================================
+CANON_APPLIED = {}
+CANON_SKIPPED = {}
+
+CANON_FN = {}
+
+CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
+  const fb=document.getElementById('feedback');
+  const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
+  // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
+  const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
+  const userNorm=normalize(_pre(userVal));
+  const ansNorm=normalize(_pre(q.answer));
+  const _dh=wordDiff(userVal,q.answer);
+  const _st=window._lastDiff||{};
+  if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
+  // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
+  const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);
+  if(_ok){
+    correctCount++;statuses[qIndex]='correct';
+    fb.className='feedback correct';
+    fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟'+_pctNow();
+    if(typeof spawnConfetti==='function')spawnConfetti(18);
+    if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
+  }else{
+    wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
+    fb.className='feedback wrong';
+    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>'+_pctNow();
+  }
+  fb.style.display='block';
+  if(typeof updateBadges==='function')updateBadges();
+  if(typeof renderDotProgress==='function')renderDotProgress();
+  if(typeof saveResumeState==='function')saveResumeState();
+}'''
+
+CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ء').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
+
+
+def apply_canonical_functions(path, out, names=None):
+    """يستبدل الدوال المشتركة بالنسخة القياسية الواحدة."""
+    fn = os.path.basename(path)
+    before = quran_text_fingerprint(out)
+    done = []
+    for name in (names or CANON_FN):
+        head = 'function %s(' % name
+        sp = _nf_span(out, head)
+        if not sp:
+            CANON_SKIPPED.setdefault(name, []).append(fn)
+            continue
+        st, en = sp
+        i = out.find(head)
+        cur = out[i:en]
+        new = CANON_FN[name]
+        if re.sub(r'\s+', '', cur) == re.sub(r'\s+', '', new):
+            continue                            # مطابقة أصلاً
+        out = out[:i] + new + out[en:]
+        done.append(name)
+    if not done:
+        return out, False
+    if quran_text_fingerprint(out) != before:
+        print('⛔ %s: البصمة اتغيّرت — التوحيد اتلغى' % fn)
+        return out, False
+    for d in done:
+        CANON_APPLIED.setdefault(d, []).append(fn)
+    return out, True
 
 
 def fix_file(path):
@@ -5622,6 +5732,9 @@ def fix_file(path):
     out, delay_widened = widen_autoadvance_delay(path, out)
     out, pct_dedup = dedup_pct_lines(path, out)
 
+    # 9ح. توحيد الدوال المشتركة من نسخة قياسية واحدة
+    out, canon_done = apply_canonical_functions(path, out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -5798,6 +5911,11 @@ def main():
     if DELAY_FIXED:
         print('\n=== مدة عرض النتيجة ===')
         print('اتوسّعت في %d ملف (صعب 3.5ث · سهل 2.2ث)' % len(DELAY_FIXED))
+
+    print('\n=== توحيد الدوال القياسية ===')
+    for k in CANON_FN:
+        print('  %-16s اتوحّدت في %3d ملف | مش موجودة في %d'
+              % (k, len(CANON_APPLIED.get(k, [])), len(CANON_SKIPPED.get(k, []))))
 
     print('\n=== النسبة على أساس الكلمات ===')
     print('اتطبّق في %d ملف | اتخطّى %d' % (len(WORDSCORE_FIXED), len(WORDSCORE_SKIPPED)))
