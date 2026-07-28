@@ -4870,13 +4870,7 @@ def upgrade_pct_display(path, out):
 WORDSCORE_FIXED = []
 WORDSCORE_SKIPPED = []
 
-_WS_PCT = ('''function _pctNow(){const st=window._lastDiff||{};let a='';'''
- '''if(st.total){const wp=Math.round(st.matched*100/st.total);'''
- '''a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% '''
- '''(${st.matched} من ${st.total} كلمة)</div>`;}'''
- '''if(!wTotal)return a;const p=Math.round(wCorrect*100/wTotal);'''
- '''return a+`<div style="margin-top:2px;font-size:13px;opacity:.75;">'''
- '''النسبة حتى الآن: ${p}% (${wCorrect} من ${wTotal} كلمة)</div>`;}''')
+_WS_PCT = 'function _pctNow(){const st=window._lastDiff||{};let a=\'\';if(st.total){const wp=Math.round(st.matched*100/st.total);a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% (${st.matched} من ${st.total} كلمة)</div>`;}// السطر التاني يظهر بس لو فيه أسئلة سابقة — من غير كده الرقمين واحد\nif(!wTotal||wTotal===st.total)return a;const p=Math.round(wCorrect*100/wTotal);return a+`<div style="margin-top:2px;font-size:13px;opacity:.75;">الإجمالي: ${p}% (${wCorrect} من ${wTotal} كلمة)</div>`;}'
 
 
 def switch_to_word_based_score(path, out):
@@ -4981,6 +4975,23 @@ def widen_autoadvance_delay(path, out):
         return before_src, False
     DELAY_FIXED.append((fn, n))
     return out, True
+
+
+
+PCT_DEDUP = []
+
+
+def dedup_pct_lines(path, out):
+    """السطرين كانوا بيطلعوا نفس الرقم لو السؤال هو الأول — دلوقتي
+    سطر الإجمالي يظهر بس لما يبقى فيه أسئلة سابقة فعلًا."""
+    if 'wTotal===st.total' in out or 'function _pctNow()' not in out:
+        return out, False
+    before = quran_text_fingerprint(out)
+    new, c = re.subn(r"function _pctNow\(\)\{.*?\n?\}\n", _WS_PCT + '\n', out, count=1, flags=re.S)
+    if not c or quran_text_fingerprint(new) != before:
+        return out, False
+    PCT_DEDUP.append(os.path.basename(path))
+    return new, True
 
 
 def fix_file(path):
@@ -5609,6 +5620,7 @@ def fix_file(path):
     out, pct_upgraded = upgrade_pct_display(path, out)
     out, word_score = switch_to_word_based_score(path, out)
     out, delay_widened = widen_autoadvance_delay(path, out)
+    out, pct_dedup = dedup_pct_lines(path, out)
 
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
