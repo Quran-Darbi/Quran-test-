@@ -575,7 +575,7 @@ function showQuestion(){
     if(!nw||!nw.length)return;
     nw=_fixWords(nw);
     if(_sel!==null&&_sel<_words.length){_words.splice(_sel,1);_words.splice(_sel,0,...nw);_sel=null;}
-    else{_addWords(nw);}
+    else{_words=_fixWords([].concat(_words,nw));}
   }
 
 
