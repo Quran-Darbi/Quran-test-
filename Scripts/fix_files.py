@@ -4670,9 +4670,9 @@ def fix_verdict_and_progress(path, out):
 
     # ١) الكلمات الزيادة تتسجّل بدل ما تتخطّى بصمت
     out, c = re.subn(
-        r"else if\(j>0&&\(i===0\|\|dp\[i\]\[j-1\]>=dp\[i-1\]\[j\]\)\)\{j--;\}",
+        r"else\s*if\(j>0&&\(i===0\|\|dp\[i\]\[j-1\]>=dp\[i-1\]\[j\]\)\)\s*\{\s*j--;\s*\}",
         lambda m: "else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j]))"
-                  "{aligned.push({ref:uWords[j-1],extra:true});j--;}", out, count=1)
+                  "{aligned.push({ref:uWords[j-1],user:uWords[j-1],extra:true});j--;}", out, count=1)
     n += c
     if not c:
         VERDICT_SKIPPED.append((fn, 6))
@@ -4687,7 +4687,7 @@ def fix_verdict_and_progress(path, out):
     n += c
 
     # ٣) عرض الكلمات الزيادة بلون مميز
-    out, c = re.subn(r"aligned\.map\(x=>x\.ok\s*\n?\s*\?",
+    out, c = re.subn(r"aligned\.map\(x\s*=>\s*x\.ok\s*\n?\s*\?",
                      lambda m: "aligned.map(x=>x.extra?`<span style=\"color:#7a4a00;"
                                "background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;"
                                "display:inline-block;text-decoration:line-through;\" translate=\"no\" "
@@ -4698,8 +4698,22 @@ def fix_verdict_and_progress(path, out):
                      lambda m: "${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}",
                      out, count=1)
     n += c
+    if not c:
+        out, c = re.subn(r"'\+correct\+' / '\+(n|cWords\.length)\+' كلمة صحيحة",
+                         lambda m: "'+correct+' / '+" + m.group(1) +
+                                   "+' كلمة صحيحة'+(extra?' — و'+extra+' كلمة زيادة':'')+'",
+                         out, count=1)
+        n += c
 
     # ٤) الحكم: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
+    _JUDGE_BODY = ("const userNorm=normalize(userVal),ansNorm=normalize(q.answer);"
+                   "const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};"
+                   "const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);"
+                   "if(_ok){")
+    out, c = re.subn(
+        r"if\(normalize\(userVal\)===normalize\(q\.answer\)\)\s*\{",
+        lambda m: _JUDGE_BODY, out, count=1)
+    n += c
     out, c = re.subn(
         r"const userNorm=normalize\(userVal\)[,;]\s*(?:const\s+)?ansNorm=normalize\(q\.answer\);\s*"
         r"if\(userNorm===ansNorm\)\{",
@@ -4737,8 +4751,8 @@ def fix_verdict_and_progress(path, out):
 
     # كل التعديلات المطلوبة أو لا شيء — ملف نصّه متعدّل بيبقى
     # أخطر من ملف مالوش تعديل خالص
-    required = ('aligned.push({ref:uWords[j-1],extra:true})', 'window._lastDiff={',
-                'aligned.map(x=>x.extra?', 'كلمة زيادة',
+    required = ('extra:true});j--;}', 'window._lastDiff={',
+                'x.extra?', 'كلمة زيادة',
                 'const _ok=(userNorm===ansNorm)', 'function _pctNow()')
     missing = [r for r in required if r not in out]
     if missing:
