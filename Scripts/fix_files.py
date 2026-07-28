@@ -4283,6 +4283,153 @@ def unify_normalize_rules(path, out):
     return out, True
 
 
+# ======================================================
+# إصلاح expandMuqattaat المفقودة
+# ------------------------------------------------------
+# wordDiff بتنادي expandMuqattaat لكن الدالة اتنقلت لبعض
+# الملفات من غير تعريفها (الموجود اسمه collapseMuqattaat).
+# النتيجة: أول ما المستخدم يضغط "تحقق" وإجابته غلط،
+# checkText بتقفل كل أزرار .submit-btn الأول وبعدين
+# checkTextVal بترمي ReferenceError — فمفيش نتيجة بتظهر
+# والزرارين (صوت + كتابة) بيفضلوا مقفولين للأبد.
+# التعريف منقول حرفيًا من recitation.html مع تبديل norm
+# بـ normalize (اسم الدالة في ملفات الاختبارات).
+# ======================================================
+MUQ_FIXED = []
+
+_MUQ_DEF = """function expandMuqattaat(words){
+  const out=[];let i=0;
+  while(i<words.length&&i<2){
+    const key=normalize(words[i]);
+    if(MUQATTAAT[key]){out.push(...MUQATTAAT[key]);i++;}
+    else break;
+  }
+  for(;i<words.length;i++)out.push(words[i]);
+  return out;
+}
+"""
+
+
+def fix_missing_expand_muqattaat(path, out):
+    """يضيف expandMuqattaat لو الملف بينادها من غير ما يعرّفها."""
+    if 'expandMuqattaat(' not in out:
+        return out, False
+    if re.search(r'function\s+expandMuqattaat', out):
+        return out, False
+    if 'MUQATTAAT' not in out:
+        MUQ_FIXED.append((os.path.basename(path), 'اتخطّى — MUQATTAAT مش موجودة'))
+        return out, False
+    anchor = 'function wordDiff'
+    i = out.find(anchor)
+    if i < 0:
+        MUQ_FIXED.append((os.path.basename(path), 'اتخطّى — wordDiff مش موجودة'))
+        return out, False
+    out = out[:i] + _MUQ_DEF + out[i:]
+    MUQ_FIXED.append((os.path.basename(path), 'اتصلحت ✅'))
+    return out, True
+
+
+# ======================================================
+# نقل ميزة "تحديد الكلمة" من التلاوة لمستوى الصعب
+# ------------------------------------------------------
+# في recitation.html: الضغط على كلمة بيحدّدها (مش بيحذفها)،
+# ويظهر شريط فيه زر "✕ حذف" — ولو سجّلتِ والكلمة محدّدة،
+# التسجيل الجديد بيحلّ محلها *في مكانها* حتى لو وسط النص.
+# في ملفات الاختبارات كان الضغط بيحذف على طول من غير خيار.
+# القاعدة: أي تحديث في التلاوة يتطبّق على الصعب.
+# ======================================================
+SELWORD_FIXED = []
+
+_SW_OLD_DECL = "let _rec=null,_recog=false,_words=[],_cur='';"
+_SW_NEW_DECL = "let _rec=null,_recog=false,_words=[],_cur='',_sel=null;"
+
+_SW_OLD_CLICK = ("span.textContent=w;span.title='انقري للحذف';\n"
+                 "      span.onclick=()=>{_words.splice(i,1);renderWords();};")
+_SW_NEW_CLICK = """span.textContent=w;
+      if(i===_sel){span.style.outline='2px solid var(--gold)';span.style.background='var(--hint-btn-bg)';span.style.fontWeight='700';span.title='اضغطي لإلغاء التحديد';}
+      else{span.title='اضغطي لتحديدها ثم سجّلي البديل';}
+      span.onclick=()=>{_sel=(_sel===i)?null:i;renderWords();};"""
+
+_SW_BAR = """    if(_sel!==null&&_sel>=_words.length)_sel=null;
+    if(_sel!==null){
+      const bar=document.createElement('div');
+      bar.style.cssText='width:100%;box-sizing:border-box;background:var(--hint-btn-bg);border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
+      const t=document.createElement('span');
+      t.appendChild(document.createTextNode('المحدَّدة: '));
+      const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
+      b.textContent=_words[_sel];t.appendChild(b);
+      t.appendChild(document.createTextNode(' — سجّلي البديل'));
+      const x=document.createElement('button');x.type='button';x.textContent='✕ حذف';
+      x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
+      x.onclick=()=>{_words.splice(_sel,1);_sel=null;renderWords();};
+      bar.appendChild(t);bar.appendChild(x);txBox.appendChild(bar);
+    }
+"""
+
+# إدخال الكلمات: تحلّ محل المحدَّدة بدل ما تتضاف في الآخر
+_SW_ADD = """  function _addWords(nw){
+    if(!nw||!nw.length)return;
+    nw=_fixWords(nw);
+    if(_sel!==null&&_sel<_words.length){_words.splice(_sel,1);_words.splice(_sel,0,...nw);_sel=null;}
+    else{_words=_fixWords(_words.concat(nw));}
+  }
+"""
+
+
+def port_selword_feature(path, out):
+    """ينقل ميزة تحديد الكلمة من التلاوة لدالة renderHard.
+
+    فيه أكتر من جيل قالب (مضغوط ومتباعد، وبعضها بيستخدم متغيّر
+    وسيط للكلمات الجديدة)، فالمطابقة بـregex مرن مش نص حرفي.
+    """
+    fn = os.path.basename(path)
+    if '_sel=null' in out or 'المحدَّدة' in out:
+        return out, False                      # اتطبّقت قبل كده
+    before = quran_text_fingerprint(out)
+    n = 0
+
+    out, c = re.subn(r"let _rec=null,_recog=false,_words=\[\],_cur='';",
+                     "let _rec=null,_recog=false,_words=[],_cur='',_sel=null;", out, count=1)
+    n += c
+    if not c:
+        return out, False
+
+    out, c = re.subn(
+        r"span\.textContent=w;(?:\s*span\.title='[^']*';)?\s*"
+        r"span\.onclick=\(\)=>\{_words\.splice\(i,1\);renderWords\(\);\};",
+        lambda m: _SW_NEW_CLICK, out, count=1)
+    n += c
+
+    out, c = re.subn(r"(txBox\.style\.display='block';\s*txBox\.innerHTML='';)",
+                     lambda m: m.group(1) + '\n' + _SW_BAR, out, count=1)
+    n += c
+
+    out, c = re.subn(r"(\n\s*)function renderWords\(\)\{",
+                     lambda m: m.group(1) + _SW_ADD + m.group(1) + 'function renderWords(){',
+                     out, count=1)
+    n += c
+
+    # التقاط الصوت: بالصيغة المباشرة أو عبر متغيّر وسيط
+    out, c = re.subn(
+        r"_words=_fixWords\(_words\.concat\(e\.results\[i\]\[0\]\.transcript\.trim\(\)\.split\(/\\s\+/\)\)\);",
+        lambda m: "_addWords(e.results[i][0].transcript.trim().split(/\\s+/));", out, count=1)
+    n += c
+    out, c = re.subn(r"_words=_fixWords\(_words\.concat\((\w+)\)\);",
+                     lambda m: '_addWords(%s);' % m.group(1), out, count=1)
+    n += c
+
+    out, c = re.subn(r"if\(_cur\)\{_words=_fixWords\(_words\.concat\(_cur\.trim\(\)\.split\(/\\s\+/\)\)\);_cur='';\}",
+                     lambda m: "if(_cur){_addWords(_cur.trim().split(/\\s+/));_cur='';}", out, count=1)
+    n += c
+
+    out = re.sub(r"_rec=null;_words=\[\];_cur='';", "_rec=null;_words=[];_cur='';_sel=null;", out, count=1)
+
+    if quran_text_fingerprint(out) != before:
+        print('⛔ %s: البصمة اتغيّرت — التعديل اتلغى' % fn)
+        return out, False
+    SELWORD_FIXED.append((fn, n))
+    return out, True
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -4895,6 +5042,12 @@ def fix_file(path):
     # والبصمة بتتفحص قبل وبعد كضمانة.
     out, norm_rules_unified = unify_normalize_rules(path, out)
 
+    # 9هـ. expandMuqattaat المفقودة — بتكسر زر "تحقق" بالكامل
+    out, muq_fixed = fix_missing_expand_muqattaat(path, out)
+
+    # 9و. ميزة تحديد الكلمة من التلاوة → مستوى الصعب
+    out, selword_ported = port_selword_feature(path, out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -5052,6 +5205,20 @@ def main():
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
     audit_uniformity(root)
+
+    print('\n=== تقرير ميزة تحديد الكلمة (صعب) ===')
+    print('اتطبّقت في %d ملف' % len(SELWORD_FIXED))
+    low=[x for x in SELWORD_FIXED if x[1]<6]
+    if low:
+        print('  ⚠ ملفات اتطبّق فيها جزء بس:')
+        for fn2,c2 in low: print('   -',fn2,'(%d/7)'%c2)
+
+    print('\n=== تقرير expandMuqattaat ===')
+    if MUQ_FIXED:
+        for fn2, st in MUQ_FIXED:
+            print('  -', fn2, ':', st)
+    else:
+        print('مفيش ملفات محتاجة إصلاح ✅')
 
     print('\n=== تقرير توحيد قواعد normalize ===')
     if NORM_FIXED:
