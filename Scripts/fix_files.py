@@ -5072,7 +5072,7 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   if(typeof saveResumeState==='function')saveResumeState();
 }'''
 
-CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ء').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
+CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ء').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
 
 
 def apply_canonical_functions(path, out, names=None):
@@ -5102,6 +5102,99 @@ def apply_canonical_functions(path, out, names=None):
     for d in done:
         CANON_APPLIED.setdefault(d, []).append(fn)
     return out, True
+
+
+# ======================================================
+# فحص جودة الأسئلة — قراءة فقط
+# ------------------------------------------------------
+# القواعد الموثّقة:
+#  · السهل والمتوسط يكمّلوا بعض — صفر تكرار في الكلمة المستهدفة
+#  · اختيارات السهل مايتكررش فيها كلمة
+#  · إجابة المتوسط كلمة أو كلمتين، بلا علامات ترقيم
+#  · الإجابة الصحيحة مايبقاش شكلها مميز عن المشتتات
+# ======================================================
+QUALITY_ISSUES = []
+
+
+def _qa_arrays(html):
+    out = {}
+    for name in ('EASY_Q', 'MEDIUM_Q', 'AYAT', 'ORDER_AYAT'):
+        body, _, _ = _t_array_body(html, name)
+        out[name] = body
+    return out
+
+
+def _qa_easy_targets(body):
+    """(نص السؤال, الاختيارات, فهرس الإجابة) لكل سؤال سهل."""
+    res = []
+    for m in re.finditer(r'\{[^{}]*choices\s*:\s*\[([^\]]*)\][^{}]*\}', body or ''):
+        blk = m.group(0)
+        ch = re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
+        am = re.search(r'answer\s*:\s*(\d+)', blk)
+        qm = re.search(r'q\s*:\s*"((?:[^"\\]|\\.)*)"', blk)
+        res.append((qm.group(1) if qm else '', ch, int(am.group(1)) if am else 0))
+    return res
+
+
+def _qa_medium_answers(body):
+    return re.findall(r'answer\s*:\s*"((?:[^"\\]|\\.)*)"', body or '')
+
+
+def audit_question_quality(root):
+    files = sorted(f for f in os.listdir(root)
+                   if f.endswith('.html') and f not in ('index.html', 'recitation.html'))
+    dup_files, over_files, long_files, punct_files = [], [], [], []
+    for fn in files:
+        try:
+            with open(os.path.join(root, fn), encoding='utf-8') as fh:
+                html = fh.read()
+        except Exception:
+            continue
+        a = _qa_arrays(html)
+        easy = _qa_easy_targets(a['EASY_Q'])
+        med = _qa_medium_answers(a['MEDIUM_Q'])
+
+        # ١) اختيارات مكررة
+        dups = [(i, [c for c in set(ch) if ch.count(c) > 1])
+                for i, (_, ch, _) in enumerate(easy) if len(set(ch)) != len(ch)]
+        if dups:
+            dup_files.append((fn, dups))
+
+        # ٢) تداخل الكلمة المستهدفة
+        et = [ch[ai] for _, ch, ai in easy if ai < len(ch)]
+        inter = sorted({x for x in et if x in med})
+        if inter:
+            over_files.append((fn, len(inter), len(et), inter))
+
+        # ٣) إجابة المتوسط أطول من كلمتين
+        lng = [x for x in med if len(x.split()) > 2]
+        if lng:
+            long_files.append((fn, lng))
+
+        # ٤) علامات ترقيم في إجابة المتوسط
+        pn = [x for x in med if re.search(r'[،,\-—()\.]', x)]
+        if pn:
+            punct_files.append((fn, pn))
+
+    print('\n=== فحص جودة الأسئلة (قراءة فقط) ===')
+    print('ملفات مفحوصة: %d' % len(files))
+
+    print('\n-- اختيارات مكررة في السهل: %d ملف --' % len(dup_files))
+    for fn, d in dup_files[:20]:
+        print('   %s : %s' % (fn, ' · '.join('EASY_Q[%d] %s' % (i, ' '.join(w)) for i, w in d)))
+
+    print('\n-- تداخل الكلمة المستهدفة بين السهل والمتوسط: %d ملف --' % len(over_files))
+    for fn, n, tot, words in sorted(over_files, key=lambda x: -x[1])[:25]:
+        print('   %-22s %d من %d   %s' % (fn, n, tot, ' · '.join(words[:4])))
+
+    print('\n-- إجابة متوسط أطول من كلمتين: %d ملف --' % len(long_files))
+    for fn, w in long_files[:15]:
+        print('   %-22s %s' % (fn, ' · '.join(w[:3])))
+
+    print('\n-- علامات ترقيم في إجابة المتوسط: %d ملف --' % len(punct_files))
+    for fn, w in punct_files[:15]:
+        print('   %-22s %s' % (fn, ' · '.join(w[:3])))
+    print('=== نهاية فحص الجودة ===\n')
 
 
 def fix_file(path):
@@ -5893,6 +5986,7 @@ def main():
     # المحاولة (نادر جدًا؛ لو حصل يبقى فيه فرق حقيقي محتاج عين بشرية)
     # ====================================================
     audit_uniformity(root)
+    audit_question_quality(root)
 
     if INDEX_NAV_FIXED or REC_TANWEEN:
         print('\n=== تقرير index/recitation ===')
