@@ -3497,6 +3497,22 @@ def _baqara_verify_migration(old, new):
 
     return (old_e == new_e) and (old_m == new_m) and (old_h_answers == new_h_answers) and len(new_h_answers) > 0
 
+def _baqara_hard_ayah_numbers(hard_pairs):
+    """يستخرج رقم الآية الحقيقي من نص كل سؤال في HARD_Q.
+    بيتعامل مع الصيغتين الموجودتين في القالب القديم:
+        'اكتب الآية رقم N من سورة البقرة كاملة'
+        'اكتب بداية/نهاية الآية N من «...»'
+    يرجّع None لو أي سؤال مافيهوش رقم آية واضح — وساعتها الملف
+    بيتخطّى زي الأول بدل ما نخمّن."""
+    nums = []
+    for q, ans in hard_pairs:
+        m = re.search(r'الآي[ةه]\s*(?:رقم\s*)?(\d+)', q)
+        if not m:
+            return None
+        nums.append(int(m.group(1)))
+    return nums
+
+
 def migrate_baqara_to_clean_template(path, out):
     """يحوّل صفحة بقرة من القالب القديم (بقالبيه المختلفين) لقالب جزء
     عمّ النضيف. بيتأكد أولًا إن النص القرآني بعد التحويل مطابق حرفيًا
@@ -3539,19 +3555,58 @@ def migrate_baqara_to_clean_template(path, out):
         BAQARA_MIGRATION_SKIPPED.append(f'{os.path.basename(path)} (صيغة HARD_Q غير مدعومة)')
         return out, False
 
-    if expected is not None and len(hard_pairs) != expected:
-        BAQARA_MIGRATION_SKIPPED.append(
-            f'{os.path.basename(path)} (HARD_Q غير مكتملة: {len(hard_pairs)}/{expected} — لازم تكمّل الآيات الناقصة من صور المصحف الأول)'
+    # آيات الصفحة الحقيقية من مصفوفة AYAT بصيغة {num,text} — لازمة في
+    # حالة الآية المقسّمة عشان الترتيب والمصحف يفضلوا على عدد الآيات
+    # الحقيقي مش عدد المقاطع.
+    ayat_by_num = {
+        int(n): t for n, t in re.findall(
+            r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', ayat_body
         )
-        return out, False
+    } if ayat_body else {}
 
-    ayah_numbers = list(range(start, end + 1)) if expected else list(range(1, len(hard_pairs) + 1))
+    seg_nums = None
+    if expected is not None and len(hard_pairs) != expected:
+        # آية طويلة متقسّمة لمقاطع (بداية/نهاية) — دي مش آيات ناقصة.
+        # بنقبلها بس لو المقاطع بتعيد تركيب نص الآية حرفيًا 100%.
+        ok_seg = False
+        nums = _baqara_hard_ayah_numbers(hard_pairs) if len(hard_pairs) > expected else None
+        if nums and nums == sorted(nums) and sorted(set(nums)) == list(range(start, end + 1)) \
+           and set(nums) <= set(ayat_by_num):
+            ok_seg = all(
+                ' '.join(a for (q, a), n in zip(hard_pairs, nums) if n == num) == ayat_by_num[num]
+                for num in sorted(set(nums))
+            )
+        if not ok_seg:
+            BAQARA_MIGRATION_SKIPPED.append(
+                f'{os.path.basename(path)} (HARD_Q غير مكتملة: {len(hard_pairs)}/{expected} — لازم تكمّل الآيات الناقصة من صور المصحف الأول)'
+            )
+            return out, False
+        seg_nums = nums
+    elif expected is not None:
+        # العدد مظبوط — بس نتأكد إن أرقام الآيات المكتوبة جوه الأسئلة
+        # نفسها مطابقة لنطاق الصفحة، عشان مايتحطش رقم آية غلط.
+        # (لو الأسئلة مافيهاش أرقام صريحة بنسيب السلوك القديم زي ما هو.)
+        nums = _baqara_hard_ayah_numbers(hard_pairs)
+        if nums is not None and nums != list(range(start, end + 1)):
+            BAQARA_MIGRATION_SKIPPED.append(
+                f'{os.path.basename(path)} (أرقام آيات HARD_Q مش مطابقة لنطاق الصفحة: '
+                f'{nums} مقابل {start}-{end} — محتاجة مراجعة يدوية)'
+            )
+            return out, False
+
+    if seg_nums is not None:
+        ayah_numbers = seg_nums
+    else:
+        ayah_numbers = list(range(start, end + 1)) if expected else list(range(1, len(hard_pairs) + 1))
 
     hard_js = "[\n" + ",\n".join(
         "  {ayah:%d,q:%s,answer:%s}" % (a, _baqara_js_str(q), _baqara_js_str(ans))
         for a, (q, ans) in zip(ayah_numbers, hard_pairs)
     ) + "\n]"
-    ayat_list = [ans for q, ans in hard_pairs]
+    if seg_nums is not None:
+        ayat_list = [ayat_by_num[n] for n in sorted(set(seg_nums))]
+    else:
+        ayat_list = [ans for q, ans in hard_pairs]
     ayat_js = "[\n" + ",\n".join("  " + _baqara_js_str(a) for a in ayat_list) + "\n]"
 
     new_out = BAQARA_CLEAN_TEMPLATE
@@ -4062,6 +4117,43 @@ def _u_rule_present(body, chars, repl):
 
 
 
+# كائنات النص القرآني في recitation.html — قيمها مكتوبة بـbackticks
+# مش بعلامات تنصيص، وبتتعرّف كـ{} مش []، فـ_t_array_body و_T_STR
+# مابيشوفوهاش. من غير الإضافة دي بصمة recitation.html كانت بصمة نص
+# فاضي، يعني كل دالة محروسة بالبصمة بتشتغل عليه بدون أي حماية.
+_U_OBJECTS = ('TEXTS', 'AYAHS', 'AYAH_START')
+_T_TPL = re.compile(r'`((?:[^`\\]|\\.)*)`', re.S)
+_T_NUM = re.compile(r':\s*(\d+)')
+
+
+def _t_object_body(text, name):
+    """قصّ محتوى كائن JS بمطابقة الأقواس {} — نظير _t_array_body."""
+    m = re.search(r'(?:const|let|var)\s+' + name + r'\s*=\s*\{', text)
+    if not m:
+        return None, None, None
+    st = text.index('{', m.start())
+    d, q, j = 0, None, st
+    while j < len(text):
+        c = text[j]
+        if q:
+            if c == '\\':
+                j += 2
+                continue
+            if c == q:
+                q = None
+        elif c in '"\'`':
+            q = c
+        elif c == '{':
+            d += 1
+        elif c == '}':
+            d -= 1
+            if d == 0:
+                j += 1
+                break
+        j += 1
+    return text[st:j], st, j
+
+
 def quran_text_fingerprint(html):
     """بصمة كل النص القرآني — أي خطوة توحيد لازم تسيبها زي ما هي."""
     parts = []
@@ -4069,6 +4161,15 @@ def quran_text_fingerprint(html):
         body, _, _ = _t_array_body(html, name)
         if body:
             parts.append(name + '\x00' + '\x01'.join(_T_STR.findall(body)))
+    # إضافة بحتة: ملفات الاختبار مافيهاش الكائنات دي، فبصمتها
+    # بتفضل بنفس القيمة بالحرف — والتلاوة بتكسب حماية حقيقية
+    for name in _U_OBJECTS:
+        body, _, _ = _t_object_body(html, name)
+        if body:
+            vals = _T_STR.findall(body) + _T_TPL.findall(body)
+            if not vals:
+                vals = _T_NUM.findall(body)
+            parts.append(name + '\x00' + '\x01'.join(vals))
     return hashlib.md5('\x02'.join(parts).encode('utf-8')).hexdigest()
 
 
@@ -5058,7 +5159,7 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   if(_ok){
     correctCount++;statuses[qIndex]='correct';
     fb.className='feedback correct';
-    fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟'+_pctNow();
+    fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();
     if(typeof spawnConfetti==='function')spawnConfetti(18);
     if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
   }else{
@@ -5075,9 +5176,107 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
 CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ء').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
 
 
+
+# ------------------------------------------------------
+# checkMCQ / checkText / skipQuestion — يوليو ٢٠٢٦
+# الأساس: نسخة الجيل الحديث (٧ ملفات) بعد أربع تصحيحات:
+#  · صيغة الخطاب مذكر رسمي (أحسنت)
+#  · next-btn بـ'block' مش '' — الكلاس .next-btn في
+#    p47/annaba فيه display:none، فـ'' كانت هتخفي الزر نهائيًا
+#  · حراسة typeof على كل نداء خارجي (منع ReferenceError)
+#  · renderDotProgress/saveResumeState في skipQuestion —
+#    التخطي ماكانش بيحفظ التقدم في أي نسخة من الخمسة
+# checkText بقت غلاف لـcheckTextVal بس: تلات ملفات (p25،
+# p47، annaba) كانت بتصحّح جوّها ومابتناديهاش خالص، يعني
+# توحيد checkTextVal ماكانش له أي أثر فيهم.
+# ------------------------------------------------------
+CANON_FN['checkMCQ'] = r'''function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');const _ans=questions[qIndex].choices[correct];if(chosen===correct){if(btn)btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! 🌟'+(typeof _pctNow==='function'?_pctNow():'');if(typeof spawnConfetti==='function')spawnConfetti(18);const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}else{if(btn)btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===_ans)b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+_ans+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}'''
+
+CANON_FN['checkText'] = r'''function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,userVal);}'''
+
+CANON_FN['skipQuestion'] = r'''function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');wTotal+=(currentLevel==='easy'?1:String(q.answer||'').trim().split(/\s+/).filter(Boolean).length||1);if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';}else{const inp=document.getElementById('user-input');if(inp)inp.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;" class="notranslate" translate="no">'+q.answer+'</span>';}wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}'''
+
+
+# ======================================================
+# توحيد صيغة الخطاب — مذكر رسمي في كل نصوص الواجهة
+# ------------------------------------------------------
+# كل نص يخاطب المستخدم يبقى مذكرًا. الترتيب مهم: العبارات
+# الأطول الأول، وبعدين الكلمة المفردة (وافتحي قبل افتحي،
+# وأعيدي قبل أعيدي) وإلا الاستبدال الأقصر يقطع الأطول.
+# النص القرآني ممنوع يتلمس — البصمة بتتفحص قبل وبعد،
+# وأي تغيير فيها بيلغي التعديل كله للملف ده.
+# ======================================================
+MASC_FIXED = []
+
+_MASC_BANNER_OLD = '\u200f📌 عندك اختبار لسه ما خلصتيهوش، عايزة تكملي منين وقفتِ؟'.replace('\u200f', '')
+_MASC_BANNER_NEW = ('📌 لديك اختبار لم يكتمل. هل ترغب في المتابعة من حيث '
+                    'توقفتَ، أم البدء من جديد؟')
+
+_MASC_PAIRS = [
+    # لافتة استكمال الاختبار: النسخة الفصحى المذكّرة معتمدة بالفعل
+    # في ٣ ملفات — التوحيد بيوصّل الباقي لنفس النص
+    (_MASC_BANNER_OLD, _MASC_BANNER_NEW),
+    # ماضي المخاطب
+    ('أحسنتِ', 'أحسنت'), ('أتقنتِ', 'أتقنت'), ('وقفتِ', 'وقفت'),
+    ('بدأتِ', 'بدأت'), ('أنجزتِ', 'أنجزت'), ('قلتِ', 'قلت'),
+    # أمر المخاطب — الأطول قبل الأقصر
+    ('وأعيدي', 'وأعد'), ('أعيدي', 'أعد'),
+    ('وافتحي', 'وافتح'), ('افتحي', 'افتح'),
+    ('والصقيه', 'والصقه'),
+    ('اضغطي', 'اضغط'), ('سجّلي', 'سجّل'), ('راجعي', 'راجع'),
+    ('استمري', 'استمر'), ('تيأسي', 'تيأس'), ('انقري', 'انقر'),
+    ('اختاري', 'اختر'), ('انسخي', 'انسخ'), ('حمّلي', 'حمّل'),
+    ('ابحثي', 'ابحث'),
+    # مضارع المخاطب
+    ('تحتاجين', 'تحتاج'),
+]
+
+
+# كلمة فيها علامة قرآنية بحتة (ألف خنجرية / علامة صغيرة / مدّة /
+# تنوين متتابع). العلامات دي ما بتظهرش في عربي الواجهة أبدًا، فالبصمة
+# دي بتغطي النص القرآني في *أي* مكان في الملف — يشمل المكتوب inline في
+# HTML، اللي quran_text_fingerprint مابيشوفهوش (بيقرا المصفوفات بس)
+_Q_MARKED = re.compile(
+    r'[\u0621-\u064A][\u064B-\u0652]*'
+    r'[\u0670\u0653\u0654\u0655\u06D6-\u06ED\u08F0-\u08F2]'
+    r'[\u0621-\u0652\u0670\u06D6-\u06ED\u08F0-\u08F2]*')
+
+
+def _q_marked_fingerprint(html):
+    """بصمة كل كلمة مشكّلة بعلامة قرآنية، في كل الملف."""
+    return hashlib.md5(
+        '\x01'.join(_Q_MARKED.findall(html)).encode('utf-8')).hexdigest()
+
+
+def unify_masculine_address(path, out):
+    """كل نص واجهة يخاطب المستخدم يتحول لمذكر رسمي."""
+    before_src = out
+    before = quran_text_fingerprint(out)
+    before_q = _q_marked_fingerprint(out)
+    n = 0
+    for old, new in _MASC_PAIRS:
+        c = out.count(old)
+        if c:
+            out = out.replace(old, new)
+            n += c
+    if not n:
+        return before_src, False
+    if quran_text_fingerprint(out) != before:
+        print('⛔ %s: البصمة اتغيّرت — توحيد صيغة الخطاب اتلغى'
+              % os.path.basename(path))
+        return before_src, False
+    if _q_marked_fingerprint(out) != before_q:
+        print('⛔ %s: كلمة قرآنية اتغيّرت — توحيد صيغة الخطاب اتلغى'
+              % os.path.basename(path))
+        return before_src, False
+    MASC_FIXED.append((os.path.basename(path), n))
+    return out, True
+
+
 def apply_canonical_functions(path, out, names=None):
     """يستبدل الدوال المشتركة بالنسخة القياسية الواحدة."""
     fn = os.path.basename(path)
+    before_src = out
     before = quran_text_fingerprint(out)
     done = []
     for name in (names or CANON_FN):
@@ -5097,8 +5296,10 @@ def apply_canonical_functions(path, out, names=None):
     if not done:
         return out, False
     if quran_text_fingerprint(out) != before:
+        # لازم نرجّع النص الأصلي، مش المعدّل — وإلا التحذير يروح
+        # في اللوج والتلف يعدّي للملف
         print('⛔ %s: البصمة اتغيّرت — التوحيد اتلغى' % fn)
-        return out, False
+        return before_src, False
     for d in done:
         CANON_APPLIED.setdefault(d, []).append(fn)
     return out, True
@@ -5828,6 +6029,9 @@ def fix_file(path):
     # 9ح. توحيد الدوال المشتركة من نسخة قياسية واحدة
     out, canon_done = apply_canonical_functions(path, out)
 
+    # 9ط. صيغة الخطاب: مذكر رسمي في كل نصوص الواجهة
+    out, masc_unified = unify_masculine_address(path, out)
+
     # 8. أضف Service Worker لو مش موجود
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
@@ -5909,6 +6113,10 @@ def fix_index_recitation(path):
     # تثبيت زر الأدوات في مكان عائم ثابت (أعلى الشاشة يسار) — بدل ما
     # يتزحلق حسب هيدر كل صفحة (يوليو ٢٠٢٦)
     out, tools_fab_fixed = upgrade_tools_fab_fixed_position(out)
+
+    # صيغة الخطاب: مذكر رسمي (index.html و recitation.html
+    # مابيمروش على apply_canonical_functions)
+    out, masc_unified = unify_masculine_address(path, out)
 
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
