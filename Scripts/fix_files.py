@@ -3167,6 +3167,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <script>
 const RESUME_KEY='__RESUME_KEY__';
 const AYAT=__AYAT_JSON__;
+const AYAT_NUMS=__AYAT_NUMS_JSON__;
 const EASY_Q=__EASY_Q_JSON__;
 const MEDIUM_Q=__MEDIUM_Q_JSON__;
 const HARD_Q=__HARD_Q_JSON__;
@@ -3245,7 +3246,8 @@ function returnToLevels(){document.getElementById('quiz-area').style.display='no
 function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
 let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
 function startOrderQuiz(){orderPlaced=new Array(AYAT.length).fill(null);orderCursor=0;orderSelected=-1;orderPoolOrder=AYAT.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';renderOrderQuiz();}
-function mushafHtml(){return '<div class="mushaf-block notranslate" translate="no">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(i+1)+'﴾</span>').join(' ')+'</div>';}
+function ayahNumAt(i){return (typeof AYAT_NUMS!=='undefined'&&AYAT_NUMS&&AYAT_NUMS.length===AYAT.length&&AYAT_NUMS[i])?AYAT_NUMS[i]:(i+1);}
+function mushafHtml(){return '<div class="mushaf-block notranslate" translate="no">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(ayahNumAt(i))+'﴾</span>').join(' ')+'</div>';}
 function nextEmptyFrom(start){for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}return -1;}
 function renderOrderQuiz(){const slotsDiv=document.getElementById('order-slots');const poolDiv=document.getElementById('order-pool');slotsDiv.innerHTML='';poolDiv.innerHTML='';const filledGrid=document.createElement('div');filledGrid.className='order-filled-grid';const emptyStrip=document.createElement('div');emptyStrip.className='order-empty-strip';orderPlaced.forEach((idx,pos)=>{if(idx===null){const active=(pos===orderCursor);const dot=document.createElement('span');dot.className='order-dot'+(active?' active':'');dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};emptyStrip.appendChild(dot);}else{const card=document.createElement('div');card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};filledGrid.appendChild(card);}});if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);orderPoolOrder.forEach(idx=>{if(orderPlaced.includes(idx))return;const btn=document.createElement('button');btn.className='order-item notranslate';btn.setAttribute('translate','no');btn.textContent=AYAT[idx];btn.onclick=()=>{if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}if(orderCursor===-1)return;orderPlaced[orderCursor]=idx;orderCursor=nextEmptyFrom(orderCursor+1);document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};poolDiv.appendChild(btn);});const allFilled=!orderPlaced.includes(null);document.getElementById('order-check-btn').style.display=allFilled?'block':'none';}
 function checkOrderAnswer(){let correct=0;document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);if(ok)correct++;el.classList.remove('correct-slot','wrong-slot');el.classList.add(ok?'correct-slot':'wrong-slot');});const fb=document.getElementById('order-feedback');const allCorrect=(correct===AYAT.length);fb.className='feedback '+(allCorrect?'correct':'wrong');fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());fb.style.display='block';document.getElementById('order-check-btn').style.display='none';if(allCorrect)spawnConfetti();}
@@ -3609,6 +3611,16 @@ def migrate_baqara_to_clean_template(path, out):
         ayat_list = [ans for q, ans in hard_pairs]
     ayat_js = "[\n" + ",\n".join("  " + _baqara_js_str(a) for a in ayat_list) + "\n]"
 
+    # أرقام الآيات الحقيقية من المصحف — بتتخزّن جنب النص عشان عرض
+    # المصحف في مستوى الترتيب مايعتمدش على ترتيب الآية في المصفوفة.
+    if seg_nums is not None:
+        ayat_nums = sorted(set(seg_nums))
+    elif expected:
+        ayat_nums = list(range(start, end + 1))
+    else:
+        ayat_nums = list(range(1, len(ayat_list) + 1))
+    ayat_nums_js = "[" + ",".join(str(n) for n in ayat_nums) + "]"
+
     new_out = BAQARA_CLEAN_TEMPLATE
     new_out = new_out.replace('__TITLE__', meta['title'] or f"اختبار حفظ {meta['surah']}")
     new_out = new_out.replace('__SURAH_TITLE__', meta['surah'])
@@ -3618,6 +3630,7 @@ def migrate_baqara_to_clean_template(path, out):
     new_out = new_out.replace('__NEXT_PAGE__', meta['next'])
     new_out = new_out.replace('__RESUME_KEY__', f"quranResume_{meta['pageid']}" if meta['pageid'] else f"quranResume_{fn}")
     new_out = new_out.replace('__AYAT_JSON__', ayat_js)
+    new_out = new_out.replace('__AYAT_NUMS_JSON__', ayat_nums_js)
     new_out = new_out.replace('__EASY_Q_JSON__', "[\n" + easy_body.strip() + "\n]")
     new_out = new_out.replace('__MEDIUM_Q_JSON__', "[\n" + med_body.strip() + "\n]")
     new_out = new_out.replace('__HARD_Q_JSON__', hard_js)
@@ -3628,6 +3641,76 @@ def migrate_baqara_to_clean_template(path, out):
         return out, False
 
     return new_out, True
+
+
+BAQARA_AYAHNUM_FIXED = []
+BAQARA_AYAHNUM_SKIPPED = []
+
+_MUSHAF_OLD_FN = (
+    'function mushafHtml(){return \'<div class="mushaf-block notranslate" translate="no">\''
+    '+AYAT.map((t,i)=>t+\' <span class="ayah-end">﴿\'+toArabicNum(i+1)+\'﴾</span>\').join(\' \')+\'</div>\';}'
+)
+_AYAHNUM_HELPER = (
+    "function ayahNumAt(i){return (typeof AYAT_NUMS!=='undefined'&&AYAT_NUMS&&"
+    "AYAT_NUMS.length===AYAT.length&&AYAT_NUMS[i])?AYAT_NUMS[i]:(i+1);}\n"
+)
+_MUSHAF_NEW_FN = _AYAHNUM_HELPER + (
+    'function mushafHtml(){return \'<div class="mushaf-block notranslate" translate="no">\''
+    '+AYAT.map((t,i)=>t+\' <span class="ayah-end">﴿\'+toArabicNum(ayahNumAt(i))+\'﴾</span>\').join(\' \')+\'</div>\';}'
+)
+
+
+def fix_baqara_mushaf_ayah_numbers(path, out):
+    """صفحات البقرة اللي اتحوّلت للقالب النضيف كانت بتعرض رقم الآية في
+    مستوى الترتيب على إنه ترتيبها جوه المصفوفة (١، ٢، ٣...) بدل رقمها
+    الحقيقي في المصحف (٥٨، ٥٩، ٦٠...). الدالة الأصلية اتكتبت لسور جزء
+    عمّ — وهناك i+1 صح لأن كل سورة بتبدأ من آية ١ — لكنها اتورّثت
+    لقالب البقرة اللي صفحاته بتبدأ من نُص السورة.
+
+    الحل: نخزّن الأرقام الحقيقية في AYAT_NUMS ونخلّي العرض يقراها.
+    النص القرآني نفسه مابيتلمسش خالص — الرقم اللي جوه ﴿﴾ بس."""
+    fn = os.path.basename(path)
+    if not fn.startswith('albaqara_'):
+        return out, False          # جزء عمّ سليم — i+1 هناك هو الرقم الصح
+
+    on_clean_template = (_MUSHAF_OLD_FN in out) or ('function ayahNumAt(' in out)
+    if not on_clean_template:
+        return out, False          # لسه على القالب القديم — مش شغل الدالة دي
+
+    body, _st, en = _t_array_body(out, 'AYAT')
+    if body is None:
+        return out, False
+    n_ayat = len(_T_STR.findall(body))
+
+    changed = False
+    if 'const AYAT_NUMS=' not in out:
+        m = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
+        if m:
+            nums = list(range(int(m.group(1)), int(m.group(2)) + 1))
+        else:
+            m1 = re.search(r'<div class="ayat-range">[^<]*?الآية\s*(\d+)', out)
+            nums = [int(m1.group(1))] if m1 else None
+        if not nums or n_ayat == 0 or len(nums) != n_ayat:
+            BAQARA_AYAHNUM_SKIPPED.append(
+                f'{fn} (عدد آيات AYAT = {n_ayat} مش مطابق لنطاق الصفحة — محتاجة مراجعة يدوية)'
+            )
+            return out, False
+        semi = out.find(';', en)
+        if semi == -1 or semi > en + 2:
+            BAQARA_AYAHNUM_SKIPPED.append(f'{fn} (مش لاقي نهاية تعريف AYAT)')
+            return out, False
+        out = (out[:semi + 1]
+               + '\nconst AYAT_NUMS=[' + ','.join(str(x) for x in nums) + '];'
+               + out[semi + 1:])
+        changed = True
+
+    if _MUSHAF_OLD_FN in out:
+        out = out.replace(_MUSHAF_OLD_FN, _MUSHAF_NEW_FN, 1)
+        changed = True
+
+    if changed:
+        BAQARA_AYAHNUM_FIXED.append(fn)
+    return out, changed
 
 
 def add_open_tanween_to_normalize(out):
@@ -5416,6 +5499,11 @@ def fix_file(path):
         return True
 
     # ====================================================
+    # 0أ. أرقام الآيات الحقيقية في عرض المصحف (مستوى الترتيب) —
+    #     للصفحات اللي اتحوّلت للقالب النضيف في تشغيلات سابقة.
+    out, _ayahnum_fixed = fix_baqara_mushaf_ayah_numbers(path, out)
+
+    # ====================================================
     # -1. تصحيح صيغة الأمر المؤنث لمذكر رسمي (يوليو ٢٠٢٦):
     #    بعض أسئلة "الصعب" في دفعة قديمة من صفحات البقرة كانت بصيغة
     #    "اكتبي" (مؤنث) بدل "اكتب" — مخالف لقاعدة الذكر الرسمي فصحى.
@@ -6285,6 +6373,15 @@ def main():
             print('  -', s)
     else:
         print('كل صفحات البقرة اللي اتفحصت اترحّلت للقالب النضيف ✅')
+
+    print('\n=== أرقام الآيات في عرض المصحف (مستوى الترتيب) ===')
+    print('اتصلّح: %d صفحة' % len(BAQARA_AYAHNUM_FIXED))
+    if BAQARA_AYAHNUM_FIXED:
+        print('  ', ' · '.join(BAQARA_AYAHNUM_FIXED))
+    if BAQARA_AYAHNUM_SKIPPED:
+        print('اتخطّى: %d صفحة' % len(BAQARA_AYAHNUM_SKIPPED))
+        for s in BAQARA_AYAHNUM_SKIPPED:
+            print('  -', s)
 
 if __name__ == '__main__':
     main()
