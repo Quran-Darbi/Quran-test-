@@ -197,7 +197,7 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
 </div>
 
 <div class="search-wrap">
-  <input class="search-input" type="text" placeholder="ابحثي عن سورة أو صفحة..." oninput="doSearch(this.value)" />
+  <input class="search-input" type="text" placeholder="ابحث عن سورة أو صفحة..." oninput="doSearch(this.value)" />
 </div>
 
 <div class="main" id="main">
@@ -414,7 +414,7 @@ function renderDarbiProgress(){
     const fill=document.getElementById('hero-progress-fill');
     if(fill)fill.style.width=pct+'%';
     const text=document.getElementById('hero-progress-text');
-    if(text)text.textContent='أنجزتِ '+doneCount+' من '+totalPages+' صفحة ('+pct+'٪)';
+    if(text)text.textContent='أنجزت '+doneCount+' من '+totalPages+' صفحة ('+pct+'٪)';
     let lastKey=null,lastTime=0;
     Object.keys(all).forEach(k=>{
       if(all[k]&&all[k].lastVisited){

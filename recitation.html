@@ -864,7 +864,7 @@ function renderTranscript(){
     t.appendChild(document.createTextNode('المحدَّدة: '));
     const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
     b.textContent=savedWords[selWord];t.appendChild(b);
-    t.appendChild(document.createTextNode(' — سجّلي البديل'));
+    t.appendChild(document.createTextNode(' — سجّل البديل'));
     const x=document.createElement('button');
     x.type='button';x.textContent='✕ حذف';
     x.style.cssText='background:#c0392b;color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
@@ -878,9 +878,9 @@ function renderTranscript(){
       sp.style.outline='2px solid var(--gold)';
       sp.style.background='#fdf6e3';
       sp.style.fontWeight='700';
-      sp.title='اضغطي لإلغاء التحديد';
+      sp.title='اضغط لإلغاء التحديد';
     }else{
-      sp.title='اضغطي لتحديدها ثم سجّلي البديل';
+      sp.title='اضغط لتحديدها ثم سجّل البديل';
     }
     sp.onclick=()=>{selWord=(selWord===i)?null:i;renderTranscript();updateBtns();};
     box.appendChild(sp);
@@ -930,13 +930,13 @@ function getBrowserIssueMessage(){
   const ua=navigator.userAgent||'';
   const isInApp=/FBAN|FBAV|Instagram|Line\/|WhatsApp|MicroMessenger|Twitter/i.test(ua);
   if(isInApp){
-    return '⚠️ التسجيل الصوتي مش بيشتغل جوه متصفح التطبيق ده (ماسنجر / إنستجرام / إلخ).\n\nافتحي الموقع من متصفح Chrome مباشرة:\n1) اضغطي على النقط التلات (⋮) فوق الصفحة\n2) اختاري "افتح في المتصفح" أو "Open in Browser"\n\nأو انسخي رابط الموقع والصقيه في تطبيق Chrome.';
+    return '⚠️ التسجيل الصوتي مش بيشتغل جوه متصفح التطبيق ده (ماسنجر / إنستجرام / إلخ).\n\nافتح الموقع من متصفح Chrome مباشرة:\n1) اضغط على النقط التلات (⋮) فوق الصفحة\n2) اختر "افتح في المتصفح" أو "Open in Browser"\n\nأو انسخ رابط الموقع والصقه في تطبيق Chrome.';
   }
-  return '⚠️ التسجيل الصوتي محتاج متصفح Chrome عشان يشتغل.\n\nلو حضرتك على آيفون: حمّلي تطبيق Chrome من App Store وافتحي الموقع منه (مش من Safari).\nلو على أندرويد: افتحي الموقع من تطبيق Chrome.';
+  return '⚠️ التسجيل الصوتي محتاج متصفح Chrome عشان يشتغل.\n\nلو حضرتك على آيفون: حمّل تطبيق Chrome من App Store وافتح الموقع منه (مش من Safari).\nلو على أندرويد: افتح الموقع من تطبيق Chrome.';
 }
 
 function toggleRec(){
-  if(!currentKey){alert('اختاري سورة أولاً');return;}
+  if(!currentKey){alert('اختر سورة أولاً');return;}
   if(!SpeechAPI||!isSecure){alert(getBrowserIssueMessage());return;}
   if(recognizing){
     recognizing=false;
@@ -981,7 +981,7 @@ function checkRecitation(){
   const total=results.length;
   const pct=Math.round(ok/total*100);
   saveDarbiProgress('recitation',ok,total);
-  let where=startIdx===0?'بدأتِ من أول السورة':'📍 بدأتِ من الكلمة '+(startIdx+1)+' تقريباً';
+  let where=startIdx===0?'بدأت من أول السورة':'📍 بدأت من الكلمة '+(startIdx+1)+' تقريباً';
   document.getElementById('resultCard').style.display='block';
   document.getElementById('whereMsg').textContent=where;
   document.getElementById('statOk').textContent='✓ '+ok;
@@ -991,7 +991,7 @@ function checkRecitation(){
   fill.style.width=pct+'%';
   fill.style.background=pct>=80?'#4a7c4a':pct>=60?'#e67e22':'#c0392b';
   document.getElementById('resultTitle').textContent=
-    pct===100?'🌟 ممتاز! تلاوة مثالية':pct>=80?'✨ أحسنتِ!':pct>=60?'📖 جيد — راجعي الكلمات الحمراء':'💪 تحتاجين مراجعة';
+    pct===100?'🌟 ممتاز! تلاوة مثالية':pct>=80?'✨ أحسنت!':pct>=60?'📖 جيد — راجع الكلمات الحمراء':'💪 تحتاج مراجعة';
   if(pct===100){
     launchConfetti();
   }
@@ -1006,7 +1006,7 @@ function checkRecitation(){
     }
     const sp=document.createElement('span');
     if(r.status==='ok'){sp.className='w-ok';sp.textContent=r.ref;}
-    else if(r.status==='err'){sp.className='w-err';sp.textContent=r.ref;sp.title='قلتِ: '+(r.user||'');}
+    else if(r.status==='err'){sp.className='w-err';sp.textContent=r.ref;sp.title='قلت: '+(r.user||'');}
     else{sp.className='w-missing';sp.textContent=r.ref;}
     display.appendChild(sp);display.appendChild(document.createTextNode(' '));
   });

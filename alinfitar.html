@@ -135,7 +135,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 </div>
 
 <div id="resume-banner" style="display:none;margin:0 16px 16px;background:var(--surface2);border:1.5px solid var(--gold);border-radius:14px;padding:14px 16px;text-align:center;">
-  <div style="margin-bottom:10px;font-size:15px;color:var(--text);">📌 عندك اختبار لسه ما خلصتيهوش، عايزة تكملي منين وقفتِ؟</div>
+  <div style="margin-bottom:10px;font-size:15px;color:var(--text);">📌 لديك اختبار لم يكتمل. هل ترغب في المتابعة من حيث توقفتَ، أم البدء من جديد؟</div>
   <div style="display:flex;gap:10px;">
     <button onclick="resumeQuiz()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px;font-family:inherit;font-size:15px;cursor:pointer;">المتابعة من هنا</button>
     <button onclick="dismissResume()" style="flex:1;background:var(--surface3);color:var(--text-soft);border:1.5px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:15px;cursor:pointer;">البدء من جديد</button>
@@ -192,7 +192,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 </div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
-  <div class="result-title" id="result-title">أحسنتِ!</div>
+  <div class="result-title" id="result-title">أحسنت!</div>
   <div class="result-score" id="result-score"></div>
   <div class="result-msg" id="result-msg"></div>
   <button class="retry-btn" id="review-mistakes-btn" onclick="startReview()" style="display:none;background:var(--wrong-border);">📝 راجع أخطائي</button>
@@ -500,7 +500,7 @@ function renderHard(q,zone){
   const recBtn=document.createElement('button');
   recBtn.style.cssText='width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';
   recBtn.textContent='🎤 اضغط للتسجيل';
-  const txBox=document.createElement('div');txBox.className='rec-transcript';txBox.title='انقري على أي كلمة لحذفها';
+  const txBox=document.createElement('div');txBox.className='rec-transcript';txBox.title='انقر على أي كلمة لحذفها';
   const clrBtn=document.createElement('button');
   clrBtn.style.cssText='width:100%;padding:9px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:var(--wrong-bg);color:var(--wrong-text);margin-bottom:8px;display:none;';
   clrBtn.textContent='🗑️ مسح الكل والبدء من جديد';
@@ -547,7 +547,7 @@ function renderHard(q,zone){
       t.appendChild(document.createTextNode('المحدَّدة: '));
       const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
       b.textContent=_words[_sel];t.appendChild(b);
-      t.appendChild(document.createTextNode(' — سجّلي البديل'));
+      t.appendChild(document.createTextNode(' — سجّل البديل'));
       const x=document.createElement('button');x.type='button';x.textContent='✕ حذف';
       x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
       x.onclick=()=>{_words.splice(_sel,1);_sel=null;renderWords();};
@@ -558,8 +558,8 @@ function renderHard(q,zone){
       const span=document.createElement('span');span.className='rec-word';
       span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';
       span.textContent=w;
-      if(i===_sel){span.style.outline='2px solid var(--gold)';span.style.background='var(--hint-btn-bg)';span.style.fontWeight='700';span.title='اضغطي لإلغاء التحديد';}
-      else{span.title='اضغطي لتحديدها ثم سجّلي البديل';}
+      if(i===_sel){span.style.outline='2px solid var(--gold)';span.style.background='var(--hint-btn-bg)';span.style.fontWeight='700';span.title='اضغط لإلغاء التحديد';}
+      else{span.title='اضغط لتحديدها ثم سجّل البديل';}
       span.onclick=()=>{_sel=(_sel===i)?null:i;renderWords();};
       txBox.appendChild(span);
     });
@@ -656,7 +656,7 @@ function checkTextVal(q,userVal){
   if(_ok){
     correctCount++;statuses[qIndex]='correct';
     fb.className='feedback correct';
-    fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟'+_pctNow();
+    fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();
     if(typeof spawnConfetti==='function')spawnConfetti(18);
     if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
   }else{
@@ -678,38 +678,9 @@ function checkText(q){
   checkTextVal(q,userVal);
 }
 
-function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;
-  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
-  const fb=document.getElementById('feedback');
-  if(chosen===correct){
-    btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';
-    fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! 🌟'+_pctNow();spawnConfetti(18);const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);
-  }else{
-    btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
-    document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});
-    fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+questions[qIndex].choices[correct]+'</span>';
-  }
-  fb.style.display='block';
-  document.getElementById('skip-btn').style.display='none';
-  document.getElementById('next-btn').style.display='';
-  updateBadges();renderDotProgress();saveResumeState();
-}
+function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');const _ans=questions[qIndex].choices[correct];if(chosen===correct){if(btn)btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! 🌟'+(typeof _pctNow==='function'?_pctNow():'');if(typeof spawnConfetti==='function')spawnConfetti(18);const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}else{if(btn)btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===_ans)b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+_ans+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}
 
-function skipQuestion(){
-  const q=questions[qIndex];wTotal+=(currentLevel==='easy'?1:String(q.answer||'').trim().split(/\s+/).filter(Boolean).length||1);const fb=document.getElementById('feedback');
-  if(currentLevel==='easy'){
-    document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});
-    fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';
-  }else{
-    const inp=document.getElementById('user-input');if(inp)inp.disabled=true;
-    document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);
-    fb.className='feedback wrong';fb.innerHTML=`⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2" class="notranslate" translate="no">${q.answer}</span>`;
-  }
-  wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
-  fb.style.display='block';updateBadges();
-  document.getElementById('skip-btn').style.display='none';
-  document.getElementById('next-btn').style.display='';
-}
+function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');wTotal+=(currentLevel==='easy'?1:String(q.answer||'').trim().split(/\s+/).filter(Boolean).length||1);if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';}else{const inp=document.getElementById('user-input');if(inp)inp.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;" class="notranslate" translate="no">'+q.answer+'</span>';}wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}
 
 function prevQuestion(){if(qIndex===0)return;qIndex--;showQuestion();}
 function nextQuestion(){qIndex++;if(qIndex>=questions.length){showResult();}else{showQuestion();}}
@@ -720,10 +691,10 @@ function showResult(){
   const pct=wTotal?Math.round(wCorrect*100/wTotal):0;
   document.getElementById('result-score').textContent=`${toArabicNum(wCorrect)} / ${toArabicNum(wTotal)} كلمة — ${toArabicNum(pct)}%  |  ${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} سؤال`;
   let icon,title,msg;
-  if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنتِ السورة بالكامل';}
-  else if(pct>=80){icon='✨';title='أحسنتِ!';msg='نتيجة رائعة، استمري في المراجعة';}
-  else if(pct>=60){icon='📖';title='جيد';msg='راجعي السورة مرة أخرى وأعيدي الاختبار';}
-  else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأسي، المراجعة المستمرة هي المفتاح';}
+  if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت السورة بالكامل';}
+  else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';}
+  else if(pct>=60){icon='📖';title='جيد';msg='راجع السورة مرة أخرى وأعد الاختبار';}
+  else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';}
   document.getElementById('result-icon').textContent=icon;
   document.getElementById('result-title').textContent=title;
   document.getElementById('result-msg').textContent=msg;
