@@ -3571,16 +3571,41 @@ def migrate_baqara_to_clean_template(path, out):
         # آية طويلة متقسّمة لمقاطع (بداية/نهاية) — دي مش آيات ناقصة.
         # بنقبلها بس لو المقاطع بتعيد تركيب نص الآية حرفيًا 100%.
         ok_seg = False
-        nums = _baqara_hard_ayah_numbers(hard_pairs) if len(hard_pairs) > expected else None
-        if nums and nums == sorted(nums) and sorted(set(nums)) == list(range(start, end + 1)) \
-           and set(nums) <= set(ayat_by_num):
-            ok_seg = all(
-                ' '.join(a for (q, a), n in zip(hard_pairs, nums) if n == num) == ayat_by_num[num]
-                for num in sorted(set(nums))
-            )
+        reason = None
+        nums = None
+        if len(hard_pairs) < expected:
+            reason = (f'HARD_Q غير مكتملة: {len(hard_pairs)}/{expected} — '
+                      f'لازم تكمّل الآيات الناقصة من صور المصحف الأول')
+        else:
+            nums = _baqara_hard_ayah_numbers(hard_pairs)
+            if nums is None:
+                bad = [q[:45] for q, a in hard_pairs
+                       if not re.search(r'الآي[ةه]\s*(?:رقم\s*)?(\d+)', q)]
+                reason = ('مقاطع؟ مش لاقي رقم آية صريح في نص السؤال — '
+                          f'أول سؤال من غير رقم: «{bad[0] if bad else "؟"}»')
+            elif nums != sorted(nums):
+                reason = f'أرقام آيات HARD_Q مش متسلسلة: {nums}'
+            elif sorted(set(nums)) != list(range(start, end + 1)):
+                reason = (f'الآيات المغطّاة {sorted(set(nums))} مش مطابقة '
+                          f'لنطاق الصفحة {start}-{end}')
+            elif not set(nums) <= set(ayat_by_num):
+                miss = sorted(set(nums) - set(ayat_by_num))
+                reason = ('مصفوفة AYAT مش بصيغة {num,text} أو ناقصة آيات: '
+                          f'{miss if miss else "AYAT مش موجودة"}')
+            else:
+                bad_num = [
+                    num for num in sorted(set(nums))
+                    if ' '.join(a for (q, a), n in zip(hard_pairs, nums) if n == num)
+                    != ayat_by_num[num]
+                ]
+                if bad_num:
+                    reason = (f'مقاطع آية {bad_num[0]} مابتعيدش تركيب النص حرفيًا — '
+                              'محتاجة مراجعة يدوية بصورة المصحف')
+                else:
+                    ok_seg = True
         if not ok_seg:
             BAQARA_MIGRATION_SKIPPED.append(
-                f'{os.path.basename(path)} (HARD_Q غير مكتملة: {len(hard_pairs)}/{expected} — لازم تكمّل الآيات الناقصة من صور المصحف الأول)'
+                f'{os.path.basename(path)} ({len(hard_pairs)}/{expected} — {reason})'
             )
             return out, False
         seg_nums = nums
@@ -3691,8 +3716,9 @@ def fix_baqara_mushaf_ayah_numbers(path, out):
             m1 = re.search(r'<div class="ayat-range">[^<]*?الآية\s*(\d+)', out)
             nums = [int(m1.group(1))] if m1 else None
         if not nums or n_ayat == 0 or len(nums) != n_ayat:
+            rng = f'{nums[0]}-{nums[-1]} ({len(nums)} آية)' if nums else 'مش لاقي نطاق في ayat-range'
             BAQARA_AYAHNUM_SKIPPED.append(
-                f'{fn} (عدد آيات AYAT = {n_ayat} مش مطابق لنطاق الصفحة — محتاجة مراجعة يدوية)'
+                f'{fn} (AYAT فيها {n_ayat} آية | النطاق المكتوب: {rng} — محتاجة مراجعة يدوية)'
             )
             return out, False
         semi = out.find(';', en)
