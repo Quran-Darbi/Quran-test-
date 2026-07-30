@@ -3499,6 +3499,19 @@ def _baqara_verify_migration(old, new):
 
     return (old_e == new_e) and (old_m == new_m) and (old_h_answers == new_h_answers) and len(new_h_answers) > 0
 
+def _baqara_parts_fit(parts, full):
+    """بيتأكد إن إجابات HARD_Q الخاصة بآية واحدة مشروعة، من غير أي نص
+    غريب. حالتان مقبولتان بس:
+      (1) مقاطع متتابعة بتعيد تركيب الآية حرفيًا لما تتلزق بمسافة
+          (زي 'بداية الآية' + 'نهاية الآية' في p9 وp49)
+      (2) سؤال بالآية الكاملة + أسئلة إضافية كل واحدة نصّها جزء حرفي
+          من نفس الآية (زي p42: الآية 253 كاملة + سؤال على بدايتها)
+    أي حاجة تانية بترجع False والصفحة بتتخطّى للمراجعة اليدوية."""
+    if ' '.join(parts) == full:
+        return True
+    return (full in parts) and all(p in full for p in parts)
+
+
 def _baqara_hard_ayah_numbers(hard_pairs):
     """يستخرج رقم الآية الحقيقي من نص كل سؤال في HARD_Q.
     بيتعامل مع الصيغتين الموجودتين في القالب القديم:
@@ -3557,19 +3570,28 @@ def migrate_baqara_to_clean_template(path, out):
         BAQARA_MIGRATION_SKIPPED.append(f'{os.path.basename(path)} (صيغة HARD_Q غير مدعومة)')
         return out, False
 
-    # آيات الصفحة الحقيقية من مصفوفة AYAT بصيغة {num,text} — لازمة في
-    # حالة الآية المقسّمة عشان الترتيب والمصحف يفضلوا على عدد الآيات
-    # الحقيقي مش عدد المقاطع.
+    # آيات الصفحة الحقيقية: من AYAT بصيغة {num,text} لو موجودة، وإلا من
+    # ORDER_AYAT (مصفوفة مسطّحة بترتيب الصفحة). لازمة عشان الترتيب وعرض
+    # المصحف يفضلوا على عدد الآيات الحقيقي مش عدد أسئلة الصعب.
     ayat_by_num = {
         int(n): t for n, t in re.findall(
             r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', ayat_body
         )
     } if ayat_body else {}
+    if not ayat_by_num and expected:
+        m_ord = re.search(r'const\s+ORDER_AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
+        if m_ord:
+            ord_texts = re.findall(r'"((?:[^"\\]|\\.)*)"', m_ord.group(1))
+            if len(ord_texts) == expected:
+                ayat_by_num = {start + k: t for k, t in enumerate(ord_texts)}
 
     seg_nums = None
     if expected is not None and len(hard_pairs) != expected:
-        # آية طويلة متقسّمة لمقاطع (بداية/نهاية) — دي مش آيات ناقصة.
-        # بنقبلها بس لو المقاطع بتعيد تركيب نص الآية حرفيًا 100%.
+        # عدد أسئلة الصعب مش مساوي لعدد الآيات. ده ليه سببين مشروعين:
+        #   (1) آية طويلة متقسّمة لمقاطع (بداية/نهاية) — زي p9 وp49
+        #   (2) سؤال إضافي على جزء من آية جنب سؤال الآية الكاملة — زي p42
+        # الاتنين مقبولين بشرطين: كل آيات الصفحة مغطّاة بالظبط، وكل
+        # إجابة في HARD_Q جزء حرفي من نص آيتها (مفيش نص غريب أبدًا).
         ok_seg = False
         reason = None
         nums = None
@@ -3581,26 +3603,25 @@ def migrate_baqara_to_clean_template(path, out):
             if nums is None:
                 bad = [q[:45] for q, a in hard_pairs
                        if not re.search(r'الآي[ةه]\s*(?:رقم\s*)?(\d+)', q)]
-                reason = ('مقاطع؟ مش لاقي رقم آية صريح في نص السؤال — '
+                reason = ('مش لاقي رقم آية صريح في نص السؤال — '
                           f'أول سؤال من غير رقم: «{bad[0] if bad else "؟"}»')
-            elif nums != sorted(nums):
-                reason = f'أرقام آيات HARD_Q مش متسلسلة: {nums}'
             elif sorted(set(nums)) != list(range(start, end + 1)):
                 reason = (f'الآيات المغطّاة {sorted(set(nums))} مش مطابقة '
                           f'لنطاق الصفحة {start}-{end}')
             elif not set(nums) <= set(ayat_by_num):
                 miss = sorted(set(nums) - set(ayat_by_num))
-                reason = ('مصفوفة AYAT مش بصيغة {num,text} أو ناقصة آيات: '
-                          f'{miss if miss else "AYAT مش موجودة"}')
+                reason = ('مفيش AYAT بصيغة {num,text} ولا ORDER_AYAT بطول '
+                          f'الصفحة — آيات ناقصة: {miss}')
             else:
                 bad_num = [
                     num for num in sorted(set(nums))
-                    if ' '.join(a for (q, a), n in zip(hard_pairs, nums) if n == num)
-                    != ayat_by_num[num]
+                    if not _baqara_parts_fit(
+                        [a for (q, a), n in zip(hard_pairs, nums) if n == num],
+                        ayat_by_num[num])
                 ]
                 if bad_num:
-                    reason = (f'مقاطع آية {bad_num[0]} مابتعيدش تركيب النص حرفيًا — '
-                              'محتاجة مراجعة يدوية بصورة المصحف')
+                    reason = (f'في إجابة عن آية {bad_num[0]} نصّها مش جزء حرفي '
+                              'من الآية — محتاجة مراجعة يدوية بصورة المصحف')
                 else:
                     ok_seg = True
         if not ok_seg:
@@ -3611,15 +3632,17 @@ def migrate_baqara_to_clean_template(path, out):
         seg_nums = nums
     elif expected is not None:
         # العدد مظبوط — بس نتأكد إن أرقام الآيات المكتوبة جوه الأسئلة
-        # نفسها مطابقة لنطاق الصفحة، عشان مايتحطش رقم آية غلط.
+        # نفسها مغطّية نطاق الصفحة، عشان مايتحطش رقم آية غلط.
         # (لو الأسئلة مافيهاش أرقام صريحة بنسيب السلوك القديم زي ما هو.)
         nums = _baqara_hard_ayah_numbers(hard_pairs)
-        if nums is not None and nums != list(range(start, end + 1)):
+        if nums is not None and sorted(nums) != list(range(start, end + 1)):
             BAQARA_MIGRATION_SKIPPED.append(
                 f'{os.path.basename(path)} (أرقام آيات HARD_Q مش مطابقة لنطاق الصفحة: '
                 f'{nums} مقابل {start}-{end} — محتاجة مراجعة يدوية)'
             )
             return out, False
+        if nums is not None and nums != list(range(start, end + 1)):
+            seg_nums = nums          # نفس الأرقام بترتيب مختلف — نسيبها زي ما هي
 
     if seg_nums is not None:
         ayah_numbers = seg_nums
@@ -3631,7 +3654,14 @@ def migrate_baqara_to_clean_template(path, out):
         for a, (q, ans) in zip(ayah_numbers, hard_pairs)
     ) + "\n]"
     if seg_nums is not None:
-        ayat_list = [ayat_by_num[n] for n in sorted(set(seg_nums))]
+        ordered = sorted(set(seg_nums))
+        if set(ordered) <= set(ayat_by_num):
+            ayat_list = [ayat_by_num[n] for n in ordered]
+        else:
+            # مفيش مصدر مستقل للآيات — هنا كل آية ليها سؤال واحد بالظبط
+            # (فرع العدد المتساوي)، فبناخد إجابته ونرتّبها برقم الآية.
+            byn = dict(zip(seg_nums, [a for q, a in hard_pairs]))
+            ayat_list = [byn[n] for n in ordered]
     else:
         ayat_list = [ans for q, ans in hard_pairs]
     ayat_js = "[\n" + ",\n".join("  " + _baqara_js_str(a) for a in ayat_list) + "\n]"
