@@ -92,12 +92,12 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
 
 </style>
-<link rel="manifest" href="/Quran-test-/manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="دربي">
-<link rel="apple-touch-icon" href="/Quran-test-/icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
 </head>
 <body>
 <div class="top-bar">
@@ -437,7 +437,7 @@ function spawnConfetti(count){const colors=['#4a7c4a','#c4a84a','#9db89d','#e0ed
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('/Quran-test-/service-worker.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(r=>console.log('SW:',r.scope))
       .catch(e=>console.log('SW err:',e));
   });
