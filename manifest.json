@@ -1,0 +1,42 @@
+{
+  "name": "دربي لحفظ القرآن",
+  "short_name": "دربي",
+  "description": "منصة تفاعلية لحفظ القرآن الكريم ومراجعته باختبارات متدرجة واختبار تلاوة صوتي.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f0f4f0",
+  "theme_color": "#4a7c4a",
+  "categories": ["education", "books"],
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "اختبار التلاوة",
+      "short_name": "التلاوة",
+      "url": "recitation.html",
+      "icons": [{ "src": "icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
