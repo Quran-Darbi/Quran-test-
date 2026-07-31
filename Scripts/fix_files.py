@@ -5537,6 +5537,33 @@ def audit_question_quality(root):
     print('=== نهاية فحص الجودة ===\n')
 
 
+OG_IMAGE_BLOCK = (
+    '<meta property="og:image" content="https://quran-darbi.com/og-image.png">\n'
+    '<meta property="og:image:width" content="1200">\n'
+    '<meta property="og:image:height" content="630">\n'
+    '<meta property="og:image:alt" content="دربي لحفظ القرآن — اختبارات تفاعلية لحفظ كتاب الله ومراجعته">\n'
+    '<meta property="og:site_name" content="دربي لحفظ القرآن">\n'
+    '<meta name="twitter:card" content="summary_large_image">'
+)
+
+
+def fix_add_og_image(out):
+    """إضافة صورة معاينة الروابط (og:image) + بطاقة تويتر.
+
+    بتُحقن بعد og:type لو موجود، وإلا قبل </head> مباشرة. الرابط مطلق
+    عن قصد: زاحفات فيسبوك وتويتر ما بتحلّش المسارات النسبية.
+    idempotent: الحارس بيمنع أي تكرار.
+    """
+    if 'og:image' in out:
+        return out, False
+    anchor = '<meta property="og:type" content="website">'
+    if anchor in out:
+        return out.replace(anchor, anchor + '\n' + OG_IMAGE_BLOCK, 1), True
+    if '</head>' in out:
+        return out.replace('</head>', OG_IMAGE_BLOCK + '\n</head>', 1), True
+    return out, False
+
+
 def fix_pwa_paths_to_relative(out):
     """ترحيل مسارات الـPWA من مسار المستودع المطلق إلى مسارات نسبية.
 
@@ -6234,6 +6261,7 @@ def fix_index_recitation(path):
     # ترحيل مسارات الـPWA للنسبي + تحديث og:url للدومين المخصّص
     out, _pwa_rel = fix_pwa_paths_to_relative(out)
     out, _og_url = fix_og_url_to_custom_domain(out)
+    out, _og_img = fix_add_og_image(out)
 
     out, _idx_nav = fix_index_tools_overlap(path, out)
 
