@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# نسخة 2026-07-31 — تعديل تشغيلي فقط (سطر تعليق) للتأكد من ثبات
-# توحيد الدوال بعد الترحيل. مفيش أي تغيير في السلوك.
 import os, re, json, hashlib
 
 # ====================================================
@@ -307,17 +305,17 @@ def inject_ayat_from_data(path, out):
     return out, True
 
 # ===== كود PWA يُضاف لكل ملف =====
-PWA_HEAD = """<link rel="manifest" href="/Quran-test-/manifest.json">
+PWA_HEAD = """<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="دربي">
-<link rel="apple-touch-icon" href="/Quran-test-/icons/icon-192x192.png">"""
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">"""
 
 PWA_SW = """<script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('/Quran-test-/service-worker.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(r=>console.log('SW:',r.scope))
       .catch(e=>console.log('SW err:',e));
   });
@@ -3060,12 +3058,12 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
 .order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:12px;padding:12px 14px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:2px solid var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.07);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:4px;margin:-4px;border-radius:8px;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
 </style>
-<link rel="manifest" href="/Quran-test-/manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="دربي">
-<link rel="apple-touch-icon" href="/Quran-test-/icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
 </head>
 <body>
 <div class="top-bar">
@@ -3248,8 +3246,8 @@ function returnToLevels(){document.getElementById('quiz-area').style.display='no
 function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
 let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
 function startOrderQuiz(){orderPlaced=new Array(AYAT.length).fill(null);orderCursor=0;orderSelected=-1;orderPoolOrder=AYAT.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';renderOrderQuiz();}
-function ayahNumAt(i){return (typeof AYAT_NUMS!=='undefined'&&AYAT_NUMS&&AYAT_NUMS.length===AYAT.length)?AYAT_NUMS[i]:(i+1);}
-function mushafHtml(){return '<div class="mushaf-block notranslate" translate="no">'+AYAT.map((t,i)=>{const n=ayahNumAt(i);return t+(n?' <span class="ayah-end">﴿'+toArabicNum(n)+'﴾</span>':'');}).join(' ')+'</div>';}
+function ayahNumAt(i){return (typeof AYAT_NUMS!=='undefined'&&AYAT_NUMS&&AYAT_NUMS.length===AYAT.length&&AYAT_NUMS[i])?AYAT_NUMS[i]:(i+1);}
+function mushafHtml(){return '<div class="mushaf-block notranslate" translate="no">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(ayahNumAt(i))+'﴾</span>').join(' ')+'</div>';}
 function nextEmptyFrom(start){for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}return -1;}
 function renderOrderQuiz(){const slotsDiv=document.getElementById('order-slots');const poolDiv=document.getElementById('order-pool');slotsDiv.innerHTML='';poolDiv.innerHTML='';const filledGrid=document.createElement('div');filledGrid.className='order-filled-grid';const emptyStrip=document.createElement('div');emptyStrip.className='order-empty-strip';orderPlaced.forEach((idx,pos)=>{if(idx===null){const active=(pos===orderCursor);const dot=document.createElement('span');dot.className='order-dot'+(active?' active':'');dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};emptyStrip.appendChild(dot);}else{const card=document.createElement('div');card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};filledGrid.appendChild(card);}});if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);orderPoolOrder.forEach(idx=>{if(orderPlaced.includes(idx))return;const btn=document.createElement('button');btn.className='order-item notranslate';btn.setAttribute('translate','no');btn.textContent=AYAT[idx];btn.onclick=()=>{if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}if(orderCursor===-1)return;orderPlaced[orderCursor]=idx;orderCursor=nextEmptyFrom(orderCursor+1);document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};poolDiv.appendChild(btn);});const allFilled=!orderPlaced.includes(null);document.getElementById('order-check-btn').style.display=allFilled?'block':'none';}
 function checkOrderAnswer(){let correct=0;document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);if(ok)correct++;el.classList.remove('correct-slot','wrong-slot');el.classList.add(ok?'correct-slot':'wrong-slot');});const fb=document.getElementById('order-feedback');const allCorrect=(correct===AYAT.length);fb.className='feedback '+(allCorrect?'correct':'wrong');fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());fb.style.display='block';document.getElementById('order-check-btn').style.display='none';if(allCorrect)spawnConfetti();}
@@ -3270,7 +3268,7 @@ function spawnConfetti(){const colors=['#4a7c4a','#c4a84a','#9db89d','#e0edd8','
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('/Quran-test-/service-worker.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(r=>console.log('SW:',r.scope))
       .catch(e=>console.log('SW err:',e));
   });
@@ -3501,157 +3499,6 @@ def _baqara_verify_migration(old, new):
 
     return (old_e == new_e) and (old_m == new_m) and (old_h_answers == new_h_answers) and len(new_h_answers) > 0
 
-BAQARA_HARDQ_COMPLETED = []
-BAQARA_HARDQ_SKIPPED = []
-
-
-def _bq_snip(text, n=3, tail=False):
-    ws = text.split()
-    return ' '.join(ws[-n:] if tail else ws[:n])
-
-
-def complete_baqara_hard_q(path, out):
-    """يكمّل أسئلة المستوى الصعب في صفحات البقرة القديمة قبل الترحيل.
-
-    مصدر النص الوحيد هو نفس الملف (AYAT بصيغة {num,text} أو ORDER_AYAT)
-    — نسخ حرفي بالبايت، مفيش أي كتابة أو تأليف لنص قرآني إطلاقًا.
-    بيعالج حالتين:
-      (1) آية مالهاش سؤال خالص      -> سؤال بالآية كاملة
-      (2) آية مغطّاة جزئيًا (فجوة)  -> سؤال لكل جزء ناقص
-    وبيرتّب الأجزاء حسب موضعها في الآية (بعض الملفات مخزّنة الأجزاء
-    بالعكس). في الآخر بيتأكد إن لزق أجزاء كل آية بيرجّع نصها حرفيًا
-    100%، وإن كل إجابة قديمة موجودة زي ما هي — وإلا مايغيّرش حاجة."""
-    fn = os.path.basename(path)
-    if not fn.startswith('albaqara_') or '{ayah:' in out:
-        return out, False
-
-    m_rng = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
-    if not m_rng:
-        return out, False
-    start, end = int(m_rng.group(1)), int(m_rng.group(2))
-    span = list(range(start, end + 1))
-
-    m_hard = re.search(r'const\s+HARD_Q\s*=\s*\[(.*?)\n\];', out, re.S)
-    if not m_hard:
-        return out, False
-    hard_body = m_hard.group(1)
-
-    # --- مصدر نص الآيات: AYAT {num,text} وإلا ORDER_AYAT ---
-    by_num = {}
-    m_ayat = re.search(r'const\s+AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
-    ayat_idx = []
-    if m_ayat:
-        ayat_idx = re.findall(
-            r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', m_ayat.group(1))
-        if [int(n) for n, t in ayat_idx] == span:
-            by_num = {int(n): t for n, t in ayat_idx}
-    if not by_num:
-        m_ord = re.search(r'const\s+ORDER_AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
-        if m_ord:
-            ot = re.findall(r'"((?:[^"\\]|\\.)*)"', m_ord.group(1))
-            if len(ot) == len(span):
-                by_num = {start + k: t for k, t in enumerate(ot)}
-    if not by_num:
-        BAQARA_HARDQ_SKIPPED.append(f'{fn} (مفيش مصدر كامل لنص الآيات في الملف)')
-        return out, False
-
-    # --- الأسئلة الموجودة: صيغة نصية أو AYAT[i].text ---
-    items = []
-    for m in re.finditer(
-            r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*'
-            r'(?:"((?:[^"\\]|\\.)*)"|AYAT\[(\d+)\]\.text)\s*\}', hard_body):
-        q, lit, idx = m.group(1), m.group(2), m.group(3)
-        if lit is not None:
-            ans = lit
-        elif ayat_idx and int(idx) < len(ayat_idx):
-            ans = ayat_idx[int(idx)][1]
-        else:
-            BAQARA_HARDQ_SKIPPED.append(f'{fn} (مرجع AYAT[{idx}] مش موجود)')
-            return out, False
-        mn = re.search(r'الآي[ةه]\s*(?:رقم\s*)?(\d+)', q)
-        if not mn:
-            BAQARA_HARDQ_SKIPPED.append(f'{fn} (سؤال من غير رقم آية: «{q[:40]}»)')
-            return out, False
-        items.append((int(mn.group(1)), q, ans))
-
-    if not items or any(n not in by_num for n, q, a in items):
-        BAQARA_HARDQ_SKIPPED.append(f'{fn} (سؤال عن آية برّه نطاق الصفحة)')
-        return out, False
-
-    # --- بناء الأجزاء لكل آية + ملء الفجوات ---
-    new_items, added = [], 0
-    for num in span:
-        full = by_num[num]
-        parts = [(q, a) for n, q, a in items if n == num]
-        for q, a in parts:
-            if a not in full:
-                BAQARA_HARDQ_SKIPPED.append(
-                    f'{fn} (إجابة عن آية {num} مش نص حرفي جوه الآية)')
-                return out, False
-        if not parts:
-            new_items.append((num, 0,
-                              f'اكتب الآية رقم {num} من سورة البقرة كاملة', full))
-            added += 1
-            continue
-        if any(a == full for q, a in parts):
-            # الآية مغطّاة بالكامل بسؤال واحد، والباقي أسئلة إضافية على
-            # أجزاء منها (زي p42) — مفيش فجوة تتملي.
-            for k, (q, a) in enumerate(parts):
-                new_items.append((num, k, q, a))
-            continue
-        parts.sort(key=lambda x: full.index(x[1]))
-        segs, pos = [], 0
-        for q, a in parts:
-            i = full.index(a, pos)
-            if i > pos:
-                gap = full[pos:i].strip()
-                if gap:
-                    segs.append((pos, None, gap))
-            segs.append((i, q, a))
-            pos = i + len(a)
-        if pos < len(full):
-            gap = full[pos:].strip()
-            if gap:
-                segs.append((pos, None, gap))
-        for i, (p, q, a) in enumerate(segs):
-            if q is None:
-                if i == 0:
-                    q = f'اكتب أول جزء من الآية {num} حتى «...{_bq_snip(a, 3, True)}»'
-                elif i == len(segs) - 1:
-                    q = f'اكتب آخر جزء من الآية {num} من «{_bq_snip(a)}...» حتى آخرها'
-                else:
-                    q = (f'اكتب الجزء الأوسط من الآية {num} من «{_bq_snip(a)}...» '
-                         f'حتى «...{_bq_snip(a, 3, True)}»')
-                added += 1
-            new_items.append((num, p, q, a))
-
-    if not added:
-        return out, False
-
-    # --- تحقق: لزق أجزاء كل آية يرجّع نصها حرفيًا + الإجابات القديمة سليمة ---
-    for num in span:
-        segs = [a for n, p, q, a in
-                sorted([(n, p, q, a) for n, p, q, a in new_items if n == num],
-                       key=lambda x: x[1])]
-        if ' '.join(segs) != by_num[num]:
-            BAQARA_HARDQ_SKIPPED.append(
-                f'{fn} (فشل التحقق: أجزاء آية {num} مابترجّعش نصها بالحرف)')
-            return out, False
-    old_answers = [a for n, q, a in items]
-    new_answers = [a for n, p, q, a in new_items]
-    if any(a not in new_answers for a in old_answers):
-        BAQARA_HARDQ_SKIPPED.append(f'{fn} (فشل التحقق: إجابة قديمة اتغيّرت)')
-        return out, False
-
-    new_items.sort(key=lambda x: (x[0], x[1]))
-    body = ',\n'.join(
-        '  { q: %s, answer: %s }' % (_baqara_js_str(q), _baqara_js_str(a))
-        for n, p, q, a in new_items)
-    out = out[:m_hard.start(1)] + '\n' + body + out[m_hard.end(1):]
-    BAQARA_HARDQ_COMPLETED.append(f'{fn} (+{added} سؤال → {len(new_items)})')
-    return out, True
-
-
 def _baqara_parts_fit(parts, full):
     """بيتأكد إن إجابات HARD_Q الخاصة بآية واحدة مشروعة، من غير أي نص
     غريب. حالتان مقبولتان بس:
@@ -3679,175 +3526,6 @@ def _baqara_hard_ayah_numbers(hard_pairs):
             return None
         nums.append(int(m.group(1)))
     return nums
-
-
-BAQARA_DUAL_SPLIT = []
-BAQARA_DUAL_SKIPPED = []
-
-
-def split_dual_ayah_questions(path, out):
-    """بعض الصفحات فيها سؤال واحد لآيتين ('اكتب الآيتين 276-277 كاملتين').
-    القالب النضيف بيربط كل سؤال برقم آية واحد، فالسؤال ده بيوقف الترحيل.
-    الدالة بتقسّمه لسؤالين — واحد لكل آية — والنص **منسوخ حرفيًا** من
-    AYAT/ORDER_AYAT في نفس الملف.
-
-    شرط صارم: نص الإجابة الأصلية لازم يساوي بالحرف لزق نصّي الآيتين
-    بمسافة واحدة. لو مايساويش، الدالة ماتلمسش الملف وبتسجّل السبب."""
-    fn = os.path.basename(path)
-    if not fn.startswith('albaqara_') or '{ayah:' in out:
-        return out, False
-    m = re.search(r'(const\s+HARD_Q\s*=\s*\[)(.*?)(\n\];)', out, re.S)
-    rng = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
-    if not m or not rng:
-        return out, False
-    pairs = re.findall(
-        r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"\s*\}', m.group(2))
-    if not pairs or len(pairs) != len(re.findall(r'\{\s*q\s*:', m.group(2))):
-        return out, False          # فيه عناصر بصيغة تانية (مثلاً answer: AYAT[i].text) — ماننساش حاجة
-    start, end = int(rng.group(1)), int(rng.group(2))
-
-    by = {}
-    ab = _baqara_get_array_body(out, 'AYAT')
-    if ab:
-        by = {int(n): t for n, t in re.findall(
-            r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', ab)}
-    if not by:
-        mo = re.search(r'const\s+ORDER_AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
-        if mo:
-            ot = re.findall(r'"((?:[^"\\]|\\.)*)"', mo.group(1))
-            if len(ot) == end - start + 1:
-                by = {start + k: t for k, t in enumerate(ot)}
-    if not by:
-        return out, False
-
-    dual = re.compile(r'الآيتين\s*(\d+)\s*(?:[-–—]|و)\s*(\d+)')
-    new_pairs, split_count = [], 0
-    for q, a in pairs:
-        d = dual.search(q)
-        if not d:
-            new_pairs.append((q, a))
-            continue
-        n1, n2 = int(d.group(1)), int(d.group(2))
-        if n2 != n1 + 1 or n1 not in by or n2 not in by:
-            BAQARA_DUAL_SKIPPED.append(f'{fn} (الآيتين {n1}-{n2}: مش لاقي نص الآيتين في الملف)')
-            new_pairs.append((q, a))
-            continue
-        if a != by[n1] + ' ' + by[n2]:
-            BAQARA_DUAL_SKIPPED.append(
-                f'{fn} (الآيتين {n1}-{n2}: نص السؤال مش مطابق حرفيًا للزق الآيتين — مراجعة يدوية)')
-            new_pairs.append((q, a))
-            continue
-        for n in (n1, n2):
-            new_pairs.append((f'اكتب الآية رقم {n} من سورة البقرة كاملة', by[n]))
-        split_count += 1
-
-    if not split_count:
-        return out, False
-    new_body = '\n' + ',\n'.join(
-        '  {q:%s, answer:%s}' % (_baqara_js_str(q), _baqara_js_str(a)) for q, a in new_pairs)
-    BAQARA_DUAL_SPLIT.append(f'{fn} (+{split_count} سؤال مقسوم)')
-    return out[:m.start(2)] + new_body + out[m.end(2):], True
-
-
-BAQARA_GAPS_FILLED = []
-BAQARA_GAPS_SKIPPED = []
-
-
-def _gap_snippet(text, n=3, tail=False):
-    w = text.split()
-    return ' '.join(w[-n:] if tail else w[:n])
-
-
-def fill_hard_q_gaps(path, out):
-    """بعض صفحات البقرة بتقسّم الآية الطويلة لسؤالين ('أول جزء' + 'آخر
-    جزء') وبتسيب النُص اللي بينهم من غير أي سؤال — يعني جزء من الآية
-    مابيتمرّنش عليه في المستوى الصعب خالص. الدالة بتلاقي الفجوات دي
-    وبتضيف سؤال لكل واحدة، ونص الإجابة **منسوخ حرفيًا** من AYAT أو
-    ORDER_AYAT في نفس الملف — مفيش أي كتابة أو تأليف لنص قرآني.
-
-    بترتّب كمان أسئلة الصعب بترتيب المصحف (رقم الآية ثم موضع الجزء
-    جوّه الآية)، لأن بعض الملفات أسئلتها متبعترة.
-
-    الآية اللي عندها سؤال بالنص الكامل بتتساب زي ما هي (أي أسئلة
-    إضافية عليها اختيار مقصود مش فجوة)."""
-    fn = os.path.basename(path)
-    if not fn.startswith('albaqara_') or '{ayah:' in out:
-        return out, False
-    m = re.search(r'(const\s+HARD_Q\s*=\s*\[)(.*?)(\n\];)', out, re.S)
-    if not m:
-        return out, False
-    pairs = re.findall(
-        r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"\s*\}', m.group(2))
-    rng = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
-    if not rng:
-        return out, False
-    if not pairs or len(pairs) != len(re.findall(r'\{\s*q\s*:', m.group(2))):
-        return out, False          # فيه عناصر بصيغة تانية (مثلاً answer: AYAT[i].text) — ماننساش حاجة
-    start, end = int(rng.group(1)), int(rng.group(2))
-
-    by = {}
-    ab = _baqara_get_array_body(out, 'AYAT')
-    if ab:
-        by = {int(n): t for n, t in re.findall(
-            r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', ab)}
-    if not by:
-        mo = re.search(r'const\s+ORDER_AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
-        if mo:
-            ot = re.findall(r'"((?:[^"\\]|\\.)*)"', mo.group(1))
-            if len(ot) == end - start + 1:
-                by = {start + k: t for k, t in enumerate(ot)}
-    nums = _baqara_hard_ayah_numbers(pairs)
-    if not by or nums is None or sorted(set(nums)) != list(range(start, end + 1)):
-        return out, False
-
-    entries, added = [], 0
-    for num in range(start, end + 1):
-        full = by[num]
-        mine = [(q, a) for (q, a), n in zip(pairs, nums) if n == num]
-        if any(a == full for q, a in mine):        # آية كاملة موجودة — مفيش فجوة
-            entries += [(num, full.find(a), q, a) for q, a in mine]
-            continue
-        spans = []
-        for q, a in mine:
-            i = full.find(a)
-            if i < 0:
-                BAQARA_GAPS_SKIPPED.append(f'{fn} (آية {num}: إجابة نصّها مش جوه الآية)')
-                return out, False
-            spans.append((i, i + len(a), q, a))
-        spans.sort()
-        for k in range(1, len(spans)):
-            if spans[k][0] < spans[k - 1][1]:
-                BAQARA_GAPS_SKIPPED.append(f'{fn} (آية {num}: أجزاء متداخلة)')
-                return out, False
-        filled, cur = [], 0
-        for i0, i1, q, a in spans:
-            if i0 > cur and full[cur:i0].strip():
-                g = full[cur:i0].strip()
-                if cur == 0:
-                    nq = f'اكتب أول جزء من الآية {num} حتى «...{_gap_snippet(g, tail=True)}»'
-                else:
-                    nq = (f'اكتب الجزء الأوسط من الآية {num} من «{_gap_snippet(g)}...» '
-                          f'حتى «...{_gap_snippet(g, tail=True)}»')
-                filled.append((cur, nq, g))
-                added += 1
-            filled.append((i0, q, a))
-            cur = i1
-        if cur < len(full) and full[cur:].strip():
-            g = full[cur:].strip()
-            filled.append((cur, f'اكتب آخر جزء من الآية {num} من «{_gap_snippet(g)}...» حتى آخرها', g))
-            added += 1
-        entries += [(num, p, q, a) for p, q, a in filled]
-
-    entries.sort(key=lambda x: (x[0], x[1]))
-    new_body = '\n' + ',\n'.join(
-        '  {q:%s, answer:%s}' % (_baqara_js_str(q), _baqara_js_str(a))
-        for num, pos, q, a in entries)
-    new_out = out[:m.start(2)] + new_body + out[m.end(2):]
-    if new_out == out:
-        return out, False
-    if added:
-        BAQARA_GAPS_FILLED.append(f'{fn} (+{added} سؤال)')
-    return new_out, True
 
 
 def migrate_baqara_to_clean_template(path, out):
@@ -4027,109 +3705,14 @@ _MUSHAF_OLD_FN = (
     'function mushafHtml(){return \'<div class="mushaf-block notranslate" translate="no">\''
     '+AYAT.map((t,i)=>t+\' <span class="ayah-end">﴿\'+toArabicNum(i+1)+\'﴾</span>\').join(\' \')+\'</div>\';}'
 )
-_AYAHNUM_HELPER_V1 = (
+_AYAHNUM_HELPER = (
     "function ayahNumAt(i){return (typeof AYAT_NUMS!=='undefined'&&AYAT_NUMS&&"
     "AYAT_NUMS.length===AYAT.length&&AYAT_NUMS[i])?AYAT_NUMS[i]:(i+1);}\n"
 )
-# النسخة الحالية: الرقم 0 معناه "مقطع من آية مش نهايتها" فمايتحطش
-# عليه علامة ﴿﴾ — لازمة لصفحة زي p48 (آية الدَّين مقسّمة 5 مقاطع).
-_AYAHNUM_HELPER = (
-    "function ayahNumAt(i){return (typeof AYAT_NUMS!=='undefined'&&AYAT_NUMS&&"
-    "AYAT_NUMS.length===AYAT.length)?AYAT_NUMS[i]:(i+1);}\n"
-)
-_MUSHAF_V1_FN = _AYAHNUM_HELPER_V1 + (
+_MUSHAF_NEW_FN = _AYAHNUM_HELPER + (
     'function mushafHtml(){return \'<div class="mushaf-block notranslate" translate="no">\''
     '+AYAT.map((t,i)=>t+\' <span class="ayah-end">﴿\'+toArabicNum(ayahNumAt(i))+\'﴾</span>\').join(\' \')+\'</div>\';}'
 )
-_MUSHAF_NEW_FN = _AYAHNUM_HELPER + (
-    'function mushafHtml(){return \'<div class="mushaf-block notranslate" translate="no">\''
-    '+AYAT.map((t,i)=>{const n=ayahNumAt(i);return t+(n?\' <span class="ayah-end">﴿\'+toArabicNum(n)+\'﴾</span>\':\'\');})'
-    '.join(\' \')+\'</div>\';}'
-)
-
-
-MEDIUM_SPLIT_DONE = []
-MEDIUM_SPLIT_SKIPPED = []
-
-_MED_ITEM = re.compile(
-    r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"'
-    r'(?:\s*,\s*hint:\s*"((?:[^"\\]|\\.)*)")?\s*\}')
-
-
-def _easy_targets(out):
-    """الكلمات المستهدفة في المستوى السهل (الاختيار الصح في كل سؤال)."""
-    eb = _baqara_get_array_body(out, 'EASY_Q')
-    if not eb:
-        return set()
-    tg = set()
-    for ch, ans in re.findall(r'choices:\s*\[(.*?)\]\s*,\s*answer:\s*(\d+)', eb, re.S):
-        opts = re.findall(r'"((?:[^"\\]|\\.)*)"', ch)
-        k = int(ans)
-        if k < len(opts):
-            tg.add(opts[k])
-    return tg
-
-
-def split_long_medium_answers(path, out):
-    """قاعدة المشروع: إجابة المستوى المتوسط كلمة أو كلمتين. بعض الملفات
-    فيها إجابات أطول. الحل: نقسّم السؤال لأسئلة قصيرة تغطي **نفس**
-    الكلمات، فمفيش كلمة بتخرج من الاختبار ومفيش نص بيتكتب من عندنا.
-
-    الأسئلة بتتعرض بترتيب المصفوفة (startQuiz مابيخلطش المتوسط)، فكل
-    سؤال بيعرض الكلمات اللي قبله (اتسألت خلاص) ويخفي المقاطع الجاية
-    ورا '…' — عشان مايظهرش إجابة سؤال لسه جاي.
-
-    بتتخطّى الملف كله لو التقسيم هيعمل تداخل جديد مع المستوى السهل،
-    أو لو أي تسريب فضل بعد التقسيم."""
-    fn = os.path.basename(path)
-    m = re.search(r'(const\s+MEDIUM_Q\s*=\s*\[)(.*?)(\n\];)', out, re.S)
-    if not m:
-        return out, False
-    body = m.group(2)
-    items = _MED_ITEM.findall(body)
-    if not items or len(items) != len(re.findall(r'\{\s*q\s*:', body)):
-        return out, False          # فيه عناصر بصيغة تانية — ماننساش حاجة
-    if not any(len(a.split()) > 2 for q, a, hint in items):
-        return out, False
-
-    easy_tg = _easy_targets(out)
-    new_items, added = [], 0
-    for q, a, hint in items:
-        ws = a.split()
-        if len(ws) <= 2:
-            new_items.append((q, a, hint))
-            continue
-        if q.count('_____') != 1:
-            MEDIUM_SPLIT_SKIPPED.append(f'{fn} (سؤال فيه {q.count("_____")} فراغ — مش سؤال واحد)')
-            return out, False
-        chunks = [ws[i:i + 2] for i in range(0, len(ws), 2)]
-        for j, ch in enumerate(chunks):
-            tgt = ' '.join(ch)
-            if tgt in easy_tg:
-                MEDIUM_SPLIT_SKIPPED.append(
-                    f'{fn} (التقسيم هيعمل تداخل جديد مع السهل: «{tgt}»)')
-                return out, False
-            before = ' '.join(w for c in chunks[:j] for w in c)
-            filler = (before + ' ' if before else '') + '_____'
-            if j < len(chunks) - 1:
-                filler += ' …'
-            new_items.append((q.replace('_____', filler), tgt, hint if j == 0 else ''))
-        added += len(chunks) - 1
-
-    # تحقق نهائي: مفيش سؤال بيعرض إجابة سؤال جاي بعده
-    for i, (qi, ai, _h) in enumerate(new_items):
-        for aj in (x[1] for x in new_items[i + 1:]):
-            if aj and aj in qi:
-                MEDIUM_SPLIT_SKIPPED.append(f'{fn} (فضل تسريب لإجابة «{aj}» — اتخطّى)')
-                return out, False
-
-    new_body = '\n' + ',\n'.join(
-        '  {q:%s, answer:%s%s}' % (
-            _baqara_js_str(q), _baqara_js_str(a),
-            (', hint:%s' % _baqara_js_str(hint)) if hint else '')
-        for q, a, hint in new_items)
-    MEDIUM_SPLIT_DONE.append(f'{fn} ({len(items)} → {len(new_items)} سؤال، +{added})')
-    return out[:m.start(2)] + new_body + out[m.end(2):], True
 
 
 def fix_baqara_mushaf_ayah_numbers(path, out):
@@ -4160,13 +3743,8 @@ def fix_baqara_mushaf_ayah_numbers(path, out):
         if m:
             nums = list(range(int(m.group(1)), int(m.group(2)) + 1))
         else:
-            # صفحة كلها آية واحدة طويلة مقسّمة لمقاطع (آية الدَّين في p48):
-            # علامة نهاية الآية ﴿﴾ تظهر على آخر مقطع بس — الباقي 0.
             m1 = re.search(r'<div class="ayat-range">[^<]*?الآية\s*(\d+)', out)
-            if m1 and n_ayat >= 1:
-                nums = [0] * (n_ayat - 1) + [int(m1.group(1))]
-            else:
-                nums = None
+            nums = [int(m1.group(1))] if m1 else None
         if not nums or n_ayat == 0 or len(nums) != n_ayat:
             rng = f'{nums[0]}-{nums[-1]} ({len(nums)} آية)' if nums else 'مش لاقي نطاق في ayat-range'
             BAQARA_AYAHNUM_SKIPPED.append(
@@ -4185,23 +3763,6 @@ def fix_baqara_mushaf_ayah_numbers(path, out):
     if _MUSHAF_OLD_FN in out:
         out = out.replace(_MUSHAF_OLD_FN, _MUSHAF_NEW_FN, 1)
         changed = True
-    elif _MUSHAF_V1_FN in out:          # ترقية النسخة الأقدم (0 كان بيرجع i+1)
-        out = out.replace(_MUSHAF_V1_FN, _MUSHAF_NEW_FN, 1)
-        changed = True
-
-    # المستوى الصعب: صفحة الآية الواحدة اترحّلت بأرقام 1..k بدل رقم
-    # الآية الحقيقي، فبيظهر "الآية 1" بدل "الآية 282".
-    m_one = re.search(r'<div class="ayat-range">[^<]*?الآية\s*(\d+)', out)
-    if m_one and 'الآيات' not in re.search(r'<div class="ayat-range">([^<]*)', out).group(1):
-        real = int(m_one.group(1))
-        hb = re.search(r'(const\s+HARD_Q\s*=\s*\[)(.*?)(\n\];)', out, re.S)
-        if hb:
-            hnums = [int(x) for x in re.findall(r'\{ayah:(\d+),', hb.group(2))]
-            if hnums and hnums == list(range(1, len(hnums) + 1)) and real != 1:
-                out = (out[:hb.start(2)]
-                       + re.sub(r'\{ayah:\d+,', '{ayah:%d,' % real, hb.group(2))
-                       + out[hb.end(2):])
-                changed = True
 
     if changed:
         BAQARA_AYAHNUM_FIXED.append(fn)
@@ -5976,25 +5537,49 @@ def audit_question_quality(root):
     print('=== نهاية فحص الجودة ===\n')
 
 
+def fix_pwa_paths_to_relative(out):
+    """ترحيل مسارات الـPWA من مسار المستودع المطلق إلى مسارات نسبية.
+
+    بعد ربط الدومين المخصّص quran-darbi.com بقى الموقع يُقدَّم من الجذر /
+    بدل /Quran-test-/، فالمسارات المطلقة القديمة كانت هتدي 404. المسارات
+    النسبية تشتغل صح على العنوانين معًا (الدومين الجديد وgithub.io).
+
+    دالة جراحية وidempotent: تشتغل مرة واحدة ومفيش أثر لو اتكررت.
+    """
+    pairs = (
+        ('/Quran-test-/manifest.json',      'manifest.json'),
+        ('/Quran-test-/icons/',             'icons/'),
+        ('/Quran-test-/service-worker.js',  'service-worker.js'),
+    )
+    changed = False
+    for old, new in pairs:
+        if old in out:
+            out = out.replace(old, new)
+            changed = True
+    return out, changed
+
+
+def fix_og_url_to_custom_domain(out):
+    """تحديث og:url للدومين المخصّص (index.html فقط عمليًا).
+
+    مطابقة حرفية للوسم بالكامل عن قصد: الرابط القديم موجود كمان جوّه
+    نسخ shareApp() القديمة، واستبدال عام كان هيكسر مطابقة
+    SHARE_OLD_* في مراحل لاحقة من خط الأنابيب.
+    """
+    old = '<meta property="og:url" content="https://quran-darbi.github.io/Quran-test-/">'
+    new = '<meta property="og:url" content="https://quran-darbi.com/">'
+    if old in out:
+        return out.replace(old, new), True
+    return out, False
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
     out = ar2en(src)
 
-    # ====================================================
-    # 0. تكميل أسئلة الصعب من نص الملف نفسه (نسخ حرفي) قبل الترحيل
-    out, _dual_done = split_dual_ayah_questions(path, out)
-    out, _hardq_done = complete_baqara_hard_q(path, out)
-
-    # ====================================================
-    # 0. سدّ فجوات المستوى الصعب قبل الترحيل: أي جزء من آية مش متغطّى
-    #    بسؤال بياخد سؤال جديد، نصّه منسوخ حرفيًا من نفس الملف.
-    out, _gaps_filled = fill_hard_q_gaps(path, out)
-
-    # ====================================================
-    # تقسيم إجابات المتوسط الأطول من كلمتين لأسئلة قصيرة تغطي نفس
-    # الكلمات (نسخ حرفي، من غير تسريب إجابات الأسئلة الجاية).
-    out, _med_split = split_long_medium_answers(path, out)
+    # ترحيل مسارات الـPWA للنسبي (بعد ربط الدومين المخصّص)
+    out, _pwa_rel = fix_pwa_paths_to_relative(out)
 
     # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
@@ -6645,6 +6230,11 @@ def fix_index_recitation(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
     out = ar2en(src)
+
+    # ترحيل مسارات الـPWA للنسبي + تحديث og:url للدومين المخصّص
+    out, _pwa_rel = fix_pwa_paths_to_relative(out)
+    out, _og_url = fix_og_url_to_custom_domain(out)
+
     out, _idx_nav = fix_index_tools_overlap(path, out)
 
     # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
@@ -6883,36 +6473,6 @@ def main():
             print('  -', s)
     else:
         print('كل صفحات البقرة اللي اتفحصت اترحّلت للقالب النضيف ✅')
-
-    print('\n=== تكميل أسئلة الصعب من نص الملف ===')
-    print('اتكمّل: %d صفحة' % len(BAQARA_HARDQ_COMPLETED))
-    for s in BAQARA_HARDQ_COMPLETED:
-        print('  +', s)
-    if BAQARA_HARDQ_SKIPPED:
-        print('اتخطّى: %d صفحة' % len(BAQARA_HARDQ_SKIPPED))
-        for s in BAQARA_HARDQ_SKIPPED:
-            print('  -', s)
-
-    if BAQARA_DUAL_SPLIT or BAQARA_DUAL_SKIPPED:
-        print('\n=== أسئلة الآيتين المقسومة ===')
-        for s in BAQARA_DUAL_SPLIT:
-            print('  +', s)
-        for s in BAQARA_DUAL_SKIPPED:
-            print('  -', s)
-
-    if MEDIUM_SPLIT_DONE or MEDIUM_SPLIT_SKIPPED:
-        print('\n=== تقسيم إجابات المتوسط الطويلة ===')
-        for x in MEDIUM_SPLIT_DONE:
-            print('  +', x)
-        for x in MEDIUM_SPLIT_SKIPPED:
-            print('  -', x)
-
-    if BAQARA_GAPS_FILLED or BAQARA_GAPS_SKIPPED:
-        print('\n=== سدّ فجوات داخل الآيات ===')
-        for s in BAQARA_GAPS_FILLED:
-            print('  +', s)
-        for s in BAQARA_GAPS_SKIPPED:
-            print('  -', s)
 
     print('\n=== أرقام الآيات في عرض المصحف (مستوى الترتيب) ===')
     print('اتصلّح: %d صفحة' % len(BAQARA_AYAHNUM_FIXED))
