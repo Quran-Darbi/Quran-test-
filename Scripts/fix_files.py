@@ -5537,6 +5537,88 @@ def audit_question_quality(root):
     print('=== نهاية فحص الجودة ===\n')
 
 
+SITE_ORIGIN = 'https://quran-darbi.com'
+
+
+def build_sitemap_and_robots(root):
+    """توليد sitemap.xml و robots.txt من الملفات الموجودة فعلًا.
+
+    بيتولّدوا آليًا في كل تشغيل، فأي صفحة جديدة تدخل الخريطة من غير
+    أي تدخّل يدوي. index.html بيتسجّل على الجذر / مش /index.html
+    عشان ما يبقاش فيه رابطين لنفس الصفحة.
+
+    بترجع (changed_files, count) وبتكتب بس لو المحتوى اتغيّر فعلًا.
+    """
+    from datetime import date
+    today = date.today().isoformat()
+
+    names = sorted(
+        fn for fn in os.listdir(root)
+        if fn.endswith('.html') and os.path.isfile(os.path.join(root, fn))
+    )
+
+    entries = []
+    for fn in names:
+        if fn == 'index.html':
+            loc, prio = SITE_ORIGIN + '/', '1.0'
+        elif fn == 'recitation.html':
+            loc, prio = SITE_ORIGIN + '/' + fn, '0.9'
+        else:
+            loc, prio = SITE_ORIGIN + '/' + fn, '0.8'
+        entries.append(
+            '  <url>\n'
+            f'    <loc>{loc}</loc>\n'
+            f'    <lastmod>{today}</lastmod>\n'
+            '    <changefreq>weekly</changefreq>\n'
+            f'    <priority>{prio}</priority>\n'
+            '  </url>'
+        )
+
+    sitemap = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + '\n'.join(entries) + '\n</urlset>\n'
+    )
+
+    robots = (
+        'User-agent: *\n'
+        'Allow: /\n\n'
+        f'Sitemap: {SITE_ORIGIN}/sitemap.xml\n'
+    )
+
+    changed = []
+    for name, content in (('sitemap.xml', sitemap), ('robots.txt', robots)):
+        p = os.path.join(root, name)
+        old = ''
+        if os.path.exists(p):
+            with open(p, encoding='utf-8') as f:
+                old = f.read()
+        # تجاهُل lastmod في المقارنة: لو الصفحات ما اتغيّرتش، ما نعملش
+        # كوميت جديد كل يوم بسبب التاريخ لوحده
+        if re.sub(r'<lastmod>.*?</lastmod>', '', old) != \
+           re.sub(r'<lastmod>.*?</lastmod>', '', content):
+            with open(p, 'w', encoding='utf-8') as f:
+                f.write(content)
+            changed.append(name)
+    return changed, len(entries)
+
+
+def fix_add_canonical(path, out):
+    """إضافة <link rel="canonical"> لكل صفحة.
+
+    بيمنع جوجل يعتبر نفس الصفحة محتوى مكرر لما توصلها من روابط مختلفة
+    (بـ www أو من الدومين القديم). idempotent.
+    """
+    if 'rel="canonical"' in out or "rel='canonical'" in out:
+        return out, False
+    fn = os.path.basename(path)
+    loc = SITE_ORIGIN + '/' + ('' if fn == 'index.html' else fn)
+    tag = f'<link rel="canonical" href="{loc}">'
+    if '</head>' in out:
+        return out.replace('</head>', tag + '\n</head>', 1), True
+    return out, False
+
+
 OG_IMAGE_BLOCK = (
     '<meta property="og:image" content="https://quran-darbi.com/og-image.png">\n'
     '<meta property="og:image:width" content="1200">\n'
@@ -5607,6 +5689,7 @@ def fix_file(path):
 
     # ترحيل مسارات الـPWA للنسبي (بعد ربط الدومين المخصّص)
     out, _pwa_rel = fix_pwa_paths_to_relative(out)
+    out, _canon = fix_add_canonical(path, out)
 
     # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
@@ -6262,6 +6345,7 @@ def fix_index_recitation(path):
     out, _pwa_rel = fix_pwa_paths_to_relative(out)
     out, _og_url = fix_og_url_to_custom_domain(out)
     out, _og_img = fix_add_og_image(out)
+    out, _canon = fix_add_canonical(path, out)
 
     out, _idx_nav = fix_index_tools_overlap(path, out)
 
@@ -6370,6 +6454,14 @@ def main():
                     print('OK:', fn)
 
     print(f'Done: {fixed} fixed')
+
+    # ====================================================
+    # خريطة الموقع + robots.txt — بيتولّدوا آليًا من الملفات الموجودة
+    sm_changed, sm_count = build_sitemap_and_robots(root)
+    if sm_changed:
+        print(f'SITEMAP: تم تحديث {", ".join(sm_changed)} ({sm_count} صفحة)')
+    else:
+        print(f'SITEMAP: OK ({sm_count} صفحة)')
 
     # ====================================================
     # تقرير تشخيصي: أي ملفات جزء عم لسه ناقصة AYAT
