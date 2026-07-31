@@ -15,12 +15,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>اختبر تلاوتك — دربي لحفظ القرآن</title>
-<link rel="manifest" href="/Quran-test-/manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="دربي">
-<link rel="apple-touch-icon" href="/Quran-test-/icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -1062,7 +1062,7 @@ document.getElementById('recBtn').style.cursor='default';
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('/Quran-test-/service-worker.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(r=>console.log('SW:',r.scope))
       .catch(e=>console.log('SW err:',e));
   });

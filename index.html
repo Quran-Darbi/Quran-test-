@@ -19,15 +19,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>دربي لحفظ القرآن</title>
 <meta name="description" content="اختبر حفظك للقرآن الكريم">
-<link rel="manifest" href="/Quran-test-/manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="دربي">
-<link rel="apple-touch-icon" href="/Quran-test-/icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
 <meta property="og:title" content="دربي لحفظ القرآن">
 <meta property="og:description" content="اختبر حفظك للقرآن الكريم">
-<meta property="og:url" content="https://quran-darbi.github.io/Quran-test-/">
+<meta property="og:url" content="https://quran-darbi.com/">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -469,7 +469,7 @@ function toggleTheme(){const n=document.documentElement.getAttribute('data-theme
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('/Quran-test-/service-worker.js')
+    navigator.serviceWorker.register('service-worker.js')
       .then(r=>console.log('SW:',r.scope))
       .catch(e=>console.log('SW err:',e));
   });
