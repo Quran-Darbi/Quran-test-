@@ -3679,6 +3679,74 @@ def _baqara_hard_ayah_numbers(hard_pairs):
     return nums
 
 
+BAQARA_DUAL_SPLIT = []
+BAQARA_DUAL_SKIPPED = []
+
+
+def split_dual_ayah_questions(path, out):
+    """بعض الصفحات فيها سؤال واحد لآيتين ('اكتب الآيتين 276-277 كاملتين').
+    القالب النضيف بيربط كل سؤال برقم آية واحد، فالسؤال ده بيوقف الترحيل.
+    الدالة بتقسّمه لسؤالين — واحد لكل آية — والنص **منسوخ حرفيًا** من
+    AYAT/ORDER_AYAT في نفس الملف.
+
+    شرط صارم: نص الإجابة الأصلية لازم يساوي بالحرف لزق نصّي الآيتين
+    بمسافة واحدة. لو مايساويش، الدالة ماتلمسش الملف وبتسجّل السبب."""
+    fn = os.path.basename(path)
+    if not fn.startswith('albaqara_') or '{ayah:' in out:
+        return out, False
+    m = re.search(r'(const\s+HARD_Q\s*=\s*\[)(.*?)(\n\];)', out, re.S)
+    rng = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
+    if not m or not rng:
+        return out, False
+    pairs = re.findall(
+        r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"\s*\}', m.group(2))
+    if not pairs or len(pairs) != len(re.findall(r'\{\s*q\s*:', m.group(2))):
+        return out, False          # فيه عناصر بصيغة تانية (مثلاً answer: AYAT[i].text) — ماننساش حاجة
+    start, end = int(rng.group(1)), int(rng.group(2))
+
+    by = {}
+    ab = _baqara_get_array_body(out, 'AYAT')
+    if ab:
+        by = {int(n): t for n, t in re.findall(
+            r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', ab)}
+    if not by:
+        mo = re.search(r'const\s+ORDER_AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
+        if mo:
+            ot = re.findall(r'"((?:[^"\\]|\\.)*)"', mo.group(1))
+            if len(ot) == end - start + 1:
+                by = {start + k: t for k, t in enumerate(ot)}
+    if not by:
+        return out, False
+
+    dual = re.compile(r'الآيتين\s*(\d+)\s*(?:[-–—]|و)\s*(\d+)')
+    new_pairs, split_count = [], 0
+    for q, a in pairs:
+        d = dual.search(q)
+        if not d:
+            new_pairs.append((q, a))
+            continue
+        n1, n2 = int(d.group(1)), int(d.group(2))
+        if n2 != n1 + 1 or n1 not in by or n2 not in by:
+            BAQARA_DUAL_SKIPPED.append(f'{fn} (الآيتين {n1}-{n2}: مش لاقي نص الآيتين في الملف)')
+            new_pairs.append((q, a))
+            continue
+        if a != by[n1] + ' ' + by[n2]:
+            BAQARA_DUAL_SKIPPED.append(
+                f'{fn} (الآيتين {n1}-{n2}: نص السؤال مش مطابق حرفيًا للزق الآيتين — مراجعة يدوية)')
+            new_pairs.append((q, a))
+            continue
+        for n in (n1, n2):
+            new_pairs.append((f'اكتب الآية رقم {n} من سورة البقرة كاملة', by[n]))
+        split_count += 1
+
+    if not split_count:
+        return out, False
+    new_body = '\n' + ',\n'.join(
+        '  {q:%s, answer:%s}' % (_baqara_js_str(q), _baqara_js_str(a)) for q, a in new_pairs)
+    BAQARA_DUAL_SPLIT.append(f'{fn} (+{split_count} سؤال مقسوم)')
+    return out[:m.start(2)] + new_body + out[m.end(2):], True
+
+
 BAQARA_GAPS_FILLED = []
 BAQARA_GAPS_SKIPPED = []
 
@@ -3709,8 +3777,10 @@ def fill_hard_q_gaps(path, out):
     pairs = re.findall(
         r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"\s*\}', m.group(2))
     rng = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
-    if not pairs or not rng:
+    if not rng:
         return out, False
+    if not pairs or len(pairs) != len(re.findall(r'\{\s*q\s*:', m.group(2))):
+        return out, False          # فيه عناصر بصيغة تانية (مثلاً answer: AYAT[i].text) — ماننساش حاجة
     start, end = int(rng.group(1)), int(rng.group(2))
 
     by = {}
@@ -5794,6 +5864,7 @@ def fix_file(path):
 
     # ====================================================
     # 0. تكميل أسئلة الصعب من نص الملف نفسه (نسخ حرفي) قبل الترحيل
+    out, _dual_done = split_dual_ayah_questions(path, out)
     out, _hardq_done = complete_baqara_hard_q(path, out)
 
     # ====================================================
@@ -6696,6 +6767,20 @@ def main():
     if BAQARA_HARDQ_SKIPPED:
         print('اتخطّى: %d صفحة' % len(BAQARA_HARDQ_SKIPPED))
         for s in BAQARA_HARDQ_SKIPPED:
+            print('  -', s)
+
+    if BAQARA_DUAL_SPLIT or BAQARA_DUAL_SKIPPED:
+        print('\n=== أسئلة الآيتين المقسومة ===')
+        for s in BAQARA_DUAL_SPLIT:
+            print('  +', s)
+        for s in BAQARA_DUAL_SKIPPED:
+            print('  -', s)
+
+    if BAQARA_GAPS_FILLED or BAQARA_GAPS_SKIPPED:
+        print('\n=== سدّ فجوات داخل الآيات ===')
+        for s in BAQARA_GAPS_FILLED:
+            print('  +', s)
+        for s in BAQARA_GAPS_SKIPPED:
             print('  -', s)
 
     print('\n=== أرقام الآيات في عرض المصحف (مستوى الترتيب) ===')
