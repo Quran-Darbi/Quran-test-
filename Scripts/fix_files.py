@@ -3499,6 +3499,157 @@ def _baqara_verify_migration(old, new):
 
     return (old_e == new_e) and (old_m == new_m) and (old_h_answers == new_h_answers) and len(new_h_answers) > 0
 
+BAQARA_HARDQ_COMPLETED = []
+BAQARA_HARDQ_SKIPPED = []
+
+
+def _bq_snip(text, n=3, tail=False):
+    ws = text.split()
+    return ' '.join(ws[-n:] if tail else ws[:n])
+
+
+def complete_baqara_hard_q(path, out):
+    """يكمّل أسئلة المستوى الصعب في صفحات البقرة القديمة قبل الترحيل.
+
+    مصدر النص الوحيد هو نفس الملف (AYAT بصيغة {num,text} أو ORDER_AYAT)
+    — نسخ حرفي بالبايت، مفيش أي كتابة أو تأليف لنص قرآني إطلاقًا.
+    بيعالج حالتين:
+      (1) آية مالهاش سؤال خالص      -> سؤال بالآية كاملة
+      (2) آية مغطّاة جزئيًا (فجوة)  -> سؤال لكل جزء ناقص
+    وبيرتّب الأجزاء حسب موضعها في الآية (بعض الملفات مخزّنة الأجزاء
+    بالعكس). في الآخر بيتأكد إن لزق أجزاء كل آية بيرجّع نصها حرفيًا
+    100%، وإن كل إجابة قديمة موجودة زي ما هي — وإلا مايغيّرش حاجة."""
+    fn = os.path.basename(path)
+    if not fn.startswith('albaqara_') or '{ayah:' in out:
+        return out, False
+
+    m_rng = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
+    if not m_rng:
+        return out, False
+    start, end = int(m_rng.group(1)), int(m_rng.group(2))
+    span = list(range(start, end + 1))
+
+    m_hard = re.search(r'const\s+HARD_Q\s*=\s*\[(.*?)\n\];', out, re.S)
+    if not m_hard:
+        return out, False
+    hard_body = m_hard.group(1)
+
+    # --- مصدر نص الآيات: AYAT {num,text} وإلا ORDER_AYAT ---
+    by_num = {}
+    m_ayat = re.search(r'const\s+AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
+    ayat_idx = []
+    if m_ayat:
+        ayat_idx = re.findall(
+            r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', m_ayat.group(1))
+        if [int(n) for n, t in ayat_idx] == span:
+            by_num = {int(n): t for n, t in ayat_idx}
+    if not by_num:
+        m_ord = re.search(r'const\s+ORDER_AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
+        if m_ord:
+            ot = re.findall(r'"((?:[^"\\]|\\.)*)"', m_ord.group(1))
+            if len(ot) == len(span):
+                by_num = {start + k: t for k, t in enumerate(ot)}
+    if not by_num:
+        BAQARA_HARDQ_SKIPPED.append(f'{fn} (مفيش مصدر كامل لنص الآيات في الملف)')
+        return out, False
+
+    # --- الأسئلة الموجودة: صيغة نصية أو AYAT[i].text ---
+    items = []
+    for m in re.finditer(
+            r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*'
+            r'(?:"((?:[^"\\]|\\.)*)"|AYAT\[(\d+)\]\.text)\s*\}', hard_body):
+        q, lit, idx = m.group(1), m.group(2), m.group(3)
+        if lit is not None:
+            ans = lit
+        elif ayat_idx and int(idx) < len(ayat_idx):
+            ans = ayat_idx[int(idx)][1]
+        else:
+            BAQARA_HARDQ_SKIPPED.append(f'{fn} (مرجع AYAT[{idx}] مش موجود)')
+            return out, False
+        mn = re.search(r'الآي[ةه]\s*(?:رقم\s*)?(\d+)', q)
+        if not mn:
+            BAQARA_HARDQ_SKIPPED.append(f'{fn} (سؤال من غير رقم آية: «{q[:40]}»)')
+            return out, False
+        items.append((int(mn.group(1)), q, ans))
+
+    if not items or any(n not in by_num for n, q, a in items):
+        BAQARA_HARDQ_SKIPPED.append(f'{fn} (سؤال عن آية برّه نطاق الصفحة)')
+        return out, False
+
+    # --- بناء الأجزاء لكل آية + ملء الفجوات ---
+    new_items, added = [], 0
+    for num in span:
+        full = by_num[num]
+        parts = [(q, a) for n, q, a in items if n == num]
+        for q, a in parts:
+            if a not in full:
+                BAQARA_HARDQ_SKIPPED.append(
+                    f'{fn} (إجابة عن آية {num} مش نص حرفي جوه الآية)')
+                return out, False
+        if not parts:
+            new_items.append((num, 0,
+                              f'اكتب الآية رقم {num} من سورة البقرة كاملة', full))
+            added += 1
+            continue
+        if any(a == full for q, a in parts):
+            # الآية مغطّاة بالكامل بسؤال واحد، والباقي أسئلة إضافية على
+            # أجزاء منها (زي p42) — مفيش فجوة تتملي.
+            for k, (q, a) in enumerate(parts):
+                new_items.append((num, k, q, a))
+            continue
+        parts.sort(key=lambda x: full.index(x[1]))
+        segs, pos = [], 0
+        for q, a in parts:
+            i = full.index(a, pos)
+            if i > pos:
+                gap = full[pos:i].strip()
+                if gap:
+                    segs.append((pos, None, gap))
+            segs.append((i, q, a))
+            pos = i + len(a)
+        if pos < len(full):
+            gap = full[pos:].strip()
+            if gap:
+                segs.append((pos, None, gap))
+        for i, (p, q, a) in enumerate(segs):
+            if q is None:
+                if i == 0:
+                    q = f'اكتب أول جزء من الآية {num} حتى «...{_bq_snip(a, 3, True)}»'
+                elif i == len(segs) - 1:
+                    q = f'اكتب آخر جزء من الآية {num} من «{_bq_snip(a)}...» حتى آخرها'
+                else:
+                    q = (f'اكتب الجزء الأوسط من الآية {num} من «{_bq_snip(a)}...» '
+                         f'حتى «...{_bq_snip(a, 3, True)}»')
+                added += 1
+            new_items.append((num, p, q, a))
+
+    if not added:
+        return out, False
+
+    # --- تحقق: لزق أجزاء كل آية يرجّع نصها حرفيًا + الإجابات القديمة سليمة ---
+    for num in span:
+        segs = [a for n, p, q, a in
+                sorted([(n, p, q, a) for n, p, q, a in new_items if n == num],
+                       key=lambda x: x[1])]
+        if ' '.join(segs) != by_num[num]:
+            BAQARA_HARDQ_SKIPPED.append(
+                f'{fn} (فشل التحقق: أجزاء آية {num} مابترجّعش نصها بالحرف)')
+            return out, False
+    old_answers = [a for n, q, a in items]
+    new_answers = [a for n, p, q, a in new_items]
+    if any(a not in new_answers for a in old_answers):
+        BAQARA_HARDQ_SKIPPED.append(f'{fn} (فشل التحقق: إجابة قديمة اتغيّرت)')
+        return out, False
+
+    new_items.sort(key=lambda x: (x[0], x[1]))
+    body = ',\n'.join(
+        '  { q: %s, answer: %s }' % (_baqara_js_str(q), _baqara_js_str(a))
+        for n, p, q, a in new_items)
+    out = out[:m_hard.start(1)] + '\n' + body + out[m_hard.end(1):]
+    BAQARA_HARDQ_COMPLETED.append(f'{fn} (+{added} سؤال → {len(new_items)})')
+    return out, True
+
+
 def _baqara_parts_fit(parts, full):
     """بيتأكد إن إجابات HARD_Q الخاصة بآية واحدة مشروعة، من غير أي نص
     غريب. حالتان مقبولتان بس:
@@ -3526,6 +3677,105 @@ def _baqara_hard_ayah_numbers(hard_pairs):
             return None
         nums.append(int(m.group(1)))
     return nums
+
+
+BAQARA_GAPS_FILLED = []
+BAQARA_GAPS_SKIPPED = []
+
+
+def _gap_snippet(text, n=3, tail=False):
+    w = text.split()
+    return ' '.join(w[-n:] if tail else w[:n])
+
+
+def fill_hard_q_gaps(path, out):
+    """بعض صفحات البقرة بتقسّم الآية الطويلة لسؤالين ('أول جزء' + 'آخر
+    جزء') وبتسيب النُص اللي بينهم من غير أي سؤال — يعني جزء من الآية
+    مابيتمرّنش عليه في المستوى الصعب خالص. الدالة بتلاقي الفجوات دي
+    وبتضيف سؤال لكل واحدة، ونص الإجابة **منسوخ حرفيًا** من AYAT أو
+    ORDER_AYAT في نفس الملف — مفيش أي كتابة أو تأليف لنص قرآني.
+
+    بترتّب كمان أسئلة الصعب بترتيب المصحف (رقم الآية ثم موضع الجزء
+    جوّه الآية)، لأن بعض الملفات أسئلتها متبعترة.
+
+    الآية اللي عندها سؤال بالنص الكامل بتتساب زي ما هي (أي أسئلة
+    إضافية عليها اختيار مقصود مش فجوة)."""
+    fn = os.path.basename(path)
+    if not fn.startswith('albaqara_') or '{ayah:' in out:
+        return out, False
+    m = re.search(r'(const\s+HARD_Q\s*=\s*\[)(.*?)(\n\];)', out, re.S)
+    if not m:
+        return out, False
+    pairs = re.findall(
+        r'\{\s*q:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer:\s*"((?:[^"\\]|\\.)*)"\s*\}', m.group(2))
+    rng = re.search(r'<div class="ayat-range">[^<]*?الآيات\s*(\d+)\s*إلى\s*(\d+)', out)
+    if not pairs or not rng:
+        return out, False
+    start, end = int(rng.group(1)), int(rng.group(2))
+
+    by = {}
+    ab = _baqara_get_array_body(out, 'AYAT')
+    if ab:
+        by = {int(n): t for n, t in re.findall(
+            r'\{\s*num:\s*(\d+)\s*,\s*text:\s*"((?:[^"\\]|\\.)*)"\s*\}', ab)}
+    if not by:
+        mo = re.search(r'const\s+ORDER_AYAT\s*=\s*\[(.*?)\n\];', out, re.S)
+        if mo:
+            ot = re.findall(r'"((?:[^"\\]|\\.)*)"', mo.group(1))
+            if len(ot) == end - start + 1:
+                by = {start + k: t for k, t in enumerate(ot)}
+    nums = _baqara_hard_ayah_numbers(pairs)
+    if not by or nums is None or sorted(set(nums)) != list(range(start, end + 1)):
+        return out, False
+
+    entries, added = [], 0
+    for num in range(start, end + 1):
+        full = by[num]
+        mine = [(q, a) for (q, a), n in zip(pairs, nums) if n == num]
+        if any(a == full for q, a in mine):        # آية كاملة موجودة — مفيش فجوة
+            entries += [(num, full.find(a), q, a) for q, a in mine]
+            continue
+        spans = []
+        for q, a in mine:
+            i = full.find(a)
+            if i < 0:
+                BAQARA_GAPS_SKIPPED.append(f'{fn} (آية {num}: إجابة نصّها مش جوه الآية)')
+                return out, False
+            spans.append((i, i + len(a), q, a))
+        spans.sort()
+        for k in range(1, len(spans)):
+            if spans[k][0] < spans[k - 1][1]:
+                BAQARA_GAPS_SKIPPED.append(f'{fn} (آية {num}: أجزاء متداخلة)')
+                return out, False
+        filled, cur = [], 0
+        for i0, i1, q, a in spans:
+            if i0 > cur and full[cur:i0].strip():
+                g = full[cur:i0].strip()
+                if cur == 0:
+                    nq = f'اكتب أول جزء من الآية {num} حتى «...{_gap_snippet(g, tail=True)}»'
+                else:
+                    nq = (f'اكتب الجزء الأوسط من الآية {num} من «{_gap_snippet(g)}...» '
+                          f'حتى «...{_gap_snippet(g, tail=True)}»')
+                filled.append((cur, nq, g))
+                added += 1
+            filled.append((i0, q, a))
+            cur = i1
+        if cur < len(full) and full[cur:].strip():
+            g = full[cur:].strip()
+            filled.append((cur, f'اكتب آخر جزء من الآية {num} من «{_gap_snippet(g)}...» حتى آخرها', g))
+            added += 1
+        entries += [(num, p, q, a) for p, q, a in filled]
+
+    entries.sort(key=lambda x: (x[0], x[1]))
+    new_body = '\n' + ',\n'.join(
+        '  {q:%s, answer:%s}' % (_baqara_js_str(q), _baqara_js_str(a))
+        for num, pos, q, a in entries)
+    new_out = out[:m.start(2)] + new_body + out[m.end(2):]
+    if new_out == out:
+        return out, False
+    if added:
+        BAQARA_GAPS_FILLED.append(f'{fn} (+{added} سؤال)')
+    return new_out, True
 
 
 def migrate_baqara_to_clean_template(path, out):
@@ -5543,6 +5793,15 @@ def fix_file(path):
     out = ar2en(src)
 
     # ====================================================
+    # 0. تكميل أسئلة الصعب من نص الملف نفسه (نسخ حرفي) قبل الترحيل
+    out, _hardq_done = complete_baqara_hard_q(path, out)
+
+    # ====================================================
+    # 0. سدّ فجوات المستوى الصعب قبل الترحيل: أي جزء من آية مش متغطّى
+    #    بسؤال بياخد سؤال جديد، نصّه منسوخ حرفيًا من نفس الملف.
+    out, _gaps_filled = fill_hard_q_gaps(path, out)
+
+    # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
     # تانية. لو نجح الترحيل، الملف الجديد مبني نظيف من الأول ومحتاجش
     # أي رقعة من الرقعات القديمة تحت، فبنرجع فورًا. لو اتخطّى (مش
@@ -6429,6 +6688,15 @@ def main():
             print('  -', s)
     else:
         print('كل صفحات البقرة اللي اتفحصت اترحّلت للقالب النضيف ✅')
+
+    print('\n=== تكميل أسئلة الصعب من نص الملف ===')
+    print('اتكمّل: %d صفحة' % len(BAQARA_HARDQ_COMPLETED))
+    for s in BAQARA_HARDQ_COMPLETED:
+        print('  +', s)
+    if BAQARA_HARDQ_SKIPPED:
+        print('اتخطّى: %d صفحة' % len(BAQARA_HARDQ_SKIPPED))
+        for s in BAQARA_HARDQ_SKIPPED:
+            print('  -', s)
 
     print('\n=== أرقام الآيات في عرض المصحف (مستوى الترتيب) ===')
     print('اتصلّح: %d صفحة' % len(BAQARA_AYAHNUM_FIXED))
