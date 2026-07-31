@@ -41,7 +41,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .level-btn:hover,.level-btn.active{background:var(--surface-hover);border-color:var(--accent);}
 .level-icon{font-size:28px;display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:6px;}
 .level-icon svg{width:1.15em;height:1.15em;}
-#btn-order .level-icon{color:var(--accent);}
+
 .level-name{font-weight:700;font-size:15px;display:block;margin-bottom:6px;line-height:1.2;}
 .level-desc{font-size:12px;color:var(--text-faint);line-height:1.5;}
 .start-btn{width:100%;max-width:260px;background:var(--accent-light);color:var(--card);border:none;border-radius:14px;padding:14px 20px;font-size:17px;font-family:inherit;cursor:pointer;transition:background .2s;}
@@ -90,7 +90,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .hint-box{display:none;background:var(--hint-bg);border:1.5px dashed var(--hint-border);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:18px;color:var(--accent-dark);text-align:center;direction:rtl;line-height:2;}
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
-.order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:12px;padding:12px 14px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:2px solid var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.07);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;cursor:pointer;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:4px;margin:-4px;border-radius:8px;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
+
 </style>
 <link rel="manifest" href="/Quran-test-/manifest.json">
 <meta name="theme-color" content="#4a7c4a">
@@ -107,20 +107,19 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div class="tools-menu" id="tools-menu">
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
-      <button onclick="langSelect('ar')" data-code="ar">🇸🇦 العربية</button>
-      <button onclick="langSelect('en')" data-code="en">🇬🇧 English</button>
-      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français</button>
-      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe</button>
-      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی</button>
-      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch</button>
-      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español</button>
+      <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
     </div>
     <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
     <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
     <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> كود QR</button>
   </div>
-</div>
-</div>
+</div></div>
 <div class="info-card">
   <div class="surah-title">سورة البقرة</div>
   <div class="ayat-range">الآيات 249 إلى 252</div>
@@ -132,7 +131,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   </div>
 </div>
 <div id="resume-banner" style="display:none;margin:0 16px 16px;background:var(--surface2);border:1.5px solid var(--gold);border-radius:14px;padding:14px 16px;text-align:center;">
-  <div style="margin-bottom:10px;font-size:15px;color:var(--text);">📌 عندك اختبار لسه ما خلصتيهوش، عايزة تكملي منين وقفتِ؟</div>
+  <div style="margin-bottom:10px;font-size:15px;color:var(--text);">📌 لديك اختبار لم يكتمل. هل ترغب في المتابعة من حيث توقفتَ، أم البدء من جديد؟</div>
   <div style="display:flex;gap:10px;">
     <button onclick="resumeQuiz()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px;font-family:inherit;font-size:15px;cursor:pointer;">المتابعة من هنا</button>
     <button onclick="dismissResume()" style="flex:1;background:var(--surface3);color:var(--text-soft);border:1.5px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:15px;cursor:pointer;">البدء من جديد</button>
@@ -145,7 +144,6 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name">سهل</span><span class="level-desc">اختيار من متعدد</span></button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name">متوسط</span><span class="level-desc">إكمال فراغ</span></button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard"><span class="level-icon">🌳</span><span class="level-name">صعب</span><span class="level-desc">اكتب الآية كاملة</span></button>
-    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
   <button class="start-btn" id="start-btn" onclick="startQuiz()">ابدأ الاختبار ←</button>
 <div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="albaqara_p40.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="albaqara_p42.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
@@ -165,22 +163,9 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <button class="level-return-btn" onclick="returnToLevels()">&#x1F504; &#x627;&#x62E;&#x62A;&#x631; &#x645;&#x633;&#x62A;&#x648;&#x649; &#x622;&#x62E;&#x631;</button>
 <div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="albaqara_p40.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="albaqara_p42.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
 </div>
-<div class="quiz-area" id="order-area">
-  <div class="q-number">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
-  <div id="order-slots" style="margin-bottom:16px;"></div>
-  <div id="order-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;"></div>
-  <div class="nav-row">
-    <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()">💡 أظهر الترتيب الصحيح</button>
-    <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;">تحقق ✓</button>
-  </div>
-  <div id="order-reveal" style="display:none;"></div>
-  <div class="feedback" id="order-feedback"></div>
-  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
-<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="albaqara_p40.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="albaqara_p42.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
-</div>
 <div class="result-area" id="result-area">
   <div class="result-icon" id="result-icon">🌟</div>
-  <div class="result-title" id="result-title">أحسنتِ!</div>
+  <div class="result-title" id="result-title">أحسنت!</div>
   <div class="result-score" id="result-score"></div>
   <div class="result-msg" id="result-msg"></div>
   <button class="retry-btn" id="review-mistakes-btn" onclick="startReview()" style="display:none;background:var(--wrong-border);">📝 راجع أخطائي</button>
@@ -200,6 +185,8 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <div id="confetti-container" style="position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;display:none;"></div>
 <script>
 const RESUME_KEY='quranResume_p41';
+function saveDarbiProgress(level,correct,total){try{var pk='darbi_progress';var all=JSON.parse(localStorage.getItem(pk)||'{}');var key=RESUME_KEY.replace('quranResume_','');var pct=total>0?Math.round((correct/total)*100):0;if(!all[key])all[key]={};var prev=(all[key][level]&&all[key][level].score)||0;all[key][level]={done:pct>=70,score:Math.max(pct,prev)};all[key].lastVisited=new Date().toISOString();localStorage.setItem(pk,JSON.stringify(all));}catch(e){}}
+
 const AYAT=[
   "فَلَمَّا فَصَلَ طَالُوتُ بِالْجُنُودِ قَالَ إِنَّ اللَّهَ مُبْتَلِيكُم بِنَهَرࣲ فَمَن شَرِبَ مِنْهُ فَلَيْسَ مِنِّي وَمَن لَّمْ يَطْعَمْهُ فَإِنَّهُ مِنِّي إِلَّا مَنِ اغْتَرَفَ غُرْفَةَۢ بِيَدِهِ فَشَرِبُوا مِنْهُ إِلَّا قَلِيلࣰا مِّنْهُمْ فَلَمَّا جَاوَزَهُ هُوَ وَالَّذِينَ ءَامَنُوا مَعَهُ قَالُوا لَا طَاقَةَ لَنَا الْيَوْمَ بِجَالُوتَ وَجُنُودِهِ قَالَ الَّذِينَ يَظُنُّونَ أَنَّهُم مُّلَٰقُوا اللَّهِ كَم مِّن فِئَةࣲ قَلِيلَةٍ غَلَبَتْ فِئَةࣰ كَثِيرَةَۢ بِإِذْنِ اللَّهِ وَاللَّهُ مَعَ الصَّٰبِرِينَ",
   "وَلَمَّا بَرَزُوا لِجَالُوتَ وَجُنُودِهِ قَالُوا رَبَّنَآ أَفْرِغْ عَلَيْنَا صَبْرࣰا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَٰفِرِينَ",
@@ -239,13 +226,71 @@ const HARD_Q=[
   {ayah:249,q:"اكتب آخر جزء من الآية 249 من «فَلَمَّا جَاوَزَهُ...» حتى آخرها",answer:"فَلَمَّا جَاوَزَهُ هُوَ وَالَّذِينَ ءَامَنُوا مَعَهُ قَالُوا لَا طَاقَةَ لَنَا الْيَوْمَ بِجَالُوتَ وَجُنُودِهِ قَالَ الَّذِينَ يَظُنُّونَ أَنَّهُم مُّلَٰقُوا اللَّهِ كَم مِّن فِئَةࣲ قَلِيلَةٍ غَلَبَتْ فِئَةࣰ كَثِيرَةَۢ بِإِذْنِ اللَّهِ وَاللَّهُ مَعَ الصَّٰبِرِينَ"},
   {ayah:251,q:"اكتب الآية رقم 251 من سورة البقرة كاملة",answer:"فَهَزَمُوهُم بِإِذْنِ اللَّهِ وَقَتَلَ دَاوُۥدُ جَالُوتَ وَءَاتَٰهُ اللَّهُ الْمُلْكَ وَالْحِكْمَةَ وَعَلَّمَهُ مِمَّا يَشَآءُ وَلَوْلَا دَفْعُ اللَّهِ النَّاسَ بَعْضَهُم بِبَعْضࣲ لَّفَسَدَتِ الْأَرْضُ وَلَٰكِنَّ اللَّهَ ذُو فَضْلٍ عَلَى الْعَٰلَمِينَ"}
 ];
-let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
-function normalize(str){if(!str)return'';return str.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)بلي(?=\s|$)/g,'بلا').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(?<=^|\s)ممنع(?=\s|$)/g,'ممن منع').replace(/(.)\1+/g,'$1').replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();}
-function wordDiff(userVal,correctAnswer){const nm=s=>{if(!s)return'';return s.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1').replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();};const uWords=userVal.trim().split(/\s+/),cWords=correctAnswer.split(/\s+/),n=cWords.length,m=uWords.length;const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}const aligned=[];let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}else{aligned.push({ref:cWords[i-1],ok:false});i--;}}aligned.reverse();const correct=aligned.filter(x=>x.ok).length;const html=aligned.map(x=>x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`:`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`).join(' ');return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة</div><div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;}
+let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;let wCorrect=0,wTotal=0;
+function normalize(str){
+  if(!str)return'';
+  return str
+    .replace(/ي\u0653?ـ\u064E\u0654/g,'ي')
+    .replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')
+    .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'')
+    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
+    .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
+    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
+    .replace(/وٱ(?!ل)/g,'و')
+    .replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')
+    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')
+    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')
+    .replace(/نٰ/g,'نا')
+    .replace(/(?<=^|\s)بلىٰ(?=\s|$)/g,'بلا').replace(/ىٰ(?=\S)/g,'ا').replace(/ىٰ/g,'ي')
+    .replace(/(.)ٰ/g,'$1ا')
+    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')
+    .replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')
+    .replace(/ه[ۥۦ]/g,'ه')
+    .replace(/[ئؤ]/g,'ء').replace(/ء/g,'')
+    .replace(/[آأإٱا]/g,'ا')
+    .replace(/[ىی]/g,'ي')
+    .replace(/ة/g,'ه')
+    .replace(/(?<=^|\s)ممنع(?=\s|$)/g,'ممن منع').replace(/(.)\1+/g,'$1')
+    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\s)فازالهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فاذلهما(?=\s|$)/g,'فازلهما').replace(/(?<=^|\s)فادراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فادرأتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)فاداراتم(?=\s|$)/g,'فادارتم').replace(/(?<=^|\s)بن(?=\s|$)/g,'ابن').replace(/نصاري(?=\s|$)/g,'نصارا').replace(/(?<=^|\s)ناتي(?=\s|$)/g,'نات').replace(/(?<=^|\s)ولا تجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)ولاتجدنهم(?=\s|$)/g,'ولتجدنهم').replace(/(?<=^|\s)او كل ما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)او كلما(?=\s|$)/g,'اوكلما').replace(/(?<=^|\s)بلي(?=\s|$)/g,'بلا')
+    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')
+    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
+    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+/* ===== الحروف المقطعة: تُنطق أسماء حروف منفصلة ===== */
+const MUQATTAAT={
+  'الم':['الف','لام','ميم'],
+  'المص':['الف','لام','ميم','صاد'],
+  'الر':['الف','لام','را'],
+  'المر':['الف','لام','ميم','را'],
+  'كهيعص':['كاف','ها','يا','عين','صاد'],
+  'طه':['طا','ها'],
+  'طسم':['طا','سين','ميم'],
+  'طس':['طا','سين'],
+  'يس':['يا','سين'],
+  'ص':['صاد'],
+  'حم':['حا','ميم'],
+  'عسق':['عين','سين','قاف'],
+  'ق':['قاف'],
+  'ن':['نون']
+};
+function collapseMuqattaat(words,correctAnswer){
+  if(!words||!words.length||!correctAnswer)return words;
+  const cw=correctAnswer.trim().split(/\s+/);
+  const names=MUQATTAAT[normalize(cw[0])];
+  if(!names||words.length<names.length)return words;
+  for(let k=0;k<names.length;k++){
+    if(normalize(words[k])!==normalize(names[k]))return words;
+  }
+  return [cw[0]].concat(words.slice(names.length));
+}
+/* ===== نهاية الحروف المقطعة ===== */
+function wordDiff(userVal,correctAnswer){const nm=s=>{if(!s)return'';return s.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ئؤ]/g,'ا').replace(/ء/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/هاذا/g,'هذا').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن').replace(/اولك/g,'اولاك').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1').replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();};const uWords=collapseMuqattaat(userVal.trim().split(/\s+/),correctAnswer),cWords=correctAnswer.split(/\s+/),n=cWords.length,m=uWords.length;const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}const aligned=[];let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){aligned.push({ref:uWords[j-1],user:uWords[j-1],extra:true});j--;}else{aligned.push({ref:cWords[i-1],ok:false});i--;}}aligned.reverse();const correct=aligned.filter(x=>x.ok).length;const extra=aligned.filter(x=>x.extra).length;window._lastDiff={matched:correct,total:n,extra:extra};const html=aligned.map(x=>x.extra?`<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">${x.ref}</span>`:x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`:`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`).join(' ');return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}</div><div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;}
 function toArabicNum(n){return n;}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(AYAT.length);return;}currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');if(lvl==='order'){document.getElementById('total-q').textContent=toArabicNum(AYAT.length);}else{document.getElementById('total-q').textContent=toArabicNum((lvl==='easy'?EASY_Q:lvl==='medium'?MEDIUM_Q:HARD_Q).length);}}
-function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}if(!currentLevel)return;questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];qIndex=correctCount=wrongCount=0;statuses=questions.map(()=>'pending');wrongIndices=[];document.getElementById('resume-banner').style.display='none';document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
+function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}if(!currentLevel)return;questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];qIndex=correctCount=wrongCount=0;wCorrect=wTotal=0;statuses=questions.map(()=>'pending');wrongIndices=[];document.getElementById('resume-banner').style.display='none';document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 function renderDotProgress(){const wrap=document.getElementById('dot-progress');if(!wrap)return;wrap.innerHTML='';statuses.forEach((st,i)=>{const dot=document.createElement('span');dot.className='q-dot'+(i===qIndex?' current':st!=='pending'?' '+st:'');wrap.appendChild(dot);});}
 function saveResumeState(){try{localStorage.setItem(RESUME_KEY,JSON.stringify({level:currentLevel,qIndex,correctCount,wrongCount,statuses,wrongIndices,date:Date.now()}));}catch(e){}}
@@ -262,7 +307,7 @@ function renderHard(q,zone){
   modeRow.appendChild(bVoice);modeRow.appendChild(bText);zone.appendChild(modeRow);
   const vZone=document.createElement('div');zone.appendChild(vZone);
   const tZone=document.createElement('div');tZone.style.display='none';zone.appendChild(tZone);
-  let _rec=null,_recog=false,_words=[],_cur='';
+  let _rec=null,_recog=false,_words=[],_cur='',_sel=null;
   const _SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
   const _secure=location.protocol==='https:'||location.hostname==='localhost';
   const recBtn=document.createElement('button');recBtn.style.cssText='width:100%;padding:14px;border-radius:12px;font-size:16px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);margin-bottom:8px;';recBtn.textContent='🎤 اضغط للتسجيل';
@@ -271,6 +316,7 @@ function renderHard(q,zone){
   const vSub=document.createElement('button');vSub.className='submit-btn';vSub.textContent='تحقق ✓';vSub.style.display='none';
   vZone.appendChild(recBtn);vZone.appendChild(txBox);vZone.appendChild(clrBtn);vZone.appendChild(vSub);
   function _fixWords(words){
+        words=collapseMuqattaat(words,(typeof q!=='undefined'&&q&&q.answer)||'');
         const out=[];
         for(let i=0;i<words.length;i++){
           if(i<words.length-2 && normalize(words[i])==='او' && normalize(words[i+1])==='كل' && normalize(words[i+2])==='ما'){
@@ -289,10 +335,35 @@ function renderHard(q,zone){
         }
         return out;
       }
-      function renderWords(){if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}txBox.style.display='block';txBox.innerHTML='';_words.forEach((w,i)=>{const span=document.createElement('span');span.className='rec-word';span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';span.textContent=w;span.onclick=()=>{_words.splice(i,1);renderWords();};txBox.appendChild(span);});if(_cur){const cur=document.createElement('span');cur.style.cssText='color:var(--text-soft);font-style:italic;';cur.textContent=' '+_cur;txBox.appendChild(cur);}clrBtn.style.display='block';vSub.style.display=_words.length?'block':'none';}
+        function _addWords(nw){
+    if(!nw||!nw.length)return;
+    nw=_fixWords(nw);
+    if(_sel!==null&&_sel<_words.length){_words.splice(_sel,1);_words.splice(_sel,0,...nw);_sel=null;}
+    else{_words=_fixWords([].concat(_words,nw));}
+  }
+
+      function renderWords(){if(!_words.length&&!_cur){txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';return;}txBox.style.display='block';txBox.innerHTML='';
+    if(_sel!==null&&_sel>=_words.length)_sel=null;
+    if(_sel!==null){
+      const bar=document.createElement('div');
+      bar.style.cssText='width:100%;box-sizing:border-box;background:var(--hint-btn-bg);border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
+      const t=document.createElement('span');
+      t.appendChild(document.createTextNode('المحدَّدة: '));
+      const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
+      b.textContent=_words[_sel];t.appendChild(b);
+      t.appendChild(document.createTextNode(' — سجّل البديل'));
+      const x=document.createElement('button');x.type='button';x.textContent='✕ حذف';
+      x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
+      x.onclick=()=>{_words.splice(_sel,1);_sel=null;renderWords();};
+      bar.appendChild(t);bar.appendChild(x);txBox.appendChild(bar);
+    }
+_words.forEach((w,i)=>{const span=document.createElement('span');span.className='rec-word';span.style.cssText='background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;';span.textContent=w;
+      if(i===_sel){span.style.outline='2px solid var(--gold)';span.style.background='var(--hint-btn-bg)';span.style.fontWeight='700';span.title='اضغط لإلغاء التحديد';}
+      else{span.title='اضغط لتحديدها ثم سجّل البديل';}
+      span.onclick=()=>{_sel=(_sel===i)?null:i;renderWords();};txBox.appendChild(span);});if(_cur){const cur=document.createElement('span');cur.style.cssText='color:var(--text-soft);font-style:italic;';cur.textContent=' '+_cur;txBox.appendChild(cur);}clrBtn.style.display='block';vSub.style.display=_words.length?'block':'none';}
   function _setB(s){recBtn.disabled=false;if(s==='rec'){recBtn.textContent='⏸ إيقاف التسجيل';recBtn.style.background='#e74c3c';recBtn.style.color='#fff';recBtn.style.borderColor='#e74c3c';}else if(s==='pause'){recBtn.textContent='▶️ استمر في التسجيل';recBtn.style.background='#e67e22';recBtn.style.color='#fff';recBtn.style.borderColor='#e67e22';}else{recBtn.textContent='🎤 اضغط للتسجيل';recBtn.style.background='var(--surface2)';recBtn.style.color='var(--text)';recBtn.style.borderColor='var(--border)';}}
-  function _mkRec(){const r=new _SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;r.onstart=()=>{_recog=true;_cur='';_setB('rec');renderWords();};r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){_words=_words.concat(e.results[i][0].transcript.trim().split(/\s+/));_cur='';}}renderWords();};r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};r.onend=()=>{_recog=false;if(_cur){_words=_fixWords(_words.concat(_cur.trim().split(/\s+/)));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};return r;}
-  clrBtn.onclick=()=>{if(_recog){try{_rec.stop();}catch(e){}_recog=false;}_rec=null;_words=[];_cur='';txBox.innerHTML='';txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';_setB('idle');recBtn.disabled=false;};
+  function _mkRec(){const r=new _SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;r.onstart=()=>{_recog=true;_cur='';_setB('rec');renderWords();};r.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){_addWords(e.results[i][0].transcript.trim().split(/\s+/));_cur='';}}renderWords();};r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){_recog=false;_setB(_words.length?'pause':'idle');}};r.onend=()=>{_recog=false;if(_cur){_addWords(_cur.trim().split(/\s+/));_cur='';}renderWords();_setB(_words.length?'pause':'idle');};return r;}
+  clrBtn.onclick=()=>{if(_recog){try{_rec.stop();}catch(e){}_recog=false;}_rec=null;_words=[];_cur='';_sel=null;txBox.innerHTML='';txBox.style.display='none';clrBtn.style.display='none';vSub.style.display='none';_setB('idle');recBtn.disabled=false;};
   vSub.onclick=()=>{const t=_words.join(' ').trim();if(!t)return;vSub.disabled=true;checkTextVal(q,t);setTimeout(()=>{recBtn.disabled=false;vSub.disabled=false;},300);};
   if(_SpeechAPI&&_secure){recBtn.onclick=()=>{if(_recog){_recog=false;try{_rec.stop();}catch(e){}_setB('pause');return;}_rec=_mkRec();try{_rec.start();}catch(e){_setB(_words.length?'pause':'idle');}};}else{recBtn.textContent=_secure?'⚠️ المتصفح لا يدعم التسجيل':'🔒 يعمل على الموقع الرسمي فقط';recBtn.disabled=true;recBtn.style.opacity='0.65';}
   function activateVoice(){vZone.style.display='';tZone.style.display='none';bVoice.style.background='var(--accent)';bVoice.style.color='#fff';bText.style.background='var(--surface2)';bText.style.color='var(--text)';if(_SpeechAPI&&_secure&&!_recog){_rec=_mkRec();try{_rec.start();}catch(e){_setB('idle');}}}
@@ -303,14 +374,45 @@ function renderHard(q,zone){
   const hBox=document.createElement('div');hBox.className='hint-box';zone.appendChild(hBox);
   const hBtn=document.createElement('button');hBtn.className='hint-btn';hBtn.textContent='💡 مساعدة (أول 3 كلمات)';hBtn.onclick=()=>{hBox.textContent=q.answer.split(' ').slice(0,3).join(' ')+' ...';hBox.classList.add('notranslate');hBox.setAttribute('translate','no');hBox.style.display='block';hBtn.disabled=true;hBtn.style.opacity='0.5';};zone.appendChild(hBtn);
 }
-function checkTextVal(q,userVal){const fb=document.getElementById('feedback');document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';if(normalize(userVal)===normalize(q.answer)){correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنتِ! إجابة صحيحة تماماً 🌟';if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}}else{wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+wordDiff(userVal,q.answer)+'</span>';}fb.style.display='block';updateBadges();renderDotProgress();saveResumeState();}
+function _pctNow(){const st=window._lastDiff||{};let a='';if(st.total){const wp=Math.round(st.matched*100/st.total);a=`<div style="margin-top:6px;font-size:14px;opacity:.9;">دقة هذه الإجابة: ${wp}% (${st.matched} من ${st.total} كلمة)</div>`;}// السطر التاني يظهر بس لو فيه أسئلة سابقة — من غير كده الرقمين واحد
+if(!wTotal||wTotal===st.total)return a;const p=Math.round(wCorrect*100/wTotal);return a+`<div style="margin-top:2px;font-size:13px;opacity:.75;">الإجمالي: ${p}% (${wCorrect} من ${wTotal} كلمة)</div>`;}
+
+function checkTextVal(q,userVal){
+  const fb=document.getElementById('feedback');
+  const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
+  // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
+  const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
+  const userNorm=normalize(_pre(userVal));
+  const ansNorm=normalize(_pre(q.answer));
+  const _dh=wordDiff(userVal,q.answer);
+  const _st=window._lastDiff||{};
+  if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
+  // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
+  const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);
+  if(_ok){
+    correctCount++;statuses[qIndex]='correct';
+    fb.className='feedback correct';
+    fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();
+    if(typeof spawnConfetti==='function')spawnConfetti(18);
+    if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
+  }else{
+    wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
+    fb.className='feedback wrong';
+    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>'+_pctNow();
+  }
+  fb.style.display='block';
+  if(typeof updateBadges==='function')updateBadges();
+  if(typeof renderDotProgress==='function')renderDotProgress();
+  if(typeof saveResumeState==='function')saveResumeState();
+}
 function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,userVal);}
-function checkMCQ(chosen,correct,btn){document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');if(chosen===correct){btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.textContent='✓ أحسنتِ!';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},1100);}else{btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===questions[qIndex].choices[correct])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+questions[qIndex].choices[correct]+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';updateBadges();renderDotProgress();saveResumeState();}
-function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';}else{const inp=document.getElementById('user-input');if(inp)inp.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);fb.className='feedback wrong';fb.innerHTML=`⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2" class="notranslate" translate="no">${q.answer}</span>`;}wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.style.display='block';updateBadges();document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='';}
+function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');const _ans=questions[qIndex].choices[correct];if(chosen===correct){if(btn)btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! 🌟'+(typeof _pctNow==='function'?_pctNow():'');if(typeof spawnConfetti==='function')spawnConfetti(18);const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}else{if(btn)btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===_ans)b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+_ans+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}
+function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');wTotal+=(currentLevel==='easy'?1:String(q.answer||'').trim().split(/\s+/).filter(Boolean).length||1);if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';}else{const inp=document.getElementById('user-input');if(inp)inp.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;" class="notranslate" translate="no">'+q.answer+'</span>';}wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}
 function prevQuestion(){if(qIndex===0)return;qIndex--;showQuestion();}
 function nextQuestion(){qIndex++;if(qIndex>=questions.length)showResult();else showQuestion();}
-function showResult(){document.getElementById('quiz-area').style.display='none';document.getElementById('result-area').style.display='block';const pct=Math.round((correctCount/questions.length)*100);document.getElementById('result-score').textContent=`${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} — ${toArabicNum(pct)}%`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنتِ السورة بالكامل';}else if(pct>=80){icon='✨';title='أحسنتِ!';msg='نتيجة رائعة، استمري في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجعي السورة مرة أخرى وأعيدي الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأسي، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');if(pct===100)spawnConfetti();}
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function showResult(){document.getElementById('quiz-area').style.display='none';document.getElementById('result-area').style.display='block';const pct=wTotal?Math.round(wCorrect*100/wTotal):0;document.getElementById('result-score').textContent=`${toArabicNum(wCorrect)} / ${toArabicNum(wTotal)} كلمة — ${toArabicNum(pct)}%  |  ${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} سؤال`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت السورة بالكامل';}else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجع السورة مرة أخرى وأعد الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();saveDarbiProgress(currentLevel,correctCount,questions.length);try{localStorage.removeItem(RESUME_KEY);}catch(e){}const rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');if(pct===100)spawnConfetti();}
+function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
 let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
 function startOrderQuiz(){orderPlaced=new Array(AYAT.length).fill(null);orderCursor=0;orderSelected=-1;orderPoolOrder=AYAT.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';renderOrderQuiz();}
@@ -318,7 +420,7 @@ function ayahNumAt(i){return (typeof AYAT_NUMS!=='undefined'&&AYAT_NUMS&&AYAT_NU
 function mushafHtml(){return '<div class="mushaf-block notranslate" translate="no">'+AYAT.map((t,i)=>t+' <span class="ayah-end">﴿'+toArabicNum(ayahNumAt(i))+'﴾</span>').join(' ')+'</div>';}
 function nextEmptyFrom(start){for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}return -1;}
 function renderOrderQuiz(){const slotsDiv=document.getElementById('order-slots');const poolDiv=document.getElementById('order-pool');slotsDiv.innerHTML='';poolDiv.innerHTML='';const filledGrid=document.createElement('div');filledGrid.className='order-filled-grid';const emptyStrip=document.createElement('div');emptyStrip.className='order-empty-strip';orderPlaced.forEach((idx,pos)=>{if(idx===null){const active=(pos===orderCursor);const dot=document.createElement('span');dot.className='order-dot'+(active?' active':'');dot.textContent='﴿'+toArabicNum(pos+1)+'﴾';dot.title=active?'الخانة النشطة الآن':'اضغط للمتابعة من هنا';dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};emptyStrip.appendChild(dot);}else{const card=document.createElement('div');card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(pos+1)+'﴾</span><span class="notranslate">'+AYAT[idx]+'</span>';card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};filledGrid.appendChild(card);}});if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);orderPoolOrder.forEach(idx=>{if(orderPlaced.includes(idx))return;const btn=document.createElement('button');btn.className='order-item notranslate';btn.setAttribute('translate','no');btn.textContent=AYAT[idx];btn.onclick=()=>{if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}if(orderCursor===-1)return;orderPlaced[orderCursor]=idx;orderCursor=nextEmptyFrom(orderCursor+1);document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};poolDiv.appendChild(btn);});const allFilled=!orderPlaced.includes(null);document.getElementById('order-check-btn').style.display=allFilled?'block':'none';}
-function checkOrderAnswer(){let correct=0;document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);if(ok)correct++;el.classList.remove('correct-slot','wrong-slot');el.classList.add(ok?'correct-slot':'wrong-slot');});const fb=document.getElementById('order-feedback');const allCorrect=(correct===AYAT.length);fb.className='feedback '+(allCorrect?'correct':'wrong');fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());fb.style.display='block';document.getElementById('order-check-btn').style.display='none';if(allCorrect)spawnConfetti();}
+function checkOrderAnswer(){let correct=0;document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{const ok=(orderPlaced[pos]!==null&&AYAT[orderPlaced[pos]]===AYAT[pos]);if(ok)correct++;el.classList.remove('correct-slot','wrong-slot');el.classList.add(ok?'correct-slot':'wrong-slot');});const fb=document.getElementById('order-feedback');const allCorrect=(correct===AYAT.length);fb.className='feedback '+(allCorrect?'correct':'wrong');fb.innerHTML='<div style="margin-bottom:8px;">'+toArabicNum(correct)+' / '+toArabicNum(AYAT.length)+' في الترتيب الصحيح'+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">الترتيب الصحيح للمراجعة:</div>'+mushafHtml());fb.style.display='block';document.getElementById('order-check-btn').style.display='none';saveDarbiProgress('order',correct,AYAT.length);if(allCorrect)spawnConfetti();}
 function revealOrderAnswer(){document.getElementById('order-reveal').innerHTML=mushafHtml();document.getElementById('order-reveal').style.display='block';const rb=document.getElementById('order-reveal-btn');rb.disabled=true;rb.style.opacity='0.5';}
 function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
@@ -329,7 +431,7 @@ function startReview(){reviewQuestions=wrongIndices.map(i=>questions[i]);reviewI
 function renderReviewQ(){const q=reviewQuestions[reviewIdx];document.getElementById('review-number').textContent=`مراجعة ${toArabicNum(reviewIdx+1)} من ${toArabicNum(reviewQuestions.length)}`;var __rqt=document.getElementById('review-q-text');__rqt.textContent=q.q;if(currentLevel==='hard'){__rqt.classList.remove('notranslate');__rqt.removeAttribute('translate');}else{__rqt.classList.add('notranslate');__rqt.setAttribute('translate','no');}document.getElementById('review-answer').textContent='✓ '+((currentLevel==='easy')?q.choices[q.answer]:q.answer);}
 function reviewNav(dir){reviewIdx=Math.max(0,Math.min(reviewQuestions.length-1,reviewIdx+dir));renderReviewQ();}
 function endReview(){document.getElementById('review-area').style.display='none';document.getElementById('result-area').style.display='block';}
-function spawnConfetti(){const colors=['#4a7c4a','#c4a84a','#9db89d','#e0edd8','#7a9a7a'];const container=document.getElementById('confetti-container');if(!container)return;container.innerHTML='';container.style.display='block';for(let i=0;i<45;i++){const piece=document.createElement('div');piece.className='confetti-piece';piece.style.left=Math.random()*100+'vw';piece.style.background=colors[Math.floor(Math.random()*colors.length)];piece.style.animationDuration=(2+Math.random()*1.5)+'s';piece.style.animationDelay=(Math.random()*0.4)+'s';container.appendChild(piece);}setTimeout(()=>{container.style.display='none';container.innerHTML='';},4000);}
+function spawnConfetti(count){const colors=['#4a7c4a','#c4a84a','#9db89d','#e0edd8','#7a9a7a'];const container=document.getElementById('confetti-container');if(!container)return;container.innerHTML='';container.style.display='block';for(let i=0;i<(count||45);i++){const piece=document.createElement('div');piece.className='confetti-piece';piece.style.left=Math.random()*100+'vw';piece.style.background=colors[Math.floor(Math.random()*colors.length)];piece.style.animationDuration=(2+Math.random()*1.5)+'s';piece.style.animationDelay=(Math.random()*0.4)+'s';container.appendChild(piece);}setTimeout(()=>{container.style.display='none';container.innerHTML='';},4000);}
 (function enableSwipe(){const area=document.getElementById('quiz-area');if(!area)return;let startX=0,startY=0;area.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY;},{passive:true});area.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-startX;const dy=e.changedTouches[0].clientY-startY;if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy))return;const nextBtn=document.getElementById('next-btn');if(dx<0&&nextBtn&&nextBtn.style.display!=='none'){nextQuestion();}else if(dx>0){prevQuestion();}},{passive:true});})();
 (function checkResumeOnLoad(){let saved=null;try{saved=JSON.parse(localStorage.getItem(RESUME_KEY));}catch(e){}if(saved&&saved.qIndex>0){document.getElementById('resume-banner').style.display='block';}})();
 </script>
@@ -439,6 +541,7 @@ function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-
 function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
 function toolsLangToggle(e){if(e)e.stopPropagation();var l=document.getElementById('tools-lang-list');var a=document.getElementById('tools-lang-arrow');l.classList.toggle('open');a.style.transform=l.classList.contains('open')?'rotate(180deg)':'rotate(0)';}
 document.addEventListener('click',function(e){var w=document.getElementById('tools-fab');if(w&&!w.contains(e.target))toolsClose();});
+
 function fdbkOpen(){toolsClose();document.getElementById('fdbk-overlay').classList.add('open');}
 function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
 function fdbkSend(){
@@ -449,6 +552,7 @@ function fdbkSend(){
   window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
   fdbkClose();
 }
+
 function showQR(){
   var url=location.href;
   document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data='+encodeURIComponent(url);
@@ -461,6 +565,7 @@ function copyQRLink(){
   var b=document.getElementById('qr-copy-btn');
   navigator.clipboard.writeText(url).then(function(){b.textContent='✅ تم النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);}).catch(function(){b.textContent='تعذر النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);});
 }
+
 function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
 function langApplyLabel(){
   var map={ar:'العربية',en:'English',fr:'Français',tr:'Türkçe',fa:'فارسی',de:'Deutsch',es:'Español'};
