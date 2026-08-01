@@ -162,8 +162,8 @@
   <div class="q-text" id="q-text"></div>
   <div id="answer-zone"></div>
   <div class="feedback" id="feedback"></div>
-  <button class="level-return-btn" onclick="returnToLevels()">&#x1F504; &#x627;&#x62E;&#x62A;&#x631; &#x645;&#x633;&#x62A;&#x648;&#x649; &#x622;&#x62E;&#x631;</button>
-<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="annaba.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="abasa.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>
+<div class="page-nav-row" id="quiz-page-nav" style="display:none;gap:8px;margin-top:10px;"><a href="annaba.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="abasa.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
   <button class="skip-btn" id="skip-btn" onclick="skipQuestion()">⏭ تخطي — أظهر الإجابة</button>
   <div style="display:flex;gap:10px;margin-top:12px;">
     <button class="next-btn" id="prev-btn" onclick="prevQuestion()" style="display:block;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);margin-top:0;">→ السؤال السابق</button>
@@ -180,7 +180,7 @@
   </div>
   <div id="order-reveal" style="display:none;"></div>
   <div class="feedback" id="order-feedback"></div>
-  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>
 <div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="annaba.html" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="abasa.html" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
 </div>
 <div class="result-area" id="result-area">
@@ -189,7 +189,7 @@
   <div class="result-score" id="result-score"></div>
   <div class="result-msg" id="result-msg"></div>
   <button class="retry-btn" id="review-mistakes-btn" onclick="startReview()" style="display:none;background:var(--wrong-border);">📝 راجع أخطائي</button>
-  <button class="retry-btn" onclick="retryQuiz()">أعد الاختبار</button>
+  <button class="retry-btn" onclick="retryQuiz()">🔄 اختر اختباراً آخر</button>
   <a href="index.html" class="home-link">← الرئيسية</a>
 </div>
 <div class="quiz-area" id="review-area" style="display:none;">
