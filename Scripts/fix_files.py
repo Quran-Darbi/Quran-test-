@@ -5646,6 +5646,50 @@ def fix_add_og_image(out):
     return out, False
 
 
+def fix_confetti_on_level_end_only(out):
+    """نقل الاحتفال من كل سؤال إلى نهاية المستوى.
+
+    الاحتفال بعد كل إجابة صحيحة بيفقد قيمته بالتكرار، وبيشتّت المستخدم
+    وهو بيقرأ الآية الصحيحة. الأنسب إنه يبقى مكافأة على إنهاء المستوى.
+
+    التغيير:
+      1) حذف spawnConfetti(18) من مسار الإجابة الفردية (بصيغتيه:
+         المباشر والمحمي بـ typeof)
+      2) إضافته في showResult() مع تدرّج حسب النتيجة:
+         100% = احتفال كامل (45)، 80%+ = متوسط (22)، أقل = بدون
+
+    ملاحظة: مستوى الترتيب بيستدعي spawnConfetti() عند اكتمال الترتيب،
+    وده أصلًا نهاية المستوى مش سؤال فردي — فبيتساب زي ما هو.
+    idempotent: الحارس بيمنع التكرار.
+    """
+    changed = False
+
+    # ١) شيل الاحتفال من الإجابة الفردية
+    for pat in (
+        "if(typeof spawnConfetti==='function')spawnConfetti(18);",
+        "spawnConfetti(18);",
+    ):
+        if pat in out:
+            out = out.replace(pat, "")
+            changed = True
+
+    # ٢) حطّه في نهاية المستوى (مرة واحدة)
+    if 'spawnConfetti(_cf)' not in out:
+        anchor = ("function showResult(){document.getElementById('quiz-area')"
+                  ".style.display='none';")
+        if anchor in out:
+            out = out.replace(
+                anchor,
+                anchor + "const _cf=(correctCount===questions.length)?45:"
+                         "((correctCount/questions.length)>=0.8?22:0);"
+                         "if(_cf&&typeof spawnConfetti==='function')"
+                         "setTimeout(()=>spawnConfetti(_cf),260);",
+                1)
+            changed = True
+
+    return out, changed
+
+
 def fix_pwa_paths_to_relative(out):
     """ترحيل مسارات الـPWA من مسار المستودع المطلق إلى مسارات نسبية.
 
@@ -5690,6 +5734,7 @@ def fix_file(path):
     # ترحيل مسارات الـPWA للنسبي (بعد ربط الدومين المخصّص)
     out, _pwa_rel = fix_pwa_paths_to_relative(out)
     out, _canon = fix_add_canonical(path, out)
+    out, _cf = fix_confetti_on_level_end_only(out)
 
     # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
