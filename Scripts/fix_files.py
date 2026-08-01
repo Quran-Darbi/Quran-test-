@@ -1254,7 +1254,7 @@ ORDER_AREA_HTML = '''<div class="quiz-area" id="order-area">
   </div>
   <div id="order-reveal" style="display:none;"></div>
   <div class="feedback" id="order-feedback"></div>
-  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>
 </div>
 '''
 
@@ -2866,12 +2866,12 @@ def fix_question_nav_and_page_nav_visibility(out):
 
     anchor_old = (
         '<div class="feedback" id="feedback"></div>\n'
-        '  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>\n'
+        '  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>\n'
         '<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;">'
     )
     anchor_new = (
         '<div class="feedback" id="feedback"></div>\n'
-        '  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>\n'
+        '  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>\n'
         '<div class="page-nav-row" id="quiz-page-nav" style="display:none;gap:8px;margin-top:10px;">'
     )
     if anchor_old in out:
@@ -3128,7 +3128,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
     <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" style="display:none;">السؤال التالي ←</button>
   </div>
   <div class="feedback" id="feedback"></div>
-  <button class="level-return-btn" onclick="returnToLevels()">&#x1F504; &#x627;&#x62E;&#x62A;&#x631; &#x645;&#x633;&#x62A;&#x648;&#x649; &#x622;&#x62E;&#x631;</button>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>
 <div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="__PREV_PAGE__" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="__NEXT_PAGE__" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
 </div>
 <div class="quiz-area" id="order-area">
@@ -3141,7 +3141,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   </div>
   <div id="order-reveal" style="display:none;"></div>
   <div class="feedback" id="order-feedback"></div>
-  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر مستوى آخر</button>
+  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>
 <div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="__PREV_PAGE__" class="prev-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="__NEXT_PAGE__" class="next-page-btn" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
 </div>
 <div class="result-area" id="result-area">
@@ -3150,7 +3150,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div class="result-score" id="result-score"></div>
   <div class="result-msg" id="result-msg"></div>
   <button class="retry-btn" id="review-mistakes-btn" onclick="startReview()" style="display:none;background:var(--wrong-border);">📝 راجع أخطائي</button>
-  <button class="retry-btn" onclick="retryQuiz()">أعد الاختبار</button>
+  <button class="retry-btn" onclick="retryQuiz()">🔄 اختر اختباراً آخر</button>
   <a href="index.html" class="home-link">← الرئيسية</a>
 </div>
 <div class="quiz-area" id="review-area" style="display:none;">
@@ -5646,6 +5646,37 @@ def fix_add_og_image(out):
     return out, False
 
 
+def fix_retry_btn_label(out):
+    """توحيد نص زرَّي العودة إلى قائمة الاختبارات.
+
+    الزرّان بيوصّلوا لنفس المكان (level-card) فلازم يتطابقوا:
+      - level-return-btn: جوّه الاختبار أثناء الأسئلة
+      - retry-btn: في شاشة النتيجة بعد الانتهاء
+
+    "أعد الاختبار" كان مضلّلًا (retryQuiz ما بتعيدش شيئًا، هي بترجّع
+    القائمة)، و"مستوى" كانت ناقصة لأن القائمة فيها اختبار الترتيب
+    وهو ليس مستوى. فـ"اختبار" هي الوصف الأدق والأشمل.
+
+    اسم الدالة retryQuiz() متساب زي ما هو عن قصد — تغييره كان هيتطلّب
+    تتبّع كل استدعاءاته في ٨٦ ملف بلا فايدة للمستخدم.
+
+    idempotent: مطابقة النصوص القديمة بس.
+    """
+    NEW = '🔄 اختر اختباراً آخر'
+    olds = (
+        '>أعد الاختبار<',
+        '>🔄 اختر مستوى آخر<',
+        # نسخة الكيانات المرمّزة (ملفات مولّدة بـHTML entities)
+        '>&#x1F504; &#x627;&#x62E;&#x62A;&#x631; &#x645;&#x633;&#x62A;&#x648;&#x649; &#x622;&#x62E;&#x631;<',
+    )
+    changed = False
+    for old in olds:
+        if old in out:
+            out = out.replace(old, '>' + NEW + '<')
+            changed = True
+    return out, changed
+
+
 def fix_confetti_on_level_end_only(out):
     """نقل الاحتفال من كل سؤال إلى نهاية المستوى.
 
@@ -5735,6 +5766,7 @@ def fix_file(path):
     out, _pwa_rel = fix_pwa_paths_to_relative(out)
     out, _canon = fix_add_canonical(path, out)
     out, _cf = fix_confetti_on_level_end_only(out)
+    out, _rtl = fix_retry_btn_label(out)
 
     # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
@@ -6006,7 +6038,7 @@ def fix_file(path):
             css = '.level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}\n.level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}'
             out = out.replace('</style>', css + '\n</style>', 1)
         # زر HTML
-        btn = '\n  <button class="level-return-btn" onclick="returnToLevels()">&#x1F504; &#x627;&#x62E;&#x62A;&#x631; &#x645;&#x633;&#x62A;&#x648;&#x649; &#x622;&#x62E;&#x631;</button>'
+        btn = '\n  <button class="level-return-btn" onclick="returnToLevels()">🔄 اختر اختباراً آخر</button>'
         out = out.replace('<div class="feedback" id="feedback"></div>',
                          '<div class="feedback" id="feedback"></div>' + btn, 1)
         # دالة JS
