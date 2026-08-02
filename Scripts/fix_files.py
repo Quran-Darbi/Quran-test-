@@ -4777,6 +4777,7 @@ def audit_uniformity(root):
 # كلها بتخلّي إجابة صحيحة تتحسب خطأ. لا تمسّ أي نص قرآني.
 # ======================================================
 NORM_FIXED = []
+RECIT_NORM_FIXED = []
 
 _NF_KASHIDA = re.compile(
     r"\.replace\(/ـۧ/g,'ي'\).*?\.replace\(/ـ/g,''\)", re.S)
@@ -5644,13 +5645,12 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   if(_ok){
     correctCount++;statuses[qIndex]='correct';
     fb.className='feedback correct';
-    fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً 🌟'+_pctNow();
-    if(typeof spawnConfetti==='function')spawnConfetti(18);
+    fb.innerHTML='✓ أحسنت! إجابة صحيحة تماماً 🌟';
     if(currentLevel==='hard'){const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},3500);}
   }else{
     wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);
     fb.className='feedback wrong';
-    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>'+_pctNow();
+    fb.innerHTML='✗ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;">'+_dh+'</span>';
   }
   fb.style.display='block';
   if(typeof updateBadges==='function')updateBadges();
@@ -5675,7 +5675,7 @@ CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  r
 # p47، annaba) كانت بتصحّح جوّها ومابتناديهاش خالص، يعني
 # توحيد checkTextVal ماكانش له أي أثر فيهم.
 # ------------------------------------------------------
-CANON_FN['checkMCQ'] = r'''function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');const _ans=questions[qIndex].choices[correct];if(chosen===correct){if(btn)btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! 🌟'+(typeof _pctNow==='function'?_pctNow():'');if(typeof spawnConfetti==='function')spawnConfetti(18);const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}else{if(btn)btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===_ans)b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+_ans+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}'''
+CANON_FN['checkMCQ'] = r'''function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');const _ans=questions[qIndex].choices[correct];if(chosen===correct){if(btn)btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! 🌟';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}else{if(btn)btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===_ans)b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+_ans+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}'''
 
 CANON_FN['checkText'] = r'''function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,userVal);}'''
 
@@ -6065,6 +6065,34 @@ def fix_confetti_on_level_end_only(out):
             changed = True
 
     return out, changed
+
+
+def fix_recitation_norm_hamza(path, out):
+    """يوحّد قاعدة الهمزة في norm() بتاعة recitation.html.
+
+    recitation.html مابيمرّش على fix_file()، فمابياخدش لا
+    unify_normalize_rules ولا apply_canonical_functions. النتيجة إن
+    norm() فضلت على الصيغة القديمة [ئؤ]→ء→'' (اللي بتحذف الهمزة على
+    نبرة وعلى واو خالص) بينما الـ86 ملف اتصلّحوا لـ [ئؤ]→ا.
+
+    الاختلاف ده بيخلي نفس الكلمة تتقارن بطريقتين مختلفين بين صفحة
+    التلاوة وصفحات الاختبار — وده مخالف لقاعدة "أي تعديل على التطبيع
+    يتطبّق في التلات أماكن مع بعض".
+
+    idempotent: بعد أول تطبيق الصيغة القديمة مابقتش موجودة.
+    """
+    old = r".replace(/[ئؤ]/g,'ء').replace(/ء/g,'')"
+    new = r".replace(/[ئؤ]/g,'ا').replace(/ء/g,'')"
+    if old not in out:
+        return out, False
+    before = quran_text_fingerprint(out)
+    out = out.replace(old, new)
+    if quran_text_fingerprint(out) != before:
+        print('⛔ %s: البصمة اتغيّرت — تصحيح الهمزة اتلغى'
+              % os.path.basename(path))
+        return out.replace(new, old), False
+    RECIT_NORM_FIXED.append(os.path.basename(path))
+    return out, True
 
 
 def fix_pwa_paths_to_relative(out):
@@ -6785,6 +6813,9 @@ def fix_index_recitation(path):
     # رسم التنوين: نطاق U+08F0–U+08F2 لكلاس حذف التشكيل في norm()
     out, _open_tanween = add_open_tanween_to_normalize(out)
 
+    # قاعدة الهمزة في norm() — لازم تطابق الـ86 ملف
+    out, _recit_hamza = fix_recitation_norm_hamza(path, out)
+
     # إصلاح تراكب/تجاوز قائمة الأدوات ولون "العربية"
     out, _tools_ui_fixed = fix_tools_menu_ui_bugs(out)
 
@@ -7003,6 +7034,8 @@ def main():
             print('  -', fn2, ':', ' · '.join(w))
     else:
         print('مفيش تعديلات مطلوبة ✅')
+    if RECIT_NORM_FIXED:
+        print('  + قاعدة الهمزة في norm(): ' + ' · '.join(RECIT_NORM_FIXED))
 
     print('\n=== تقرير رسم التنوين ===')
     if TANWEEN_SKIPPED:
