@@ -1586,6 +1586,344 @@ def heal_missing_order_css(out):
 
 
 # ====================================================
+# لوحة شرح مستوى الترتيب 🔀 (أغسطس ٢٠٢٦)
+# ------------------------------------------------------
+# مستوى الترتيب فيه ٤ حركات مش كلها واضحة من نفسها:
+#   • ضغط آية من البنك    → تتوضع في الخانة النشطة
+#   • ضغط دائرة فاضية     → الخانة دي تبقى النشطة (تخطّي/رجوع)
+#   • ضغط نصّ آية موضوعة  → ترجع للبنك (حذف من الترتيب)
+#   • ضغط رقم آية موضوعة  → تحديد، وضغط رقم تاني → تبديل الآيتين
+# اللوحة بتشرحهم بالترتيب ده، بتظهر تلقائيًا أول مرة بس (مفتاح
+# localStorage واحد للموقع كله)، ومعاها زر '؟' دائم يفتحها ويقفلها.
+# كل حاجة هنا نصّ واجهة بحت — مافيش أي حرف قرآني، والبصمة ما تتأثرش.
+# ====================================================
+
+# نسخة اللوحة — أي تغيير في CSS/HTML/JS لازم يزوّد الرقم ده، عشان
+# add_order_help_panel() تشيل النسخة القديمة من الملفات وتحقن الجديدة
+# بدل ما تفضل القديمة متعلّقة (الحقن بيتم مرة واحدة بس).
+OH_VERSION = 'v5'
+
+ORDER_HELP_CSS = (
+    "/*OHCSS " + OH_VERSION + "*/"
+    ".order-help{background:var(--hint-bg);border:1.5px solid var(--accent);"
+    "border-radius:12px;padding:14px 14px 12px;margin-bottom:14px;text-align:right;direction:rtl;}"
+    ".order-help-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}"
+    ".order-help-head .t{font-weight:700;color:var(--accent-dark);font-size:16px;flex:1;}"
+    ".oh-count{font-size:12.5px;color:var(--hint-btn-text);font-family:'Amiri',serif;"
+    "white-space:nowrap;}"
+    ".oh-dots{display:flex;gap:5px;align-items:center;}"
+    ".oh-dots i{width:9px;height:9px;flex:0 0 auto;border-radius:50%;"
+    "background:var(--hint-btn-text);opacity:.3;display:block;transition:all .3s;}"
+    ".oh-dots i.done{background:var(--accent);opacity:.55;}"
+    ".oh-dots i.on{background:var(--accent);opacity:1;transform:scale(1.45);"
+    "box-shadow:0 0 0 3px var(--surface-hover);}"
+    ".oh-cap{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;"
+    "padding:11px 13px;margin-bottom:12px;min-height:76px;}"
+    ".oh-cap .act{font-size:15.5px;font-weight:700;color:var(--accent-dark);margin-bottom:3px;}"
+    ".oh-cap .why{font-size:13.5px;color:var(--hint-btn-text);line-height:1.65;}"
+    ".oh-cap.in{animation:ohcap .3s ease-out;}"
+    "@keyframes ohcap{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}"
+    ".oh-board{position:relative;}"
+    ".order-help .order-item{font-size:16px;padding:11px 14px;cursor:default;}"
+    ".order-help .order-item:hover{background:var(--surface2);border-color:var(--border);}"
+    ".order-help .order-slot{font-size:15px;padding:10px 12px;cursor:default;transition:all .25s;}"
+    ".order-help .order-dot{cursor:default;transition:all .25s;}"
+    ".order-help .order-badge{cursor:default;}"
+    ".oh-swap{border-color:var(--gold)!important;box-shadow:0 0 0 2px var(--gold);}"
+    ".oh-flash{animation:ohflash 1.2s ease-out;}"
+    "@keyframes ohflash{0%{box-shadow:0 0 0 0 var(--gold);}"
+    "15%{box-shadow:0 0 0 4px var(--gold);}100%{box-shadow:0 0 0 0 rgba(196,168,74,0);}}"
+    ".oh-tap{position:absolute;width:32px;height:32px;border-radius:50%;pointer-events:none;"
+    "border:2.5px solid var(--accent);background:rgba(74,124,74,.16);z-index:5;opacity:0;"
+    "transform:translate(-50%,-50%);transition:top .55s cubic-bezier(.4,0,.2,1),"
+    "left .55s cubic-bezier(.4,0,.2,1),opacity .3s;}"
+    ".oh-tap.on{opacity:1;}"
+    ".oh-tap.press{animation:ohpress .55s ease-out;}"
+    "@keyframes ohpress{0%{transform:translate(-50%,-50%) scale(1);}"
+    "35%{transform:translate(-50%,-50%) scale(.5);background:rgba(74,124,74,.42);}"
+    "100%{transform:translate(-50%,-50%) scale(1.6);background:rgba(74,124,74,0);}}"
+    "@media (prefers-reduced-motion:reduce){.oh-tap{transition:none;}"
+    ".oh-tap.press,.oh-flash,.oh-cap.in{animation:none;}}"
+    ".oh-ctrls{display:flex;gap:7px;margin-top:12px;}"
+    ".oh-ctrls button{flex:1;background:var(--surface2);border:1.5px solid var(--border);"
+    "border-radius:10px;color:var(--accent-dark);padding:10px 8px;font-family:inherit;"
+    "font-size:14px;cursor:pointer;min-height:44px;}"
+    ".oh-ctrls button:hover{background:var(--surface-hover);border-color:var(--accent);}"
+    ".order-help-close{margin-top:8px;width:100%;background:var(--accent);color:#fff;"
+    "border:none;border-radius:10px;padding:11px;font-family:inherit;font-size:15px;"
+    "cursor:pointer;min-height:44px;}"
+    ".order-help-close:hover{filter:brightness(1.08);}"
+    ".order-help-row{display:flex;justify-content:flex-start;margin-bottom:10px;}"
+    ".order-help-btn{background:var(--surface2);border:1.5px solid var(--border);"
+    "border-radius:10px;color:var(--hint-btn-text);padding:8px 14px;font-family:inherit;"
+    "font-size:14px;cursor:pointer;min-height:40px;transition:all .15s;}"
+    ".order-help-btn:hover{border-color:var(--accent);color:var(--accent-dark);}"
+    "/*OHCSS-END*/"
+)
+
+# ملحوظة: ممنوع أرقام عربية-هندية حرفية هنا، لأن ar2en() في أول fix_file بتحوّلها
+# لأرقام غربية فتبان غلط وسط واجهة عربية. أرقام الخانات وعدّاد الخطوات بيتولّدوا
+# وقت التشغيل من toArabicNum().
+ORDER_HELP_HTML = ('<!--OHHTML ' + OH_VERSION + '''-->
+  <div class="order-help-row"><button type="button" class="order-help-btn" id="order-help-btn" onclick="toggleOrderHelp()" aria-controls="order-help" aria-expanded="false">؟ كيف يعمل الترتيب</button></div>
+  <div class="order-help" id="order-help" role="note" style="display:none;">
+    <div class="order-help-head">
+      <span class="t">طريقة الترتيب</span>
+      <span class="oh-count" id="oh-count"></span>
+      <span class="oh-dots" id="oh-dots" aria-hidden="true"></span>
+    </div>
+    <div class="oh-cap" id="oh-cap" aria-live="polite"><div class="act"></div><div class="why"></div></div>
+    <div class="oh-board" id="oh-board">
+      <div id="oh-slots"></div>
+      <div id="oh-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px;"></div>
+      <div class="oh-tap" id="oh-tap"></div>
+    </div>
+    <div class="oh-ctrls">
+      <button type="button" onclick="ohPrev()">&#8592; السابق</button>
+      <button type="button" onclick="ohToggle()" id="oh-play">&#9199; إيقاف</button>
+      <button type="button" onclick="ohNext()">التالي &#8594;</button>
+    </div>
+    <button type="button" class="order-help-close" onclick="closeOrderHelp()">ابدأ الترتيب</button>
+  </div>
+  <!--OHHTML-END-->
+  ''')
+
+ORDER_HELP_JS = ('''
+/*OHJS ''' + OH_VERSION + '''*/
+/* ===== لوحة شرح الترتيب — عرض متحرك (يظهر تلقائيًا أول مرة فقط) ===== */
+/* توقيت العرض بالملّي ثانية — كل الإيقاع من السطر ده:
+   read = وقفة القراية قبل أي حركة | move = حركة المؤشّر | press = الضغطة
+   hold = وقفة بعد التغيير عشان العين تشوف النتيجة
+   link = وقفة أقصر بين ضغطتين في نفس الخطوة (الشرح واحد فمش محتاج قراية تاني) */
+const OH_MS={read:4400,move:1100,press:600,hold:3400,link:1800};
+const ORDER_HELP_KEY='darbi_order_help_seen';
+const OH_SEG=['الآية الأولى','الآية الثانية','الآية الثالثة'];
+function ohAr(n){return typeof toArabicNum==='function'?toArabicNum(n):String(n);}
+function ohNum(i){return '﴿'+ohAr(i+1)+'﴾';}
+function ohEmpty(p,f){for(let i=f;i<p.length;i++)if(p[i]===null)return i;for(let i=0;i<p.length;i++)if(p[i]===null)return i;return -1;}
+function ohS0(){return {placed:[null,null,null],cursor:0,selected:-1,pool:[1,0,2]};}
+let ohSt=ohS0(),ohStep=0,ohTap=0,ohTimer=null,ohPlaying=false,ohFlash=null;
+/* كل خطوة = شرح واحد + ضغطة أو أكتر (taps). الخطوة اللي فيها ضغطتين
+   بتاخد وقفة قراية واحدة بس في أولها، والوقفة اللي بين الضغطتين أقصر. */
+const OH_STEPS=[
+ {act:'ضَع آية في الترتيب',
+  why:'اضغط على أي آية في الأسفل، فتُوضَع في الخانة النشطة (الدائرة الخضراء).',
+  taps:[
+   {at:function(){return document.querySelector('#oh-pool [data-p="1"]');},
+    run:function(s){s.placed[s.cursor]=1;ohFlash='s'+s.cursor;s.cursor=ohEmpty(s.placed,s.cursor+1);}}
+  ]},
+ {act:'اختر خانة ثم ضَع فيها',
+  why:'الدوائر المتقطّعة هي الخانات الفارغة. اضغط أي واحدة لتصبح هي النشطة، ثم اضغط آية فتُوضَع فيها هي — لا في التي تليها.',
+  taps:[
+   {at:function(){return document.querySelector('#oh-slots [data-d="2"]');},
+    run:function(s){s.cursor=2;ohFlash='d2';}},
+   {at:function(){return document.querySelector('#oh-pool [data-p="0"]');},
+    run:function(s){s.placed[2]=0;ohFlash='s2';s.cursor=ohEmpty(s.placed,0);}}
+  ]},
+ {act:'حدِّد آية للتبديل',
+  why:'اضغط على رقم الآية — لا على نصّها — فيظهر حوله إطار ذهبي.',
+  taps:[
+   {at:function(){return document.querySelector('#oh-slots [data-s="0"] .order-badge');},
+    run:function(s){s.selected=0;ohFlash='s0';}}
+  ]},
+ {act:'بدِّل الآيتين',
+  why:'اضغط رقم آية أخرى، فتتبادلان مكانهما. واضغط الرقم نفسه لإلغاء التحديد.',
+  taps:[
+   {at:function(){return document.querySelector('#oh-slots [data-s="2"] .order-badge');},
+    run:function(s){const t=s.placed[0];s.placed[0]=s.placed[2];s.placed[2]=t;s.selected=-1;ohFlash='s0';}}
+  ]},
+ {act:'اسحب آية من الترتيب',
+  why:'اضغط على نصّ الآية داخل مربّعها، فتعود إلى الأسفل وتفرغ خانتها.',
+  taps:[
+   {at:function(){return document.querySelector('#oh-slots [data-s="0"]');},
+    run:function(s){ohFlash='p'+s.placed[0];s.placed[0]=null;s.cursor=0;}}
+  ]}
+];
+function ohDraw(){
+ const sl=document.getElementById('oh-slots'),po=document.getElementById('oh-pool');
+ if(!sl||!po)return;
+ sl.innerHTML='';po.innerHTML='';
+ const g=document.createElement('div');g.className='order-filled-grid';
+ const st=document.createElement('div');st.className='order-empty-strip';
+ ohSt.placed.forEach(function(idx,pos){
+  if(idx===null){
+   const d=document.createElement('span');
+   d.className='order-dot'+(pos===ohSt.cursor?' active':'')+(ohFlash==='d'+pos?' oh-flash':'');
+   d.setAttribute('data-d',pos);d.textContent=ohNum(pos);st.appendChild(d);
+  }else{
+   const c=document.createElement('div');
+   c.className='order-slot filled'+(pos===ohSt.selected?' oh-swap':'')+(ohFlash==='s'+pos?' oh-flash':'');
+   c.setAttribute('data-s',pos);
+   const b=document.createElement('span');b.className='order-badge';b.textContent=ohNum(pos);
+   const t=document.createElement('span');t.textContent=OH_SEG[idx];
+   c.appendChild(b);c.appendChild(t);g.appendChild(c);
+  }
+ });
+ if(g.children.length)sl.appendChild(g);
+ if(st.children.length)sl.appendChild(st);
+ ohSt.pool.forEach(function(idx){
+  if(ohSt.placed.indexOf(idx)>-1)return;
+  const b=document.createElement('div');
+  b.className='order-item'+(ohFlash==='p'+idx?' oh-flash':'');
+  b.setAttribute('data-p',idx);b.textContent=OH_SEG[idx];po.appendChild(b);
+ });
+ ohFlash=null;
+}
+function ohBuildDots(){
+ const d=document.getElementById('oh-dots');if(!d)return;
+ if(d.children.length===OH_STEPS.length)return;
+ d.innerHTML='';
+ for(let i=0;i<OH_STEPS.length;i++)d.appendChild(document.createElement('i'));
+}
+function ohPaintDots(){
+ const d=document.getElementById('oh-dots');
+ if(d){for(let i=0;i<d.children.length;i++)d.children[i].className=(i===ohStep?'on':(i<ohStep?'done':''));}
+ const c=document.getElementById('oh-count');
+ if(c)c.textContent=ohAr(ohStep+1)+' / '+ohAr(OH_STEPS.length);
+}
+function ohSay(a,w){
+ const c=document.getElementById('oh-cap');if(!c)return;
+ c.innerHTML='<div class="act">'+a+'</div><div class="why">'+w+'</div>';
+ c.classList.remove('in');void c.offsetWidth;c.classList.add('in');
+}
+function ohStateAt(n){const s=ohS0();
+ for(let i=0;i<n;i++)OH_STEPS[i].taps.forEach(function(t){t.run(s);});
+ ohFlash=null;return s;}
+function ohShow(n){
+ ohStep=((n%OH_STEPS.length)+OH_STEPS.length)%OH_STEPS.length;ohTap=0;
+ ohSt=ohStateAt(ohStep);ohDraw();ohBuildDots();ohPaintDots();
+ ohSay(OH_STEPS[ohStep].act,OH_STEPS[ohStep].why);
+ const t=document.getElementById('oh-tap');if(t)t.className='oh-tap';
+}
+function ohVisible(){const p=document.getElementById('order-help');return !!p&&p.style.display!=='none'&&p.offsetParent!==null;}
+function ohStop(){clearTimeout(ohTimer);ohTimer=null;const t=document.getElementById('oh-tap');if(t)t.className='oh-tap';}
+function ohSetPlay(v){
+ ohPlaying=v;const b=document.getElementById('oh-play');
+ if(b)b.innerHTML=v?'&#9199; إيقاف':'&#9654; تشغيل';
+}
+function ohRun(){
+ if(!ohPlaying||!ohVisible()){ohStop();return;}
+ const s=OH_STEPS[ohStep],tap=s.taps[ohTap];
+ if(!tap)return;
+ const el=tap.at(),bd=document.getElementById('oh-board'),tp=document.getElementById('oh-tap');
+ if(!el||!bd||!tp)return;
+ const last=(ohTap>=s.taps.length-1);
+ /* وقفة القراية في أول ضغطة بس — الضغطة التانية في نفس الخطوة بتيجي أسرع */
+ ohTimer=setTimeout(function(){
+  if(!ohPlaying||!ohVisible()){ohStop();return;}
+  const br=bd.getBoundingClientRect(),er=el.getBoundingClientRect();
+  tp.style.left=(er.left-br.left+er.width/2)+'px';
+  tp.style.top=(er.top-br.top+er.height/2)+'px';
+  tp.classList.add('on');
+  ohTimer=setTimeout(function(){
+   tp.classList.remove('press');void tp.offsetWidth;tp.classList.add('press');
+   ohTimer=setTimeout(function(){
+    tap.run(ohSt);ohDraw();tp.classList.remove('on');
+    ohTimer=setTimeout(function(){
+     if(!last){ohTap++;ohRun();return;}
+     if(ohStep>=OH_STEPS.length-1){
+      ohSay('&#10003; وهذه كل الحركات','عند امتلاء جميع الخانات يظهر زر «تحقق &#10003;» لتصحيح الترتيب.');
+      ohSetPlay(false);ohStop();return;
+     }
+     ohStep++;ohTap=0;ohPaintDots();
+     ohSay(OH_STEPS[ohStep].act,OH_STEPS[ohStep].why);ohRun();
+    },last?OH_MS.hold:OH_MS.link);
+   },OH_MS.press);
+  },OH_MS.move);
+ },ohTap===0?OH_MS.read:OH_MS.link);
+}
+function ohToggle(){
+ if(ohPlaying){ohSetPlay(false);ohStop();return;}
+ if(ohStep>=OH_STEPS.length-1)ohShow(0);
+ ohSetPlay(true);ohRun();
+}
+function ohNext(){ohStop();ohSetPlay(false);ohShow(ohStep+1);}
+function ohPrev(){ohStop();ohSetPlay(false);ohShow(ohStep-1);}
+function ohStart(){
+ ohShow(0);
+ const rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(rm){ohSetPlay(false);}else{ohSetPlay(true);ohTimer=setTimeout(ohRun,600);}
+}
+function _orderHelpSeen(){try{return localStorage.getItem(ORDER_HELP_KEY)==='1';}catch(e){return false;}}
+function _orderHelpMark(){try{localStorage.setItem(ORDER_HELP_KEY,'1');}catch(e){}}
+function _orderHelpSet(open){
+ const p=document.getElementById('order-help');if(p)p.style.display=open?'block':'none';
+ const b=document.getElementById('order-help-btn');if(b)b.setAttribute('aria-expanded',open?'true':'false');
+ if(open){ohStart();}else{ohSetPlay(false);ohStop();}
+}
+function toggleOrderHelp(){const p=document.getElementById('order-help');if(!p)return;_orderHelpSet(p.style.display==='none');_orderHelpMark();}
+function closeOrderHelp(){_orderHelpSet(false);_orderHelpMark();}
+function maybeShowOrderHelp(){_orderHelpSet(!_orderHelpSeen());}
+/* ===== نهاية لوحة شرح الترتيب ===== */
+/*OHJS-END*/
+''')
+
+_OH_CSS_RE  = re.compile(r'/\*OHCSS [^*]*\*/.*?/\*OHCSS-END\*/', re.S)
+_OH_HTML_RE = re.compile(r'\s*<!--OHHTML [^>]*-->.*?<!--OHHTML-END-->\s*', re.S)
+_OH_JS_RE   = re.compile(r'/\*OHJS [^*]*\*/.*?/\*OHJS-END\*/\s*', re.S)
+
+
+def add_order_help_panel(out):
+    """لوحة شرح مستوى الترتيب (عرض متحرك) + زر '؟' دائم يفتحها ويقفلها.
+
+    كل كتلة (CSS / HTML / JS) متعلّمة بنسخة بين علامتين. لو الملف فيه نسخة
+    قديمة بتتشال بالكامل وتتحقن الجديدة مكانها — وده اللي بيخلي أي تعديل
+    مستقبلي على اللوحة ينتشر على كل الملفات من غير شغل يدوي.
+    idempotent: تشغيلة تانية بنفس النسخة مابتغيّرش أي حرف."""
+    if 'id="order-area"' not in out:
+        return out, False              # مفيش ميزة ترتيب في الملف أصلًا
+
+    changed = False
+    tag_css, tag_html, tag_js = ('/*OHCSS %s*/' % OH_VERSION,
+                                 '<!--OHHTML %s-->' % OH_VERSION,
+                                 '/*OHJS %s*/' % OH_VERSION)
+
+    # 1. CSS — في نهاية كتلة <style> الرئيسية (نفس منطق heal_missing_order_css)
+    if tag_css not in out:
+        out, n = _OH_CSS_RE.subn('', out)          # شيل النسخة القديمة لو موجودة
+        if n:
+            changed = True
+        m = re.search(r'\.quiz-area\s*\{', out)
+        close = out.find('</style>', m.end()) if m else out.rfind('</style>')
+        if close != -1:
+            out = out[:close] + ORDER_HELP_CSS + '\n' + out[close:]
+            changed = True
+
+    # 2. HTML — قبل خانات الترتيب مباشرة، جوّه order-area
+    if tag_html not in out and '<div id="order-slots"' in out:
+        out, n = _OH_HTML_RE.subn('\n  ', out)
+        if n:
+            changed = True
+        out = out.replace('<div id="order-slots"',
+                          ORDER_HELP_HTML + '<div id="order-slots"', 1)
+        changed = True
+
+    # 3. دوال JS — قبل تعريف startOrderQuiz
+    if tag_js not in out and 'function startOrderQuiz(' in out:
+        out, n = _OH_JS_RE.subn('', out)
+        if n:
+            changed = True
+        out = out.replace('function startOrderQuiz(',
+                          ORDER_HELP_JS + 'function startOrderQuiz(', 1)
+        changed = True
+
+    # 4. نداء العرض التلقائي جوّه startOrderQuiz — قبل أول رسم مباشرةً.
+    #    الـregex متسامح مع فرق المسافات عشان يشتغل على القالب المسطّر
+    #    (جزء عمّ) والقالب المضغوط في سطر واحد (البقرة) سوا.
+    if not re.search(r"rb\.style\.opacity='1';\s*maybeShowOrderHelp\(\);", out):
+        new_out, n = re.subn(
+            r"(rb\.disabled=false;rb\.style\.opacity='1';\s*)(renderOrderQuiz\(\);)",
+            lambda mm: mm.group(1) + 'maybeShowOrderHelp();' + mm.group(2),
+            out, count=1)
+        if n:
+            out = new_out
+            changed = True
+
+    return out, changed
+
+
+
+# ====================================================
 # سلسلة ترتيب المصحف لزر "التالي ⏭️" — من البقرة p2 لحد الناس
 # ====================================================
 NEXT_SEQUENCE = (
@@ -5776,6 +6114,9 @@ def fix_file(path):
     # كمّل على باقي خط الأنابيب القديم زي ما هو بالظبط.
     migrated_out, migrated = migrate_baqara_to_clean_template(path, out)
     if migrated:
+        # الملف المرحَّل بيخرج فورًا من غير باقي خط الأنابيب، فبنضيفله
+        # لوحة شرح الترتيب هنا عشان مايستناش تشغيلة جاية
+        migrated_out, _ = add_order_help_panel(migrated_out)
         with open(path, 'w', encoding='utf-8') as f:
             f.write(migrated_out)
         return True
@@ -6269,6 +6610,10 @@ def fix_file(path):
     # 9بأ. مداواة كتلة CSS الترتيب المفقودة (يوليو ٢٠٢٦) — للملفات اللي
     # اترحّلت لقالب قديم مكانش فيه الـCSS وبقت مقفولة على الحالة دي
     out, order_css_healed = heal_missing_order_css(out)
+
+    # ====================================================
+    # 9بب. لوحة شرح مستوى الترتيب — تلقائيًا أول مرة + زر '؟' دائم
+    out, order_help_added = add_order_help_panel(out)
 
     # دعم الحروف المقطعة في مقارنة المستوى الصعب (يوليو ٢٠٢٦)
     out, muqattaat_added = add_muqattaat_support(out)
