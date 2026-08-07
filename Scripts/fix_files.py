@@ -6135,6 +6135,7 @@ MEDIUM_BLANKS_FIXED = []
 RASM_SNAP_ADDED = []
 SPELL_GUARD_ADDED = []
 REPEAT_COUNT_FIXED = []
+DAGGER_UNIFIED = []
 
 
 # ============================================================
@@ -6359,6 +6360,82 @@ def fix_repeat_count_answers(path, out):
         return out, False
     REPEAT_COUNT_FIXED.append((fn, hits))
     return out[:st] + nb + out[en:], True
+
+
+
+# ------------------------------------------------------------
+# توحيد الألف الخنجرية بين مصفوفات الملف الواحد
+# ------------------------------------------------------------
+def _dagger_key(w):
+    """مفتاح يساوي بين الألف العادية والخنجرية — للمطابقة فقط."""
+    return w.replace('\u0670', '\u0627')
+
+
+def unify_dagger_alef_with_ayat(path, out):
+    """يصحّح رسم الألف الخنجرية في EASY_Q/MEDIUM_Q من AYAT.
+
+    بعض الأسئلة اتكتبت بألف عادية (ٱلصَّٰلِحَاتِ) بينما المصحف وAYAT
+    وHARD_Q فيهم الخنجرية (ٱلصَّٰلِحَٰتِ). الدالة بتاخد الرسم من AYAT
+    نفسها — مصدر النص الموثّق جوّه الملف — مش من أي مكان تاني.
+
+    بتمشي كلمة كلمة على أسئلة السهل والمتوسط وتقارن بمفتاح بيساوي
+    بين ٱ0627 وٱ0670، فبتمسك حتى الأشكال المختلطة (خنجرية على حرف
+    وعادية على حرف تاني في نفس الكلمة).
+
+    · الإبدال بيحصل بس لو الكلمتين متطابقتين حرفًا بحرف بعد التسوية،
+      يعني الفرق في نوع الألف وحده لا غير.
+    · أي مفتاح بيوصّل لأكتر من رسم في AYAT بيتشال — مفيش تخمين.
+    · المقارنة ما بتتأثرش: normalize بتحوّل الاتنين لألف واحدة.
+    """
+    fn_name = os.path.basename(path)
+    ay, _, _ = _t_array_body(out, 'AYAT')
+    if not ay:
+        return out, False
+
+    forms, dup = {}, set()
+    for s in _T_STR.findall(ay):
+        for w in s.split():
+            w = w.strip('«»()[]،.')
+            if '\u0670' not in w:
+                continue
+            k = _dagger_key(w)
+            if k in forms and forms[k] != w:
+                dup.add(k)
+            else:
+                forms[k] = w
+    for k in dup:
+        forms.pop(k, None)
+    if not forms:
+        return out, False
+
+    hits, changed = [], False
+    for name in ('EASY_Q', 'MEDIUM_Q'):
+        body, st, en = _t_array_body(out, name)
+        if not body:
+            continue
+
+        def repl(m):
+            s = m.group(1)
+            parts = s.split(' ')
+            for idx, tok in enumerate(parts):
+                core = tok.strip('«»()[]،.…؟')
+                if not core:
+                    continue
+                right = forms.get(_dagger_key(core))
+                if right and right != core:
+                    parts[idx] = tok.replace(core, right, 1)
+                    hits.append((name, core, right))
+            return '"' + ' '.join(parts) + '"'
+
+        nb = _T_STR.sub(repl, body)
+        if nb != body:
+            out = out[:st] + nb + out[en:]
+            changed = True
+
+    if not changed:
+        return out, False
+    DAGGER_UNIFIED.append((fn_name, hits))
+    return out, True
 
 
 def fix_file(path):
@@ -7014,6 +7091,7 @@ def fix_file(path):
     #   · الكتابة: رفض «اللذين» وأخواتها من غير لمس normalize
     # لازم تسبق apply_canonical_functions عشان checkText القياسية
     # بتنادي markBadSpelling، والحاقن ده هو اللي بيعرّفها.
+    out, dagger_unified = unify_dagger_alef_with_ayat(path, out)
     out, medium_blanks = add_medium_word_count_blanks(out)
     out, repeat_fixed = fix_repeat_count_answers(path, out)
     out, rasm_snapped = add_rasm_snap_to_voice(path, out)
