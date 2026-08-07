@@ -294,7 +294,7 @@ const EASY_Q=[
 const MEDIUM_Q=[
   {q:"«إِذَا _____ ٱنشَقَّتْ»",answer:"ٱلسَّمَآءُ"},
   {q:"«وَإِذَا _____ مُدَّتْ»",answer:"ٱلْأَرْضُ"},
-  {q:"«وَأَلْقَتْ _____ وَتَخَلَّتْ»",answer:"مَا فِيهَا"},
+  {q:"«وَأَلْقَتْ _____ _____ وَتَخَلَّتْ»",answer:"مَا فِيهَا"},
   {q:"«يَٰٓأَيُّهَا ٱلْإِنسَٰنُ إِنَّكَ _____ إِلَىٰ رَبِّكَ كَدْحࣰا فَمُلَٰقِيهِ»",answer:"كَادِحٌ"},
   {q:"«فَأَمَّا مَنْ أُوتِىَ كِتَٰبَهُۥ بِيَمِينِهِۦ فَسَوْفَ _____ حِسَابࣰا يَسِيرࣰا»",answer:"يُحَاسَبُ"},
   {q:"«وَ_____ إِلَىٰٓ أَهْلِهِۦ مَسْرُورࣰا»",answer:"يَنقَلِبُ"},
@@ -393,6 +393,40 @@ function expandMuqattaat(words){
   }
   for(;i<words.length;i++)out.push(words[i]);
   return out;
+}
+/* ===== محاذاة رسم التلاوة على المصحف (الصوت فقط) =====
+   محرك التعرّف بيكتب الكلمة برسم إملائي عادي: «امنهم» بدل
+   «وَءَامَنَهُم»، «ترى» بدل «تَرَ»، «فأثرنا» بدل «فَأَثَرْنَ».
+   بنقارن كل كلمة منطوقة بكلمات *الآية الحالية وحدها*، ولو طابقت
+   واحدة بنرجّع رسم المصحف بدل رسم المحرك.
+   طبقتان: تطابق تام بعد normalize، ثم تطابق متساهل بحذف ألف أو
+   ياء أخيرة — وده بالضبط عيب المحرك المتكرر.
+   أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة، فالإبدال
+   مابيحصلش إلا لما يبقى وحيد. normalize و wordDiff مابيتلمسوش. */
+function _rasmMaps(ans){
+  const ws=String(ans||'').trim().split(/\s+/);
+  const E=Object.create(null),L=Object.create(null),bE=[],bL=[];
+  for(const w of ws){
+    const e=normalize(w);
+    if(e){if(e in E){if(E[e]!==w)bE.push(e);}else E[e]=w;}
+    const l=e.replace(/[اي]$/,'');
+    if(l){if(l in L){if(L[l]!==w)bL.push(l);}else L[l]=w;}
+  }
+  for(const k of bE)delete E[k];
+  for(const k of bL)delete L[k];
+  return {E:E,L:L};
+}
+function snapToRasm(words,ans){
+  if(!words||!words.length||!ans)return words;
+  const m=_rasmMaps(ans);
+  return words.map(function(w){
+    const e=normalize(w);
+    if(!e)return w;
+    if(e in m.E)return m.E[e];
+    const l=e.replace(/[اي]$/,'');
+    if(l&&(l in m.L))return m.L[l];
+    return w;
+  });
 }
 function wordDiff(userVal,correctAnswer){
   const nm=s=>{
@@ -560,7 +594,7 @@ function renderHard(q,zone){
           if(words[i]==='بن'){out.push('ابن');continue;}
           out.push(words[i]);
         }
-        return out;
+        return snapToRasm(out,(typeof q!=='undefined'&&q&&q.answer)||'');
       }
 
         function _addWords(nw){
@@ -704,13 +738,21 @@ function checkTextVal(q,userVal){
   if(typeof saveResumeState==='function')saveResumeState();
 }
 
-function checkText(q){
-  const input=document.getElementById('user-input');
-  const userVal=input?input.value.trim():'';if(!userVal)return;
-  if(input)input.disabled=true;
-  document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);
-  checkTextVal(q,userVal);
+/* ===== حارس الإملاء (الكتابة فقط) =====
+   «ٱلَّذِينَ» بلام واحدة هي الرسم الوحيد في المصحف، لكن تقليص
+   الحروف المكرّرة جوّه normalize بيخلّي «اللذين» تعدّي كإجابة صحيحة.
+   القاعدة دي لازم تفضل زي ما هي عشان التلاوة الصوتية (بتصلّح
+   «إنن» → «إنَّ»)، فبدل ما نلمسها بنعلّم الكلمة المكتوبة غلط بفاصل
+   صفري العرض U+200B قبل المقارنة: بيمنع التطابق من غير ما يغيّر
+   شكل الكلمة قدام المستخدم. الصوت مابيمرّش من هنا فبيفضل متساهل. */
+const BAD_SPELL=/^(اللذين|اللذي|اللتي|اللذان|اللذين|اللتين|اللتان|اللاتي|اللائي|اللواتي)$/;
+function markBadSpelling(t){
+  return String(t||'').trim().split(/\s+/).map(function(w){
+    const bare=w.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06ED\u08F0-\u08F2\u0640\u200B-\u200F]/g,'').replace(/[آأإٱ]/g,'ا').replace(/[ىی]/g,'ي');
+    return BAD_SPELL.test(bare)?w+'\u200B':w;
+  }).join(' ');
 }
+function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,(typeof markBadSpelling==='function')?markBadSpelling(userVal):userVal);}
 
 function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');const _ans=questions[qIndex].choices[correct];if(chosen===correct){if(btn)btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! 🌟';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}else{if(btn)btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===_ans)b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+_ans+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}
 
