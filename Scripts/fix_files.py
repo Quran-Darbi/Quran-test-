@@ -5677,7 +5677,7 @@ CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  r
 # ------------------------------------------------------
 CANON_FN['checkMCQ'] = r'''function checkMCQ(chosen,correct,btn){wTotal++;if(chosen===correct)wCorrect++;document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);const fb=document.getElementById('feedback');const _ans=questions[qIndex].choices[correct];if(chosen===correct){if(btn)btn.classList.add('correct');correctCount++;statuses[qIndex]='correct';fb.className='feedback correct';fb.innerHTML='✓ أحسنت! 🌟';const __qi=qIndex;setTimeout(()=>{if(qIndex===__qi)nextQuestion();},2200);}else{if(btn)btn.classList.add('wrong');wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);document.querySelectorAll('.choice-btn').forEach(b=>{if(b.textContent===_ans)b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='✗ الإجابة الصحيحة: <span class="notranslate" translate="no">'+_ans+'</span>';}fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}'''
 
-CANON_FN['checkText'] = r'''function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,userVal);}'''
+CANON_FN['checkText'] = r'''function checkText(q){const input=document.getElementById('user-input');const userVal=input?input.value.trim():'';if(!userVal)return;if(input)input.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);checkTextVal(q,(typeof markBadSpelling==='function')?markBadSpelling(userVal):userVal);}'''
 
 CANON_FN['skipQuestion'] = r'''function skipQuestion(){const q=questions[qIndex];const fb=document.getElementById('feedback');wTotal+=(currentLevel==='easy'?1:String(q.answer||'').trim().split(/\s+/).filter(Boolean).length||1);if(currentLevel==='easy'){document.querySelectorAll('.choice-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.choices[q.answer])b.classList.add('correct');});fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة: <span class="notranslate" translate="no">'+q.choices[q.answer]+'</span>';}else{const inp=document.getElementById('user-input');if(inp)inp.disabled=true;document.querySelectorAll('.submit-btn').forEach(s=>s.disabled=true);fb.className='feedback wrong';fb.innerHTML='⬅ الإجابة الصحيحة:<br><span style="font-size:18px;line-height:2.2;direction:rtl;display:block;text-align:right;" class="notranslate" translate="no">'+q.answer+'</span>';}wrongCount++;statuses[qIndex]='wrong';wrongIndices.push(qIndex);fb.style.display='block';document.getElementById('skip-btn').style.display='none';document.getElementById('next-btn').style.display='block';if(typeof updateBadges==='function')updateBadges();if(typeof renderDotProgress==='function')renderDotProgress();if(typeof saveResumeState==='function')saveResumeState();}'''
 
@@ -6129,6 +6129,236 @@ def fix_og_url_to_custom_domain(out):
     if old in out:
         return out.replace(old, new), True
     return out, False
+
+
+MEDIUM_BLANKS_FIXED = []
+RASM_SNAP_ADDED = []
+SPELL_GUARD_ADDED = []
+REPEAT_COUNT_FIXED = []
+
+
+# ============================================================
+# أغسطس ٢٠٢٦ — أربع إصلاحات من مراجعة جزء عمّ
+# ============================================================
+
+_MQ_ITEM = re.compile(r'\{\s*q\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*answer\s*:\s*"((?:[^"\\]|\\.)*)"\s*\}')
+_MQ_BLANK = re.compile(r'_{3,}')
+
+
+def add_medium_word_count_blanks(out):
+    """المستوى المتوسط: عدد مجموعات الفراغ = عدد كلمات الإجابة.
+
+    الإجابة اللي كلمتين كانت بتتعرض بفراغ واحد، فالمستخدم مايعرفش
+    إنه مطلوب منه كلمتين. بنكرّر نفس علامة الفراغ بعدد الكلمات.
+
+    - النص القرآني ما بيتلمسش — الإبدال في علامة الفراغ بس.
+    - idempotent: لو عدد الفراغات بقى مساوي لعدد الكلمات، بيتخطّى.
+    """
+    body, st, en = _t_array_body(out, 'MEDIUM_Q')
+    if not body:
+        return out, False
+    hits = [0]
+
+    def rep(m):
+        q, a = m.group(1), m.group(2)
+        n = len(a.split())
+        blanks = _MQ_BLANK.findall(q)
+        if n < 2 or len(blanks) != 1:
+            return m.group(0)
+        new_q = _MQ_BLANK.sub(' '.join([blanks[0]] * n), q, count=1)
+        if new_q == q:
+            return m.group(0)
+        hits[0] += 1
+        return m.group(0).replace('"' + q + '"', '"' + new_q + '"', 1)
+
+    nb = _MQ_ITEM.sub(rep, body)
+    if not hits[0]:
+        return out, False
+    MEDIUM_BLANKS_FIXED.append(hits[0])
+    return out[:st] + nb + out[en:], True
+
+
+# ------------------------------------------------------------
+# محاذاة رسم التلاوة على المصحف — مسار الصوت وحده
+# ------------------------------------------------------------
+_SNAP_FN = r'''
+/* ===== محاذاة رسم التلاوة على المصحف (الصوت فقط) =====
+   محرك التعرّف بيكتب الكلمة برسم إملائي عادي: «امنهم» بدل
+   «وَءَامَنَهُم»، «ترى» بدل «تَرَ»، «فأثرنا» بدل «فَأَثَرْنَ».
+   بنقارن كل كلمة منطوقة بكلمات *الآية الحالية وحدها*، ولو طابقت
+   واحدة بنرجّع رسم المصحف بدل رسم المحرك.
+   طبقتان: تطابق تام بعد normalize، ثم تطابق متساهل بحذف ألف أو
+   ياء أخيرة — وده بالضبط عيب المحرك المتكرر.
+   أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة، فالإبدال
+   مابيحصلش إلا لما يبقى وحيد. normalize و wordDiff مابيتلمسوش. */
+function _rasmMaps(ans){
+  const ws=String(ans||'').trim().split(/\s+/);
+  const E=Object.create(null),L=Object.create(null),bE=[],bL=[];
+  for(const w of ws){
+    const e=normalize(w);
+    if(e){if(e in E){if(E[e]!==w)bE.push(e);}else E[e]=w;}
+    const l=e.replace(/[اي]$/,'');
+    if(l){if(l in L){if(L[l]!==w)bL.push(l);}else L[l]=w;}
+  }
+  for(const k of bE)delete E[k];
+  for(const k of bL)delete L[k];
+  return {E:E,L:L};
+}
+function snapToRasm(words,ans){
+  if(!words||!words.length||!ans)return words;
+  const m=_rasmMaps(ans);
+  return words.map(function(w){
+    const e=normalize(w);
+    if(!e)return w;
+    if(e in m.E)return m.E[e];
+    const l=e.replace(/[اي]$/,'');
+    if(l&&(l in m.L))return m.L[l];
+    return w;
+  });
+}
+'''
+
+_SNAP_OLD = "        return out;\n      }"
+_SNAP_NEW = ("        return snapToRasm(out,(typeof q!=='undefined'&&q&&q.answer)||'');\n"
+             "      }")
+
+
+def add_rasm_snap_to_voice(path, out):
+    """يحقن snapToRasm ويوصّلها بآخر _fixWords (مسار التسجيل الصوتي)."""
+    fn = os.path.basename(path)
+    if 'function _fixWords(words){' not in out:
+        return out, False
+    added = False
+    if 'function snapToRasm(' not in out:
+        anchor = 'function wordDiff(userVal,correctAnswer){'
+        if anchor not in out:
+            return out, False
+        out = out.replace(anchor, _SNAP_FN.strip() + '\n' + anchor, 1)
+        added = True
+    if _SNAP_OLD in out and 'snapToRasm(out,' not in out:
+        out = out.replace(_SNAP_OLD, _SNAP_NEW, 1)
+        added = True
+    if not added:
+        return out, False
+    RASM_SNAP_ADDED.append(fn)
+    return out, True
+
+
+# ------------------------------------------------------------
+# حارس الإملاء — مسار الكتابة وحده
+# ------------------------------------------------------------
+_SPELL_FN = r'''
+/* ===== حارس الإملاء (الكتابة فقط) =====
+   «ٱلَّذِينَ» بلام واحدة هي الرسم الوحيد في المصحف، لكن تقليص
+   الحروف المكرّرة جوّه normalize بيخلّي «اللذين» تعدّي كإجابة صحيحة.
+   القاعدة دي لازم تفضل زي ما هي عشان التلاوة الصوتية (بتصلّح
+   «إنن» → «إنَّ»)، فبدل ما نلمسها بنعلّم الكلمة المكتوبة غلط بفاصل
+   صفري العرض U+200B قبل المقارنة: بيمنع التطابق من غير ما يغيّر
+   شكل الكلمة قدام المستخدم. الصوت مابيمرّش من هنا فبيفضل متساهل. */
+const BAD_SPELL=/^(اللذين|اللذي|اللتي|اللذان|اللذين|اللتين|اللتان|اللاتي|اللائي|اللواتي)$/;
+function markBadSpelling(t){
+  return String(t||'').trim().split(/\s+/).map(function(w){
+    const bare=w.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06ED\u08F0-\u08F2\u0640\u200B-\u200F]/g,'').replace(/[آأإٱ]/g,'ا').replace(/[ىی]/g,'ي');
+    return BAD_SPELL.test(bare)?w+'\u200B':w;
+  }).join(' ');
+}
+'''
+
+
+def add_typing_spell_guard(path, out):
+    """يحقن markBadSpelling. توصيلها بـ checkText بيتم عبر CANON_FN."""
+    fn = os.path.basename(path)
+    if 'function markBadSpelling(' in out:
+        return out, False
+    anchor = 'function checkText(q){'
+    if anchor not in out:
+        return out, False
+    out = out.replace(anchor, _SPELL_FN.strip() + '\n' + anchor, 1)
+    SPELL_GUARD_ADDED.append(fn)
+    return out, True
+
+
+# ------------------------------------------------------------
+# أسئلة التكرار: تصحيح المفتاح بالعدّ الفعلي من AYAT
+# ------------------------------------------------------------
+_U_STRIP = re.compile(r'[\u064B-\u065F\u0610-\u061A\u06D6-\u06ED\u08F0-\u08F2\u0640]')
+_AR_COUNT = {'مرة واحدة': 1, 'مرتين': 2, 'مرّتين': 2}
+_PREFIXES = ('', 'و', 'ف', 'ب', 'ل', 'ك')
+
+
+def _u_norm_py(w):
+    """تطبيع مبسّط للعدّ — كافي لمطابقة كلمة جوّه سورة واحدة."""
+    w = _U_STRIP.sub('', w)
+    w = re.sub(r'[آأإٱ]', 'ا', w)
+    w = re.sub(r'[ىی]', 'ي', w)
+    return w.replace('ة', 'ه').strip('«»()[]،. ')
+
+
+def _count_word(words, target):
+    """عدد مرات ورود الكلمة، مع قبول حرف عطف أو جرّ سابق (وَٱلنَّاسِ)."""
+    n = 0
+    for w in words:
+        b = _u_norm_py(w)
+        if not b.endswith(target):
+            continue
+        if b[:len(b) - len(target)] in _PREFIXES:
+            n += 1
+    return n
+
+
+def _choice_count(c):
+    """«5 مرات» → 5 ، «مرتين» → 2"""
+    m = re.search(r'(\d+)', c)
+    if m:
+        return int(m.group(1))
+    for k, v in _AR_COUNT.items():
+        if k in c:
+            return v
+    return None
+
+
+def fix_repeat_count_answers(path, out):
+    """يصحّح مفتاح أي سؤال «كلمة تكررت كم مرة؟» بعدّها فعليًا من AYAT.
+
+    مابيلمسش أي نص إطلاقًا — بيعدّل رقم answer بس، فبصمة النص
+    القرآني بتفضل ثابتة بالحرف. idempotent بطبيعته: لو المفتاح
+    مطابق للعدّ الحقيقي مايتغيّرش حاجة.
+    """
+    fn = os.path.basename(path)
+    body, st, en = _t_array_body(out, 'EASY_Q')
+    ay, _, _ = _t_array_body(out, 'AYAT')
+    if not body or not ay:
+        return out, False
+    words = ' '.join(_T_STR.findall(ay)).split()
+    hits = []
+
+    def rep(blk):
+        qm = re.search(r'q\s*:\s*"((?:[^"\\]|\\.)*)"', blk)
+        cm = re.search(r'choices\s*:\s*\[([^\]]*)\]', blk)
+        am = re.search(r'answer\s*:\s*(\d+)', blk)
+        if not (qm and cm and am):
+            return blk
+        km = re.search(r'«([^»]*)»\s*تكرر', qm.group(1))
+        if not km:
+            return blk
+        target = _u_norm_py(km.group(1))
+        if not target:
+            return blk
+        n = _count_word(words, target)
+        if not n:
+            return blk
+        ch = re.findall(r'"((?:[^"\\]|\\.)*)"', cm.group(1))
+        want = next((i for i, c in enumerate(ch) if _choice_count(c) == n), None)
+        if want is None or want == int(am.group(1)):
+            return blk
+        hits.append((km.group(1), int(am.group(1)), want, n))
+        return re.sub(r'answer\s*:\s*\d+', 'answer:%d' % want, blk, count=1)
+
+    nb = re.sub(r'\{[^{}]*تكرر[^{}]*\}', lambda m: rep(m.group(0)), body)
+    if not hits:
+        return out, False
+    REPEAT_COUNT_FIXED.append((fn, hits))
+    return out[:st] + nb + out[en:], True
 
 
 def fix_file(path):
@@ -6776,6 +7006,18 @@ def fix_file(path):
     out, word_score = switch_to_word_based_score(path, out)
     out, delay_widened = widen_autoadvance_delay(path, out)
     out, pct_dedup = dedup_pct_lines(path, out)
+
+    # 9ي. مراجعة جزء عمّ (أغسطس ٢٠٢٦) — أربع إصلاحات:
+    #   · المتوسط: عدد مجموعات الفراغ = عدد كلمات الإجابة
+    #   · أسئلة التكرار: تصحيح المفتاح بالعدّ الفعلي من AYAT
+    #   · الصوت: محاذاة رسم المحرك على رسم المصحف (قريش/الفيل/العاديات)
+    #   · الكتابة: رفض «اللذين» وأخواتها من غير لمس normalize
+    # لازم تسبق apply_canonical_functions عشان checkText القياسية
+    # بتنادي markBadSpelling، والحاقن ده هو اللي بيعرّفها.
+    out, medium_blanks = add_medium_word_count_blanks(out)
+    out, repeat_fixed = fix_repeat_count_answers(path, out)
+    out, rasm_snapped = add_rasm_snap_to_voice(path, out)
+    out, spell_guarded = add_typing_spell_guard(path, out)
 
     # 9ح. توحيد الدوال المشتركة من نسخة قياسية واحدة
     out, canon_done = apply_canonical_functions(path, out)
