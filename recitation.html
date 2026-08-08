@@ -25,8 +25,8 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f0f4f0;--text:#2d4a2d;--card:#fff;--border:#c8d9c0;--gold:#c4a84a;--accent:#4a7c4a;--surface2:#f4f8f2;--surface3:#f8fbf6;--surface-hover:#e0edd8;--accent-dark:#3a6a3a;--wrong-border:#c0392b;--teal:#3a7a7c;}
-html[data-theme="dark"]{--bg:#1c2420;--text:#d9ecd9;--card:#232f29;--border:#3a4d40;--gold:#d9b96a;--accent:#5fae5f;--surface2:#2a3830;--surface3:#1f2a24;--surface-hover:#324438;--accent-dark:#7fcf7f;--wrong-border:#e74c3c;--teal:#5fb8ba;}
+:root{--bg:#f0f4f0;--text:#2d4a2d;--card:#fff;--border:#c8d9c0;--gold:#c4a84a;--accent:#4a7c4a;--surface2:#f4f8f2;--surface3:#f8fbf6;--surface-hover:#e0edd8;--accent-dark:#3a6a3a;--wrong-border:#c0392b;--teal:#3a7a7c;--hint-btn-bg:#fff7e6;}
+html[data-theme="dark"]{--bg:#1c2420;--text:#d9ecd9;--card:#232f29;--border:#3a4d40;--gold:#d9b96a;--accent:#5fae5f;--surface2:#2a3830;--surface3:#1f2a24;--surface-hover:#324438;--accent-dark:#7fcf7f;--wrong-border:#e74c3c;--teal:#5fb8ba;--hint-btn-bg:#3a3324;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;}
 .top-bar{background:var(--bg);padding:12px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
@@ -59,7 +59,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .check-btn{width:100%;padding:13px;border-radius:12px;font-size:17px;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff;border:none;visibility:hidden;}
 .check-btn.visible{visibility:visible;}
 .check-btn:hover{background:var(--accent-dark);}
-.rec-word{display:inline-block;background:var(--surface2);border-radius:4px;padding:2px 6px;margin:2px 1px;cursor:pointer;}
+.rec-word{display:inline-block;background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;}
 .rec-word:hover{opacity:0.7;text-decoration:line-through;}
 .result-card{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:20px;display:none;}
 .result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
@@ -852,6 +852,30 @@ function addWords(newW){
     savedWords=savedWords.concat(newW);
   }
   savedWords=mergeYaAyyuha(savedWords);
+  savedWords=snapWordsToRasm(savedWords);
+}
+// ===== ردّ الكلمات المسموعة إلى الرسم العثماني =====
+// Google STT بيطلّع نصًّا عربيًّا عاديًّا (امنهم)، والمصحف رسمه عثماني
+// (وَءَامَنَهُم). بنحاذي المسموع بالمرجع بـLCS، وأي كلمة تتطابق بعد
+// التطبيع بنعرضها برسم المصحف. الكلمة اللي مش مطابقة بتفضل زي ما
+// المستخدم قالها بالظبط عشان يشوف غلطه.
+// ضمانة: التطبيع محفوظ دائمًا، فالحكم والنسبة مابيتغيروش إطلاقًا.
+function snapWordsToRasm(words){
+  if(!words||!words.length||!refWords||!refWords.length)return words;
+  const n=refWords.length,m=words.length;
+  const R=refWords.map(norm),U=words.map(norm);
+  const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+    dp[i][j]=(R[i-1]===U[j-1])?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+  }
+  const out=words.slice();
+  let i=n,j=m;
+  while(i>0&&j>0){
+    if(R[i-1]===U[j-1]){out[j-1]=refWords[i-1];i--;j--;}
+    else if(dp[i][j-1]>=dp[i-1][j])j--;
+    else i--;
+  }
+  return out;
 }
 function renderTranscript(){
   const box=document.getElementById('transcriptBox');
@@ -866,7 +890,7 @@ function renderTranscript(){
   box.style.color='var(--text)';
   if(selWord!==null){
     const bar=document.createElement('div');
-    bar.style.cssText='width:100%;box-sizing:border-box;background:#fdf6e3;border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
+    bar.style.cssText='width:100%;box-sizing:border-box;background:var(--hint-btn-bg);border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
     const t=document.createElement('span');
     t.appendChild(document.createTextNode('المحدَّدة: '));
     const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
@@ -874,7 +898,7 @@ function renderTranscript(){
     t.appendChild(document.createTextNode(' — سجّل البديل'));
     const x=document.createElement('button');
     x.type='button';x.textContent='✕ حذف';
-    x.style.cssText='background:#c0392b;color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
+    x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
     x.onclick=()=>{savedWords.splice(selWord,1);selWord=null;renderTranscript();updateBtns();};
     bar.appendChild(t);bar.appendChild(x);box.appendChild(bar);
   }
@@ -883,7 +907,7 @@ function renderTranscript(){
     sp.textContent=w;
     if(i===selWord){
       sp.style.outline='2px solid var(--gold)';
-      sp.style.background='#fdf6e3';
+      sp.style.background='var(--hint-btn-bg)';
       sp.style.fontWeight='700';
       sp.title='اضغط لإلغاء التحديد';
     }else{
