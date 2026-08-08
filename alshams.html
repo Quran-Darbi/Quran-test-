@@ -451,7 +451,7 @@ if(!wTotal||wTotal===st.total)return a;const p=Math.round(wCorrect*100/wTotal);r
 function checkTextVal(q,userVal){
   const fb=document.getElementById('feedback');
   const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
-  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='block';
   // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
