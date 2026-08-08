@@ -243,7 +243,6 @@ const EASY_Q=[
   {q:"«يَوۡمَئِذࣲ يَصۡدُرُ ٱلنَّاسُ _____»",choices:["أَشۡتَاتࣰا","فِرَقࣰا","جَمَاعَاتࣲ"],answer:0},
   {q:"«فَمَن يَعۡمَلۡ مِثۡقَالَ ذَرَّةٍ خَيۡرࣰا _____»",choices:["يَرَهُۥ","يَجِدۡهُ","يَنَلۡهُ"],answer:0},
   {q:"«وَمَن يَعۡمَلۡ مِثۡقَالَ ذَرَّةࣲ شَرࣰّا _____»",choices:["يَرَهُۥ","يَجِدۡهُ","يُعَاقَبۡ"],answer:0},
-  {q:"«مِثۡقَالَ ذَرَّةٍ خَيۡرࣰا يَرَهُۥ» — ما الفرق عن الآية التالية؟",choices:["خَيۡرࣰا ← شَرࣰّا وذَرَّةࣲ ← ذَرَّةࣲ","لا فرق","خَيۡرࣰا ← شَرࣰّا فقط"],answer:0},
   {q:"«لِّيُرَوۡاْ أَعۡمَٰلَهُمۡ» ما الذي قبلها؟",choices:["يَصۡدُرُ ٱلنَّاسُ أَشۡتَاتࣰا","تُحَدِّثُ أَخۡبَارَهَا","أَوۡحَىٰ لَهَا"],answer:0}
 ];
 const MEDIUM_Q=[
@@ -430,7 +429,7 @@ if(!wTotal||wTotal===st.total)return a;const p=Math.round(wCorrect*100/wTotal);r
 function checkTextVal(q,userVal){
   const fb=document.getElementById('feedback');
   const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
-  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='block';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
   // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
