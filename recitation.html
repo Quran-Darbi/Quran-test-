@@ -679,6 +679,18 @@ const MUQATTAAT={
   'ق':['قاف'],
   'ن':['نون']
 };
+// ===== الحروف المقطعة: العرض بالرسم لا بالنطق =====
+// refWords بتتمدد لأسماء الحروف (الف لام ميم) عشان المطابقة الصوتية،
+// لكن العرض لازم يطلع زي المصحف (الٓمٓ). بنحفظ الأصل وعدد الكلمات
+// اللي اتمدد لها، ونجمّعهم في شريحة واحدة وقت عرض النتيجة بس.
+// المطابقة والحكم مابيتغيروش — ده عرض بحت.
+let muqRun=null;
+function captureMuqattaat(words){
+  if(!words||!words.length)return null;
+  const key=norm(words[0]);
+  if(!MUQATTAAT[key])return null;
+  return {raw:words[0],n:MUQATTAAT[key].length};
+}
 function expandMuqattaat(words){
   const out=[];let i=0;
   while(i<words.length&&i<2){
@@ -760,6 +772,7 @@ function onSelectSurah(){
   if(!currentKey){document.getElementById('selectedInfo').style.display='none';document.getElementById('reciteNavRow').style.display='none';return;}
   refWords=TEXTS[currentKey].split(/\s+/).filter(w=>w.length>0);
   if(currentKey!=='fatiha')refWords=stripLeadingBasmala(refWords);
+  muqRun=captureMuqattaat(refWords);
   refWords=expandMuqattaat(refWords);
   ayahBounds=computeAyahBounds(currentKey);
   document.getElementById('selectedInfo').textContent='✓ '+SURAH_NAMES[currentKey]+' — '+refWords.length+' كلمة';
@@ -842,10 +855,22 @@ const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
 const isSecure=location.protocol==='https:'||location.hostname==='localhost';
 let recInst=null,recognizing=false,savedWords=[],currentText='',selWord=null;
 
+// طول مجموعة الحروف المقطعة في أول الكلمات المسجَّلة (0 لو مفيش).
+// بتتعرض كشريحة واحدة برسم المصحف، وبتتحدد وتتحذف وتتستبدل كوحدة.
+function muqGroupLen(){
+  if(!muqRun||savedWords.length<muqRun.n)return 0;
+  const key=norm(muqRun.raw),exp=MUQATTAAT[key];
+  if(!exp)return 0;
+  for(let i=0;i<muqRun.n;i++){
+    if(norm(savedWords[i])!==norm(exp[i]))return 0;
+  }
+  return muqRun.n;
+}
 function addWords(newW){
   if(!newW||!newW.length)return;
   if(selWord!==null&&selWord<savedWords.length){
-    savedWords.splice(selWord,1);
+    const _g=(selWord===0)?muqGroupLen():0;   // المقطعة تُستبدل كوحدة
+    savedWords.splice(selWord,_g||1);
     savedWords.splice(selWord,0,...newW);
     selWord=null;
   }else{
@@ -894,17 +919,20 @@ function renderTranscript(){
     const t=document.createElement('span');
     t.appendChild(document.createTextNode('المحدَّدة: '));
     const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
-    b.textContent=savedWords[selWord];t.appendChild(b);
+    const _gsel=(selWord===0)?muqGroupLen():0;
+    b.textContent=_gsel?muqRun.raw:savedWords[selWord];t.appendChild(b);
     t.appendChild(document.createTextNode(' — سجّل البديل'));
     const x=document.createElement('button');
     x.type='button';x.textContent='✕ حذف';
     x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
-    x.onclick=()=>{savedWords.splice(selWord,1);selWord=null;renderTranscript();updateBtns();};
+    x.onclick=()=>{savedWords.splice(selWord,_gsel||1);selWord=null;renderTranscript();updateBtns();};
     bar.appendChild(t);bar.appendChild(x);box.appendChild(bar);
   }
+  const _g=muqGroupLen();
   savedWords.forEach((w,i)=>{
+    if(_g&&i<_g&&i>0)return;              // اتعرضت مع الأولى
     const sp=document.createElement('span');sp.className='rec-word';
-    sp.textContent=w;
+    sp.textContent=(_g&&i===0)?muqRun.raw:w;
     if(i===selWord){
       sp.style.outline='2px solid var(--gold)';
       sp.style.background='var(--hint-btn-bg)';
@@ -1028,12 +1056,26 @@ function checkRecitation(){
   }
   const display=document.getElementById('ayahDisplay');
   display.innerHTML='';
+  // الحروف المقطعة بتتعرض كشريحة واحدة برسم المصحف بدل أسماء الحروف
+  const muqN=(startIdx===0&&muqRun&&results.length>=muqRun.n)?muqRun.n:0;
   results.forEach((r,i)=>{
     const marker=ayahMarkerAt(startIdx+i);
     if(marker){
       const m=document.createElement('span');
       m.innerHTML=marker;
       display.appendChild(m);
+    }
+    if(muqN&&i<muqN){
+      if(i<muqN-1)return;               // مستنيين آخر حرف في المجموعة
+      const all=results.slice(0,muqN);
+      const st=all.every(x=>x.status==='ok')?'ok'
+              :(all.some(x=>x.status==='err')?'err':'missing');
+      const sp0=document.createElement('span');
+      sp0.className=(st==='ok')?'w-ok':(st==='err'?'w-err':'w-missing');
+      sp0.textContent=muqRun.raw;
+      if(st==='err')sp0.title='قلت: '+all.map(x=>x.user||'').join(' ').trim();
+      display.appendChild(sp0);display.appendChild(document.createTextNode(' '));
+      return;
     }
     const sp=document.createElement('span');
     if(r.status==='ok'){sp.className='w-ok';sp.textContent=r.ref;}
