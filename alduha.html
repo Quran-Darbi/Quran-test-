@@ -256,7 +256,7 @@ const AYAT=[
 ];
 // سهل يغطي 1–6 / متوسط يغطي 7–11 + متشابهات
 const EASY_Q=[
-  {q:"«وَٱلضُّحَىٰ ﴿١﴾ وَٱلَّيۡلِ إِذَا _____»",choices:["سَجَىٰ","يَغۡشَىٰ","أَدۡبَرَ"],answer:0},
+  {q:"«وَٱلضُّحَىٰ ﴿1﴾ وَٱلَّيۡلِ إِذَا _____»",choices:["سَجَىٰ","يَغۡشَىٰ","أَدۡبَرَ"],answer:0},
   {q:"«مَا وَدَّعَكَ رَبُّكَ _____»",choices:["وَمَا قَلَىٰ","وَمَا نَسِيَ","وَمَا أَهَانَ"],answer:0},
   {q:"«وَلَلۡأٓخِرَةُ _____ لَّكَ مِنَ ٱلۡأُولَىٰ»",choices:["خَيۡرࣱ","أَفۡضَلُ","أَكۡرَمُ"],answer:0},
   {q:"«وَلَسَوۡفَ يُعۡطِيكَ رَبُّكَ _____»",choices:["فَتَرۡضَىٰ","فَتَفۡرَحُ","مَا تَشَآءُ"],answer:0},
@@ -268,8 +268,8 @@ const EASY_Q=[
   {q:"«وَأَمَّا بِنِعۡمَةِ رَبِّكَ _____»",choices:["فَحَدِّثۡ","فَٱشۡكُرۡ","فَٱذۡكُرۡ"],answer:0}
 ];
 const MEDIUM_Q=[
-  {q:"«_____ ﴿١﴾ وَٱلَّيۡلِ إِذَا سَجَىٰ»",answer:"وَٱلضُّحَىٰ"},
-  {q:"«وَٱلضُّحَىٰ ﴿١﴾ _____ إِذَا سَجَىٰ»",answer:"وَٱلَّيۡلِ"},
+  {q:"«_____ ﴿1﴾ وَٱلَّيۡلِ إِذَا سَجَىٰ»",answer:"وَٱلضُّحَىٰ"},
+  {q:"«وَٱلضُّحَىٰ ﴿1﴾ _____ إِذَا سَجَىٰ»",answer:"وَٱلَّيۡلِ"},
   {q:"«مَا وَدَّعَكَ _____ وَمَا قَلَىٰ»",answer:"رَبُّكَ"},
   {q:"«وَلَلۡأٓخِرَةُ خَيۡرࣱ لَّكَ مِنَ _____»",answer:"ٱلۡأُولَىٰ"},
   {q:"«وَلَسَوۡفَ _____ رَبُّكَ فَتَرۡضَىٰ»",answer:"يُعۡطِيكَ"},
@@ -456,7 +456,7 @@ if(!wTotal||wTotal===st.total)return a;const p=Math.round(wCorrect*100/wTotal);r
 function checkTextVal(q,userVal){
   const fb=document.getElementById('feedback');
   const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
-  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='block';
   // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
