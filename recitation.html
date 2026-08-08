@@ -687,15 +687,24 @@ const MUQATTAAT={
 let muqRun=null;
 function captureMuqattaat(words){
   if(!words||!words.length)return null;
-  const key=norm(words[0]);
-  if(!MUQATTAAT[key])return null;
-  return {raw:words[0],n:MUQATTAAT[key].length};
+  if(!isRealMuqattaa(words[0]))return null;
+  return {raw:words[0],n:MUQATTAAT[norm(words[0])].length};
+}
+// الحروف المقطعة مالهاش حركات إعرابية في المصحف — عليها مدّة (U+0653)
+// أو سكون فقط. أما «أَلَمۡ» (ألم نشرح / ألم تر) فكلمة عادية بفتحات
+// وهمزة قطع، وتطبيعها بيطلع «الم» زي الحروف المقطعة بالظبط.
+// من غير الفحص ده كانت «أَلَمۡ» بتتفكّ لـ«الف لام ميم» غلط في
+// الشرح والفيل وص40 من البقرة.
+function isRealMuqattaa(w){
+  if(!MUQATTAAT[norm(w)])return false;
+  if(/[\u064B-\u0650\u064F\u0652]/.test(w))return false;  // حركات إعرابية
+  if(/[أإؤئء]/.test(w))return false;                          // همزة قطع
+  return true;
 }
 function expandMuqattaat(words){
   const out=[];let i=0;
   while(i<words.length&&i<2){
-    const key=norm(words[i]);
-    if(MUQATTAAT[key]){out.push(...MUQATTAAT[key]);i++;}
+    if(isRealMuqattaa(words[i])){out.push(...MUQATTAAT[norm(words[i])]);i++;}
     else break;
   }
   for(;i<words.length;i++)out.push(words[i]);
@@ -1039,7 +1048,15 @@ function checkRecitation(){
   if(!userWords.length)return;
   const startIdx=findStart(userWords);
   const ref=refWords.slice(startIdx,startIdx+userWords.length+10);
-  const results=compareWords(userWords,ref);
+  let results=compareWords(userWords,ref);
+  // الشريحة بتاخد +10 كلمة زيادة عشان تمسك الكلمات المتخطّاة. لكن لو
+  // القارئ وقف قبل آخر الصفحة، الكلمات اللي ما وصلهاش كانت بتتحسب
+  // أخطاء. فبنشيل أي «محذوف» في آخر النتيجة — التقييم لحد آخر كلمة
+  // اتقالت فعلاً. الكلمات المتخطّاة في النص بتفضل محسوبة زي ما هي.
+  while(results.length&&results[results.length-1].status!=='ok'){
+    results.pop();
+  }
+  if(!results.length)return;
   const ok=results.filter(r=>r.status==='ok').length;
   const bad=results.filter(r=>r.status!=='ok').length;
   const total=results.length;
