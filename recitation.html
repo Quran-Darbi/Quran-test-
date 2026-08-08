@@ -900,7 +900,7 @@ function addWords(newW){
 // بتبني قرارها من الرسم الموجود في المرجع نفسه — مش من قواعد عامة.
 // أي كلمة مش لاقية مقابل في المرجع بتفضل زي ما المستخدم قالها.
 
-// (1) STT بيقسم الكلمة: «لترون» → «لا ترون». بندمج بس لو الناتج
+// (١) STT بيقسم الكلمة: «لترون» → «لا ترون». بندمج بس لو الناتج
 //     موجود في الصفحة، والتتابع نفسه مش موجود في المصحف (عشان
 //     «لَّآ إِلَٰهَ» ما تتحوّلش لـ«له»).
 function mergeSplitLam(words){
@@ -930,7 +930,7 @@ function mergeSplitLam(words){
   return out;
 }
 
-// (2) ألف الوصل ما بتتنطقش وصلاً: «ٱنۢبَعَثَ» تُسمع «بعث».
+// (٢) ألف الوصل ما بتتنطقش وصلاً: «ٱنۢبَعَثَ» تُسمع «بعث».
 //     بندوّر في المرجع على كلمة مبدوءة بـ ٱ الصريحة وآخرها هو المسموع.
 function restoreWaslAlif(heard){
   const n=norm(heard);
@@ -943,7 +943,7 @@ function restoreWaslAlif(heard){
   return null;
 }
 
-// (3) هاء السكت (بسكون صريح) بتسقط وصلاً: «هِيَهۡ» تُسمع «هي».
+// (٣) هاء السكت (بسكون صريح) بتسقط وصلاً: «هِيَهۡ» تُسمع «هي».
 //     بنفرّق بينها وبين هاء الضمير بالحركة: الضمير عليه ضمة/كسرة.
 function restoreHaaSakt(heard){
   const n=norm(heard);
@@ -1122,11 +1122,21 @@ function checkRecitation(){
   const ref=refWords.slice(startIdx,startIdx+userWords.length+10);
   let results=compareWords(userWords,ref);
   // الشريحة بتاخد +10 كلمة زيادة عشان تمسك الكلمات المتخطّاة. لكن لو
-  // القارئ وقف قبل آخر الصفحة، الكلمات اللي ما وصلهاش كانت بتتحسب
-  // أخطاء. فبنشيل أي «محذوف» في آخر النتيجة — التقييم لحد آخر كلمة
-  // اتقالت فعلاً. الكلمات المتخطّاة في النص بتفضل محسوبة زي ما هي.
-  while(results.length&&results[results.length-1].status!=='ok'){
-    results.pop();
+  // القارئ وقف قبل آخر الصفحة، الكلمات اللي ما وصلهاش ما ينفعش
+  // تتحسب أخطاء.
+  // التمييز بحدود الآيات: القارئ بيقف على رأس آية، مش في نصها.
+  //  • الناقص في الآخر آية كاملة أو أكتر  → وقف، ما يتحسبش
+  //  • الناقص أقل من آية (نسي آخر كلمة)   → خطأ حقيقي، يتحسب
+  const _tailStart=(function(){
+    let t=results.length;
+    while(t>0&&results[t-1].status!=='ok')t--;
+    return t;                       // أول موضع في ذيل «المحذوف»
+  })();
+  if(_tailStart<results.length){
+    const _absTail=startIdx+_tailStart;
+    // هل الذيل بيبدأ عند رأس آية؟ يبقى القارئ وقف عندها
+    const _atAyahHead=ayahBounds.some(b=>b.start===_absTail);
+    if(_atAyahHead)results=results.slice(0,_tailStart);
   }
   if(!results.length)return;
   const ok=results.filter(r=>r.status==='ok').length;
