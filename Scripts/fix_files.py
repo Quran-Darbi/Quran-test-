@@ -6526,6 +6526,83 @@ def add_recitation_button(path, out):
     return new, True
 
 
+BLANKS_FIXED = []
+BLANKS_SKIPPED = []
+
+_BLANK_STD = '_____'
+
+
+def fix_medium_blank_count(path, out):
+    """يخلّي عدد فراغات _____ في سؤال المتوسط مطابقًا لعدد كلمات الإجابة.
+
+    المستخدم بيشوف الفراغ فبيعرف كام كلمة مطلوبة. لو الإجابة كلمتين
+    والفراغ واحد، بيكتب كلمة واحدة ويتحسب عليه غلط.
+
+    جراحي: بيمسّ نص السؤال (q) بس، ومابيقربش للإجابة ولا للنص القرآني.
+    idempotent: لو العدد مطابق أصلاً مايعملش حاجة.
+    """
+    fn = os.path.basename(path)
+
+    m = re.search(r'(?:const|let|var)\s+MEDIUM_Q\s*=\s*\[', out)
+    if not m:
+        return out, False
+
+    # حدود المصفوفة
+    i = m.end() - 1
+    depth = 0
+    quote = None
+    while i < len(out):
+        c = out[i]
+        if quote:
+            if c == '\\':
+                i += 2
+                continue
+            if c == quote:
+                quote = None
+        elif c in '"\'`':
+            quote = c
+        elif c == '[':
+            depth += 1
+        elif c == ']':
+            depth -= 1
+            if depth == 0:
+                break
+        i += 1
+    else:
+        return out, False
+
+    start, end = m.end(), i
+    body = out[start:end]
+    hits = []
+
+    def repl_obj(match):
+        obj = match.group(0)
+        qm = re.search(r'q\s*:\s*"((?:[^"\\]|\\.)*)"', obj)
+        am = re.search(r'answer\s*:\s*"((?:[^"\\]|\\.)*)"', obj)
+        if not qm or not am:
+            return obj
+        q, a = qm.group(1), am.group(1)
+        need = len(a.split())
+        have = re.findall(r'_+', q)
+        if need < 1 or len(have) == need:
+            return obj
+        # لازم يكون فيه فراغ واحد بالظبط عشان نوسّعه بأمان؛
+        # أي حالة تانية بتتساب للمراجعة اليدوية
+        if len(have) != 1:
+            BLANKS_SKIPPED.append((fn, a, '%d فراغ' % len(have)))
+            return obj
+        new_q = q.replace(have[0], ' '.join([_BLANK_STD] * need), 1)
+        hits.append((a, 1, need))
+        return obj.replace(qm.group(0), 'q:"' + new_q + '"', 1)
+
+    new_body = re.sub(r'\{[^{}]*\}', repl_obj, body)
+    if not hits:
+        return out, False
+
+    BLANKS_FIXED.append((fn, hits))
+    return out[:start] + new_body + out[end:], True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -6537,6 +6614,7 @@ def fix_file(path):
     out, _cf = fix_confetti_on_level_end_only(out)
     out, _rtl = fix_retry_btn_label(out)
     out, _recbtn = add_recitation_button(path, out)
+    out, _blanks = fix_medium_blank_count(path, out)
 
     # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
@@ -7304,6 +7382,9 @@ def fix_index_recitation(path):
 # ==  المخرجات:   audit_report.txt في جذر المستودع                            ==
 # ============================================================================
 
+# علامات الترقيم اللي بتلغبط المستخدم لو اتكررت جوه إجابة واحدة
+_AUD_PUNCT = re.compile(r'[،؛,;:\-–—/\\|]')
+
 _AUD_TASHKIL = re.compile(
     r'[\u064B-\u0652\u0653-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F3\u0640]')
 
@@ -7474,6 +7555,7 @@ def run_audit(root):
     leak_hard, leak_soft = {}, {}
     leak_example = {}
     overlap, long_ans, hard_bad, no_mic, bad_key = [], [], [], [], []
+    blank_mismatch, many_words = [], []
     no_norm, nm_diff, fem_hits = [], [], []
     FEM = re.compile(r'اضغطي|اختاري|اكتبي|رتّبي|رتبي|سجّلي|سجلي|جرّبي|جربي|'
                      r'ابدئي|احفظي|راجعي|تابعي|حاولي|ادخلي|اسمعي')
@@ -7527,9 +7609,23 @@ def run_audit(root):
         ov = sorted(set(easy) & set(med))
         if ov:
             overlap.append((fn, ov))
+        # القاعدة الحقيقية: ممنوع إجابة فيها فواصل ترقيم متعددة (بتلغبط
+        # المستخدم وقت التصحيح). الإجابة الطويلة النضيفة من غير ترقيم
+        # مقبولة طالما عدد الفراغات بيوضّح عدد الكلمات المطلوبة.
         for lv, q, a in items:
-            if lv == 'متوسط' and a and len(a.split()) > 2:
-                long_ans.append((fn, a))
+            if lv != 'متوسط' or not a:
+                continue
+            marks = _AUD_PUNCT.findall(a)
+            if len(marks) >= 2:
+                long_ans.append((fn, a, ' '.join(marks)))
+            if not q:
+                continue
+            need = len(a.split())
+            have = len(re.findall(r'_+', q))
+            if have != need:
+                blank_mismatch.append((fn, a, have, need))
+            elif need > 2:
+                many_words.append((fn, a, need))
 
         freq = _aud_page_freq(src)
         for i, (lv, q, a) in enumerate(items):
@@ -7581,8 +7677,14 @@ def run_audit(root):
     section('مشاكل HARD_Q', hard_bad, lambda x: '❌ %s : %s' % x)
     section('تكرار الكلمة المستهدفة بين سهل ومتوسط',
             overlap, lambda x: '⚠️  %s : %s' % (x[0], ' · '.join(x[1])))
-    section('إجابات متوسط أطول من كلمتين',
-            long_ans, lambda x: '⚠️  %s : «%s»' % x)
+    section('إجابات متوسط فيها فواصل ترقيم متعددة',
+            long_ans, lambda x: '⚠️  %s : «%s»  (%s)' % x)
+    section('عدد الفراغات لا يطابق عدد كلمات الإجابة',
+            blank_mismatch,
+            lambda x: '❌ %s : «%s»  %d فراغ / %d كلمة' % x,
+            note='(المستخدم بيعرف عدد الكلمات من عدد الفراغات)')
+    section('إجابات متوسط أكثر من كلمتين (يفضَّل تقصيرها في الملفات الجديدة)',
+            many_words, lambda x: 'ℹ️  %s : «%s» (%d كلمات)' % x)
     section('زر 🎤 اختبر تلاوتك مفقود', no_mic, lambda x: '⚠️  %s' % x,
             note='(النصوص موجودة في recitation.html — الزر فقط غير مضاف)')
 
@@ -7793,6 +7895,16 @@ def main():
             print('  -', s)
     else:
         print('كل صفحات البقرة اللي اتفحصت اترحّلت للقالب النضيف ✅')
+
+    print('\n=== تقرير عدد فراغات المتوسط ===')
+    print('اتصلّح في: %d ملف' % len(BLANKS_FIXED))
+    for fn2, hits in BLANKS_FIXED:
+        for a, o, n in hits:
+            print('  - %s : «%s»  %d → %d فراغ' % (fn2, a, o, n))
+    if BLANKS_SKIPPED:
+        print('اتخطّى (مراجعة يدوية): %d' % len(BLANKS_SKIPPED))
+        for fn2, a, why in BLANKS_SKIPPED:
+            print('  -', fn2, ':', a, '|', why)
 
     print('\n=== تقرير زر 🎤 اختبر تلاوتك ===')
     print('اتضاف في: %d ملف' % len(RECIT_BTN_ADDED))
