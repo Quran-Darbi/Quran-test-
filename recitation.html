@@ -883,6 +883,7 @@ function addWords(newW){
   }
   savedWords=mergeYaAyyuha(savedWords);
   savedWords=snapWordsToRasm(savedWords);
+  lastWordAt=Date.now();
 }
 // ===== ردّ الكلمات المسموعة إلى الرسم العثماني =====
 // Google STT بيطلّع نصًّا عربيًّا عاديًّا (امنهم)، والمصحف رسمه عثماني
@@ -1014,7 +1015,10 @@ function getBrowserIssueMessage(){
 // المتصفح بيوقف التعرّف لوحده بعد أي صمت قصير حتى مع continuous=true،
 // فالقارئ كان بيضطر يضغط الزر بعد كل نَفَس. بنستأنف تلقائيًا طالما
 // المستخدم ما ضغطش إيقاف بنفسه، مع حارس ضد اللفّ اللانهائي.
-let keepListening=false,restartTimer=null,idleRestarts=0,wordsAtRestart=0;
+// أقصى مدة صمت قبل ما التسجيل يقف لوحده (بالملّي ثانية).
+// غيّر الرقم ده وبس لو حبيت تطوّلها أو تقصّرها.
+const SILENCE_LIMIT_MS=8000;   // 8 ثوانٍ
+let keepListening=false,restartTimer=null,idleRestarts=0,wordsAtRestart=0,lastWordAt=0;
 
 function stopListening(){
   keepListening=false;
@@ -1023,7 +1027,12 @@ function stopListening(){
 
 function scheduleRestart(){
   if(!keepListening)return;
-  // لو اتكرر الاستئناف من غير أي كلمة جديدة، يبقى فيه مشكلة — نوقف
+  // حارس زمني: لو عدّت مدة الصمت من آخر كلمة اتسمعت، نوقف.
+  // ده أدق من عدّ المحاولات لأن مدة المتصفح نفسها متغيّرة.
+  if(lastWordAt&&Date.now()-lastWordAt>SILENCE_LIMIT_MS){
+    stopListening();setBtn(savedWords.length?'paused':'idle');return;
+  }
+  // حارس احتياطي: استئناف متكرر من غير أي كلمة جديدة
   if(savedWords.length===wordsAtRestart){
     if(++idleRestarts>=4){stopListening();setBtn(savedWords.length?'paused':'idle');return;}
   }else{
@@ -1046,7 +1055,7 @@ function toggleRec(){
     recognizing=false;
     try{recInst.stop();}catch(e){}setBtn('paused');return;
   }
-  keepListening=true;idleRestarts=0;wordsAtRestart=savedWords.length;
+  keepListening=true;idleRestarts=0;wordsAtRestart=savedWords.length;lastWordAt=Date.now();
   recInst=makeRec();
   try{recInst.start();}catch(e){stopListening();setBtn('idle');}
 }
