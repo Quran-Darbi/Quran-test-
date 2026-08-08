@@ -7574,7 +7574,7 @@ def run_audit(root):
                 i += 1
             rec_keys = set(re.findall(r'([A-Za-z0-9_]+)\s*:\s*`', rec[m.end():i]))
 
-    leak_hard, leak_soft = {}, {}
+    leak_hard, leak_soft, cross_level = {}, {}, {}
     leak_example = {}
     overlap, long_ans, hard_bad, no_mic, bad_key = [], [], [], [], []
     blank_mismatch, many_words = [], []
@@ -7649,6 +7649,11 @@ def run_audit(root):
             elif need > 2:
                 many_words.append((fn, a, need))
 
+        # تعريف التسريب: إجابة سؤال ظاهرة في نص سؤال آخر *في نفس
+        # الاختبار*. تكرار الآية بين السهل والمتوسط مش تسريب — ده
+        # ترسيخ للحفظ (المستخدم بيمرّ على الآية مرتين بفراغ مختلف).
+        # الاعتبار: زر «السؤال السابق» موجود، فأي سؤالين في نفس
+        # المستوى يعتبروا مكشوفين لبعض مش المتجاورين بس.
         freq = _aud_page_freq(src)
         for i, (lv, q, a) in enumerate(items):
             if not a or not q:
@@ -7661,12 +7666,16 @@ def run_audit(root):
                 if i == j or not q2:
                     continue
                 qw = _aud_norm(q2).replace('_', ' ').split()
-                if _aud_contains(qw, aw):
-                    if unique:
-                        leak_hard[fn] = leak_hard.get(fn, 0) + 1
-                        leak_example.setdefault(fn, (a, lv, lv2, q2))
-                    else:
-                        leak_soft[fn] = leak_soft.get(fn, 0) + 1
+                if not _aud_contains(qw, aw):
+                    continue
+                if lv != lv2:
+                    cross_level[fn] = cross_level.get(fn, 0) + 1
+                    continue
+                if unique:
+                    leak_hard[fn] = leak_hard.get(fn, 0) + 1
+                    leak_example.setdefault(fn, (a, lv, j + 1, q2))
+                else:
+                    leak_soft[fn] = leak_soft.get(fn, 0) + 1
 
     # ---------- 3. كتابة التقرير ----------
     add('=' * 66)
@@ -7711,7 +7720,15 @@ def run_audit(root):
             note='(النصوص موجودة في recitation.html — الزر فقط غير مضاف)')
 
     # التسريب — أهم قسم
-    add('── تسريب الإجابات (قاعدة: نص أي سؤال ممنوع يحتوي إجابة سؤال آخر) ──')
+    add('── تكرار الآية بين السهل والمتوسط (مقصود — ترسيخ للحفظ) ──')
+    if not cross_level:
+        add('   لا يوجد')
+    else:
+        add('   %d حالة في %d ملف — ليست مشكلة، للعلم فقط'
+            % (sum(cross_level.values()), len(cross_level)))
+    add()
+
+    add('── تسريب الإجابات (إجابة سؤال ظاهرة في سؤال آخر بنفس المستوى) ──')
     if not leak_hard and not leak_soft:
         add('   ✅ سليم')
     else:
@@ -7720,7 +7737,7 @@ def run_audit(root):
             % (sum(leak_hard.values()), len(leak_hard)))
         for fn, c in sorted(leak_hard.items(), key=lambda x: -x[1]):
             a, lv, lv2, q2 = leak_example[fn]
-            add('      %-24s %3d   «%s» (%s) مكشوفة في سؤال %s'
+            add('      %-24s %3d   «%s» مكشوفة في سؤال %s رقم %d'
                 % (fn, c, a, lv, lv2))
             add('      %-24s       %s' % ('', q2[:70]))
         add()
