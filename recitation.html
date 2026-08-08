@@ -891,8 +891,80 @@ function addWords(newW){
     savedWords=savedWords.concat(newW);
   }
   savedWords=mergeYaAyyuha(savedWords);
+  savedWords=mergeSplitLam(savedWords);
+  savedWords=fixPronunciation(savedWords);
   savedWords=snapWordsToRasm(savedWords);
 }
+// ===== تصحيح فروق النطق بين STT والرسم العثماني =====
+// القواعد التلاتة دي بتشتغل *بس* لو الكلمة مش مطابقة أصلاً، وكلها
+// بتبني قرارها من الرسم الموجود في المرجع نفسه — مش من قواعد عامة.
+// أي كلمة مش لاقية مقابل في المرجع بتفضل زي ما المستخدم قالها.
+
+// (١) STT بيقسم الكلمة: «لترون» → «لا ترون». بندمج بس لو الناتج
+//     موجود في الصفحة، والتتابع نفسه مش موجود في المصحف (عشان
+//     «لَّآ إِلَٰهَ» ما تتحوّلش لـ«له»).
+function mergeSplitLam(words){
+  if(!words||!words.length||!refWords.length)return words;
+  const S=new Set(refWords.map(norm)),P=new Set();
+  for(let i=0;i<refWords.length-1;i++)P.add(norm(refWords[i])+' '+norm(refWords[i+1]));
+  const out=[];
+  for(let i=0;i<words.length;i++){
+    const a=norm(words[i]);
+    if((a==='لا'||a==='ولا')&&i+1<words.length){
+      const nx=norm(words[i+1]);
+      if(!P.has(a+' '+nx)){
+        const pre=(a==='ولا')?'ول':'ل';
+        const cands=[norm(pre+nx),norm(pre+nx.replace(/^ال/,''))];
+        let done=false;
+        for(const c of cands){
+          if(S.has(c)){
+            const orig=refWords.find(w=>norm(w)===c);
+            out.push(orig||c);i++;done=true;break;
+          }
+        }
+        if(done)continue;
+      }
+    }
+    out.push(words[i]);
+  }
+  return out;
+}
+
+// (٢) ألف الوصل ما بتتنطقش وصلاً: «ٱنۢبَعَثَ» تُسمع «بعث».
+//     بندوّر في المرجع على كلمة مبدوءة بـ ٱ الصريحة وآخرها هو المسموع.
+function restoreWaslAlif(heard){
+  const n=norm(heard);
+  if(!n)return null;
+  for(const w of refWords){
+    if(w.charAt(0)!=='\u0671')continue;
+    const nw=norm(w);
+    if(nw!==n&&nw.endsWith(n)&&nw.length-n.length<=2)return w;
+  }
+  return null;
+}
+
+// (٣) هاء السكت (بسكون صريح) بتسقط وصلاً: «هِيَهۡ» تُسمع «هي».
+//     بنفرّق بينها وبين هاء الضمير بالحركة: الضمير عليه ضمة/كسرة.
+function restoreHaaSakt(heard){
+  const n=norm(heard);
+  if(!n)return null;
+  for(const w of refWords){
+    if(!/ه[\u0652\u06E1]$/.test(w))continue;
+    if(norm(w)===n+'ه')return w;
+  }
+  return null;
+}
+
+// بتتطبّق على الكلمات اللي مالهاش مقابل في المرجع بس
+function fixPronunciation(words){
+  if(!words||!words.length||!refWords.length)return words;
+  const S=new Set(refWords.map(norm));
+  return words.map(function(w){
+    if(S.has(norm(w)))return w;                 // مطابقة — ما نلمسهاش
+    return restoreWaslAlif(w)||restoreHaaSakt(w)||w;
+  });
+}
+
 // ===== ردّ الكلمات المسموعة إلى الرسم العثماني =====
 // Google STT بيطلّع نصًّا عربيًّا عاديًّا (امنهم)، والمصحف رسمه عثماني
 // (وَءَامَنَهُم). بنحاذي المسموع بالمرجع بـLCS، وأي كلمة تتطابق بعد
