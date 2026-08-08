@@ -793,7 +793,12 @@ function onSelectSurah(){
 function showHint(){
   if(!refWords.length)return;
   const box=document.getElementById('hintBox');
-  box.textContent=refWords.slice(0,3).join(' ');
+  // الحروف المقطعة تُعرض برسم المصحف (الٓمٓ) لا بأسماء الحروف
+  let hw=refWords.slice(0,3);
+  if(muqRun&&muqRun.n){
+    hw=[muqRun.raw].concat(refWords.slice(muqRun.n,muqRun.n+3-1));
+  }
+  box.textContent=hw.join(' ');
   box.style.display='block';
   const btn=document.getElementById('hintBtn');
   btn.disabled=true;
@@ -976,11 +981,22 @@ function makeRec(){
     currentText=mergeYaAyyuha(interim.trim().split(/\s+/).filter(w=>w)).join(' ');
     renderTranscript();updateBtns();
   };
-  r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){recognizing=false;setBtn(savedWords.length?'paused':'idle');}};
+  r.onerror=e=>{
+    // أخطاء قاطعة: مفيش فايدة من الاستئناف
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='audio-capture'){
+      stopListening();recognizing=false;setBtn(savedWords.length?'paused':'idle');return;
+    }
+    if(e.error!=='no-speech'&&e.error!=='aborted'){
+      recognizing=false;
+      if(!keepListening)setBtn(savedWords.length?'paused':'idle');
+    }
+  };
   r.onend=()=>{
     recognizing=false;
     if(currentText){addWords(currentText.trim().split(/\s+/).filter(w=>w));currentText='';}
-    renderTranscript();setBtn(savedWords.length?'paused':'idle');
+    renderTranscript();
+    if(keepListening){setBtn('rec');scheduleRestart();return;}   // وقفة نَفَس — نكمّل
+    setBtn(savedWords.length?'paused':'idle');
   };
   return r;
 }
@@ -994,15 +1010,45 @@ function getBrowserIssueMessage(){
   return '⚠️ التسجيل الصوتي محتاج متصفح Chrome عشان يشتغل.\n\nلو حضرتك على آيفون: حمّل تطبيق Chrome من App Store وافتح الموقع منه (مش من Safari).\nلو على أندرويد: افتح الموقع من تطبيق Chrome.';
 }
 
+// ===== استئناف تلقائي بعد الوقفات =====
+// المتصفح بيوقف التعرّف لوحده بعد أي صمت قصير حتى مع continuous=true،
+// فالقارئ كان بيضطر يضغط الزر بعد كل نَفَس. بنستأنف تلقائيًا طالما
+// المستخدم ما ضغطش إيقاف بنفسه، مع حارس ضد اللفّ اللانهائي.
+let keepListening=false,restartTimer=null,idleRestarts=0,wordsAtRestart=0;
+
+function stopListening(){
+  keepListening=false;
+  if(restartTimer){clearTimeout(restartTimer);restartTimer=null;}
+}
+
+function scheduleRestart(){
+  if(!keepListening)return;
+  // لو اتكرر الاستئناف من غير أي كلمة جديدة، يبقى فيه مشكلة — نوقف
+  if(savedWords.length===wordsAtRestart){
+    if(++idleRestarts>=8){stopListening();setBtn(savedWords.length?'paused':'idle');return;}
+  }else{
+    idleRestarts=0;wordsAtRestart=savedWords.length;
+  }
+  if(restartTimer)clearTimeout(restartTimer);
+  restartTimer=setTimeout(()=>{
+    restartTimer=null;
+    if(!keepListening)return;
+    try{recInst=makeRec();recInst.start();}
+    catch(e){stopListening();setBtn(savedWords.length?'paused':'idle');}
+  },300);
+}
+
 function toggleRec(){
   if(!currentKey){alert('اختر سورة أولاً');return;}
   if(!SpeechAPI||!isSecure){alert(getBrowserIssueMessage());return;}
-  if(recognizing){
+  if(recognizing||keepListening){
+    stopListening();
     recognizing=false;
     try{recInst.stop();}catch(e){}setBtn('paused');return;
   }
+  keepListening=true;idleRestarts=0;wordsAtRestart=savedWords.length;
   recInst=makeRec();
-  try{recInst.start();}catch(e){setBtn('idle');}
+  try{recInst.start();}catch(e){stopListening();setBtn('idle');}
 }
 
 function setBtn(state){
@@ -1013,6 +1059,7 @@ function setBtn(state){
 }
 
 function clearAll(){
+  stopListening();
   if(recognizing){try{recInst.stop();}catch(e){}recognizing=false;}
   recInst=null;savedWords=[];selWord=null;currentText='';
   renderTranscript();
@@ -1028,6 +1075,7 @@ function clearAll(){
 function retryRec(){clearAll();}
 
 function checkRecitation(){
+  stopListening();
   if(recognizing){try{recInst.stop();}catch(e){}recognizing=false;}
   setBtn('idle');
   const userWords=mergeYaAyyuha(savedWords.filter(w=>w.length>0));
