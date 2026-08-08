@@ -1025,7 +1025,7 @@ function scheduleRestart(){
   if(!keepListening)return;
   // لو اتكرر الاستئناف من غير أي كلمة جديدة، يبقى فيه مشكلة — نوقف
   if(savedWords.length===wordsAtRestart){
-    if(++idleRestarts>=8){stopListening();setBtn(savedWords.length?'paused':'idle');return;}
+    if(++idleRestarts>=4){stopListening();setBtn(savedWords.length?'paused':'idle');return;}
   }else{
     idleRestarts=0;wordsAtRestart=savedWords.length;
   }
