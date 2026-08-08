@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, re, json, hashlib
+import os, re, json, hashlib, sys, time
 
 # ====================================================
 # بيانات AYAT للسور اللي كانت ناقصة (يوليو ٢٠٢٦)
@@ -7208,6 +7208,334 @@ def fix_index_recitation(path):
         return True
     return False
 
+
+# ============================================================================
+# ==  وضع الفحص --audit : تقرير تشخيصي فقط، لا يعدّل أي ملف إطلاقًا           ==
+# ==  الاستخدام:  python Scripts/fix_files.py --audit                         ==
+# ==  المخرجات:   audit_report.txt في جذر المستودع                            ==
+# ============================================================================
+
+_AUD_TASHKIL = re.compile(
+    r'[\u064B-\u0652\u0653-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F3\u0640]')
+
+
+def _aud_norm(t):
+    """تطبيع خفيف للمقارنة الدلالية فقط (مش normalize بتاعة الموقع)."""
+    t = _AUD_TASHKIL.sub('', t)
+    t = re.sub(r'[ٱآأإ]', 'ا', t)
+    t = re.sub(r'[ىی]', 'ي', t)
+    t = t.replace('ة', 'ه')
+    t = re.sub(r'[ءئؤ]', '', t)
+    return re.sub(r'\s+', ' ', t).strip()
+
+
+def _aud_array(src, name):
+    """يرجّع جسم مصفوفة JS بالاسم ده، أو None."""
+    m = re.search(r'(?:const|let|var)\s+' + name + r'\s*=\s*\[', src)
+    if not m:
+        return None
+    i = m.end() - 1
+    depth = 0
+    quote = None
+    while i < len(src):
+        c = src[i]
+        if quote:
+            if c == '\\':
+                i += 2
+                continue
+            if c == quote:
+                quote = None
+        elif c in '"\'`':
+            quote = c
+        elif c == '[':
+            depth += 1
+        elif c == ']':
+            depth -= 1
+            if depth == 0:
+                return src[m.end():i]
+        i += 1
+    return None
+
+
+def _aud_objects(body):
+    """يقسّم جسم المصفوفة لكائنات {...} على المستوى الأعلى."""
+    out = []
+    depth = 0
+    start = None
+    quote = None
+    i = 0
+    while i < len(body):
+        c = body[i]
+        if quote:
+            if c == '\\':
+                i += 2
+                continue
+            if c == quote:
+                quote = None
+        elif c in '"\'`':
+            quote = c
+        elif c == '{':
+            if depth == 0:
+                start = i
+            depth += 1
+        elif c == '}':
+            depth -= 1
+            if depth == 0 and start is not None:
+                out.append(body[start:i + 1])
+        i += 1
+    return out
+
+
+def _aud_field(obj, key):
+    m = re.search(key + r'\s*:\s*"((?:[^"\\]|\\.)*)"', obj)
+    if not m:
+        m = re.search(key + r'\s*:\s*`([^`]*)`', obj)
+    if not m:
+        m = re.search(key + r"\s*:\s*'((?:[^'\\]|\\.)*)'", obj)
+    return m.group(1).replace('\\"', '"') if m else None
+
+
+def _aud_choices(obj):
+    m = re.search(r'choices\s*:\s*\[(.*?)\]', obj, re.S)
+    if not m:
+        return []
+    return re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
+
+
+def _aud_items(src):
+    """يرجّع [(المستوى, نص السؤال, الإجابة)] من EASY_Q و MEDIUM_Q."""
+    items = []
+    eb = _aud_array(src, 'EASY_Q')
+    if eb:
+        for o in _aud_objects(eb):
+            ch = _aud_choices(o)
+            idx = re.search(r'answer\s*:\s*(\d+)', o)
+            if ch and idx and int(idx.group(1)) < len(ch):
+                items.append(('سهل', _aud_field(o, 'q'), ch[int(idx.group(1))]))
+    mb = _aud_array(src, 'MEDIUM_Q')
+    if mb:
+        for o in _aud_objects(mb):
+            items.append(('متوسط', _aud_field(o, 'q'), _aud_field(o, 'answer')))
+    return items
+
+
+def _aud_page_freq(src):
+    """تكرار كل كلمة في نص الصفحة (AYAT) — لتمييز التسريب القاطع."""
+    ab = _aud_array(src, 'AYAT')
+    if not ab:
+        return {}
+    txt = re.findall(r'`([^`]*)`', ab) or re.findall(r'"((?:[^"\\]|\\.)*)"', ab)
+    freq = {}
+    for w in _aud_norm(' '.join(txt)).split():
+        freq[w] = freq.get(w, 0) + 1
+    return freq
+
+
+def _aud_contains(hay_words, needle_words):
+    n = len(needle_words)
+    if not n or n > len(hay_words):
+        return False
+    return any(hay_words[k:k + n] == needle_words
+               for k in range(len(hay_words) - n + 1))
+
+
+def run_audit(root):
+    """يفحص كل الملفات ويكتب audit_report.txt. لا يعدّل شيئًا."""
+    skip = {'index.html', 'recitation.html'}
+    files = [f for f in sorted(os.listdir(root))
+             if f.endswith('.html') and f not in skip
+             and os.path.isfile(os.path.join(root, f))]
+
+    L = []           # سطور التقرير
+    problems = 0
+
+    def add(s=''):
+        L.append(s)
+
+    # ---------- 1. روابط index.html ----------
+    idx_path = os.path.join(root, 'index.html')
+    broken, orphan = [], []
+    if os.path.isfile(idx_path):
+        with open(idx_path, encoding='utf-8') as f:
+            idx = f.read()
+        refs = set(re.findall(r"['\"]([A-Za-z0-9_]+\.html)['\"]", idx))
+        present = set(files) | {'index.html', 'recitation.html'}
+        broken = sorted(refs - present)
+        orphan = sorted(present - refs - {'index.html'})
+
+    # ---------- 2. تجميع بيانات كل ملف ----------
+    rec_keys = set()
+    rec_path = os.path.join(root, 'recitation.html')
+    if os.path.isfile(rec_path):
+        with open(rec_path, encoding='utf-8') as f:
+            rec = f.read()
+        m = re.search(r'TEXTS\s*=\s*\{', rec)
+        if m:
+            i, d = m.end() - 1, 0
+            while i < len(rec):
+                if rec[i] == '{':
+                    d += 1
+                elif rec[i] == '}':
+                    d -= 1
+                    if d == 0:
+                        break
+                i += 1
+            rec_keys = set(re.findall(r'([A-Za-z0-9_]+)\s*:\s*`', rec[m.end():i]))
+
+    leak_hard, leak_soft = {}, {}
+    leak_example = {}
+    overlap, long_ans, hard_bad, no_mic, bad_key = [], [], [], [], []
+    no_norm, nm_diff, fem_hits = [], [], []
+    FEM = re.compile(r'اضغطي|اختاري|اكتبي|رتّبي|رتبي|سجّلي|سجلي|جرّبي|جربي|'
+                     r'ابدئي|احفظي|راجعي|تابعي|حاولي|ادخلي|اسمعي')
+
+    for fn in files:
+        with open(os.path.join(root, fn), encoding='utf-8') as f:
+            src = f.read()
+
+        # --- زر التلاوة ---
+        ks = re.findall(r'recitation\.html\?surah=([A-Za-z0-9_]+)', src)
+        if not ks:
+            no_mic.append(fn)
+        for k in ks:
+            if rec_keys and k not in rec_keys:
+                bad_key.append((fn, k))
+
+        # --- صيغة المؤنث ---
+        hits = sorted(set(FEM.findall(src)))
+        if hits:
+            fem_hits.append((fn, hits))
+
+        # --- normalize / nm ---
+        if 'function normalize' not in src and 'normalize(' in src:
+            no_norm.append(fn)
+
+        # --- HARD_Q ---
+        hb = _aud_array(src, 'HARD_Q')
+        if hb is None:
+            hard_bad.append((fn, 'HARD_Q مفقودة'))
+        else:
+            ho = _aud_objects(hb)
+            if not ho:
+                hard_bad.append((fn, 'HARD_Q فاضية'))
+            else:
+                nums = [int(m.group(1)) for o in ho
+                        for m in [re.search(r'ayah\s*:\s*(\d+)', o)] if m]
+                if len(nums) != len(ho):
+                    hard_bad.append(
+                        (fn, 'حقل ayah ناقص في %d سؤال' % (len(ho) - len(nums))))
+                elif nums != sorted(nums):
+                    bad_seq = [str(n) for n in nums]
+                    hard_bad.append((fn, 'أرقام الآيات غير تصاعدية: ' +
+                                     '، '.join(bad_seq)))
+
+        # --- الأسئلة ---
+        items = _aud_items(src)
+        if not items:
+            continue
+        easy = [_aud_norm(a) for lv, q, a in items if lv == 'سهل' and a]
+        med = [_aud_norm(a) for lv, q, a in items if lv == 'متوسط' and a]
+        ov = sorted(set(easy) & set(med))
+        if ov:
+            overlap.append((fn, ov))
+        for lv, q, a in items:
+            if lv == 'متوسط' and a and len(a.split()) > 2:
+                long_ans.append((fn, a))
+
+        freq = _aud_page_freq(src)
+        for i, (lv, q, a) in enumerate(items):
+            if not a or not q:
+                continue
+            aw = _aud_norm(a).split()
+            if not aw:
+                continue
+            unique = all(freq.get(w, 0) <= 1 for w in aw) if freq else True
+            for j, (lv2, q2, a2) in enumerate(items):
+                if i == j or not q2:
+                    continue
+                qw = _aud_norm(q2).replace('_', ' ').split()
+                if _aud_contains(qw, aw):
+                    if unique:
+                        leak_hard[fn] = leak_hard.get(fn, 0) + 1
+                        leak_example.setdefault(fn, (a, lv, lv2, q2))
+                    else:
+                        leak_soft[fn] = leak_soft.get(fn, 0) + 1
+
+    # ---------- 3. كتابة التقرير ----------
+    add('=' * 66)
+    add('  تقرير فحص موقع دربي لحفظ القرآن')
+    add('  ' + time.strftime('%Y-%m-%d %H:%M'))
+    add('  عدد ملفات الاختبار المفحوصة: %d' % len(files))
+    add('=' * 66)
+    add()
+
+    def section(title, rows, fmt, note=''):
+        nonlocal problems
+        add('── %s ──' % title)
+        if not rows:
+            add('   ✅ سليم')
+        else:
+            problems += len(rows)
+            if note:
+                add('   ' + note)
+            for r in rows:
+                add('   ' + fmt(r))
+        add()
+
+    section('روابط مكسورة في index.html', broken, lambda x: '❌ %s' % x)
+    section('ملفات غير مربوطة في index.html', orphan, lambda x: '⚠️  %s' % x)
+    section('دالة normalize مفقودة', no_norm, lambda x: '❌ %s' % x)
+    section('مفتاح ?surah= غير موجود في recitation.html',
+            bad_key, lambda x: '❌ %s → %s' % x)
+    section('صيغة مؤنث (يجب المذكر الرسمي)',
+            fem_hits, lambda x: '⚠️  %s : %s' % (x[0], ' · '.join(x[1])))
+    section('مشاكل HARD_Q', hard_bad, lambda x: '❌ %s : %s' % x)
+    section('تكرار الكلمة المستهدفة بين سهل ومتوسط',
+            overlap, lambda x: '⚠️  %s : %s' % (x[0], ' · '.join(x[1])))
+    section('إجابات متوسط أطول من كلمتين',
+            long_ans, lambda x: '⚠️  %s : «%s»' % x)
+    section('زر 🎤 اختبر تلاوتك مفقود', no_mic, lambda x: '⚠️  %s' % x,
+            note='(النصوص موجودة في recitation.html — الزر فقط غير مضاف)')
+
+    # التسريب — أهم قسم
+    add('── تسريب الإجابات (قاعدة: نص أي سؤال ممنوع يحتوي إجابة سؤال آخر) ──')
+    if not leak_hard and not leak_soft:
+        add('   ✅ سليم')
+    else:
+        problems += sum(leak_hard.values())
+        add('   🔴 تسريب قاطع (الكلمة فريدة في الصفحة): %d حالة في %d ملف'
+            % (sum(leak_hard.values()), len(leak_hard)))
+        for fn, c in sorted(leak_hard.items(), key=lambda x: -x[1]):
+            a, lv, lv2, q2 = leak_example[fn]
+            add('      %-24s %3d   «%s» (%s) مكشوفة في سؤال %s'
+                % (fn, c, a, lv, lv2))
+            add('      %-24s       %s' % ('', q2[:70]))
+        add()
+        add('   🟡 تسريب ضعيف (كلمة متكررة في الصفحة): %d حالة في %d ملف'
+            % (sum(leak_soft.values()), len(leak_soft)))
+        clean = [f for f in files if f not in leak_hard and f not in leak_soft]
+        add()
+        add('   ✅ ملفات نظيفة تمامًا: %d' % len(clean))
+        for f in clean:
+            add('      · %s' % f)
+    add()
+
+    add('=' * 66)
+    if problems == 0:
+        add('  ✅ لا توجد مشاكل — جاهز للنشر')
+    else:
+        add('  إجمالي البنود المرصودة: %d' % problems)
+    add('=' * 66)
+
+    report = '\n'.join(L)
+    out_path = os.path.join(root, 'audit_report.txt')
+    with open(out_path, 'w', encoding='utf-8') as f:
+        f.write(report + '\n')
+    print(report)
+    print('\n📄 اتكتب التقرير في: audit_report.txt')
+    return problems
+
+
 def main():
     skip = {'index.html', 'recitation.html'}
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -7387,4 +7715,8 @@ def main():
             print('  -', s)
 
 if __name__ == '__main__':
-    main()
+    if '--audit' in sys.argv:
+        _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        run_audit(_root)
+    else:
+        main()
