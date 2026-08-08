@@ -5632,7 +5632,7 @@ CANON_FN = {}
 CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   const fb=document.getElementById('feedback');
   const _sk=document.getElementById('skip-btn');if(_sk)_sk.style.display='none';
-  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='';
+  const _nx=document.getElementById('next-btn');if(_nx)_nx.style.display='block';
   // بعض الصفحات بتلفّ التطبيع بدالة زيادة (الحروف المقطعة)
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
@@ -6603,6 +6603,27 @@ def fix_medium_blank_count(path, out):
     return out[:start] + new_body + out[end:], True
 
 
+NEXTBTN_FIXED = []
+
+def fix_next_btn_display(path, out):
+    """يصلّح ظهور زر «السؤال التالي» بعد الإجابة.
+
+    الباگ: كلاس .next-btn في الـCSS فيه display:none، والكود كان بيعمل
+    _nx.style.display='' — والقيمة الفاضية بتمسح النمط السطري فالعنصر
+    بيرجع لـ display:none بتاعة الكلاس، يعني الزر يفضل مخفي.
+    الحل: قيمة صريحة 'block' زي ما checkMCQ بيعمل بالظبط.
+    idempotent: لو متصلَّح خلاص مايعملش حاجة.
+    """
+    old = "if(_nx)_nx.style.display='';"
+    new = "if(_nx)_nx.style.display='block';"
+    if old not in out:
+        return out, False
+    n = out.count(old)
+    out = out.replace(old, new)
+    NEXTBTN_FIXED.append((os.path.basename(path), n))
+    return out, True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -6615,6 +6636,7 @@ def fix_file(path):
     out, _rtl = fix_retry_btn_label(out)
     out, _recbtn = add_recitation_button(path, out)
     out, _blanks = fix_medium_blank_count(path, out)
+    out, _nxb = fix_next_btn_display(path, out)
 
     # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
@@ -7895,6 +7917,9 @@ def main():
             print('  -', s)
     else:
         print('كل صفحات البقرة اللي اتفحصت اترحّلت للقالب النضيف ✅')
+
+    print('\n=== تقرير زر «السؤال التالي» ===')
+    print('اتصلّح في: %d ملف' % len(NEXTBTN_FIXED))
 
     print('\n=== تقرير عدد فراغات المتوسط ===')
     print('اتصلّح في: %d ملف' % len(BLANKS_FIXED))
