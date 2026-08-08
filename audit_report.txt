@@ -1,6 +1,6 @@
 ==================================================================
   تقرير فحص موقع دربي لحفظ القرآن
-  2026-08-08 00:40
+  2026-08-08 00:51
   عدد ملفات الاختبار المفحوصة: 86
 ==================================================================
 
@@ -37,57 +37,7 @@
    ⚠️  albaqara_p26.html : «نَزَّلَ ٱلْكِتَٰبَ بِٱلْحَقِّ»
 
 ── زر 🎤 اختبر تلاوتك مفقود ──
-   (النصوص موجودة في recitation.html — الزر فقط غير مضاف)
-   ⚠️  abasa.html
-   ⚠️  albaqara_p10.html
-   ⚠️  albaqara_p11.html
-   ⚠️  albaqara_p12.html
-   ⚠️  albaqara_p13.html
-   ⚠️  albaqara_p14.html
-   ⚠️  albaqara_p15.html
-   ⚠️  albaqara_p16.html
-   ⚠️  albaqara_p17.html
-   ⚠️  albaqara_p18.html
-   ⚠️  albaqara_p19.html
-   ⚠️  albaqara_p2.html
-   ⚠️  albaqara_p20.html
-   ⚠️  albaqara_p21.html
-   ⚠️  albaqara_p22.html
-   ⚠️  albaqara_p23.html
-   ⚠️  albaqara_p24.html
-   ⚠️  albaqara_p25.html
-   ⚠️  albaqara_p26.html
-   ⚠️  albaqara_p27.html
-   ⚠️  albaqara_p28.html
-   ⚠️  albaqara_p29.html
-   ⚠️  albaqara_p3.html
-   ⚠️  albaqara_p30.html
-   ⚠️  albaqara_p31.html
-   ⚠️  albaqara_p32.html
-   ⚠️  albaqara_p33.html
-   ⚠️  albaqara_p34.html
-   ⚠️  albaqara_p35.html
-   ⚠️  albaqara_p36.html
-   ⚠️  albaqara_p37.html
-   ⚠️  albaqara_p38.html
-   ⚠️  albaqara_p39.html
-   ⚠️  albaqara_p4.html
-   ⚠️  albaqara_p40.html
-   ⚠️  albaqara_p41.html
-   ⚠️  albaqara_p42.html
-   ⚠️  albaqara_p43.html
-   ⚠️  albaqara_p44.html
-   ⚠️  albaqara_p45.html
-   ⚠️  albaqara_p46.html
-   ⚠️  albaqara_p47.html
-   ⚠️  albaqara_p48.html
-   ⚠️  albaqara_p49.html
-   ⚠️  albaqara_p5.html
-   ⚠️  albaqara_p6.html
-   ⚠️  albaqara_p7.html
-   ⚠️  albaqara_p8.html
-   ⚠️  albaqara_p9.html
-   ⚠️  annaziat.html
+   ✅ سليم
 
 ── تسريب الإجابات (قاعدة: نص أي سؤال ممنوع يحتوي إجابة سؤال آخر) ──
    🔴 تسريب قاطع (الكلمة فريدة في الصفحة): 442 حالة في 74 ملف
@@ -255,5 +205,5 @@
       · alnnasr.html
 
 ==================================================================
-  إجمالي البنود المرصودة: 503
+  إجمالي البنود المرصودة: 453
 ==================================================================
