@@ -6438,6 +6438,94 @@ def unify_dagger_alef_with_ayat(path, out):
     return out, True
 
 
+RECIT_BTN_ADDED = []
+RECIT_BTN_SKIPPED = []
+
+# نفس تصميم الزر الموجود في سور جزء عمّ حرفيًا (alghasiya نموذجًا)
+_RECIT_BTN_TPL = (
+    '<div style="margin:0 16px 16px;">\n'
+    '  <a href="recitation.html?surah=%s" style="display:flex;'
+    'align-items:center;justify-content:center;gap:8px;'
+    'background:var(--surface2);border:1.5px solid var(--border);'
+    'border-radius:14px;padding:13px 20px;font-size:16px;'
+    'font-family:inherit;color:var(--accent);text-decoration:none;">\n'
+    '    🎤 اختبر تلاوتك\n'
+    '  </a>\n'
+    '</div>\n\n'
+)
+
+_RECIT_ANCHOR = '<div class="level-card" id="level-card">'
+
+
+def _recit_key_for(filename):
+    """مفتاح السورة/الصفحة في recitation.html من اسم الملف."""
+    base = os.path.basename(filename)
+    if base.endswith('.html'):
+        base = base[:-5]
+    if base.startswith('albaqara_p'):
+        return 'baqara_p' + base[len('albaqara_p'):]
+    if base == 'alfatiha':
+        return 'fatiha'
+    return base
+
+
+def _recit_available_keys(root):
+    """مفاتيح TEXTS الموجودة فعليًا في recitation.html."""
+    rp = os.path.join(root, 'recitation.html')
+    if not os.path.isfile(rp):
+        return None
+    with open(rp, encoding='utf-8') as f:
+        rec = f.read()
+    m = re.search(r'TEXTS\s*=\s*\{', rec)
+    if not m:
+        return None
+    i, d = m.end() - 1, 0
+    while i < len(rec):
+        if rec[i] == '{':
+            d += 1
+        elif rec[i] == '}':
+            d -= 1
+            if d == 0:
+                break
+        i += 1
+    return set(re.findall(r'([A-Za-z0-9_]+)\s*:\s*`', rec[m.end():i]))
+
+
+def add_recitation_button(path, out):
+    """يضيف زر 🎤 اختبر تلاوتك قبل بطاقة اختيار المستوى.
+
+    جراحي وidempotent: لو الزر موجود بالفعل مايعملش حاجة، ولو المفتاح
+    مش موجود في recitation.html بيتخطّى الملف بدل ما يضيف رابط مكسور.
+    """
+    fn = os.path.basename(path)
+
+    # موجود بالفعل — مافيش تغيير
+    if 'recitation.html?surah=' in out:
+        return out, False
+
+    # نقطة الإدراج مش موجودة — قالب مختلف، اتساب زي ما هو
+    if _RECIT_ANCHOR not in out:
+        RECIT_BTN_SKIPPED.append((fn, 'نقطة الإدراج غير موجودة'))
+        return out, False
+
+    key = _recit_key_for(fn)
+
+    root = os.path.dirname(os.path.abspath(path))
+    keys = _recit_available_keys(root)
+    if keys is not None and key not in keys:
+        RECIT_BTN_SKIPPED.append((fn, 'المفتاح %s غير موجود في recitation.html' % key))
+        return out, False
+
+    new = out.replace(_RECIT_ANCHOR,
+                      (_RECIT_BTN_TPL % key) + _RECIT_ANCHOR, 1)
+    if new == out:
+        RECIT_BTN_SKIPPED.append((fn, 'فشل الإدراج'))
+        return out, False
+
+    RECIT_BTN_ADDED.append((fn, key))
+    return new, True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -6448,6 +6536,7 @@ def fix_file(path):
     out, _canon = fix_add_canonical(path, out)
     out, _cf = fix_confetti_on_level_end_only(out)
     out, _rtl = fix_retry_btn_label(out)
+    out, _recbtn = add_recitation_button(path, out)
 
     # ====================================================
     # ترحيل صفحات البقرة لقالب جزء عمّ النضيف — أول خطوة قبل أي حاجة
@@ -7704,6 +7793,15 @@ def main():
             print('  -', s)
     else:
         print('كل صفحات البقرة اللي اتفحصت اترحّلت للقالب النضيف ✅')
+
+    print('\n=== تقرير زر 🎤 اختبر تلاوتك ===')
+    print('اتضاف في: %d ملف' % len(RECIT_BTN_ADDED))
+    if RECIT_BTN_ADDED:
+        print('  ', ' · '.join(f for f, k in RECIT_BTN_ADDED[:20]))
+    if RECIT_BTN_SKIPPED:
+        print('اتخطّى: %d ملف' % len(RECIT_BTN_SKIPPED))
+        for fn2, why in RECIT_BTN_SKIPPED:
+            print('  -', fn2, ':', why)
 
     print('\n=== أرقام الآيات في عرض المصحف (مستوى الترتيب) ===')
     print('اتصلّح: %d صفحة' % len(BAQARA_AYAHNUM_FIXED))
