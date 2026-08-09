@@ -971,18 +971,37 @@ function fixPronunciation(words){
 // التطبيع بنعرضها برسم المصحف. الكلمة اللي مش مطابقة بتفضل زي ما
 // المستخدم قالها بالظبط عشان يشوف غلطه.
 // ضمانة: التطبيع محفوظ دائمًا، فالحكم والنسبة مابيتغيروش إطلاقًا.
+/* قواعد الرسم في المحاذاة الصوتية — نطقًا لا كتابةً:
+     · ىٰ  ياء عليها ألف خنجرية: تُنطق ألفًا وتُكتب ياء
+     · ○  صفر مستدير (U+06DF): مكتوب رسمًا ولا يُنطق أبدًا
+     · ▯  صفر مستطيل (U+06E0): يثبت وقفًا ويسقط وصلًا
+   أي نهاية أخرى (ألف مدية، ياء متحركة، همزة) خارج القاعدة. */
+function _rasmVoiceForms(w){
+  const out=[];
+  if(/\u0649\u0670[^\u0621-\u064A]*$/.test(w))
+    out.push(w.replace(/\u0649\u0670([^\u0621-\u064A]*)$/,'\u0627$1'));
+  if(/[\u06DF\u06E0]/.test(w))
+    out.push(w.replace(/[\u0627\u0648\u064A\u0649][\u06DF\u06E0]/g,''));
+  return out;
+}
+function _rasmMatch(refWord,refNorm,u){
+  if(refNorm===u)return true;
+  const vs=_rasmVoiceForms(refWord);
+  for(const v of vs)if(norm(v)===u)return true;
+  return false;
+}
 function snapWordsToRasm(words){
   if(!words||!words.length||!refWords||!refWords.length)return words;
   const n=refWords.length,m=words.length;
   const R=refWords.map(norm),U=words.map(norm);
   const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
   for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
-    dp[i][j]=(R[i-1]===U[j-1])?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+    dp[i][j]=_rasmMatch(refWords[i-1],R[i-1],U[j-1])?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
   }
   const out=words.slice();
   let i=n,j=m;
   while(i>0&&j>0){
-    if(R[i-1]===U[j-1]){out[j-1]=refWords[i-1];i--;j--;}
+    if(_rasmMatch(refWords[i-1],R[i-1],U[j-1])){out[j-1]=refWords[i-1];i--;j--;}
     else if(dp[i][j-1]>=dp[i-1][j])j--;
     else i--;
   }

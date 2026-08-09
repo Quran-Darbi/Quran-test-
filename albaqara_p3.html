@@ -368,14 +368,40 @@ function collapseMuqattaat(words,correctAnswer){
    ياء أخيرة — وده بالضبط عيب المحرك المتكرر.
    أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة، فالإبدال
    مابيحصلش إلا لما يبقى وحيد. normalize و wordDiff مابيتلمسوش. */
+/* ===== محاذاة رسم التلاوة على المصحف (الصوت فقط) =====
+   محرك التعرّف بيكتب الكلمة برسم إملائي عادي: «امنهم» بدل
+   «وَءَامَنَهُم»، «ترى» بدل «تَرَ». بنقارن كل كلمة منطوقة بكلمات
+   *الآية الحالية وحدها*، ولو طابقت واحدة بنرجّع رسم المصحف.
+
+   المحاذاة المتساهلة محكومة بقواعد الرسم — نطقًا لا كتابةً:
+     · ىٰ  ياء عليها ألف خنجرية: تُنطق ألفًا وتُكتب ياء
+     · ○  صفر مستدير (U+06DF): الحرف مكتوب رسمًا ولا يُنطق أبدًا،
+          لا وصلًا ولا وقفًا  (قَالُوا۟ ، أُو۟لَٰٓئِكَ)
+     · ▯  صفر مستطيل (U+06E0): الألف تثبت وقفًا وتسقط وصلًا
+          (الألفات السبع، ومنها أَنَا۠)
+   أي نهاية أخرى — ألف مدية، ياء متحركة، همزة — خارج القاعدة
+   ولا تُحاذى إطلاقًا، فـ«إلى» لا تساوي «إلا» ولا «ولا» تساوي «ولي».
+   أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة.
+   normalize و wordDiff مابيتلمسوش. */
+function _rasmVoiceForms(w){
+  const out=[];
+  if(/\u0649\u0670[^\u0621-\u064A]*$/.test(w))
+    out.push(w.replace(/\u0649\u0670([^\u0621-\u064A]*)$/,'\u0627$1'));
+  if(/[\u06DF\u06E0]/.test(w))
+    out.push(w.replace(/[\u0627\u0648\u064A\u0649][\u06DF\u06E0]/g,''));
+  return out;
+}
 function _rasmMaps(ans){
   const ws=String(ans||'').trim().split(/\s+/);
   const E=Object.create(null),L=Object.create(null),bE=[],bL=[];
+  const put=function(map,bad,k,w){
+    if(!k)return;
+    if(k in map){if(map[k]!==w)bad.push(k);}else map[k]=w;
+  };
   for(const w of ws){
-    const e=normalize(w);
-    if(e){if(e in E){if(E[e]!==w)bE.push(e);}else E[e]=w;}
-    const l=e.replace(/[اي]$/,'');
-    if(l){if(l in L){if(L[l]!==w)bL.push(l);}else L[l]=w;}
+    put(E,bE,normalize(w),w);
+    const vs=_rasmVoiceForms(w);
+    for(const v of vs)put(L,bL,normalize(v),w);
   }
   for(const k of bE)delete E[k];
   for(const k of bL)delete L[k];
@@ -388,12 +414,11 @@ function snapToRasm(words,ans){
     const e=normalize(w);
     if(!e)return w;
     if(e in m.E)return m.E[e];
-    const l=e.replace(/[اي]$/,'');
-    if(l&&(l in m.L))return m.L[l];
+    if(e in m.L)return m.L[e];
     return w;
   });
 }
-function wordDiff(userVal,correctAnswer){const nm=s=>{if(!s)return'';return s.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ئؤ]/g,'ا').replace(/ء/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/هاذا/g,'هذا').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن').replace(/اولك/g,'اولاك').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1').replace(/ا(?=\s|$)/g,'ي').replace(/\s+/g,' ').trim();};const uWords=collapseMuqattaat(userVal.trim().split(/\s+/),correctAnswer),cWords=correctAnswer.split(/\s+/),n=cWords.length,m=uWords.length;const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}const aligned=[];let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){aligned.push({ref:uWords[j-1],user:uWords[j-1],extra:true});j--;}else{aligned.push({ref:cWords[i-1],ok:false});i--;}}aligned.reverse();const correct=aligned.filter(x=>x.ok).length;const extra=aligned.filter(x=>x.extra).length;window._lastDiff={matched:correct,total:n,extra:extra};const html=aligned.map(x=>x.extra?`<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">${x.ref}</span>`:x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`:`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`).join(' ');return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}</div><div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;}
+function wordDiff(userVal,correctAnswer){const nm=s=>{if(!s)return'';return s.replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'').replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا').replace(/[ئؤ]/g,'ا').replace(/ء/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/هاذا/g,'هذا').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن').replace(/اولك/g,'اولاك').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\1+/g,'$1').replace(/\s+/g,' ').trim();};const uWords=collapseMuqattaat(userVal.trim().split(/\s+/),correctAnswer),cWords=correctAnswer.split(/\s+/),n=cWords.length,m=uWords.length;const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}const aligned=[];let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){aligned.push({ref:uWords[j-1],user:uWords[j-1],extra:true});j--;}else{aligned.push({ref:cWords[i-1],ok:false});i--;}}aligned.reverse();const correct=aligned.filter(x=>x.ok).length;const extra=aligned.filter(x=>x.extra).length;window._lastDiff={matched:correct,total:n,extra:extra};const html=aligned.map(x=>x.extra?`<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">${x.ref}</span>`:x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`:`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`).join(' ');return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}</div><div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;}
 function toArabicNum(n){return n;}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(ORDER_AYAT.length);return;}if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(AYAT.length);return;}currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');if(lvl==='order'){document.getElementById('total-q').textContent=toArabicNum(AYAT.length);}else{document.getElementById('total-q').textContent=toArabicNum((lvl==='easy'?EASY_Q:lvl==='medium'?MEDIUM_Q:HARD_Q).length);}}
