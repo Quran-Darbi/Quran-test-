@@ -1007,6 +1007,42 @@ function snapWordsToRasm(words){
   }
   return out;
 }
+/* ===== فواصل الآيات في منطقة التسجيل (عرض فقط) =====
+   بنحاذي كلمات المستخدم على refWords بمشية أمامية، وبنحط ﴿رقم﴾
+   بعد الكلمة اللي بتقفل الآية. مافيش أي أثر على savedWords ولا على
+   المقارنة — دي عناصر عرض بحتة. */
+function _savedToRefIdx(){
+  const map=new Array(savedWords.length).fill(-1);
+  if(!refWords.length)return map;
+  let p=0;
+  for(let i=0;i<savedWords.length;i++){
+    const u=norm(savedWords[i]);
+    if(!u)continue;
+    for(let k=p;k<refWords.length&&k<p+8;k++){
+      if(norm(refWords[k])===u){map[i]=k;p=k+1;break;}
+    }
+  }
+  return map;
+}
+function _ayahEndMap(){
+  const m=Object.create(null);
+  if(!ayahBounds.length||!refWords.length)return m;
+  for(let j=0;j<ayahBounds.length;j++){
+    const nx=(j+1<ayahBounds.length)?ayahBounds[j+1].start:refWords.length;
+    if(nx-1>=0)m[nx-1]=ayahBounds[j].num;
+  }
+  return m;
+}
+function _ayahSepEl(num){
+  const ar='\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669';
+  const toAr=n=>String(n).split('').map(d=>ar[+d]).join('');
+  const el=document.createElement('span');
+  el.className='ayah-num';
+  el.setAttribute('translate','no');
+  el.style.cssText='margin:2px 4px;align-self:center;';
+  el.textContent='\uFD3F'+toAr(num)+'\uFD3E';
+  return el;
+}
 function renderTranscript(){
   const box=document.getElementById('transcriptBox');
   box.innerHTML='';
@@ -1034,6 +1070,7 @@ function renderTranscript(){
     bar.appendChild(t);bar.appendChild(x);box.appendChild(bar);
   }
   const _g=muqGroupLen();
+  const _refMap=_savedToRefIdx(),_ayEnd=_ayahEndMap();
   savedWords.forEach((w,i)=>{
     if(_g&&i<_g&&i>0)return;              // اتعرضت مع الأولى
     const sp=document.createElement('span');sp.className='rec-word';
@@ -1048,6 +1085,7 @@ function renderTranscript(){
     }
     sp.onclick=()=>{selWord=(selWord===i)?null:i;renderTranscript();updateBtns();};
     box.appendChild(sp);
+    if(_refMap[i]>=0&&_ayEnd[_refMap[i]]!==undefined)box.appendChild(_ayahSepEl(_ayEnd[_refMap[i]]));
   });
   if(currentText){
     const cur=document.createElement('span');
