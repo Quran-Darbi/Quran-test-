@@ -7851,6 +7851,7 @@ def run_audit(root):
 
     leak_hard, leak_soft, cross_level = {}, {}, {}
     leak_example = {}
+    xleak_hard, xleak_soft, xleak_example = {}, {}, {}
     overlap, long_ans, hard_bad, no_mic, bad_key = [], [], [], [], []
     blank_mismatch, many_words = [], []
     no_norm, nm_diff, fem_hits = [], [], []
@@ -7940,11 +7941,23 @@ def run_audit(root):
             for j, (lv2, q2, a2) in enumerate(items):
                 if i == j or not q2:
                     continue
+                # أسئلة «تكررت كم مرة؟» معتمدة من هند — مابتتحسبش
+                # كمضيفة للتسريب.
+                if re.search(r'كم مرة|كم عدد', q2):
+                    continue
                 qw = _aud_norm(q2).replace('_', ' ').split()
                 if not _aud_contains(qw, aw):
                     continue
                 if lv != lv2:
+                    # تسريب بين المستويين: إجابة سؤال في مستوى ظاهرة
+                    # مكتوبة في نص سؤال بمستوى تاني. ده تسريب حقيقي —
+                    # المستخدم بيشوف الإجابة قدامه قبل ما يجاوب.
                     cross_level[fn] = cross_level.get(fn, 0) + 1
+                    if unique:
+                        xleak_hard[fn] = xleak_hard.get(fn, 0) + 1
+                        xleak_example.setdefault(fn, (a, lv, lv2, q2))
+                    else:
+                        xleak_soft[fn] = xleak_soft.get(fn, 0) + 1
                     continue
                 if unique:
                     leak_hard[fn] = leak_hard.get(fn, 0) + 1
@@ -7995,15 +8008,30 @@ def run_audit(root):
             note='(النصوص موجودة في recitation.html — الزر فقط غير مضاف)')
 
     # التسريب — أهم قسم
-    add('── تكرار الآية بين السهل والمتوسط (مقصود — ترسيخ للحفظ) ──')
-    if not cross_level:
-        add('   لا يوجد')
+    # تصحيح (أغسطس ٢٠٢٦): التسريب بين السهل والمتوسط كان مصنّفًا هنا
+    # «مقصود — ترسيخ للحفظ» ومستبعَدًا من العدّ. ده غلط: المستخدم
+    # بيقرا إجابة سؤال مكتوبة قدامه في سؤال تاني، بغضّ النظر عن
+    # المستوى. اتصنّف تسريبًا حقيقيًا وبيتحسب في الإجمالي.
+    add('── تسريب الإجابات بين السهل والمتوسط ──')
+    if not xleak_hard and not xleak_soft:
+        add('   ✅ سليم')
     else:
-        add('   %d حالة في %d ملف — ليست مشكلة، للعلم فقط'
-            % (sum(cross_level.values()), len(cross_level)))
+        problems += sum(xleak_hard.values())
+        add('   🔴 تسريب قاطع (الكلمة فريدة في الصفحة): %d حالة في %d ملف'
+            % (sum(xleak_hard.values()), len(xleak_hard)))
+        for fn, c in sorted(xleak_hard.items(), key=lambda x: -x[1])[:20]:
+            a, lv, lv2, q2 = xleak_example[fn]
+            add('      %-24s %3d   «%s» إجابة %s مكشوفة في سؤال %s'
+                % (fn, c, a, lv, lv2))
+            add('      %-24s       %s' % ('', q2[:70]))
+        if len(xleak_hard) > 20:
+            add('      … و%d ملف آخر' % (len(xleak_hard) - 20))
+        add()
+        add('   🟡 تسريب ضعيف (كلمة متكررة في الصفحة): %d حالة في %d ملف'
+            % (sum(xleak_soft.values()), len(xleak_soft)))
     add()
 
-    add('── تسريب الإجابات (إجابة سؤال ظاهرة في سؤال آخر بنفس المستوى) ──')
+    add('── تسريب الإجابات داخل المستوى الواحد ──')
     if not leak_hard and not leak_soft:
         add('   ✅ سليم')
     else:
@@ -8018,7 +8046,9 @@ def run_audit(root):
         add()
         add('   🟡 تسريب ضعيف (كلمة متكررة في الصفحة): %d حالة في %d ملف'
             % (sum(leak_soft.values()), len(leak_soft)))
-        clean = [f for f in files if f not in leak_hard and f not in leak_soft]
+        clean = [f for f in files
+                 if f not in leak_hard and f not in leak_soft
+                 and f not in xleak_hard and f not in xleak_soft]
         add()
         add('   ✅ ملفات نظيفة تمامًا: %d' % len(clean))
         for f in clean:
