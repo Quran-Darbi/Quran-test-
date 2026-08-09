@@ -6812,6 +6812,78 @@ def port_rasm_snap_to_legacy_voice(path, out):
     return new, True
 
 
+def add_ayah_marks_to_transcript(out):
+    """يضيف فواصل الآيات ﴿١﴾ في منطقة الكلمات المسجّلة (عرض فقط).
+
+    الفواصل بتتضاف كـspan مستقل في renderTranscript، ومابتدخلش
+    مصفوفة savedWords إطلاقًا — فالتصحيح والمقارنة مايشوفوهاش.
+    بتستفيد من ayahBounds/refWords الموجودين خلاص.
+    """
+    if 'function renderTranscript(){' not in out:
+        return out, False
+    if 'function _savedToRefIdx(' in out:      # مضافة خلاص
+        return out, False
+    anchor = ("    sp.onclick=()=>{selWord=(selWord===i)?null:i;"
+              "renderTranscript();updateBtns();};\n"
+              "    box.appendChild(sp);\n  });")
+    if out.count(anchor) != 1 or out.count('function renderTranscript(){') != 1:
+        return out, False
+
+    helpers = r'''
+/* ===== فواصل الآيات في منطقة التسجيل (عرض فقط) =====
+   بنحاذي كلمات المستخدم على refWords بمشية أمامية، وبنحط ﴿رقم﴾
+   بعد الكلمة اللي بتقفل الآية. مافيش أي أثر على savedWords ولا على
+   المقارنة — دي عناصر عرض بحتة. */
+function _savedToRefIdx(){
+  const map=new Array(savedWords.length).fill(-1);
+  if(!refWords.length)return map;
+  let p=0;
+  for(let i=0;i<savedWords.length;i++){
+    const u=norm(savedWords[i]);
+    if(!u)continue;
+    for(let k=p;k<refWords.length&&k<p+8;k++){
+      if(norm(refWords[k])===u){map[i]=k;p=k+1;break;}
+    }
+  }
+  return map;
+}
+function _ayahEndMap(){
+  const m=Object.create(null);
+  if(!ayahBounds.length||!refWords.length)return m;
+  for(let j=0;j<ayahBounds.length;j++){
+    const nx=(j+1<ayahBounds.length)?ayahBounds[j+1].start:refWords.length;
+    if(nx-1>=0)m[nx-1]=ayahBounds[j].num;
+  }
+  return m;
+}
+function _ayahSepEl(num){
+  const ar='\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669';
+  const toAr=n=>String(n).split('').map(d=>ar[+d]).join('');
+  const el=document.createElement('span');
+  el.className='ayah-num';
+  el.setAttribute('translate','no');
+  el.style.cssText='margin:2px 4px;align-self:center;';
+  el.textContent='\uFD3F'+toAr(num)+'\uFD3E';
+  return el;
+}
+'''
+    new = out.replace('function renderTranscript(){',
+                      helpers.strip() + '\nfunction renderTranscript(){', 1)
+    new = new.replace(anchor,
+                      "    sp.onclick=()=>{selWord=(selWord===i)?null:i;"
+                      "renderTranscript();updateBtns();};\n"
+                      "    box.appendChild(sp);\n"
+                      "    if(_refMap[i]>=0&&_ayEnd[_refMap[i]]!==undefined)"
+                      "box.appendChild(_ayahSepEl(_ayEnd[_refMap[i]]));\n  });", 1)
+    new = new.replace("  const _g=muqGroupLen();\n  savedWords.forEach((w,i)=>{",
+                      "  const _g=muqGroupLen();\n"
+                      "  const _refMap=_savedToRefIdx(),_ayEnd=_ayahEndMap();\n"
+                      "  savedWords.forEach((w,i)=>{", 1)
+    if 'const _refMap=_savedToRefIdx()' not in new:
+        return out, False
+    return new, True
+
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -7587,6 +7659,9 @@ def fix_index_recitation(path):
 
     # قواعد الرسم في محاذاة التلاوة الصوتية
     out, rec_rasm_rules = upgrade_recitation_rasm_rules(out)
+
+    # فواصل الآيات في منطقة التسجيل (عرض فقط)
+    out, rec_ayah_marks = add_ayah_marks_to_transcript(out)
 
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
