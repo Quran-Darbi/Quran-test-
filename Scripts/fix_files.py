@@ -6183,23 +6183,41 @@ def add_medium_word_count_blanks(out):
 # محاذاة رسم التلاوة على المصحف — مسار الصوت وحده
 # ------------------------------------------------------------
 _SNAP_FN = r'''
+
 /* ===== محاذاة رسم التلاوة على المصحف (الصوت فقط) =====
    محرك التعرّف بيكتب الكلمة برسم إملائي عادي: «امنهم» بدل
-   «وَءَامَنَهُم»، «ترى» بدل «تَرَ»، «فأثرنا» بدل «فَأَثَرْنَ».
-   بنقارن كل كلمة منطوقة بكلمات *الآية الحالية وحدها*، ولو طابقت
-   واحدة بنرجّع رسم المصحف بدل رسم المحرك.
-   طبقتان: تطابق تام بعد normalize، ثم تطابق متساهل بحذف ألف أو
-   ياء أخيرة — وده بالضبط عيب المحرك المتكرر.
-   أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة، فالإبدال
-   مابيحصلش إلا لما يبقى وحيد. normalize و wordDiff مابيتلمسوش. */
+   «وَءَامَنَهُم»، «ترى» بدل «تَرَ». بنقارن كل كلمة منطوقة بكلمات
+   *الآية الحالية وحدها*، ولو طابقت واحدة بنرجّع رسم المصحف.
+
+   المحاذاة المتساهلة محكومة بقواعد الرسم — نطقًا لا كتابةً:
+     · ىٰ  ياء عليها ألف خنجرية: تُنطق ألفًا وتُكتب ياء
+     · ○  صفر مستدير (U+06DF): الحرف مكتوب رسمًا ولا يُنطق أبدًا،
+          لا وصلًا ولا وقفًا  (قَالُوا۟ ، أُو۟لَٰٓئِكَ)
+     · ▯  صفر مستطيل (U+06E0): الألف تثبت وقفًا وتسقط وصلًا
+          (الألفات السبع، ومنها أَنَا۠)
+   أي نهاية أخرى — ألف مدية، ياء متحركة، همزة — خارج القاعدة
+   ولا تُحاذى إطلاقًا، فـ«إلى» لا تساوي «إلا» ولا «ولا» تساوي «ولي».
+   أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة.
+   normalize و wordDiff مابيتلمسوش. */
+function _rasmVoiceForms(w){
+  const out=[];
+  if(/\u0649\u0670[^\u0621-\u064A]*$/.test(w))
+    out.push(w.replace(/\u0649\u0670([^\u0621-\u064A]*)$/,'\u0627$1'));
+  if(/[\u06DF\u06E0]/.test(w))
+    out.push(w.replace(/[\u0627\u0648\u064A\u0649][\u06DF\u06E0]/g,''));
+  return out;
+}
 function _rasmMaps(ans){
   const ws=String(ans||'').trim().split(/\s+/);
   const E=Object.create(null),L=Object.create(null),bE=[],bL=[];
+  const put=function(map,bad,k,w){
+    if(!k)return;
+    if(k in map){if(map[k]!==w)bad.push(k);}else map[k]=w;
+  };
   for(const w of ws){
-    const e=normalize(w);
-    if(e){if(e in E){if(E[e]!==w)bE.push(e);}else E[e]=w;}
-    const l=e.replace(/[اي]$/,'');
-    if(l){if(l in L){if(L[l]!==w)bL.push(l);}else L[l]=w;}
+    put(E,bE,normalize(w),w);
+    const vs=_rasmVoiceForms(w);
+    for(const v of vs)put(L,bL,normalize(v),w);
   }
   for(const k of bE)delete E[k];
   for(const k of bL)delete L[k];
@@ -6212,8 +6230,7 @@ function snapToRasm(words,ans){
     const e=normalize(w);
     if(!e)return w;
     if(e in m.E)return m.E[e];
-    const l=e.replace(/[اي]$/,'');
-    if(l&&(l in m.L))return m.L[l];
+    if(e in m.L)return m.L[e];
     return w;
   });
 }
@@ -6622,6 +6639,177 @@ def fix_next_btn_display(path, out):
     out = out.replace(old, new)
     NEXTBTN_FIXED.append((os.path.basename(path), n))
     return out, True
+
+
+# قاعدة قاتلة جوّه دالة nm (المقارنة كلمة-كلمة في wordDiff):
+# تحويل الألف في آخر الكلمة إلى ياء. بتخلي كلمات قرآنية مختلفة
+# تبقى متساوية عند المقارنة:
+#     إِلَىٰ = إِلَّا   |   شَآءَ = شَىْءٍ
+#     وَلَا = وَلِيࣲّ    |   أَذࣰى = إِذَا   |   أَنَا۠ = أَنَّىٰ
+# وبما إن شرط القبول في checkTextVal فيه OR على نتيجة nm:
+#     _ok = (userNorm===ansNorm) || (matched===total && !extra)
+# فالكلمة الغلط كانت بتعدّي و«إجابة صحيحة تماماً» تظهر للمستخدم.
+# مؤكَّد عمليًا: albaqara_p47 آية الربا — كتابة «إِلَّا» مكان
+# «إِلَى ٱللَّهِ» كانت بتترصد ٤٥/٤٥ وتتقبل.
+NM_FINAL_ALEF_RULE = ".replace(/\u0627(?=\\s|$)/g,'\u064a')"
+
+
+def drop_nm_final_alef_rule(path, out):
+    """يشيل قاعدة (ألف آخر الكلمة → ياء) من nm جوّه wordDiff فقط.
+
+    · لا تمسّ أي نص قرآني إطلاقًا — تعديل داخل دالة مقارنة.
+    · لا تمسّ normalize ولا nm خارج wordDiff.
+    · idempotent: لو القاعدة مش موجودة بترجع (out, False).
+    """
+    i = out.find('function wordDiff(')
+    if i < 0:
+        return out, False
+    j = out.index('{', i)
+    depth, k = 0, j
+    while k < len(out):
+        if out[k] == '{':
+            depth += 1
+        elif out[k] == '}':
+            depth -= 1
+            if depth == 0:
+                break
+        k += 1
+    body = out[i:k + 1]
+    if NM_FINAL_ALEF_RULE not in body:
+        return out, False
+    before = quran_text_fingerprint(out)
+    new = out[:i] + body.replace(NM_FINAL_ALEF_RULE, '') + out[k + 1:]
+    if quran_text_fingerprint(new) != before:      # حارس: مستحيل يحصل
+        return out, False
+    return new, True
+
+
+def upgrade_rasm_voice_rules(path, out):
+    """يرقّي محاذاة الصوت للنسخة المحكومة بقواعد الرسم.
+
+    القديمة كانت بتشيل آخر حرف [اي] من *كل* كلمة، فبتخلط بين
+    كلمات مختلفة رسمًا ونطقًا:
+        «ولا» → «وَلِيࣲّ»   |   «إلى» → «إِلَّا»
+    الجديدة بتحاذي بس لما القاعدة تسمح فعلًا (ىٰ ، ○ ، ▯).
+    لا تمسّ نصًا قرآنيًا — دوال محاذاة فقط.
+    """
+    if 'function _rasmMaps(' not in out or 'function snapToRasm(' not in out:
+        return out, False
+    if 'function _rasmVoiceForms(' in out:      # مرقّاة خلاص
+        return out, False
+    start = out.index('function _rasmMaps(')
+    end = out.index('function snapToRasm(')
+    depth, k = 0, out.index('{', end)
+    while k < len(out):
+        if out[k] == '{':
+            depth += 1
+        elif out[k] == '}':
+            depth -= 1
+            if depth == 0:
+                break
+        k += 1
+    before = quran_text_fingerprint(out)
+    new = out[:start] + _SNAP_FN.strip() + out[k + 1:]
+    if quran_text_fingerprint(new) != before:      # حارس
+        return out, False
+    return new, True
+
+
+_REC_VOICE_FN = r'''
+/* قواعد الرسم في المحاذاة الصوتية — نطقًا لا كتابةً:
+     · ىٰ  ياء عليها ألف خنجرية: تُنطق ألفًا وتُكتب ياء
+     · ○  صفر مستدير (U+06DF): مكتوب رسمًا ولا يُنطق أبدًا
+     · ▯  صفر مستطيل (U+06E0): يثبت وقفًا ويسقط وصلًا
+   أي نهاية أخرى (ألف مدية، ياء متحركة، همزة) خارج القاعدة. */
+function _rasmVoiceForms(w){
+  const out=[];
+  if(/\u0649\u0670[^\u0621-\u064A]*$/.test(w))
+    out.push(w.replace(/\u0649\u0670([^\u0621-\u064A]*)$/,'\u0627$1'));
+  if(/[\u06DF\u06E0]/.test(w))
+    out.push(w.replace(/[\u0627\u0648\u064A\u0649][\u06DF\u06E0]/g,''));
+  return out;
+}
+function _rasmMatch(refWord,refNorm,u){
+  if(refNorm===u)return true;
+  const vs=_rasmVoiceForms(refWord);
+  for(const v of vs)if(norm(v)===u)return true;
+  return false;
+}
+'''
+
+
+def upgrade_recitation_rasm_rules(out):
+    """نفس القواعد داخل snapWordsToRasm في recitation.html.
+
+    كانت بتطابق تطابقًا تامًا بعد norm فقط، فـ«الأعلا» بتترفض رغم
+    إن النطق سليم (ىٰ تُنطق ألفًا).
+    """
+    if 'function snapWordsToRasm(' not in out:
+        return out, False
+    if 'function _rasmVoiceForms(' in out:      # مرقّاة خلاص
+        return out, False
+    old_a = 'dp[i][j]=(R[i-1]===U[j-1])?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);'
+    old_b = 'if(R[i-1]===U[j-1]){out[j-1]=refWords[i-1];i--;j--;}'
+    if old_a not in out or old_b not in out:
+        return out, False
+    before = quran_text_fingerprint(out)
+    new = out.replace(
+        old_a,
+        'dp[i][j]=_rasmMatch(refWords[i-1],R[i-1],U[j-1])'
+        '?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);', 1)
+    new = new.replace(
+        old_b,
+        'if(_rasmMatch(refWords[i-1],R[i-1],U[j-1])){'
+        'out[j-1]=refWords[i-1];i--;j--;}', 1)
+    new = new.replace('function snapWordsToRasm(',
+                      _REC_VOICE_FN.strip() + '\nfunction snapWordsToRasm(', 1)
+    if quran_text_fingerprint(new) != before:      # حارس
+        return out, False
+    return new, True
+
+
+def port_rasm_snap_to_legacy_voice(path, out):
+    """ينقل محاذاة الرسم لصفحات القالب الصوتي الأقدم.
+
+    الصفحتان دول (الغاشية والمطففين) بيوصّلوا مخرجات المحرك لـ_words
+    مباشرة من غير أي محاذاة، فالتسجيل بيفشل في أغلب الكلمات.
+    بنحقن snapToRasm ونمرّر عليها الكلمات في الموضعين (onresult, onend).
+    لا تمسّ نصًا قرآنيًا.
+    """
+    if 'function _mkRec(){' not in out:
+        return out, False
+    if 'function snapToRasm(' in out:            # عندها المحاذاة خلاص
+        return out, False
+    if 'function collapseMuqattaat(' not in out or 'function wordDiff(' not in out:
+        return out, False
+
+    on_result = ('_words=_words.concat(e.results[i][0].transcript'
+                 '.trim().split(/\\s+/).filter(Boolean));')
+    on_end = ("if(_cur){_words=_words.concat(_cur.trim()"
+              ".split(/\\s+/).filter(Boolean));_cur='';}")
+    if out.count(on_result) != 1 or out.count(on_end) != 1:
+        return out, False
+
+    before = quran_text_fingerprint(out)
+    new = out.replace('function wordDiff(',
+                      _SNAP_FN.strip() + '\nfunction wordDiff(', 1)
+    fixw = (
+        "  function _fixWords(words){\n"
+        "    const _a=(typeof q!=='undefined'&&q&&q.answer)||'';\n"
+        "    return snapToRasm(collapseMuqattaat(words,_a),_a);\n"
+        "  }\n")
+    new = new.replace('  function _mkRec(){', fixw + '  function _mkRec(){', 1)
+    new = new.replace(
+        on_result,
+        '_words=_fixWords(_words.concat(e.results[i][0].transcript'
+        '.trim().split(/\\s+/).filter(Boolean)));', 1)
+    new = new.replace(
+        on_end,
+        "if(_cur){_words=_fixWords(_words.concat(_cur.trim()"
+        ".split(/\\s+/).filter(Boolean)));_cur='';}", 1)
+    if quran_text_fingerprint(new) != before:      # حارس
+        return out, False
+    return new, True
 
 
 def fix_file(path):
@@ -7286,6 +7474,15 @@ def fix_file(path):
     out, rasm_snapped = add_rasm_snap_to_voice(path, out)
     out, spell_guarded = add_typing_spell_guard(path, out)
 
+    # 9ك. تسرّب القبول في مستوى الصعب: قاعدة (ألف آخر الكلمة → ياء)
+    # جوّه nm كانت بتساوي بين كلمات قرآنية مختلفة (إلى/إلا، شاء/شيء).
+    out, nm_alef_fixed = drop_nm_final_alef_rule(path, out)
+
+    # 9ل. محاذاة الصوت محكومة بقواعد الرسم (ىٰ ، الصفر المستدير،
+    # الصفر المستطيل) بدل حذف آخر حرف [اي] من كل كلمة.
+    out, rasm_rules = upgrade_rasm_voice_rules(path, out)
+    out, rasm_ported = port_rasm_snap_to_legacy_voice(path, out)
+
     # 9ح. توحيد الدوال المشتركة من نسخة قياسية واحدة
     out, canon_done = apply_canonical_functions(path, out)
 
@@ -7387,6 +7584,9 @@ def fix_index_recitation(path):
     # صيغة الخطاب: مذكر رسمي (index.html و recitation.html
     # مابيمروش على apply_canonical_functions)
     out, masc_unified = unify_masculine_address(path, out)
+
+    # قواعد الرسم في محاذاة التلاوة الصوتية
+    out, rec_rasm_rules = upgrade_recitation_rasm_rules(out)
 
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
