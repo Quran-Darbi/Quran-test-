@@ -368,57 +368,62 @@ DEV_LOCK_SCRIPT_RE = re.compile(
 # ===== وسوم الوصف والمشاركة الاجتماعية (أغسطس ٢٠٢٦) =====
 # كل صفحة اختبار كانت بتتشارك على فيسبوك/واتساب كلينك أبيض بلا صورة
 # ولا وصف، لأن وسوم og كانت في index.html بس. الدالة دي بتضيفها لكل
-# صفحة، والوصف بيتبني من بيانات index.html نفسها (اسم السورة/رقم
-# الصفحة/نطاق الآيات) عشان يفضل مصدر واحد موثّق للبيانات.
-_META_PAGE_INFO = {}
-
-
-def _load_page_info(root):
-    """يقرأ جداول index.html مرة واحدة: {اسم الملف: وصف مختصر}"""
-    if _META_PAGE_INFO:
-        return _META_PAGE_INFO
-    idx_path = os.path.join(root, 'index.html')
-    if not os.path.exists(idx_path):
-        return _META_PAGE_INFO
-    with open(idx_path, encoding='utf-8') as fh:
-        idx = fh.read()
-
-    # صفحات البقرة: ['albaqara_p10.html','ص 10','62–68']
-    for fn, _pg, rng in re.findall(
-            r"\['(albaqara_p\d+\.html)',\s*'([^']*)',\s*'([^']*)'\]", idx):
-        num = re.search(r'\d+', fn).group(0)
-        _META_PAGE_INFO[fn] = ('اختبر حفظك لسورة البقرة، الصفحة %s '
-                               '(الآيات %s)' % (num, rng))
-
-    # سور جزء عم: ['alalaq.html','العلق','19 آية',true]
-    for fn, name, cnt in re.findall(
-            r"\['([a-z_]+\.html)',\s*'([^']*)',\s*'(\d+\s*[^']*)'\s*,", idx):
-        if fn.startswith('albaqara_'):
-            continue
-        _META_PAGE_INFO[fn] = 'اختبر حفظك لسورة %s (%s)' % (name, cnt)
-
-    _META_PAGE_INFO.setdefault(
-        'alfatiha.html', 'اختبر حفظك لسورة الفاتحة (الآيات 1–7)')
-    _META_PAGE_INFO['recitation.html'] = (
-        'سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة')
-    return _META_PAGE_INFO
-
+# صفحة.
+#
+# مصدر البيانات: <div class="ayat-range"> و<div class="surah-title">
+# جوه الصفحة نفسها. النسخة الأولى كانت بتقرا من جداول index.html،
+# وده كان غلط: جدول البقرة في index فيه نطاقات آيات مغلوطة (٣٧ صفحة
+# من ٤٨، مع ١٠ تداخلات)، فالأوصاف ورثت الخطأ. رؤوس الصفحات نفسها
+# متحقَّق منها: بتغطي ١–٢٨٦ بلا فجوة ولا تداخل، ومطابقة لصور المصحف.
 
 META_IMAGE_ALT = 'دربي لحفظ القرآن — اختبارات تفاعلية لحفظ كتاب الله ومراجعته'
 META_TAIL = ('، بثلاثة مستويات: اختيار من متعدد، وإكمال الفراغ، '
              'وكتابة الآيات أو تلاوتها صوتيًا.')
+META_RECITATION_DESC = 'سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة'
+
+
+def build_page_description(out, fn):
+    """يبني وصف الصفحة من رأسها الموثوق. بيرجّع None لو الرأس مش موجود
+    (وساعتها الصفحة تتخطى بدل ما يتكتب لها وصف مخمَّن)."""
+    if fn == 'recitation.html':
+        return META_RECITATION_DESC
+
+    m_range = re.search(r'<div class="ayat-range">([^<]*)</div>', out)
+    m_surah = re.search(r'<div class="surah-title">([^<]*)</div>', out)
+    if not m_range or not m_surah:
+        return None
+
+    rng = ' '.join(m_range.group(1).split())
+    surah = ' '.join(m_surah.group(1).split()).replace('سورة ', '', 1)
+
+    # لو الرأس نفسه فيه قوس (زي «الآية 282 (آية الدَّين)») نستخدم شرطة
+    # بدل قوس تاني عشان مايبقاش فيه أقواس متداخلة في الوصف
+    sep = '%s — %s' if '(' in rng else '%s (%s)'
+
+    if fn.startswith('albaqara_'):
+        pg = re.search(r'\d+', fn).group(0)
+        base = 'اختبر حفظك لسورة البقرة، الصفحة ' + sep % (pg, rng)
+    else:
+        base = 'اختبر حفظك لسورة ' + sep % (surah, rng)
+    return base + META_TAIL
+
+
+META_TAGS_RE = re.compile(
+    r'\n<meta name="description"[^>]*>'
+    r'(?:\n<meta (?:property="og:|name="twitter:)[^>]*>)+')
 
 
 def add_social_meta(path, out):
-    """يضيف description + وسوم og/twitter بعد <title> مباشرة"""
-    if 'og:title' in out or '<title>' not in out:
+    """يضيف description + وسوم og/twitter بعد <title> مباشرة.
+
+    لو الوسوم موجودة بالفعل لكن الوصف مش مطابق لرأس الصفحة الحالي
+    (زي الأوصاف اللي اتبنت من جدول index المغلوط)، بيتصلّح مكانه."""
+    if '<title>' not in out:
         return out, False
 
     fn = os.path.basename(path)
-    root = os.path.dirname(os.path.abspath(path))
-    info = _load_page_info(root)
-    base = info.get(fn)
-    if not base:
+    desc = build_page_description(out, fn)
+    if not desc:
         return out, False
 
     title_m = re.search(r'<title>(.*?)</title>', out, re.S)
@@ -426,7 +431,6 @@ def add_social_meta(path, out):
     canon_m = re.search(r'<link rel="canonical" href="([^"]+)"', out)
     url = canon_m.group(1) if canon_m else SITE_ORIGIN + '/' + fn
 
-    desc = base if fn == 'recitation.html' else base + META_TAIL
     tags = (
         '\n<meta name="description" content="%s">'
         '\n<meta property="og:title" content="%s">'
@@ -446,8 +450,52 @@ def add_social_meta(path, out):
     ) % (desc, title, desc, url, SITE_ORIGIN, META_IMAGE_ALT,
          title, desc, SITE_ORIGIN)
 
+    if 'og:title' in out:
+        # الوسوم موجودة: نستبدلها بس لو الوصف اتغيّر (idempotency)
+        m_old = META_TAGS_RE.search(out)
+        if not m_old or m_old.group(0) == tags:
+            return out, False
+        out = out[:m_old.start()] + tags + out[m_old.end():]
+        return out, True
+
     out = out.replace(title_m.group(0), title_m.group(0) + tags, 1)
     return out, True
+
+
+def fix_index_baqara_ranges(root, out):
+    """يصلّح نطاقات الآيات في جدول البقرة داخل index.html من رؤوس
+    الصفحات نفسها. الجدول كان فيه ٣٧ نطاق مغلوط و١٠ تداخلات (آيات
+    بتتكرر في صفحتين)، فالزائر كان بيشوف نطاق مش بتاع الصفحة."""
+    if '<title>دربي لحفظ القرآن</title>' not in out and 'albaqara_p2.html' not in out:
+        return out, False
+
+    changed = False
+
+    def repl(m):
+        nonlocal changed
+        fname, label, rng = m.group(1), m.group(2), m.group(3)
+        page = os.path.join(root, fname)
+        if not os.path.exists(page):
+            return m.group(0)
+        with open(page, encoding='utf-8') as fh:
+            ps = fh.read()
+        m_r = re.search(r'<div class="ayat-range">([^<]*)</div>', ps)
+        if not m_r:
+            return m.group(0)
+        nums = re.findall(r'\d+', m_r.group(1))
+        if not nums:
+            return m.group(0)
+        real = nums[0] if len(nums) == 1 else '%s–%s' % (nums[0], nums[-1])
+        # التسميات الوصفية المقصودة (آية الكرسي / آية الدَّين) تُحترم
+        if not re.search(r'\d', rng):
+            return m.group(0)
+        if rng == real:
+            return m.group(0)
+        changed = True
+        return "['%s','%s','%s']" % (fname, label, real)
+
+    out = re.sub(r"\['(albaqara_p\d+\.html)','([^']*)','([^']*)'\]", repl, out)
+    return out, changed
 
 
 def add_dev_mode(out):
@@ -7835,8 +7883,12 @@ def fix_index_recitation(path):
     # أي بقايا بدل ما يحقن، عشان الملفات القديمة تتنضّف تلقائيًا.
     out, _dev_lock_removed = add_dev_mode(out)
 
-    # وسوم الوصف والمشاركة (index.html عندها بالفعل، فالدالة بتتخطاها)
+    # وسوم الوصف والمشاركة
     out, _social_meta_added = add_social_meta(path, out)
+
+    # تصحيح نطاقات آيات جدول البقرة في index.html من رؤوس الصفحات
+    out, _idx_ranges_fixed = fix_index_baqara_ranges(
+        os.path.dirname(os.path.abspath(path)), out)
 
     SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
