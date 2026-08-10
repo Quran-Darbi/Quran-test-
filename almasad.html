@@ -1,18 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<script>
-(function(){
-  try{
-    var p=new URLSearchParams(location.search);
-    if(p.get('dev')==='1'){localStorage.setItem('darbi_dev','1');}
-    if(localStorage.getItem('darbi_dev')!=='1'){
-      document.documentElement.classList.add('darbi-locked');
-    }
-  }catch(e){}
-})();
-</script>
-<style>html.darbi-locked #btn-hard,html.darbi-locked a[href*="recitation.html"]{display:none !important;}.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}
+<style>.order-slot.order-slot-selected{border-color:var(--gold,#C4A84A) !important;box-shadow:0 0 0 2px var(--gold,#C4A84A);}
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
