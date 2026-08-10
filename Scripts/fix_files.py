@@ -377,8 +377,8 @@ DEV_LOCK_SCRIPT_RE = re.compile(
 # متحقَّق منها: بتغطي ١–٢٨٦ بلا فجوة ولا تداخل، ومطابقة لصور المصحف.
 
 META_IMAGE_ALT = 'دربي لحفظ القرآن — اختبارات تفاعلية لحفظ كتاب الله ومراجعته'
-META_TAIL = ('، بثلاثة مستويات: اختيار من متعدد، وإكمال الفراغ، '
-             'وكتابة الآيات أو تلاوتها صوتيًا.')
+META_TAIL = ('، بمستويات متدرّجة: اختيار، وإكمال الفراغ، '
+             'وكتابة الآيات وترتيبها، مع اختبار تلاوة بصوتك.')
 META_RECITATION_DESC = 'سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة'
 
 
@@ -575,6 +575,51 @@ def add_beta_note(path, out):
         out = out.replace('</style>', BETA_NOTE_CSS + '</style>', 1)
     out = out.replace(anchor, BETA_NOTE_HTML.strip() + '\n\n' + anchor, 1)
     return out, True
+
+
+def fix_theme_toggle_overlap(out):
+    """يشيل margin-right:auto من زر الوضع الليلي.
+
+    الخاصية دي بتدفع الزر لأقصى يمين الشريط العلوي، فيقع تحت زر
+    الأدوات ☰ العائم (تداخل ٢٨ بكسل مقيس على عرض ٣٩٠px). ٢٠ ملف
+    كانوا متأثرين: الفاتحة و١٩ سورة من جزء عم. الملفات السليمة
+    (زي البقرة والعلق) مفيهاش الخاصية أصلًا، فالإزالة بترجّع الزر
+    لنفس مكان باقي الموقع."""
+    m = re.search(r'<button id="theme-toggle"[^>]*>', out)
+    if not m or 'margin-right:auto' not in m.group(0):
+        return out, False
+    fixed = m.group(0).replace('margin-right:auto;', '').replace(
+        'margin-right:auto', '')
+    out = out.replace(m.group(0), fixed, 1)
+    return out, True
+
+
+HERO_SUB_OLD = 'اختبر حفظك صفحةً بصفحة — 3 مستويات لكل اختبار'
+HERO_SUB_NEW = 'اختبر حفظك صفحةً بصفحة — مستويات متدرّجة واختبار تلاوة'
+
+ABOUT_OLD = ('كل اختبار مصمم بعناية لاختبار الحفظ الدقيق للآيات من خلال '
+             'ثلاثة مستويات — سهل ومتوسط وصعب — مع التركيز على متشابهات '
+             'القرآن الكريم.')
+ABOUT_NEW = ('كل اختبار مصمم بعناية لاختبار الحفظ الدقيق للآيات من خلال '
+             'مستويات متدرّجة — سهل ومتوسط وصعب وترتيب الآيات — إلى جانب '
+             'اختبار التلاوة بالصوت، مع التركيز على متشابهات القرآن الكريم.')
+
+
+def fix_levels_wording(path, out):
+    """يحدّث وصف المستويات في index.html.
+
+    النص القديم كان بيقول «3 مستويات» و«ثلاثة مستويات — سهل ومتوسط
+    وصعب»، وده بقى ناقص بعد إضافة مستوى الترتيب واختبار التلاوة.
+    اتجنبنا ذكر رقم لأن مستوى الترتيب لسه موجود في ٧٥ صفحة من ٨٦،
+    فأي رقم ثابت هيبقى غير دقيق على جزء من الموقع."""
+    if os.path.basename(path) != 'index.html':
+        return out, False
+    changed = False
+    for old, new in ((HERO_SUB_OLD, HERO_SUB_NEW), (ABOUT_OLD, ABOUT_NEW)):
+        if old in out:
+            out = out.replace(old, new, 1)
+            changed = True
+    return out, changed
 
 
 def add_dev_mode(out):
@@ -7817,6 +7862,9 @@ def fix_file(path):
     #      التالية» يعيد تحميل نفس الصفحة بدل ما ينقل
     out, nav_links_fixed = fix_empty_page_nav_links(path, out)
 
+    # 9ي٤. زر الوضع الليلي كان بيركب فوق زر الأدوات ☰ في ٢٠ ملف
+    out, theme_btn_fixed = fix_theme_toggle_overlap(out)
+
     # 9ك. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات) — لازم قبل
     # قائمة الأدوات عشان تقدر تشيل النسخة القديمة بأمان لو موجودة
     out, lang_upgraded = upgrade_lang_switcher_languages(out)
@@ -7975,6 +8023,9 @@ def fix_index_recitation(path):
 
     # شارة الإطلاق التجريبي (index.html فقط)
     out, _beta_note_added = add_beta_note(path, out)
+
+    # تحديث وصف المستويات (بعد إضافة الترتيب واختبار التلاوة)
+    out, _levels_wording_fixed = fix_levels_wording(path, out)
 
     SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
