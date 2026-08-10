@@ -365,6 +365,91 @@ DEV_LOCK_SCRIPT_RE = re.compile(
     re.S)
 
 
+# ===== وسوم الوصف والمشاركة الاجتماعية (أغسطس ٢٠٢٦) =====
+# كل صفحة اختبار كانت بتتشارك على فيسبوك/واتساب كلينك أبيض بلا صورة
+# ولا وصف، لأن وسوم og كانت في index.html بس. الدالة دي بتضيفها لكل
+# صفحة، والوصف بيتبني من بيانات index.html نفسها (اسم السورة/رقم
+# الصفحة/نطاق الآيات) عشان يفضل مصدر واحد موثّق للبيانات.
+_META_PAGE_INFO = {}
+
+
+def _load_page_info(root):
+    """يقرأ جداول index.html مرة واحدة: {اسم الملف: وصف مختصر}"""
+    if _META_PAGE_INFO:
+        return _META_PAGE_INFO
+    idx_path = os.path.join(root, 'index.html')
+    if not os.path.exists(idx_path):
+        return _META_PAGE_INFO
+    with open(idx_path, encoding='utf-8') as fh:
+        idx = fh.read()
+
+    # صفحات البقرة: ['albaqara_p10.html','ص 10','62–68']
+    for fn, _pg, rng in re.findall(
+            r"\['(albaqara_p\d+\.html)',\s*'([^']*)',\s*'([^']*)'\]", idx):
+        num = re.search(r'\d+', fn).group(0)
+        _META_PAGE_INFO[fn] = ('اختبر حفظك لسورة البقرة، الصفحة %s '
+                               '(الآيات %s)' % (num, rng))
+
+    # سور جزء عم: ['alalaq.html','العلق','19 آية',true]
+    for fn, name, cnt in re.findall(
+            r"\['([a-z_]+\.html)',\s*'([^']*)',\s*'(\d+\s*[^']*)'\s*,", idx):
+        if fn.startswith('albaqara_'):
+            continue
+        _META_PAGE_INFO[fn] = 'اختبر حفظك لسورة %s (%s)' % (name, cnt)
+
+    _META_PAGE_INFO.setdefault(
+        'alfatiha.html', 'اختبر حفظك لسورة الفاتحة (الآيات 1–7)')
+    _META_PAGE_INFO['recitation.html'] = (
+        'سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة')
+    return _META_PAGE_INFO
+
+
+META_IMAGE_ALT = 'دربي لحفظ القرآن — اختبارات تفاعلية لحفظ كتاب الله ومراجعته'
+META_TAIL = ('، بثلاثة مستويات: اختيار من متعدد، وإكمال الفراغ، '
+             'وكتابة الآيات أو تلاوتها صوتيًا.')
+
+
+def add_social_meta(path, out):
+    """يضيف description + وسوم og/twitter بعد <title> مباشرة"""
+    if 'og:title' in out or '<title>' not in out:
+        return out, False
+
+    fn = os.path.basename(path)
+    root = os.path.dirname(os.path.abspath(path))
+    info = _load_page_info(root)
+    base = info.get(fn)
+    if not base:
+        return out, False
+
+    title_m = re.search(r'<title>(.*?)</title>', out, re.S)
+    title = title_m.group(1).strip()
+    canon_m = re.search(r'<link rel="canonical" href="([^"]+)"', out)
+    url = canon_m.group(1) if canon_m else SITE_ORIGIN + '/' + fn
+
+    desc = base if fn == 'recitation.html' else base + META_TAIL
+    tags = (
+        '\n<meta name="description" content="%s">'
+        '\n<meta property="og:title" content="%s">'
+        '\n<meta property="og:description" content="%s">'
+        '\n<meta property="og:url" content="%s">'
+        '\n<meta property="og:type" content="website">'
+        '\n<meta property="og:image" content="%s/og-image.png">'
+        '\n<meta property="og:image:width" content="1200">'
+        '\n<meta property="og:image:height" content="630">'
+        '\n<meta property="og:image:alt" content="%s">'
+        '\n<meta property="og:site_name" content="دربي لحفظ القرآن">'
+        '\n<meta property="og:locale" content="ar_AR">'
+        '\n<meta name="twitter:card" content="summary_large_image">'
+        '\n<meta name="twitter:title" content="%s">'
+        '\n<meta name="twitter:description" content="%s">'
+        '\n<meta name="twitter:image" content="%s/og-image.png">'
+    ) % (desc, title, desc, url, SITE_ORIGIN, META_IMAGE_ALT,
+         title, desc, SITE_ORIGIN)
+
+    out = out.replace(title_m.group(0), title_m.group(0) + tags, 1)
+    return out, True
+
+
 def add_dev_mode(out):
     """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
 
@@ -7597,6 +7682,10 @@ def fix_file(path):
     # 9ي. وضع المطوّر: إخفاء مستوى "صعب" وزر التلاوة عن الزوار العاديين
     out, dev_mode_added = add_dev_mode(out)
 
+    # 9ي٢. وسوم الوصف والمشاركة (description + og + twitter) عشان روابط
+    #      الصفحات تتشارك بصورة وعنوان ووصف زي الصفحة الرئيسية
+    out, social_meta_added = add_social_meta(path, out)
+
     # 9ك. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات) — لازم قبل
     # قائمة الأدوات عشان تقدر تشيل النسخة القديمة بأمان لو موجودة
     out, lang_upgraded = upgrade_lang_switcher_languages(out)
@@ -7745,6 +7834,9 @@ def fix_index_recitation(path):
     # redirect في recitation.html وقفل في index.html؛ دلوقتي بيشيل
     # أي بقايا بدل ما يحقن، عشان الملفات القديمة تتنضّف تلقائيًا.
     out, _dev_lock_removed = add_dev_mode(out)
+
+    # وسوم الوصف والمشاركة (index.html عندها بالفعل، فالدالة بتتخطاها)
+    out, _social_meta_added = add_social_meta(path, out)
 
     SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
