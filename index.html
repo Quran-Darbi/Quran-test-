@@ -133,6 +133,16 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
 
 /* ===== QR CODE MODAL ===== */
 
+
+.beta-note{max-width:840px;margin:14px auto 0;padding:0 13px;display:flex;justify-content:center;}
+.beta-note-inner{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 10px;background:var(--green3);border:1px solid var(--border);border-radius:12px;padding:9px 16px;text-align:center;}
+.beta-tag{display:inline-flex;align-items:center;gap:5px;background:var(--gold2);color:#7A6220;font-size:0.72rem;padding:3px 10px;border-radius:8px;white-space:nowrap;}
+.beta-text{font-size:0.8rem;color:#4F6E4F;}
+.beta-link{background:none;border:none;padding:0;font-family:inherit;font-size:inherit;color:var(--green);border-bottom:1px dotted var(--green);cursor:pointer;}
+.beta-link:hover{opacity:.75;}
+html[data-theme="dark"] .beta-tag{color:var(--gold);}
+html[data-theme="dark"] .beta-text{color:var(--soft);}
+@media(max-width:380px){.beta-note-inner{padding:9px 12px;}.beta-text{font-size:0.76rem;}}
 </style>
 <link rel="canonical" href="https://quran-darbi.com/">
 </head>
@@ -188,6 +198,13 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
       <div style="font-size:0.78rem;color:rgba(255,255,255,0.9);" id="hero-progress-text"></div>
       <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:4px;" id="hero-last-visited"></div>
     </div>
+  </div>
+</div>
+
+<div class="beta-note">
+  <div class="beta-note-inner">
+    <span class="beta-tag">✦ الإطلاق التجريبي</span>
+    <span class="beta-text">نرحب بـ<button type="button" class="beta-link" onclick="fdbkOpen()">ملاحظاتكم واقتراحاتكم</button></span>
   </div>
 </div>
 
