@@ -532,6 +532,51 @@ def fix_empty_page_nav_links(path, out):
     return out, changed
 
 
+# ===== شارة الإطلاق التجريبي (أغسطس ٢٠٢٦) — index.html فقط =====
+# شريط صغير هادي تحت الهيرو وقبل شريط البحث. الغرض إعلام الزائر إن
+# الموقع في إطلاق تجريبي وإن ملاحظاته مرحَّب بيها — من غير إيحاء إن
+# الموقع ناقص. مقصود إنها تحت بلوك الهيرو مش جواه: لو اتحطت تحت
+# الوصف مباشرة كانت هتفصل بين الوصف وآية ﴿وَرَتِّلِ الْقُرْآنَ﴾.
+# الأيقونة ✦ (نفس زينة الهيرو) مش 🌱 لأن دي أيقونة مستوى «سهل».
+# الرابط بينده fdbkOpen() الموجودة أصلاً — مفيش نموذج ولا صفحة جديدة.
+
+BETA_NOTE_CSS = """
+.beta-note{max-width:840px;margin:14px auto 0;padding:0 13px;display:flex;justify-content:center;}
+.beta-note-inner{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 10px;background:var(--green3);border:1px solid var(--border);border-radius:12px;padding:9px 16px;text-align:center;}
+.beta-tag{display:inline-flex;align-items:center;gap:5px;background:var(--gold2);color:#7A6220;font-size:0.72rem;padding:3px 10px;border-radius:8px;white-space:nowrap;}
+.beta-text{font-size:0.8rem;color:#4F6E4F;}
+.beta-link{background:none;border:none;padding:0;font-family:inherit;font-size:inherit;color:var(--green);border-bottom:1px dotted var(--green);cursor:pointer;}
+.beta-link:hover{opacity:.75;}
+html[data-theme="dark"] .beta-tag{color:var(--gold);}
+html[data-theme="dark"] .beta-text{color:var(--soft);}
+@media(max-width:380px){.beta-note-inner{padding:9px 12px;}.beta-text{font-size:0.76rem;}}
+"""
+
+BETA_NOTE_HTML = """
+<div class="beta-note">
+  <div class="beta-note-inner">
+    <span class="beta-tag">✦ الإطلاق التجريبي</span>
+    <span class="beta-text">نرحب بـ<button type="button" class="beta-link" onclick="fdbkOpen()">ملاحظاتكم واقتراحاتكم</button></span>
+  </div>
+</div>
+"""
+
+
+def add_beta_note(path, out):
+    """يضيف شارة الإطلاق التجريبي في index.html تحت الهيرو مباشرة"""
+    if os.path.basename(path) != 'index.html':
+        return out, False
+    if 'beta-note' in out:
+        return out, False
+    anchor = '<div class="search-wrap">'
+    if anchor not in out or 'fdbkOpen' not in out:
+        return out, False
+    if '</style>' in out:
+        out = out.replace('</style>', BETA_NOTE_CSS + '</style>', 1)
+    out = out.replace(anchor, BETA_NOTE_HTML.strip() + '\n\n' + anchor, 1)
+    return out, True
+
+
 def add_dev_mode(out):
     """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
 
@@ -7927,6 +7972,9 @@ def fix_index_recitation(path):
     # تصحيح نطاقات آيات جدول البقرة في index.html من رؤوس الصفحات
     out, _idx_ranges_fixed = fix_index_baqara_ranges(
         os.path.dirname(os.path.abspath(path)), out)
+
+    # شارة الإطلاق التجريبي (index.html فقط)
+    out, _beta_note_added = add_beta_note(path, out)
 
     SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
