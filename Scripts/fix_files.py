@@ -498,6 +498,40 @@ def fix_index_baqara_ranges(root, out):
     return out, changed
 
 
+def fix_empty_page_nav_links(path, out):
+    """يملأ روابط التنقل الفاضية (href="") في صفحات البقرة.
+
+    في albaqara_p28.html كان بلوكَي التنقل (بتاع اختيار المستوى وبتاع
+    أثناء الاختبار) فيهم href="" بدل الرابط. والرابط الفاضي في HTML
+    معناه "أعد تحميل الصفحة الحالية"، فالمستخدم كان يدوس «الصفحة
+    التالية» ويفضل مكانه — بيبان كأنه حلقة مقفولة.
+
+    الأرقام بتتحسب من اسم الملف، والحدود محترمة: p2 مالهاش سابقة
+    (بترجع للفاتحة) وp49 مالهاش تالية (آخر صفحة في السورة)."""
+    fn = os.path.basename(path)
+    m_num = re.match(r'albaqara_p(\d+)\.html$', fn)
+    if not m_num or 'href=""' not in out:
+        return out, False
+
+    n = int(m_num.group(1))
+    prev_href = 'alfatiha.html' if n <= 2 else 'albaqara_p%d.html' % (n - 1)
+    next_href = '' if n >= 49 else 'albaqara_p%d.html' % (n + 1)
+
+    changed = False
+
+    def repl(m):
+        nonlocal changed
+        cls = m.group(1)
+        target = prev_href if cls == 'prev-page-btn' else next_href
+        if not target:
+            return m.group(0)
+        changed = True
+        return '<a href="%s" class="%s"' % (target, cls)
+
+    out = re.sub(r'<a href="" class="(prev-page-btn|next-page-btn)"', repl, out)
+    return out, changed
+
+
 def add_dev_mode(out):
     """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
 
@@ -7733,6 +7767,10 @@ def fix_file(path):
     # 9ي٢. وسوم الوصف والمشاركة (description + og + twitter) عشان روابط
     #      الصفحات تتشارك بصورة وعنوان ووصف زي الصفحة الرئيسية
     out, social_meta_added = add_social_meta(path, out)
+
+    # 9ي٣. ملء روابط التنقل الفاضية (href="") — كانت بتخلي زر «الصفحة
+    #      التالية» يعيد تحميل نفس الصفحة بدل ما ينقل
+    out, nav_links_fixed = fix_empty_page_nav_links(path, out)
 
     # 9ك. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات) — لازم قبل
     # قائمة الأدوات عشان تقدر تشيل النسخة القديمة بأمان لو موجودة
