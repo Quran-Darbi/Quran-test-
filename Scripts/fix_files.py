@@ -2041,6 +2041,138 @@ def add_page_nav_row(path, out):
     return out, changed
 
 
+RESULT_HOME_LINK_RE = re.compile(
+    r'<a href="[^"]*index\.html" class="home-link"[^>]*>[^<]*</a>'
+)
+
+
+def add_result_page_nav_row(path, out):
+    """نفس صف التنقل المضغوط (⏮️ السابق / التالي ⏭️) بس في شاشة النتيجة
+    النهائية جوه result-area — بعد زر "← الرئيسية" مباشرةً.
+
+    الفكرة: بعد ما المستخدم يخلّص المستوى ويشوف نتيجته، يقدر ينتقل
+    للصفحة اللي بعدها في ترتيب المصحف من غير ما يرجع للرئيسية. الروابط
+    بتودّي على شاشة اختيار المستوى في الصفحة الجديدة (مش تبدأ اختبار
+    تلقائي)، وده سلوك الروابط نفسه المستخدم في add_page_nav_row.
+
+    الطرفين متحلّين أصلاً من NEXT_SEQUENCE: alfatiha → البقرة p2..p49 →
+    النبأ → ... → الناس. يعني p49 «التالي» بتودّي على النبأ، وأول
+    الفاتحة/آخر الناس بيتعرض فيها زر واحد بس (اللي له وجود في السلسلة).
+
+    مفيش أي تعارض مع الدوال التانية:
+      · add_page_nav_row: بتحقن بعد level-return-btn — شاشة النتيجة
+        بتستخدم retry-btn، فمش هتتلمس.
+      · fix_baqara_page_nav_placement: بتشترط إن اللي قبل الصف يكون
+        </button>؛ اللي قبل صفنا </a> بتاع home-link → بتعديه.
+      · fix_baqara_page_nav_visibility_js / fix_question_nav_...: بتشتغل
+        على id="quiz-page-nav" بس، وصفنا id="result-page-nav".
+      · تنظيف الأزرار اليتيمة: أزراره ملفوفة جوه page-nav-row → آمنة.
+    (أغسطس ٢٠٢٦)"""
+    fn = os.path.splitext(os.path.basename(path))[0]
+    next_key = NEXT_MAP.get(fn)
+    prev_key = PREV_MAP.get(fn)
+    if not next_key and not prev_key:
+        return out, False  # ملف مش داخل السلسلة أصلاً
+    if 'id="result-page-nav"' in out:
+        return out, False  # موجود بالفعل — idempotent
+    if '<div class="result-area"' not in out:
+        return out, False
+
+    m = RESULT_HOME_LINK_RE.search(out)
+    if not m:
+        return out, False
+    # نتأكد إن الرابط ده هو بتاع شاشة النتيجة فعلاً (بعد زر إعادة
+    # الاختبار جوه result-area) مش أي رابط رئيسية تاني في الصفحة
+    ra = out.rfind('<div class="result-area"', 0, m.start())
+    if ra == -1 or 'retry-btn' not in out[ra:m.start()]:
+        return out, False
+
+    btn_style = (
+        'flex:1;text-align:center;text-decoration:none;padding:8px 4px;'
+        'border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));'
+        'border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;'
+    )
+    inner = ''
+    if prev_key:
+        inner += ('<a href="' + prev_key + '.html" class="prev-page-btn" '
+                   'style="' + btn_style + '">⏮️ الصفحة السابقة</a>')
+    if next_key:
+        inner += ('<a href="' + next_key + '.html" class="next-page-btn" '
+                   'style="' + btn_style + '">الصفحة التالية ⏭️</a>')
+    row_html = ('\n  <div class="page-nav-row" id="result-page-nav" '
+                'style="display:flex;gap:8px;margin-top:14px;">' + inner + '</div>')
+
+    return out[:m.end()] + row_html + out[m.end():], True
+
+
+COMPACT_MARK = '/*COMPACT-VIEWPORT v1*/'
+COMPACT_CSS_RE = re.compile(re.escape(COMPACT_MARK) + r'.*?/\*COMPACT-END\*/\n?', re.S)
+
+# سطر العنوان المدموج (الآيات + وجه/صفحة) → سطرين زي الأصل
+MERGED_INFO_RE = re.compile(
+    r'<div class="ayat-range">(.*?) <span class="page-info">·\s*(.*?)</span></div>'
+)
+# زر التلاوة المضغوط جوّه كرت العنوان → كرت مستقل زي الأصل
+REC_INLINE_RE = re.compile(
+    r'[ \t]*<a href="(recitation\.html\?surah=[^"]+)" class="rec-inline-btn">'
+    r'\s*🎤 اختبر تلاوتك\s*</a>\n?'
+)
+_SR_SHOW = "const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='flex';"
+_SR_HIDE = "const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='none';"
+
+
+def undo_compact_first_screen(out):
+    """بتلغي تجربة «ضغط أول شاشة» وترجّع الشكل الأصلي بالظبط:
+
+      · زر 🎤 اختبر تلاوتك يرجع كرت مستقل بستايله الأصلي (كان بيبان
+        كرابط أزرق مسطّر في بعض الملفات بعد الضغط).
+      · «الآيات … · وجه … صفحة …» يرجع سطرين، وبادئة «اختبار الحفظ |»
+        اللي اتشالت ترجع مكانها.
+      · شريط الإحصائيات يرجع ظاهر دايمًا (شيل id وinline style وسطور
+        الإظهار/الإخفاء من الـJS).
+      · كتلة CSS الضغط تتشال بالكامل.
+
+    نصوص وصف السهل «اختر الإجابة الصحيحة» والمتوسط «أكمل الفراغ»
+    متتلمسش — دي مطلوبة ومنفصلة عن تجربة الضغط. (أغسطس ٢٠٢٦)"""
+    changed = False
+
+    # ── كتلة CSS ──
+    if COMPACT_MARK in out:
+        out = COMPACT_CSS_RE.sub('', out, count=1)
+        changed = True
+
+    # ── زر التلاوة يرجع كرت مستقل ──
+    m = REC_INLINE_RE.search(out)
+    if m and _RECIT_ANCHOR in out:
+        key = m.group(1).split('surah=', 1)[1]
+        out = out[:m.start()] + out[m.end():]
+        out = out.replace(_RECIT_ANCHOR, (_RECIT_BTN_TPL % key) + _RECIT_ANCHOR, 1)
+        changed = True
+
+    # ── سطر العنوان يرجع سطرين ──
+    m2 = MERGED_INFO_RE.search(out)
+    if m2:
+        rest = m2.group(2).strip()
+        if not rest.startswith('اختبار الحفظ'):
+            rest = 'اختبار الحفظ | ' + rest
+        two = ('<div class="ayat-range">' + m2.group(1).strip() + '</div>\n'
+               '  <div class="page-info">' + rest + '</div>')
+        out = out[:m2.start()] + two + out[m2.end():]
+        changed = True
+
+    # ── شريط الإحصائيات يرجع ظاهر ──
+    if '<div class="stats-row" id="stats-row" style="display:none;">' in out:
+        out = out.replace('<div class="stats-row" id="stats-row" style="display:none;">',
+                          '<div class="stats-row">', 1)
+        changed = True
+    for snip in (_SR_SHOW, _SR_HIDE):
+        if snip in out:
+            out = out.replace(snip, '')
+            changed = True
+
+    return out, changed
+
+
 def fix_missing_nav_btn_css(out):
     """يضيف كلاس .nav-btn لو مستخدم في الـHTML (زر تحقق/أظهر الترتيب)
     لكن تعريفه ناقص من الـCSS — بيخلي الزر يبان بشكل المتصفح الافتراضي
@@ -6952,6 +7084,10 @@ def fix_file(path):
     # تقصير وصف مستوى "صعب" لو لسه بالنسخة الطويلة القديمة
     out, _hard_desc_fixed = fix_hard_level_desc(out)
 
+    # تراجُع عن ضغط أول شاشة (اتجرّبت أغسطس ٢٠٢٦ وماعجبتش الشكل) —
+    # بترجّع زر التلاوة ككرت مستقل وسطرَي العنوان وشريط الإحصائيات.
+    # نصوص وصف السهل/المتوسط الجديدة بتفضل زي ما هي (مطلوبة).
+    out, _uncompacted = undo_compact_first_screen(out)
 
     # توضيح تسمية زر تنقل الأسئلة + إخفاء زر تنقل الصفحات جوه الاختبار
     # إلا عند آخر سؤال
@@ -7450,6 +7586,10 @@ def fix_file(path):
     # ====================================================
     # 9هـ. صف مضغوط: ⏮️ السابق / التالي ⏭️ — انتقال مباشر بين الصفحات
     out, page_nav_added = add_page_nav_row(path, out)
+
+    # 9هـ٢. نفس الصف في شاشة النتيجة النهائية (بعد "← الرئيسية") عشان
+    # المستخدم ينتقل للصفحة اللي بعدها فور ما يخلّص المستوى
+    out, result_nav_added = add_result_page_nav_row(path, out)
 
     out, nav_links_fixed = fix_broken_page_nav_links(path, out)
 
