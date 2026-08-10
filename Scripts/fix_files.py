@@ -353,12 +353,41 @@ DEV_MODE_REDIRECT = """<script>
 })();
 </script>"""
 
+DEV_LOCK_CSS = ('html.darbi-locked #btn-hard,'
+                'html.darbi-locked a[href*="recitation.html"]'
+                '{display:none !important;}')
+
+DEV_LOCK_SCRIPT_RE = re.compile(
+    r"<script>\s*\(function\(\)\{\s*try\{\s*var p=new URLSearchParams\(location\.search\);\s*"
+    r"if\(p\.get\('dev'\)==='1'\)\{localStorage\.setItem\('darbi_dev','1'\);\}\s*"
+    r"if\(localStorage\.getItem\('darbi_dev'\)!=='1'\)\{.*?\}\s*\}catch\(e\)\{\}\s*"
+    r"\}\)\(\);\s*</script>\n?",
+    re.S)
+
+
 def add_dev_mode(out):
-    """يحقن كود إخفاء المستوى الصعب/زر التلاوة (صفحات السور وindex.html)"""
-    if 'darbi_dev' in out or '<head>' not in out:
+    """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
+
+    الموقع اتنشر بالكامل، فوضع المطوّر اتلغى نهائيًا. الدالة دلوقتي
+    بتشيل أي بقايا قفل بدل ما تحقنها، عشان أي ملف قديم يترفع يتنضّف
+    تلقائيًا. الاسم اتساب زي ما هو عشان مواضع الاستدعاء ما تتغيّرش.
+
+    بتشيل حاجتين:
+      1. سكربت الـ localStorage اللي بيضيف class darbi-locked
+         (أو بيعمل redirect في recitation.html)
+      2. قاعدة الـ CSS بتاعة القفل — مع الحفاظ على أي قاعدة تانية
+         في نفس وسم الـ style (زي order-slot-selected)
+    """
+    if 'darbi_dev' not in out and 'darbi-locked' not in out:
         return out, False
-    out = out.replace('<head>', '<head>\n' + DEV_MODE_LOCK, 1)
-    return out, True
+    orig = out
+    out = DEV_LOCK_SCRIPT_RE.sub('', out, count=1)
+    # وسم style مخصص للقفل وحده → يتشال كامل
+    out = out.replace('<style>' + DEV_LOCK_CSS + '</style>\n', '', 1)
+    out = out.replace('<style>' + DEV_LOCK_CSS + '</style>', '', 1)
+    # القفل مدموج مع قواعد تانية → تتشال قاعدة القفل بس
+    out = out.replace(DEV_LOCK_CSS, '', 1)
+    return out, out != orig
 
 # ===== ودجت "💬 شاركنا رأيك" (يوليو ٢٠٢٦) =====
 # زر عائم في كل صفحة يفتح نافذة صغيرة (نوع الملاحظة + تفاصيل) وعند
@@ -7712,13 +7741,10 @@ def fix_index_recitation(path):
     # إصلاح رابط 404 (alfatiha_p1.html الغلط بدل alfatiha.html) لو موجود هنا كمان
     out, _fatiha_link_fixed = fix_alfatiha_broken_link(out)
 
-    # وضع المطوّر: recitation.html بترجّع أي زائر من غير الفلاج لـ index.html
-    # (الصفحة كلها ميزة واحدة)، وindex.html بتخفي أي رابط/زر تلاوة فيها لو موجود
-    if 'darbi_dev' not in out and '<head>' in out:
-        if os.path.basename(path) == 'recitation.html':
-            out = out.replace('<head>', '<head>\n' + DEV_MODE_REDIRECT, 1)
-        else:
-            out = out.replace('<head>', '<head>\n' + DEV_MODE_LOCK, 1)
+    # وضع المطوّر اتلغى (أغسطس ٢٠٢٦ — النشر الكامل). كان بيحقن هنا
+    # redirect في recitation.html وقفل في index.html؛ دلوقتي بيشيل
+    # أي بقايا بدل ما يحقن، عشان الملفات القديمة تتنضّف تلقائيًا.
+    out, _dev_lock_removed = add_dev_mode(out)
 
     SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
