@@ -2105,74 +2105,6 @@ def add_result_page_nav_row(path, out):
     return out[:m.end()] + row_html + out[m.end():], True
 
 
-COMPACT_MARK = '/*COMPACT-VIEWPORT v1*/'
-COMPACT_CSS_RE = re.compile(re.escape(COMPACT_MARK) + r'.*?/\*COMPACT-END\*/\n?', re.S)
-
-# سطر العنوان المدموج (الآيات + وجه/صفحة) → سطرين زي الأصل
-MERGED_INFO_RE = re.compile(
-    r'<div class="ayat-range">(.*?) <span class="page-info">·\s*(.*?)</span></div>'
-)
-# زر التلاوة المضغوط جوّه كرت العنوان → كرت مستقل زي الأصل
-REC_INLINE_RE = re.compile(
-    r'[ \t]*<a href="(recitation\.html\?surah=[^"]+)" class="rec-inline-btn">'
-    r'\s*🎤 اختبر تلاوتك\s*</a>\n?'
-)
-_SR_SHOW = "const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='flex';"
-_SR_HIDE = "const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='none';"
-
-
-def undo_compact_first_screen(out):
-    """بتلغي تجربة «ضغط أول شاشة» وترجّع الشكل الأصلي بالظبط:
-
-      · زر 🎤 اختبر تلاوتك يرجع كرت مستقل بستايله الأصلي (كان بيبان
-        كرابط أزرق مسطّر في بعض الملفات بعد الضغط).
-      · «الآيات … · وجه … صفحة …» يرجع سطرين، وبادئة «اختبار الحفظ |»
-        اللي اتشالت ترجع مكانها.
-      · شريط الإحصائيات يرجع ظاهر دايمًا (شيل id وinline style وسطور
-        الإظهار/الإخفاء من الـJS).
-      · كتلة CSS الضغط تتشال بالكامل.
-
-    نصوص وصف السهل «اختر الإجابة الصحيحة» والمتوسط «أكمل الفراغ»
-    متتلمسش — دي مطلوبة ومنفصلة عن تجربة الضغط. (أغسطس ٢٠٢٦)"""
-    changed = False
-
-    # ── كتلة CSS ──
-    if COMPACT_MARK in out:
-        out = COMPACT_CSS_RE.sub('', out, count=1)
-        changed = True
-
-    # ── زر التلاوة يرجع كرت مستقل ──
-    m = REC_INLINE_RE.search(out)
-    if m and _RECIT_ANCHOR in out:
-        key = m.group(1).split('surah=', 1)[1]
-        out = out[:m.start()] + out[m.end():]
-        out = out.replace(_RECIT_ANCHOR, (_RECIT_BTN_TPL % key) + _RECIT_ANCHOR, 1)
-        changed = True
-
-    # ── سطر العنوان يرجع سطرين ──
-    m2 = MERGED_INFO_RE.search(out)
-    if m2:
-        rest = m2.group(2).strip()
-        if not rest.startswith('اختبار الحفظ'):
-            rest = 'اختبار الحفظ | ' + rest
-        two = ('<div class="ayat-range">' + m2.group(1).strip() + '</div>\n'
-               '  <div class="page-info">' + rest + '</div>')
-        out = out[:m2.start()] + two + out[m2.end():]
-        changed = True
-
-    # ── شريط الإحصائيات يرجع ظاهر ──
-    if '<div class="stats-row" id="stats-row" style="display:none;">' in out:
-        out = out.replace('<div class="stats-row" id="stats-row" style="display:none;">',
-                          '<div class="stats-row">', 1)
-        changed = True
-    for snip in (_SR_SHOW, _SR_HIDE):
-        if snip in out:
-            out = out.replace(snip, '')
-            changed = True
-
-    return out, changed
-
-
 def fix_missing_nav_btn_css(out):
     """يضيف كلاس .nav-btn لو مستخدم في الـHTML (زر تحقق/أظهر الترتيب)
     لكن تعريفه ناقص من الـCSS — بيخلي الزر يبان بشكل المتصفح الافتراضي
@@ -5315,6 +5247,41 @@ INDEX_NAV_FIXED = []
 _NAV_RULE_RE = re.compile(r'(\bnav\s*\{[^}]*?padding:)(10px 18px)([^}]*\})')
 
 
+TOPBAR_OVERLAP_FIXED = []
+_TOPBAR_RULE_RE = re.compile(r'(\.top-bar\s*\{[^}]*?padding\s*:\s*)([^;}]+?)(\s*[;}])')
+
+
+def fix_topbar_tools_overlap(path, out):
+    """زر ☰ (قائمة الأدوات) بقى position:fixed في الركن الشمال، فطلع
+    بره تدفّق الصفحة وبقى يقع فوق زر 🌙 في الصفحات الداخلية.
+
+    index.html اتصلحت قبل كده بحجز مساحة في الترويسة
+    (nav{padding:10px 18px 10px 58px}) — الدالة دي بتعمل نفس الحاجة
+    بالظبط للصفحات الداخلية: .top-bar تاخد padding يسار 58px (14px
+    مسافة الزر من الحافة + 34px عرضه + 10px فاصل) فالعناصر تتزحزح
+    لجنبه بدل ما تتراكب معاه. مفيش أي تغيير في مكان ☰ ولا شكل أي زر.
+
+    idempotent: لو الحجز موجود بالفعل بتخرج من غير تغيير. (أغسطس ٢٠٢٦)"""
+    m = _TOPBAR_RULE_RE.search(out)
+    if not m:
+        return out, False
+    pad = m.group(2).strip()
+    if '58px' in pad:
+        return out, False                      # اتصلح قبل كده
+    parts = pad.split()
+    if len(parts) == 2:                        # الشكل المتوقع: 12px 20px
+        new_pad = '%s %s %s 58px' % (parts[0], parts[1], parts[0])
+    elif len(parts) == 4:
+        new_pad = '%s %s %s 58px' % (parts[0], parts[1], parts[2])
+    else:
+        TOPBAR_OVERLAP_FIXED.append(
+            (os.path.basename(path), '\u26a0 padding مش بالشكل المتوقع: ' + pad))
+        return out, False
+    out = out[:m.start(2)] + new_pad + out[m.end(2):]
+    TOPBAR_OVERLAP_FIXED.append((os.path.basename(path), pad + ' \u2192 ' + new_pad))
+    return out, True
+
+
 def fix_index_tools_overlap(path, out):
     if os.path.basename(path) != 'index.html':
         return out, False
@@ -7084,10 +7051,6 @@ def fix_file(path):
     # تقصير وصف مستوى "صعب" لو لسه بالنسخة الطويلة القديمة
     out, _hard_desc_fixed = fix_hard_level_desc(out)
 
-    # تراجُع عن ضغط أول شاشة (اتجرّبت أغسطس ٢٠٢٦ وماعجبتش الشكل) —
-    # بترجّع زر التلاوة ككرت مستقل وسطرَي العنوان وشريط الإحصائيات.
-    # نصوص وصف السهل/المتوسط الجديدة بتفضل زي ما هي (مطلوبة).
-    out, _uncompacted = undo_compact_first_screen(out)
 
     # توضيح تسمية زر تنقل الأسئلة + إخفاء زر تنقل الصفحات جوه الاختبار
     # إلا عند آخر سؤال
@@ -7726,6 +7689,10 @@ def fix_index_recitation(path):
     out, _canon = fix_add_canonical(path, out)
 
     out, _idx_nav = fix_index_tools_overlap(path, out)
+
+    # نفس الإصلاح للصفحات الداخلية: حجز مساحة الزر ☰ العائم في
+    # .top-bar عشان مايقعش فوق زر 🌙
+    out, _topbar_nav = fix_topbar_tools_overlap(path, out)
 
     # إصلاح تحميل خط Google Fonts البطيء (@import → <link>)
     out, _font_fixed = fix_font_import_to_link(out)
