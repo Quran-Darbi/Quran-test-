@@ -125,9 +125,9 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 
 <div class="info-card">
   <div class="surah-title">سورة الغاشية</div>
-  <div class="ayat-range">الآيات 1 إلى 26</div>
-  <div class="page-info">اختبار الحفظ | جزء عمّ</div>
-  <div class="stats-row">
+  <div class="ayat-range">الآيات 1 إلى 26 <span class="page-info">· جزء عمّ</span></div>
+  <a href="recitation.html?surah=alghasiya" class="rec-inline-btn">🎤 اختبر تلاوتك</a>
+  <div class="stats-row" id="stats-row" style="display:none;">
     <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
     <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
     <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
@@ -142,18 +142,12 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   </div>
 </div>
 
-<div style="margin:0 16px 16px;">
-  <a href="recitation.html?surah=alghasiya" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:13px 20px;font-size:16px;font-family:inherit;color:var(--accent);text-decoration:none;">
-    🎤 اختبر تلاوتك
-  </a>
-</div>
-
 <div class="level-card" id="level-card">
   <div class="level-title">اختر مستوى الاختبار</div>
   <div class="level-sub">كل مستوى له طريقة مختلفة في الاختبار</div>
   <div class="levels-grid">
-    <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name">سهل</span><span class="level-desc">اختيار من متعدد</span></button>
-    <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name">متوسط</span><span class="level-desc">إكمال فراغ</span></button>
+    <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name">سهل</span><span class="level-desc">اختر الإجابة الصحيحة</span></button>
+    <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name">متوسط</span><span class="level-desc">أكمل الفراغ</span></button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard"><span class="level-icon">🌳</span><span class="level-name">صعب</span><span class="level-desc">اكتب الآية كاملة</span></button>
     <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name">ترتيب</span><span class="level-desc">رتّب الآيات</span></button>
   </div>
@@ -457,14 +451,14 @@ function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}
   statuses=questions.map(()=>'pending');wrongIndices=[];
   const rb=document.getElementById('resume-banner');if(rb)rb.style.display='none';
   document.getElementById('level-card').style.display='none';
-  document.getElementById('quiz-area').style.display='block';
+  document.getElementById('quiz-area').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='flex';
   showQuestion();
 }
 function backToLevel(){
   document.getElementById('quiz-area').style.display='none';
   document.getElementById('result-area').style.display='none';
   const ra=document.getElementById('review-area');if(ra)ra.style.display='none';
-  document.getElementById('level-card').style.display='block';
+  document.getElementById('level-card').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='none';
   currentLevel=null;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('start-btn').classList.remove('ready');
@@ -482,7 +476,7 @@ function resumeQuiz(){
   statuses=saved.statuses||questions.map(()=>'pending');wrongIndices=saved.wrongIndices||[];
   document.getElementById('resume-banner').style.display='none';
   document.getElementById('level-card').style.display='none';
-  document.getElementById('quiz-area').style.display='block';
+  document.getElementById('quiz-area').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='flex';
   showQuestion();
 }
 function showQuestion(){
@@ -734,10 +728,10 @@ function showResult(){
   if(pct===100)spawnConfetti();
 }
 
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='none';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
 function retryQuiz(){
   document.getElementById('result-area').style.display='none';
-  document.getElementById('level-card').style.display='block';
+  document.getElementById('level-card').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='none';
   currentLevel=null;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('start-btn').classList.remove('ready');

@@ -120,9 +120,9 @@
 </div></div>
 <div class="info-card">
   <div class="surah-title">سورة النازعات</div>
-  <div class="ayat-range">الآيات 1–46 كاملة</div>
-  <div class="page-info">اختبار الحفظ | ص 583–584 | جزء عمّ</div>
-  <div class="stats-row">
+  <div class="ayat-range">الآيات 1–46 كاملة <span class="page-info">· ص 583–584 | جزء عمّ</span></div>
+  <a href="recitation.html?surah=annaziat" class="rec-inline-btn">🎤 اختبر تلاوتك</a>
+  <div class="stats-row" id="stats-row" style="display:none;">
     <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">15</span></div>
     <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
     <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
@@ -135,12 +135,6 @@
     <button onclick="dismissResume()" style="flex:1;background:var(--surface3);color:var(--text-soft);border:1.5px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:15px;cursor:pointer;">البدء من جديد</button>
   </div>
 </div>
-<div style="margin:0 16px 16px;">
-  <a href="recitation.html?surah=annaziat" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:13px 20px;font-size:16px;font-family:inherit;color:var(--accent);text-decoration:none;">
-    🎤 اختبر تلاوتك
-  </a>
-</div>
-
 <div class="level-card" id="level-card">
   <div class="level-title">اختر مستوى الاختبار</div>
   <div class="level-sub">كل مستوى له طريقة مختلفة في الاختبار</div>
@@ -541,7 +535,7 @@ function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}
   qIndex=correctCount=wrongCount=0;wCorrect=wTotal=0;statuses=questions.map(()=>'pending');wrongIndices=[];
   var rb=document.getElementById('resume-banner');if(rb)rb.style.display='none';
   document.getElementById('level-card').style.display='none';
-  document.getElementById('quiz-area').style.display='block';
+  document.getElementById('quiz-area').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='flex';
   showQuestion();
 }
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
@@ -561,7 +555,7 @@ function resumeQuiz(){
   statuses=saved.statuses||questions.map(()=>'pending');wrongIndices=saved.wrongIndices||[];
   document.getElementById('resume-banner').style.display='none';
   document.getElementById('level-card').style.display='none';
-  document.getElementById('quiz-area').style.display='block';
+  document.getElementById('quiz-area').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='flex';
   showQuestion();
 }
 function showQuestion(){
@@ -798,8 +792,8 @@ function skipQuestion(){const q=questions[qIndex];const fb=document.getElementBy
 function prevQuestion(){if(qIndex===0)return;qIndex--;showQuestion();}
 function nextQuestion(){qIndex++;if(qIndex>=questions.length){showResult();}else{showQuestion();}}
 function showResult(){document.getElementById('quiz-area').style.display='none';const _cf=(correctCount===questions.length)?45:((correctCount/questions.length)>=0.8?22:0);if(_cf&&typeof spawnConfetti==='function')setTimeout(()=>spawnConfetti(_cf),260);document.getElementById('result-area').style.display='block';const pct=wTotal?Math.round(wCorrect*100/wTotal):0;document.getElementById('result-score').textContent=`${toArabicNum(wCorrect)} / ${toArabicNum(wTotal)} كلمة — ${toArabicNum(pct)}%  |  ${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} سؤال`;let icon,title,msg;if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت السورة بالكامل';}else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';}else if(pct>=60){icon='📖';title='جيد';msg='راجع السورة مرة أخرى وأعد الاختبار';}else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';}document.getElementById('result-icon').textContent=icon;document.getElementById('result-title').textContent=title;document.getElementById('result-msg').textContent=msg;document.getElementById('progress-fill').style.width='100%';updateBadges();try{localStorage.removeItem(RESUME_KEY);}catch(e){}var rb=document.getElementById('review-mistakes-btn');if(rb)rb.style.display=(wrongIndices.length>0?'inline-block':'none');if(pct===100)spawnConfetti();}
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
-function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent=toArabicNum(EASY_Q.length);document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML=`السؤال 1 /<br>${toArabicNum(EASY_Q.length)}`;document.getElementById('progress-fill').style.width='0%';}
+function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='none';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function retryQuiz(){document.getElementById('result-area').style.display='none';document.getElementById('level-card').style.display='block';const _sr=document.getElementById('stats-row');if(_sr)_sr.style.display='none';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent=toArabicNum(EASY_Q.length);document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML=`السؤال 1 /<br>${toArabicNum(EASY_Q.length)}`;document.getElementById('progress-fill').style.width='0%';}
 
 /* ===== ترتيب الآيات 🔀 ===== */
 let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
