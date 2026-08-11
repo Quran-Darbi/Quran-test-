@@ -710,7 +710,7 @@ function _orderHelpSet(open){
 }
 function toggleOrderHelp(){const p=document.getElementById('order-help');if(!p)return;_orderHelpSet(p.style.display==='none');_orderHelpMark();}
 function closeOrderHelp(){_orderHelpSet(false);_orderHelpMark();}
-function maybeShowOrderHelp(){_orderHelpSet(!_orderHelpSeen());}
+function maybeShowOrderHelp(){_orderHelpSet(false);}
 /* ===== نهاية لوحة شرح الترتيب ===== */
 /*OHJS-END*/
 function startOrderQuiz(){

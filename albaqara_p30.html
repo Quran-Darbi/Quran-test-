@@ -720,7 +720,7 @@ function _orderHelpSet(open){
 }
 function toggleOrderHelp(){const p=document.getElementById('order-help');if(!p)return;_orderHelpSet(p.style.display==='none');_orderHelpMark();}
 function closeOrderHelp(){_orderHelpSet(false);_orderHelpMark();}
-function maybeShowOrderHelp(){_orderHelpSet(!_orderHelpSeen());}
+function maybeShowOrderHelp(){_orderHelpSet(false);}
 /* ===== نهاية لوحة شرح الترتيب ===== */
 /*OHJS-END*/
 function startOrderQuiz(){orderPlaced=new Array(AYAT.length).fill(null);orderCursor=0;orderSelected=-1;orderPoolOrder=AYAT.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';maybeShowOrderHelp();renderOrderQuiz();}
