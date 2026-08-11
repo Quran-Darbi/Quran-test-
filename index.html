@@ -56,7 +56,7 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .rec-btn:hover{opacity:.88;}
 
 /* ===== HERO ===== */
-.hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:30px 20px 36px;text-align:center;position:relative;overflow:hidden;}
+.hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:20px 20px 24px;text-align:center;position:relative;overflow:hidden;}
 /* زخرفة دوائر خلفية */
 .hero::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);pointer-events:none;}
 .hero::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06);pointer-events:none;}
@@ -66,16 +66,16 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .hero-inner{position:relative;z-index:1;}
 .hero-bismillah{font-family:'Scheherazade New',serif;font-size:1.1rem;color:rgba(255,255,255,0.75);margin-bottom:10px;letter-spacing:1px;}
 .hero-title{font-family:'Scheherazade New',serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:6px;}
-.hero-sub{text-wrap:balance;font-size:0.88rem;color:rgba(255,255,255,0.78);margin-bottom:18px;}
+.hero-sub{text-wrap:balance;font-size:0.88rem;color:rgba(255,255,255,0.78);margin-bottom:12px;}
 /* بطاقة الآية */
-.ayah-banner{display:inline-flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);border-radius:14px;padding:12px 20px;margin-bottom:18px;backdrop-filter:blur(6px);max-width:340px;}
+.ayah-banner{display:inline-flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);border-radius:14px;padding:10px 18px;margin-bottom:12px;backdrop-filter:blur(6px);max-width:340px;}
 .ayah-text{font-family:'Scheherazade New',serif;font-size:1.05rem;color:#fff;line-height:1.9;margin-bottom:4px;}
 .ayah-ref{font-size:0.72rem;color:rgba(255,255,255,0.6);letter-spacing:.5px;}
 /* زر التلاوة */
 .hero-rec-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--green);border:none;border-radius:22px;padding:10px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.15);transition:transform .2s,box-shadow .2s;cursor:pointer;}
 .hero-rec-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.2);}
 /* إحصائيات */
-.hero-stats{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.hero-stats{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
 .hstat{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:6px 14px;text-align:center;color:rgba(255,255,255,0.9);}
 .hstat b{display:block;font-size:1.05rem;color:#fff;}
 .hstat small{font-size:0.72rem;opacity:.8;}
@@ -143,18 +143,26 @@ footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid 
 html[data-theme="dark"] .beta-tag{color:var(--gold);}
 html[data-theme="dark"] .beta-text{color:var(--soft);}
 @media(max-width:380px){.beta-note-inner{padding:9px 12px;}.beta-text{font-size:0.76rem;}}
+
+.about-dua{margin-top:14px;font-family:'Scheherazade New',serif;font-size:1.02rem;line-height:1.9;color:var(--green);text-align:center;}
 </style>
 <link rel="canonical" href="https://quran-darbi.com/">
+<script>
+function showAbout(){
+  var el=document.getElementById('about');
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+</script>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo"><span>📖</span> دربي لحفظ القرآن</div>
   <div class="nav-right">
-    <a href="#about" class="rec-btn" style="background:var(--green3);color:var(--green);border:1px solid var(--border);">عن المشروع</a>
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
   <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
+    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();">📖 عن المشروع</button>
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
       <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
@@ -281,11 +289,10 @@ html[data-theme="dark"] .beta-text{color:var(--soft);}
       <div style="flex:1;min-width:220px;">
         <div style="font-family:'Scheherazade New',serif;font-size:1.35rem;color:var(--green);font-weight:700;margin-bottom:8px;">عن المشروع</div>
         <div style="font-size:0.93rem;color:var(--soft);line-height:2;">
-          «دربي لحفظ القرآن» مشروع يهدف إلى مساعدة الجميع على حفظ كتاب الله ومراجعته من خلال اختبارات تفاعلية متنوعة.<br>
-          صُممت بعناية لتثبيت الحفظ وتعزيز إتقانه، مع التركيز على متشابهات القرآن الكريم.<br>
-          نسأل الله أن يجعل القرآن ربيع قلوبنا، ونور صدورنا، وأن يرزقنا حفظه وإتقانه والعمل به.
+          <p style="margin:0 0 12px;">«دربي لحفظ القرآن» منصة تفاعلية تهدف إلى مساعدة الجميع على حفظ كتاب الله ومراجعته، من خلال اختبارات متنوعة.</p>
+          <p style="margin:0;">مصممة بعناية لتثبيت الحفظ وتعزيز إتقانه، مع التركيز على متشابهات القرآن الكريم.</p>
         </div>
-        <div style="margin-top:12px;font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--soft);">✦ هند هاني أبوبكر</div>
+        <div class="about-dua notranslate" translate="no">نسأل الله أن يجعل القرآن ربيع قلوبنا، ونور صدورنا، وأن يرزقنا حفظه وإتقانه والعمل به.</div>
         <div style="margin-top:14px;background:var(--green3);border-radius:12px;padding:12px 14px;text-align:center;">
           <div style="font-family:'Scheherazade New',serif;font-size:1rem;color:var(--green);line-height:1.9;" class="notranslate" translate="no">﴿ وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ ﴾</div>
           <div style="font-size:0.72rem;color:var(--soft);margin-top:3px;" class="notranslate" translate="no">سورة القمر — آية 17</div>
@@ -298,7 +305,7 @@ html[data-theme="dark"] .beta-text{color:var(--soft);}
 <footer>
   <div class="footer-ayah notranslate" translate="no">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾</div>
   <div class="footer-ref notranslate" translate="no">سورة الحجر — آية 9</div>
-  <div class="footer-copy">جميع الحقوق محفوظة © هند هاني أبوبكر — دربي لحفظ القرآن</div>
+  <div class="footer-copy">© 2026 دربي لحفظ القرآن — جميع الحقوق محفوظة</div>
 </footer>
 
 <script>
