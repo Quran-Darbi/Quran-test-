@@ -3042,6 +3042,65 @@ VERIFIED_MULTI_AYAH_SPLITS = {
     ),
 }
 
+
+# ===== مصدر آيات الترتيب: recitation.html (أغسطس ٢٠٢٦) =====
+# النسخة الأولى كانت بتستخرج آيات الترتيب من HARD_Q، وده كان بيفشل في
+# ١١ صفحة لأن HARD_Q بيقسّم الآيات الطويلة على أكتر من سؤال (وفي تلات
+# صفحات كانت في آية مالهاش سؤال أصلًا: ١٨٢ و٢١٣ و٢٢٠).
+#
+# لكن recitation.html أصلًا فيها نصوص البقرة مقسّمة آية آية بمفاتيح
+# baqara_pNN لكل الـ٤٨ صفحة، ومستعملة فعليًا في اختبار التلاوة، وعدد
+# آياتها مطابق لرؤوس الصفحات كلها (٤٨/٤٨) ومتحقق منه من صور المصحف.
+# فبناء ORDER_AYAT منها = نقل حرفي من مصدر واحد موثّق، بلا أي تأليف
+# ولا نسخ يدوي، وبيوحّد المصدر: أي تصحيح في recitation بيسري تلقائيًا.
+_RECITATION_BAQARA = {}
+
+
+def load_recitation_baqara(root):
+    """يقرأ نصوص آيات البقرة من recitation.html مرة واحدة"""
+    if _RECITATION_BAQARA:
+        return _RECITATION_BAQARA
+    rp = os.path.join(root, 'recitation.html')
+    if not os.path.exists(rp):
+        return _RECITATION_BAQARA
+    with open(rp, encoding='utf-8') as fh:
+        rs = fh.read()
+    for m in re.finditer(r'\bbaqara_p(\d+)\s*:\s*\[(.*?)\]\s*,?\s*\n',
+                         rs, re.S):
+        items = re.findall(r'`([^`]*)`', m.group(2))
+        if items:
+            _RECITATION_BAQARA[int(m.group(1))] = items
+    return _RECITATION_BAQARA
+
+
+def baqara_order_ayat_from_recitation(path, out):
+    """يرجّع (نصوص الآيات, سبب) لصفحة بقرة من recitation.html.
+
+    التحقق إلزامي: عدد الآيات لازم يطابق العدد المحسوب من رأس الصفحة
+    (ayat-range). لو مطابقش، بنرجّع None عشان مايتضافش ترتيب ناقص."""
+    fn = os.path.basename(path)
+    m_num = re.match(r'albaqara_p(\d+)\.html$', fn)
+    if not m_num:
+        return None, 'not-baqara'
+    n = int(m_num.group(1))
+    root = os.path.dirname(os.path.abspath(path))
+    data = load_recitation_baqara(root)
+    texts = data.get(n)
+    if not texts:
+        return None, 'no-recitation-entry'
+
+    m_r = re.search(r'<div class="ayat-range">([^<]*)</div>', out)
+    if not m_r:
+        return None, 'no-range'
+    nums = [int(x) for x in re.findall(r'\d+', m_r.group(1))]
+    if not nums:
+        return None, 'no-range-nums'
+    expected = (nums[-1] - nums[0] + 1) if len(nums) > 1 else 1
+    if len(texts) != expected:
+        return None, 'recitation-count-mismatch:%d/%d' % (len(texts), expected)
+    return texts, 'ok-recitation'
+
+
 def extract_baqara_order_ayat(out):
     """يستخرج نصوص آيات الصفحة بالترتيب الصحيح، من AYAT (لو بصيغة object
     زي p38) أو من HARD_Q. بيتعامل مع حالتين خاصتين قبل الاستبعاد
@@ -3172,7 +3231,11 @@ def add_ordering_feature_baqara(path, out):
     if fixed_broken:
         changed = True
 
-    texts, status = extract_baqara_order_ayat(out)
+    # المصدر الأساسي: recitation.html (آية آية، متحقق منها، ٤٨/٤٨).
+    # الاستخراج من HARD_Q بقى احتياطيًا بس لو المفتاح مش موجود هناك.
+    texts, status = baqara_order_ayat_from_recitation(path, out)
+    if texts is None:
+        texts, status = extract_baqara_order_ayat(out)
     if texts is None:
         BAQARA_ORDER_SKIPPED.append(f'{os.path.basename(path)} ({status})')
         return out, changed
