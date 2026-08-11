@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!--
+  دربي لحفظ القرآن — https://quran-darbi.com
+  جميع الحقوق محفوظة © 2026 هند هاني أبوبكر
+  العمل مملوك ملكية كاملة: الشيفرة والتصميم وصياغة الاختبارات
+  وخوارزميات المقارنة والتطبيع. لا يُرخَّص استعماله أو نسخه أو
+  اشتقاقه إلا بإذن كتابي صريح. راجع ملف LICENSE.
+  النص القرآني الكريم ليس محلًّا لأي دعوى ملكية.
+-->
 <html lang="ar" dir="rtl">
 <head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
@@ -153,6 +161,14 @@ function showAbout(){
   if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
 }
 </script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var el=document.getElementById('copy-year');
+  if(!el) return;
+  var y=new Date().getFullYear();
+  if(y>2026) el.textContent='–'+y;
+});
+</script>
 </head>
 <body>
 
@@ -305,7 +321,7 @@ function showAbout(){
 <footer>
   <div class="footer-ayah notranslate" translate="no">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾</div>
   <div class="footer-ref notranslate" translate="no">سورة الحجر — آية 9</div>
-  <div class="footer-copy">© 2026 دربي لحفظ القرآن — جميع الحقوق محفوظة</div>
+  <div class="footer-copy">© 2026<span id="copy-year"></span> دربي لحفظ القرآن — جميع الحقوق محفوظة</div>
 </footer>
 
 <script>

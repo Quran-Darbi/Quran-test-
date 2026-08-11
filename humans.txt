@@ -1,0 +1,23 @@
+/* THE TEAM */
+  المطوّرة وصاحبة المشروع: هند هاني أبوبكر
+  Developer & Owner: Hend Hany Aboubakr
+  الموقع / Site: https://quran-darbi.com
+
+/* الحقوق / RIGHTS */
+  جميع الحقوق محفوظة © 2026 هند هاني أبوبكر
+  All Rights Reserved © 2026 Hend Hany Aboubakr
+  الترخيص / Licence: /LICENSE
+  العمل مملوك ملكية كاملة — لا نسخ ولا اشتقاق ولا إعادة استضافة
+  إلا بإذن كتابي صريح.
+  This work is proprietary. No copying, derivative works, or
+  re-hosting without prior express written consent.
+  النص القرآني الكريم ليس محلًّا لأي دعوى ملكية.
+  The Quranic text itself is not subject to any claim of ownership.
+
+/* المشروع / PROJECT */
+  الوصف: منصة تفاعلية لحفظ القرآن الكريم ومراجعته
+  Description: An interactive platform for memorising and
+  revising the Holy Quran
+  اللغة / Language: العربية
+  التقنيات / Built with: HTML, CSS, JavaScript
+  الاستضافة / Hosted on: GitHub Pages
