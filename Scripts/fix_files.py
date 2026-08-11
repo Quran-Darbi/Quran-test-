@@ -850,6 +850,15 @@ def collapse_order_help_by_default(out):
     return out.replace(old, new, 1), True
 
 
+
+# إجابات متوسط أطول من كلمتين لكنها معتمدة نهائيًا من صاحبة المشروع
+# (albaqara_p12 و albaqara_p26) — لا تُذكر كمخالفة في تقرير الجودة.
+APPROVED_LONG_MEDIUM = {
+    'مَا لَا تَعْلَمُونَ',
+    'وَلَا يُكَلِّمُهُمُ ٱللَّهُ',
+    'نَزَّلَ ٱلْكِتَٰبَ بِٱلْحَقِّ',
+}
+
 def add_dev_mode(out):
     """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
 
@@ -5315,7 +5324,11 @@ def _u_probe(html, is_rec):
         p['nm'] = bool(re.search(r'const\s+nm\s*=', html)) or 'function nm' in html
         p['wordDiff'] = 'function wordDiff' in html
         p['returnToLevels'] = 'returnToLevels' in html
-        p['ترتيب'] = bool(re.search(r'const\s+ORDER_AYAT\s*=', html))
+        # مستوى الترتيب: صفحات البقرة بتستخدم ORDER_AYAT، وجزء عم
+        # والفاتحة بيستخدموا AYAT نفسها. الفحص القديم كان بيدوّر على
+        # ORDER_AYAT بس، فكان بيبلّغ عن ٣٨ ملف «ناقصة» وهي شغّالة.
+        # المؤشر الأدق هو وجود زر المستوى نفسه.
+        p['ترتيب'] = 'id="btn-order"' in html
         p['AYAT-كائن'] = bool(re.search(r'const\s+AYAT\s*=\s*\[\s*\{\s*num', html))
         p['تنقّل'] = ('⏮️' in html) or ('nav-row' in html)
     p['أدوات'] = 'tools-fab' in html
@@ -5373,9 +5386,23 @@ def audit_uniformity(root):
                 print('      ' + ' · '.join(fs))
 
     for t, k in (('جيل القالب', 'قالب'), ('كلاس حذف التشكيل', 'كلاس-التشكيل'),
-                 ('دالة التطبيع', 'دالة-التطبيع'), ('صيغة AYAT', 'AYAT-كائن'),
-                 ('السكون في النص', 'سكون')):
+                 ('دالة التطبيع', 'دالة-التطبيع'), ('صيغة AYAT', 'AYAT-كائن')):
         show(t, k, quiz)
+
+    # رمز السكون: معلومة توضيحية، مش تفاوت محتاج إصلاح.
+    # AYAT بتستخدم السكون القياسي U+0652 والأسئلة بتستخدم U+06E1
+    # (رسم المصحف العثماني) — الاتنين صحيحين، وnormalize() بتحذفهما
+    # معًا (النطاقان \u064B-\u065F و\u06DF-\u06E4)، فصفر أثر على
+    # تصحيح إجابات المستخدم. اتأكدنا عمليًا: normalize لنفس النص
+    # بالرمزين بتدّي نفس المخرج بالظبط في كل الملفات.
+    _sk = {}
+    for _, _p in quiz:
+        _k = _p.get('سكون')
+        if _k:
+            _sk[_k] = _sk.get(_k, 0) + 1
+    print('\n-- رمز السكون (توضيحي — لا يحتاج إصلاح) --')
+    print('   ' + ' · '.join('%s: %d' % (k, v) for k, v in _sk.items()))
+    print('   normalize() بتحذف U+0652 وU+06E1 معًا — صفر أثر على التصحيح')
 
     print('\n-- ميزات ناقصة --')
     any_miss = False
@@ -6529,7 +6556,11 @@ def audit_question_quality(root):
             over_files.append((fn, len(inter), len(et), inter))
 
         # ٣) إجابة المتوسط أطول من كلمتين
-        lng = [x for x in med if len(x.split()) > 2]
+        #    الاستثناءات المعتمدة (أغسطس ٢٠٢٦): تلات إجابات راجعتها
+        #    صاحبة المشروع وأقرّتها زي ما هي، فمابتتسجّلش كمخالفة.
+        #    الفحص شغّال زي ما هو على أي إجابة جديدة.
+        lng = [x for x in med
+               if len(x.split()) > 2 and x not in APPROVED_LONG_MEDIUM]
         if lng:
             long_files.append((fn, lng))
 
