@@ -958,6 +958,88 @@ def fix_hero_stats(path, out):
     return out[:m.start()] + new + out[m.end():], True
 
 
+
+# قائمة أفعال الوصل المحدَّثة (أغسطس ٢٠٢٦) — مشتركة بين صفحات السور
+# وrecitation.html عشان يفضل مصدر واحد للقاعدة.
+WA_WHITELIST = ("سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|"
+                "مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|"
+                "ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|"
+                "علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد")
+
+WA_RULE_RE = re.compile(
+    r"\.replace\(/(?:\(\?<=\^\|\\s\)|\^)وا\(\?=[^/]*?\)/g,'و'\)")
+
+
+def upgrade_wa_whitelist(out):
+    """يحدّث قائمة أفعال الوصل في أي صيغة للقاعدة.
+
+    كانت ناقصة ١٠ أفعال (٤٤ موضع في نص المصحف)، فالتلاوة الصحيحة
+    لـ﴿وَٱرْزُقْ﴾ و﴿وَٱعْلَمُوا﴾ كانت بتتحسب غلط. الإضافة آمنة على همزة
+    القطع لأن القاعدة بتشتغل والهمزة لسه «أ» قبل تحويل أ→ا."""
+    m = WA_RULE_RE.search(out)
+    if not m:
+        return out, False
+    new = r".replace(/(?<=^|\s)وا(?=" + WA_WHITELIST + r")/g,'و')"
+    if m.group(0) == new:
+        return out, False
+    return out[:m.start()] + new + out[m.end():], True
+
+
+
+# ===== ياء المتكلم المحذوفة رسمًا (أغسطس ٢٠٢٦) =====
+# في المصحف تُحذف ياء المتكلم رسمًا ويُكتفى بكسرة النون: ﴿فَٱتَّقُونِ﴾،
+# ﴿وَلَا تَكْفُرُونِ﴾، ﴿فَٱرْهَبُونِ﴾، ﴿وَٱتَّقُونِ﴾، ﴿أَهَٰنَنِ﴾ —
+# لكنها تُنطق وصلًا، فجهاز التعرّف الصوتي بيكتبها بياء والتلاوة الصحيحة
+# كانت بتترفض. اتأكدنا إن الخمسة موجودين في محتوى منشور فعلًا
+# (albaqara p5/p13/p23/p31 + alfajr).
+#
+# قائمة محددة بأعيانها مش قاعدة عامة على كل نون مكسورة، عشان
+# ﴿تَكْفُرُونَ﴾ العادية ما تتلخبطش. اتفحص التصادم على ٤٥٠٠ كلمة من نص
+# المصحف: صفر كلمة تانية بتتطبّع لأي من الصيغ دي.
+# القائمة تشمل نوعين من الياء المحذوفة رسمًا والمنطوقة وصلًا:
+#  ١) ياء المتكلم: ﴿فَٱتَّقُونِ﴾ ﴿فَٱرْهَبُونِ﴾ ﴿وَٱتَّقُونِ﴾
+#     ﴿وَلَا تَكْفُرُونِ﴾ ﴿أَهَٰنَنِ﴾
+#  ٢) الأفعال المعتلّة المجزومة: ﴿لَمَّا يَقْضِ﴾ (عبس)
+#     ﴿لَئِن لَّمْ يَنتَهِ﴾ (العلق) ﴿أُوفِ بِعَهْدِكُمْ﴾ (البقرة ص٧)
+#     — ونظيرتها ﴿نَأْتِ﴾ كانت معالَجة من قبل بقاعدة ناتي←نات.
+# الاتنين نفس الظاهرة: الياء تُحذف رسمًا وتُنطق، فالتعرّف الصوتي
+# بيكتبها بياء والتلاوة الصحيحة كانت بتترفض.
+# اتفحص التصادم على ٤٥٠٠ كلمة من نص المصحف: صفر كلمة تانية بتتطبّع
+# لأي من الصيغ دي.
+YAA_MUTAKALLIM = [
+    ('اهاني', 'اهان'),
+    ('تكفروني', 'تكفرون'),
+    ('فاتقوني', 'فاتقون'),
+    ('فارهبوني', 'فارهبون'),
+    ('وتقوني', 'وتقون'),
+    ('يقضي', 'يقض'),
+    ('ينتهي', 'ينته'),
+    ('اوفي', 'اوف'),
+]
+
+YAA_RULES_JS = "".join(
+    ".replace(/(?<=^|\\s)%s(?=\\s|$)/g,'%s')" % (u, m)
+    for u, m in YAA_MUTAKALLIM)
+
+
+def add_yaa_mutakallim_rules(out):
+    """يضيف قواعد ياء المتكلم المحذوفة في recitation.html.
+
+    صفحات السور بتاخدها من قالب CANON_FN['normalize']. لكن norm في
+    recitation بتشتغل على كلمة واحدة (بتتنادى `norm(words[i])`)، فقواعدها
+    مكتوبة `^كلمة$` من غير /g ولا lookbehind — فالحقن هنا بنفس الصيغة."""
+    if 'تكفروني' in out:
+        return out, False
+    anchor = ".replace(/^بلي$/,'بلا')"
+    i = out.find(anchor)
+    if i == -1:
+        return out, False
+    rules = "".join(".replace(/^%s$/,'%s')" % (u, m)
+                    for u, m in YAA_MUTAKALLIM)
+    j = i + len(anchor)
+    return out[:j] + rules + out[j:], True
+
+
 def add_dev_mode(out):
     """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
 
@@ -4259,7 +4341,7 @@ const EASY_Q=__EASY_Q_JSON__;
 const MEDIUM_Q=__MEDIUM_Q_JSON__;
 const HARD_Q=__HARD_Q_JSON__;
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;
-function normalize(str){if(!str)return'';return str.replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'').replace(/[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1').replace(/ا(?=\\s|$)/g,'ي').replace(/\\s+/g,' ').trim();}
+function normalize(str){if(!str)return'';return str.replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'').replace(/[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1').replace(/ا(?=\\s|$)/g,'ي').replace(/\\s+/g,' ').trim();}
 function wordDiff(userVal,correctAnswer){const nm=s=>{if(!s)return'';return s.replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'').replace(/[ىی]ٰ(?=\\S)/g,'ا').replace(/[ىی]ٰ/g,'ي').replace(/وٱ(?!ل)/g,'و').replace(/اٰ/g,'ا').replace(/نٰ/g,'نا').replace(/ٰ/g,'ا').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'').replace(/[آأإٱا]/g,'ا').replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا').replace(/[ءئؤ]/g,'').replace(/ة/g,'ه').replace(/[ىی]/g,'ي').replace(/ه[ۥۦ]/g,'ه').replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'').replace(/واه(?=\\s|$)/g,'اه').replace(/رحمان/g,'رحمن').replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/نب/g,'مب').replace(/لل/g,'ل').replace(/(.)\\1+/g,'$1').replace(/ا(?=\\s|$)/g,'ي').replace(/\\s+/g,' ').trim();};const uWords=userVal.trim().split(/\\s+/),cWords=correctAnswer.split(/\\s+/),n=cWords.length,m=uWords.length;const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){if(nm(cWords[i-1])===nm(uWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);}const aligned=[];let i=n,j=m;while(i>0||j>0){if(i>0&&j>0&&nm(cWords[i-1])===nm(uWords[j-1])){aligned.push({ref:cWords[i-1],ok:true});i--;j--;}else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}else{aligned.push({ref:cWords[i-1],ok:false});i--;}}aligned.reverse();const correct=aligned.filter(x=>x.ok).length;const html=aligned.map(x=>x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`:`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" translate="no" class="notranslate">${x.ref}</span>`).join(' ');return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة</div><div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;}
 function toArabicNum(n){return n;}
 function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
@@ -6460,7 +6542,7 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   if(typeof saveResumeState==='function')saveResumeState();
 }'''
 
-CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ا').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
+CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ا').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/(?<=^|\\s)اهاني(?=\\s|$)/g,'اهان').replace(/(?<=^|\\s)تكفروني(?=\\s|$)/g,'تكفرون').replace(/(?<=^|\\s)فاتقوني(?=\\s|$)/g,'فاتقون').replace(/(?<=^|\\s)فارهبوني(?=\\s|$)/g,'فارهبون').replace(/(?<=^|\\s)وتقوني(?=\\s|$)/g,'وتقون').replace(/(?<=^|\\s)يقضي(?=\\s|$)/g,'يقض').replace(/(?<=^|\\s)ينتهي(?=\\s|$)/g,'ينته').replace(/(?<=^|\\s)اوفي(?=\\s|$)/g,'اوف')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
 
 
 
@@ -7918,21 +8000,47 @@ def fix_file(path):
     # نسخة أحدث (يوليو ٢٠٢٦ الجزء ٢): بتستخدم lookbehind بدل ^ عشان تشتغل مع أي كلمة
     # في وسط الجملة مش بس أول كلمة (المستوى الصعب بيتحقق من الآية كاملة مش كلمة كلمة)
     # + إضافة شرب/صفح/تخذ (واشربوا، واصفحوا، واتخذوا)
-    NEWEST_WA_RULE = r".replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ)/g,'و')"
+    NEWEST_WA_RULE = r".replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد)/g,'و')"
+    # نسخة أغسطس ٢٠٢٦: إضافة ١٠ أفعال وصل كانت ناقصة وبتخلي التلاوة
+    # الصحيحة تتحسب غلط — ٤٤ موضع في نص المصحف. الأفعال:
+    # علم (٢٢ موضع) · شكر (٤) · نظر (٤) · رزق · جعل · خش · بعث ·
+    # قتل · نصر · ستشهد (٢ لكل واحد).
+    # اتأكدنا إن الإضافة مابتلمسش همزة القطع: قاعدة الوصل بتشتغل في
+    # مرحلة الهمزة فيها لسه «أ»، وتحويل أ→ا بيجي بعدها. اتختبرت على
+    # وَأَعْلَمُ (قطع) مقابل وَٱعْلَمُوا (وصل) — الأولى ما اتلمستش.
+    WA_LIST_2026_08 = r"سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد"
+    LATEST_WA_RULE = (r".replace(/(?<=^|\s)وا(?=" + WA_LIST_2026_08 +
+                      r")/g,'و')")
+    OLD_ANCHORED = r".replace(/^وا(?=" + WA_LIST_2026_08 + r")/g,'و')"
+
     if OLD_WA_RULE in out:
-        out = out.replace(OLD_WA_RULE, NEWEST_WA_RULE)
+        out = out.replace(OLD_WA_RULE, LATEST_WA_RULE)
     elif NEW_WA_RULE in out:
-        out = out.replace(NEW_WA_RULE, NEWEST_WA_RULE)
+        out = out.replace(NEW_WA_RULE, LATEST_WA_RULE)
     elif NEWER_WA_RULE in out:
-        out = out.replace(NEWER_WA_RULE, NEWEST_WA_RULE)
+        out = out.replace(NEWER_WA_RULE, LATEST_WA_RULE)
+    elif NEWEST_WA_RULE in out:
+        out = out.replace(NEWEST_WA_RULE, LATEST_WA_RULE)
+    elif OLD_ANCHORED in out:
+        out = out.replace(OLD_ANCHORED, LATEST_WA_RULE)
     elif r"وٱ(?!ل)/g,'و')" in out and r"^وا(?=" not in out and r"|\s)وا(?=" not in out:
         # ملفات فيها وٱ(?!ل) بس من غير قاعدة وا خالص (زي annaba.html) —
         # فضلت ماشية على واتبعوا/واسمعوا غلط لأنها مش من غير القاعدة أصلاً
         out = out.replace(
             r".replace(/وٱ(?!ل)/g,'و')",
-            r".replace(/وٱ(?!ل)/g,'و')" + NEWEST_WA_RULE,
+            r".replace(/وٱ(?!ل)/g,'و')" + LATEST_WA_RULE,
             1
         )
+    else:
+        # صيغة recitation.html مكتوبة بمسافات/أسطر مختلفة، فالاستبدال
+        # الحرفي مابيلقهاش. regex متسامح بيمسك أي صيغة للقاعدة ويحط
+        # مكانها النسخة المحدَّثة.
+        _wa_re = re.compile(
+            r"\.replace\(/(?:\(\?<=\^\|\\s\)|\^)وا\(\?=[^/]*?\)/g,'و'\)")
+        _m = _wa_re.search(out)
+        if _m:
+            out = out[:_m.start()] + LATEST_WA_RULE + out[_m.end():]
+
 
     # ====================================================
     # 2. الأرقام: استبدل toArabicNum بدالة تعرض أرقام إنجليزي
@@ -8285,6 +8393,7 @@ def fix_file(path):
 
     # 9ي٤. زر الوضع الليلي كان بيركب فوق زر الأدوات ☰ في ٢٠ ملف
     out, theme_btn_fixed = fix_theme_toggle_overlap(out)
+    out, _yaa_added = add_yaa_mutakallim_rules(out)
 
     # 9ي٥. ترويسة الحقوق في أول الملف
     out, order_help_collapsed = collapse_order_help_by_default(out)
@@ -8438,6 +8547,10 @@ def fix_index_recitation(path):
     # وضع المطوّر اتلغى (أغسطس ٢٠٢٦ — النشر الكامل). كان بيحقن هنا
     # redirect في recitation.html وقفل في index.html؛ دلوقتي بيشيل
     # أي بقايا بدل ما يحقن، عشان الملفات القديمة تتنضّف تلقائيًا.
+    # تحديث قائمة أفعال الوصل (recitation.html وindex)
+    out, _wa_upgraded = upgrade_wa_whitelist(out)
+    out, _yaa_added = add_yaa_mutakallim_rules(out)
+
     out, _dev_lock_removed = add_dev_mode(out)
 
     # وسوم الوصف والمشاركة
