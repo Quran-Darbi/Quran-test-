@@ -859,6 +859,105 @@ APPROVED_LONG_MEDIUM = {
     'نَزَّلَ ٱلْكِتَٰبَ بِٱلْحَقِّ',
 }
 
+
+# ===== إحصائيات الهيرو (أغسطس ٢٠٢٦) =====
+# الأرقام القديمة كانت مضلِّلة: «89 اختباراً» (والحقيقي 86)، و«30 جزءاً»
+# و«604 صفحة» — ودول رقما المصحف كله مش المتاح في الموقع، فكان الزائر
+# يفهم إن التغطية كاملة. الأرقام الجديدة محسوبة من الملفات نفسها،
+# فبتكبر مع المشروع بدل ما تقدم أو تكدب.
+HERO_STATS_RE = re.compile(
+    r'<div class="hero-stats">.*?</div>\s*</div>', re.S)
+
+
+def build_hero_stats(root):
+    """يحسب إحصائيات الهيرو من ملفات المستودع"""
+    files = [f for f in os.listdir(root)
+             if f.endswith('.html') and f not in ('index.html',
+                                                  'recitation.html')]
+    quizzes = len(files)
+    baqara = len([f for f in files if f.startswith('albaqara_p')])
+    amma = len([f for f in files
+                if not f.startswith('albaqara_p') and f != 'alfatiha.html'])
+    # السور: الفاتحة + البقرة + سور جزء عمّ
+    surahs = (1 if 'alfatiha.html' in files else 0) + (1 if baqara else 0) + amma
+    # الأجزاء: البقرة بتمتد على ١ و٢ و٣، وجزء عمّ هو ٣٠
+    juz = (3 if baqara else 0) + (1 if amma else 0)
+    return quizzes, juz, surahs
+
+
+def fix_hero_stats(path, out):
+    """يستبدل بطاقات إحصائيات الهيرو بأرقام محسوبة وصادقة"""
+    if os.path.basename(path) != 'index.html':
+        return out, False
+    m = HERO_STATS_RE.search(out)
+    if not m:
+        return out, False
+    quizzes, juz, surahs = build_hero_stats(
+        os.path.dirname(os.path.abspath(path)))
+    new = (
+        '<div class="hero-stats">\n'
+        '      <div class="hstat"><b>%d</b><small>اختباراً متاحاً</small></div>\n'
+        '      <div class="hstat"><b>%d</b><small>أجزاء</small></div>\n'
+        '      <div class="hstat"><b>%d</b><small>سورة</small></div>\n'
+        '    </div>\n  </div>' % (quizzes, juz, surahs))
+    if m.group(0) == new:
+        return out, False
+    return out[:m.start()] + new + out[m.end():], True
+
+
+
+# ===== إحصائيات الهيرو (أغسطس ٢٠٢٦) =====
+# الأرقام القديمة كانت مضلِّلة: «٨٩ اختباراً» (الحقيقي ٨٦)، و«٣٠ جزءاً»
+# و«٦٠٤ صفحة» — وهما رقما المصحف كله مش المتاح فعلًا، فالزائر كان
+# يفهم إن الموقع مغطي المصحف بالكامل. الأرقام الجديدة محسوبة من
+# الملفات نفسها فبتفضل صادقة وبتكبر لوحدها مع المشروع.
+#
+# الصفحات اتستبعدت عن قصد: ٣٥ ملف من جزء عمّ مفيهاش رقم صفحة، فأي
+# رقم هيبقى تخمين. السور رقم دقيق ومحسوب.
+
+HERO_STATS_HTML = """<div class="hero-stats">
+      <div class="hstat"><b>%d</b><small>اختباراً متاحاً</small></div>
+      <div class="hstat"><b>%d</b><small>أجزاء</small></div>
+      <div class="hstat"><b>%d</b><small>سورة</small></div>
+    </div>"""
+
+
+def compute_site_stats(root):
+    """يحسب أرقام الهيرو من ملفات المشروع.
+
+    الاختبارات = عدد ملفات الاختبار (غير index وrecitation).
+    الأجزاء    = ١ و٢ و٣ (البقرة والفاتحة) + ٣٠ (جزء عمّ) = ٤.
+    السور      = الفاتحة + البقرة + سور جزء عمّ (كل ملف = سورة)."""
+    quizzes = 0
+    juz_surahs = 0
+    baqara = 0
+    for fn in sorted(os.listdir(root)):
+        if not fn.endswith('.html') or fn in ('index.html', 'recitation.html'):
+            continue
+        quizzes += 1
+        if fn.startswith('albaqara_'):
+            baqara += 1
+        elif fn != 'alfatiha.html':
+            juz_surahs += 1
+    surahs = juz_surahs + (1 if baqara else 0) + 1  # + الفاتحة
+    juz = 4 if baqara else 1
+    return quizzes, juz, surahs
+
+
+def fix_hero_stats(path, out):
+    """يستبدل بلوك إحصائيات الهيرو بأرقام محسوبة ودقيقة"""
+    if os.path.basename(path) != 'index.html':
+        return out, False
+    m = re.search(r'<div class="hero-stats">.*?</div>\s*</div>', out, re.S)
+    if not m:
+        return out, False
+    root = os.path.dirname(os.path.abspath(path))
+    new = HERO_STATS_HTML % compute_site_stats(root)
+    if m.group(0).strip() == new.strip():
+        return out, False
+    return out[:m.start()] + new + out[m.end():], True
+
+
 def add_dev_mode(out):
     """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
 
@@ -8398,6 +8497,12 @@ def fix_index_recitation(path):
     # لازم تيجي بعد add_tools_menu لأن دي بتعيد بناء القائمة من قالب
     # مشترك مع صفحات السور، فأي عنصر يتضاف قبلها بيتمسح.
     out, _levels_wording_fixed = fix_levels_wording(path, out)
+
+    # إحصائيات الهيرو بأرقام محسوبة من الملفات
+    out, _hero_stats_fixed = fix_hero_stats(path, out)
+
+    # إحصائيات الهيرو بأرقام محسوبة من الملفات
+    out, _hero_stats = fix_hero_stats(path, out)
 
     # ترويسة الحقوق في أول الملف
     out, _copyright_banner = add_copyright_banner(out)
