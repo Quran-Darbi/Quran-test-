@@ -595,42 +595,68 @@ def fix_theme_toggle_overlap(out):
 
 
 HERO_SUB_OLD = 'اختبر حفظك صفحةً بصفحة — 3 مستويات لكل اختبار'
+HERO_SUB_PREV = 'اختبر حفظك صفحةً بصفحة — مستويات متدرّجة واختبار تلاوة'
 HERO_SUB_NEW = ('اختبر حفظك صفحةً بصفحة — اختبارات تفاعلية '
                 'لمراجعة الحفظ وتثبيته')
-# النسخة الوسيطة المرفوعة سابقًا — تُستبدل هي كمان
-HERO_SUB_PREV = 'اختبر حفظك صفحةً بصفحة — مستويات متدرّجة واختبار تلاوة'
 
-ABOUT_NEW_PREV = ('كل اختبار مصمم بعناية لاختبار الحفظ الدقيق للآيات من خلال '
-                  'مستويات متدرّجة — سهل ومتوسط وصعب وترتيب الآيات — إلى جانب '
-                  'اختبار التلاوة بالصوت، مع التركيز على متشابهات القرآن الكريم.')
+COPYRIGHT_NEW = '© 2026 دربي لحفظ القرآن — جميع الحقوق محفوظة'
 
-ABOUT_OLD = ('كل اختبار مصمم بعناية لاختبار الحفظ الدقيق للآيات من خلال '
-             'ثلاثة مستويات — سهل ومتوسط وصعب — مع التركيز على متشابهات '
-             'القرآن الكريم.')
+# بلوك «عن المشروع»: بيتستبدل بالكامل بدل مطاردة كل صيغة قديمة،
+# فأي نسخة سابقة (الأصلية أو أي وسيطة اترفعت) بتتحوّل لنفس النتيجة.
+ABOUT_BOX_RE = re.compile(
+    r'<div style="font-size:0\.93rem;color:var\(--soft\);line-height:2;">'
+    r'.*?</div>', re.S)
 
-# النص القديم بالكامل (السطرين) — بيتستبدل بصيغة هند المعتمدة
-ABOUT_FULL_OLD = (
-    'موقع "دربي لحفظ القرآن" مشروع شخصي هدفه مساعدة الجميع على حفظ '
-    'كتاب الله ومراجعته بطريقة تفاعلية وممتعة.<br>')
-ABOUT_FULL_NEW = (
-    '«دربي لحفظ القرآن» مشروع يهدف إلى مساعدة الجميع على حفظ كتاب '
-    'الله ومراجعته من خلال اختبارات تفاعلية متنوعة.<br>')
-ABOUT_LINE2_NEW = (
-    'صُممت بعناية لتثبيت الحفظ وتعزيز إتقانه، مع التركيز على '
-    'متشابهات القرآن الكريم.<br>')
-ABOUT_DUA = (
-    'نسأل الله أن يجعل القرآن ربيع قلوبنا، ونور صدورنا، وأن يرزقنا '
-    'حفظه وإتقانه والعمل به.')
+ABOUT_BOX_NEW = (
+    '<div style="font-size:0.93rem;color:var(--soft);line-height:2;">\n'
+    '          <p style="margin:0 0 12px;">«دربي لحفظ القرآن» منصة تفاعلية '
+    'تهدف إلى مساعدة الجميع على حفظ كتاب الله ومراجعته، من خلال اختبارات '
+    'متنوعة.</p>\n'
+    '          <p style="margin:0;">مصممة بعناية لتثبيت الحفظ وتعزيز '
+    'إتقانه، مع التركيز على متشابهات القرآن الكريم.</p>\n'
+    '        </div>\n'
+    '        <div class="about-dua notranslate" translate="no">نسأل الله '
+    'أن يجعل القرآن ربيع قلوبنا، ونور صدورنا، وأن يرزقنا حفظه وإتقانه '
+    'والعمل به.</div>')
 
+ABOUT_DUA_CSS = (
+    "\n.about-dua{margin-top:14px;font-family:'Scheherazade New',serif;"
+    "font-size:1.02rem;line-height:1.9;color:var(--green);text-align:center;}\n")
+
+# سطر الاسم في بطاقة «عن المشروع» — يتشال بناءً على طلب صاحبة المشروع
+ABOUT_NAME_RE = re.compile(
+    r'\s*<div style="margin-top:12px;[^"]*">✦ هند هاني أبوبكر</div>')
+
+# تقليل مسافات الهيرو عشان المحتوى يبدأ أعلى في الشاشة
+HERO_SPACING = [
+    ('padding:30px 20px 36px;', 'padding:20px 20px 24px;'),
+    ('padding:12px 20px;margin-bottom:18px;', 'padding:10px 18px;margin-bottom:12px;'),
+    ('color:rgba(255,255,255,0.78);margin-bottom:18px;}',
+     'color:rgba(255,255,255,0.78);margin-bottom:12px;}'),
+    ('.hero-stats{display:flex;justify-content:center;gap:10px;margin-top:16px;',
+     '.hero-stats{display:flex;justify-content:center;gap:10px;margin-top:12px;'),
+]
+
+
+
+ABOUT_JUMP_JS = """<script>
+function showAbout(){
+  var el=document.getElementById('about');
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+</script>
+"""
 
 def fix_levels_wording(path, out):
-    """يحدّث نص «عن المشروع» ووصف الهيرو في index.html.
+    """يحدّث نصوص index.html ومسافات الهيرو.
 
-    النص القديم كان بيقول «3 مستويات» و«ثلاثة مستويات — سهل ومتوسط
-    وصعب»، وده بقى ناقص بعد إضافة مستوى الترتيب واختبار التلاوة.
-    الصيغة المعتمدة بتتجنب عدّ المستويات أصلًا: الزائر شايفها قدامه
-    في كل صفحة، وأي رقم ثابت هيبقى غير دقيق طول ما مستوى الترتيب
-    موجود في ٧٥ صفحة من ٨٦."""
+    - سطر الهيرو: النص القديم كان بيعدّ «3 مستويات»، وده بقى ناقص بعد
+      إضافة مستوى الترتيب واختبار التلاوة. الصيغة الجديدة بتتجنب العدّ
+      أصلًا، لأن مستوى الترتيب لسه في ٧٥ صفحة من ٨٦ فأي رقم هيبقى غلط.
+    - «عن المشروع»: فقرتين منفصلتين بمسافة حقيقية، والدعاء في بلوك
+      مستقل بخط الشيرازاده — الفصل بالتنسيق مش بعلامات ترقيم.
+    - الاسم الشخصي اتشال من البطاقة، وحقوق الملكية بقت باسم المشروع.
+    - مسافات الهيرو اتقلّلت عشان بطاقات الاختبارات تبان أعلى."""
     if os.path.basename(path) != 'index.html':
         return out, False
     changed = False
@@ -642,21 +668,68 @@ def fix_levels_wording(path, out):
             break
 
     # توازن قسمة السطر على الموبايل: من غيرها بينقسم في نص العبارة
-    # («...لمراجعة» / «الحفظ وتثبيته»)، وبيها بينقسم عند الشرطة فكل
-    # سطر يبقى جملة كاملة. المتصفحات القديمة بتتجاهلها بلا أي أثر.
     if 'text-wrap:balance' not in out and '.hero-sub{' in out:
         out = out.replace('.hero-sub{', '.hero-sub{text-wrap:balance;', 1)
         changed = True
 
-    if ABOUT_FULL_OLD in out:
-        out = out.replace(ABOUT_FULL_OLD, ABOUT_FULL_NEW, 1)
+    # بلوك «عن المشروع» — يتستبدل مرة واحدة بس (idempotent)
+    if 'about-dua' not in out:
+        m = ABOUT_BOX_RE.search(out)
+        if m:
+            out = out[:m.start()] + ABOUT_BOX_NEW + out[m.end():]
+            changed = True
+    if 'about-dua' in out and '.about-dua{' not in out and '</style>' in out:
+        out = out.replace('</style>', ABOUT_DUA_CSS + '</style>', 1)
         changed = True
 
-    for old in (ABOUT_OLD, ABOUT_NEW_PREV):
+    m_name = ABOUT_NAME_RE.search(out)
+    if m_name:
+        out = out.replace(m_name.group(0), '', 1)
+        changed = True
+
+    m_copy = re.search(r'<div class="footer-copy">([^<]*)</div>', out)
+    if m_copy and m_copy.group(1).strip() != COPYRIGHT_NEW:
+        out = out.replace(
+            m_copy.group(0),
+            '<div class="footer-copy">%s</div>' % COPYRIGHT_NEW, 1)
+        changed = True
+
+    # نقل «عن المشروع» من الترويسة لقائمة الأدوات ☰: هو أقل زر
+    # استخدامًا وكان واخد أوضح مكان في الترويسة، والقائمة مكانه الطبيعي
+    # جنب اللغة والاقتراحات.
+    #
+    # الشرطين منفصلين عن بعض عن قصد: add_tools_menu بتعيد بناء القائمة
+    # من قالب مشترك كل ما تلاقي نسخة محتاجة ترقية، فبتمسح العنصر. لو
+    # ربطنا إضافته بوجود زر الترويسة (اللي بيتشال أول مرة) مكانش هيرجع
+    # تاني بعد أي إعادة بناء.
+    m_about_btn = re.search(
+        r'\s*<a href="#about" class="rec-btn"[^>]*>عن المشروع</a>', out)
+    if m_about_btn:
+        out = out.replace(m_about_btn.group(0), '', 1)
+        changed = True
+
+    lang_btn = ('<button class="tools-item" '
+                'onclick="toolsLangToggle(event)">')
+    if 'ABOUT_IN_TOOLS' not in out and lang_btn in out:
+        about_item = (
+            '<!--ABOUT_IN_TOOLS-->'
+            '<button class="tools-item" '
+            'onclick="toolsClose();showAbout();">'
+            '\U0001F4D6 عن المشروع</button>\n    ')
+        out = out.replace(lang_btn, about_item + lang_btn, 1)
+        changed = True
+
+    # الدالة تتحقن جوه <head> مش قبل </body>: الجزء اللي قبل </body>
+    # بتعيد add_tools_menu بناءه، فالسكربت كان بيتنقل مكانه كل تشغيلة
+    # وidempotency تفشل رغم إن المحتوى واحد.
+    if 'function showAbout' not in out and '</head>' in out:
+        out = out.replace('</head>', ABOUT_JUMP_JS + '</head>', 1)
+        changed = True
+
+    for old, new in HERO_SPACING:
         if old in out:
-            out = out.replace(old, ABOUT_LINE2_NEW + '\n          ' + ABOUT_DUA, 1)
+            out = out.replace(old, new, 1)
             changed = True
-            break
 
     return out, changed
 
@@ -8063,8 +8136,6 @@ def fix_index_recitation(path):
     # شارة الإطلاق التجريبي (index.html فقط)
     out, _beta_note_added = add_beta_note(path, out)
 
-    # تحديث وصف المستويات (بعد إضافة الترتيب واختبار التلاوة)
-    out, _levels_wording_fixed = fix_levels_wording(path, out)
 
     SHARE_FN = """function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}"""
     SHARE_BTN = '<button onclick="shareApp()" title="شارك الموقع" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🔗</button>'
@@ -8107,6 +8178,11 @@ def fix_index_recitation(path):
     # تثبيت زر الأدوات في مكان عائم ثابت (أعلى الشاشة يسار) — بدل ما
     # يتزحلق حسب هيدر كل صفحة (يوليو ٢٠٢٦)
     out, tools_fab_fixed = upgrade_tools_fab_fixed_position(out)
+
+    # تحديث نصوص index.html ومسافاتها + نقل «عن المشروع» لقائمة الأدوات.
+    # لازم تيجي بعد add_tools_menu لأن دي بتعيد بناء القائمة من قالب
+    # مشترك مع صفحات السور، فأي عنصر يتضاف قبلها بيتمسح.
+    out, _levels_wording_fixed = fix_levels_wording(path, out)
 
     # صيغة الخطاب: مذكر رسمي (index.html و recitation.html
     # مابيمروش على apply_canonical_functions)
