@@ -687,11 +687,8 @@ def fix_levels_wording(path, out):
         out = out.replace(m_name.group(0), '', 1)
         changed = True
 
-    m_copy = re.search(r'<div class="footer-copy">([^<]*)</div>', out)
-    if m_copy and m_copy.group(1).strip() != COPYRIGHT_NEW:
-        out = out.replace(
-            m_copy.group(0),
-            '<div class="footer-copy">%s</div>' % COPYRIGHT_NEW, 1)
+    out, _copy_year = upgrade_copyright_year(out)
+    if _copy_year:
         changed = True
 
     # نقل «عن المشروع» من الترويسة لقائمة الأدوات ☰: هو أقل زر
@@ -731,6 +728,110 @@ def fix_levels_wording(path, out):
             out = out.replace(old, new, 1)
             changed = True
 
+    return out, changed
+
+
+
+# ===== حقوق الملكية (أغسطس ٢٠٢٦) =====
+# ١) سنة الحقوق: النص الثابت «© 2026» بيقدم مع الوقت. الحل نطاق سنوات
+#    بيتحدّث لوحده: HTML ثابت فيه سنة البداية (يشتغل من غير جافاسكريبت
+#    ولمحركات البحث)، وسكربت صغير بيزوّد «–السنة الحالية» لو عدّت 2026.
+# ٢) ترويسة الحقوق: تعليق في أول كل ملف HTML باسم صاحبة المشروع
+#    والترخيص، عشان يفضل ملازم للكود لو حد نسخ الملفات لوحدها.
+
+COPYRIGHT_HOLDER = 'هند هاني أبوبكر'
+COPYRIGHT_START_YEAR = '2026'
+
+COPYRIGHT_FOOTER_HTML = (
+    '<div class="footer-copy">© %s<span id="copy-year"></span> '
+    'دربي لحفظ القرآن — جميع الحقوق محفوظة</div>' % COPYRIGHT_START_YEAR)
+
+COPYRIGHT_YEAR_JS = """<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var el=document.getElementById('copy-year');
+  if(!el) return;
+  var y=new Date().getFullYear();
+  if(y>%s) el.textContent='\u2013'+y;
+});
+</script>
+""" % COPYRIGHT_START_YEAR
+
+COPYRIGHT_BANNER = """<!--
+  دربي لحفظ القرآن — https://quran-darbi.com
+  جميع الحقوق محفوظة © %s %s
+  العمل مملوك ملكية كاملة: الشيفرة والتصميم وصياغة الاختبارات
+  وخوارزميات المقارنة والتطبيع. لا يُرخَّص استعماله أو نسخه أو
+  اشتقاقه إلا بإذن كتابي صريح. راجع ملف LICENSE.
+  النص القرآني الكريم ليس محلًّا لأي دعوى ملكية.
+-->
+""" % (COPYRIGHT_START_YEAR, COPYRIGHT_HOLDER)
+
+
+
+HUMANS_TXT = """/* THE TEAM */
+  المطوّرة وصاحبة المشروع: هند هاني أبوبكر
+  Developer & Owner: Hend Hany Aboubakr
+  الموقع / Site: https://quran-darbi.com
+
+/* الحقوق / RIGHTS */
+  جميع الحقوق محفوظة © 2026 هند هاني أبوبكر
+  All Rights Reserved © 2026 Hend Hany Aboubakr
+  الترخيص / Licence: /LICENSE
+  العمل مملوك ملكية كاملة — لا نسخ ولا اشتقاق ولا إعادة استضافة
+  إلا بإذن كتابي صريح.
+  This work is proprietary. No copying, derivative works, or
+  re-hosting without prior express written consent.
+  النص القرآني الكريم ليس محلًّا لأي دعوى ملكية.
+  The Quranic text itself is not subject to any claim of ownership.
+
+/* المشروع / PROJECT */
+  الوصف: منصة تفاعلية لحفظ القرآن الكريم ومراجعته
+  Description: An interactive platform for memorising and
+  revising the Holy Quran
+  اللغة / Language: العربية
+  التقنيات / Built with: HTML, CSS, JavaScript
+  الاستضافة / Hosted on: GitHub Pages
+"""
+
+
+def write_humans_txt(root):
+    """ينشئ humans.txt في جذر الموقع لو مش موجود"""
+    path = os.path.join(root, 'humans.txt')
+    if os.path.exists(path):
+        with open(path, encoding='utf-8') as fh:
+            if fh.read() == HUMANS_TXT:
+                return False
+    with open(path, 'w', encoding='utf-8') as fh:
+        fh.write(HUMANS_TXT)
+    return True
+
+
+def add_copyright_banner(out):
+    """يضيف ترويسة الحقوق في أول الملف بعد <!DOCTYPE html> مباشرة"""
+    if 'quran-darbi.com' in out[:600] and 'جميع الحقوق محفوظة ©' in out[:900]:
+        return out, False
+    m = re.match(r'(<!DOCTYPE html>\s*\n)', out, re.I)
+    if not m:
+        return out, False
+    out = out[:m.end()] + COPYRIGHT_BANNER + out[m.end():]
+    return out, True
+
+
+def upgrade_copyright_year(out):
+    """يحوّل سطر الحقوق لنطاق سنوات بيتحدّث لوحده"""
+    changed = False
+    m = re.search(r'<div class="footer-copy">(?!© \d{4}<span id="copy-year")'
+                  r'[^<]*</div>', out)
+    if m:
+        out = out.replace(m.group(0), COPYRIGHT_FOOTER_HTML, 1)
+        changed = True
+    # السكربت في <head> مش قبل </body>: الجزء اللي قبل </body> بتعيد
+    # add_tools_menu بناءه فالسكربت كان بيتنقل مكانه كل تشغيلة.
+    # defer عشان يشتغل بعد ما الـDOM يجهز.
+    if 'id="copy-year"' in out and "getElementById('copy-year')" not in out \
+            and '</head>' in out:
+        out = out.replace('</head>', COPYRIGHT_YEAR_JS + '</head>', 1)
+        changed = True
     return out, changed
 
 
@@ -7977,6 +8078,9 @@ def fix_file(path):
     # 9ي٤. زر الوضع الليلي كان بيركب فوق زر الأدوات ☰ في ٢٠ ملف
     out, theme_btn_fixed = fix_theme_toggle_overlap(out)
 
+    # 9ي٥. ترويسة الحقوق في أول الملف
+    out, copyright_banner_added = add_copyright_banner(out)
+
     # 9ك. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات) — لازم قبل
     # قائمة الأدوات عشان تقدر تشيل النسخة القديمة بأمان لو موجودة
     out, lang_upgraded = upgrade_lang_switcher_languages(out)
@@ -8183,6 +8287,9 @@ def fix_index_recitation(path):
     # لازم تيجي بعد add_tools_menu لأن دي بتعيد بناء القائمة من قالب
     # مشترك مع صفحات السور، فأي عنصر يتضاف قبلها بيتمسح.
     out, _levels_wording_fixed = fix_levels_wording(path, out)
+
+    # ترويسة الحقوق في أول الملف
+    out, _copyright_banner = add_copyright_banner(out)
 
     # صيغة الخطاب: مذكر رسمي (index.html و recitation.html
     # مابيمروش على apply_canonical_functions)
@@ -8632,6 +8739,10 @@ def main():
 
     # ====================================================
     # خريطة الموقع + robots.txt — بيتولّدوا آليًا من الملفات الموجودة
+    # humans.txt — بطاقة تعريف بصاحبة المشروع وحقوقها
+    if write_humans_txt(root):
+        print('humans.txt: تم إنشاؤه/تحديثه')
+
     sm_changed, sm_count = build_sitemap_and_robots(root)
     if sm_changed:
         print(f'SITEMAP: تم تحديث {", ".join(sm_changed)} ({sm_count} صفحة)')
