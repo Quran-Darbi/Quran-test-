@@ -835,6 +835,21 @@ def upgrade_copyright_year(out):
     return out, changed
 
 
+
+def collapse_order_help_by_default(out):
+    """يخلي لوحة «كيف يعمل الترتيب؟» مقفولة دايمًا عند بدء الاختبار.
+
+    كانت بتتفتح تلقائيًا أول مرة (_orderHelpSeen)، وده بياخد مساحة
+    الشاشة قبل ما المستخدم يطلبها. دلوقتي بتفضل مقفولة والمستخدم
+    بيفتحها بزر «؟ كيف يعمل الترتيب» لما يحتاجها. الزر والوظيفة
+    والعرض المتحرك جواها زي ما هما بالظبط."""
+    old = 'function maybeShowOrderHelp(){_orderHelpSet(!_orderHelpSeen());}'
+    new = 'function maybeShowOrderHelp(){_orderHelpSet(false);}'
+    if old not in out:
+        return out, False
+    return out.replace(old, new, 1), True
+
+
 def add_dev_mode(out):
     """إزالة قفل المطوّر (أغسطس ٢٠٢٦ — النشر الكامل للزوار).
 
@@ -2352,7 +2367,7 @@ function _orderHelpSet(open){
 }
 function toggleOrderHelp(){const p=document.getElementById('order-help');if(!p)return;_orderHelpSet(p.style.display==='none');_orderHelpMark();}
 function closeOrderHelp(){_orderHelpSet(false);_orderHelpMark();}
-function maybeShowOrderHelp(){_orderHelpSet(!_orderHelpSeen());}
+function maybeShowOrderHelp(){_orderHelpSet(false);}
 /* ===== نهاية لوحة شرح الترتيب ===== */
 /*OHJS-END*/
 ''')
@@ -8142,6 +8157,8 @@ def fix_file(path):
     out, theme_btn_fixed = fix_theme_toggle_overlap(out)
 
     # 9ي٥. ترويسة الحقوق في أول الملف
+    out, order_help_collapsed = collapse_order_help_by_default(out)
+
     out, copyright_banner_added = add_copyright_banner(out)
 
     # 9ك. ترقية ودجت اللغة القديم (3 لغات) للجديد (7 لغات) — لازم قبل
