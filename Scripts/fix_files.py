@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, re, json, hashlib, sys, time
+import os, re, json, hashlib, sys, time, random
 
 # ====================================================
 # بيانات AYAT للسور اللي كانت ناقصة (يوليو ٢٠٢٦)
@@ -5009,7 +5009,7 @@ _T_STR = re.compile(r'"((?:[^"\\]|\\.)*)"')
 
 TANWEEN_SKIPPED = []
 TANWEEN_UNRESOLVED = []
-_BAQARA_FIRST_WORD = {}
+_BAQARA_FIRST_WORD = {}   # {بادئة: {رقم الصفحة: أول كلمة}}
 
 
 def _t_bare(w):
@@ -5268,21 +5268,31 @@ def _t_ayat_words(out):
     return None
 
 
-def _t_load_baqara_first_words(root):
-    """أول كلمة في كل صفحة بقرة — لازمة لحكم آخر كلمة في الصفحة اللي قبلها."""
-    if _BAQARA_FIRST_WORD:
+def _t_load_first_words(root, prefix):
+    """أول كلمة في كل صفحة من نفس عيلة الملفات (albaqara_p… أو alkahf_p…)
+    — لازمة لحكم آخر كلمة في الصفحة اللي قبلها.
+
+    كانت مقصورة على البقرة، وده كان بيغلط مع أي سورة تانية متقسّمة على
+    أكتر من صفحة: آخر كلمة في الصفحة كانت بتتعامل كأنها آخر السورة
+    (والبسملة بعدها بتبدأ بباء) فتاخد ميم الإقلاب غلط. التعميم بالبادئة
+    بيخلّي سلوك albaqara زي ما هو حرفيًا.
+    """
+    if prefix in _BAQARA_FIRST_WORD:
         return
+    table = {}
+    pat = re.compile(r'^' + re.escape(prefix) + r'_p(\d+)\.html$')
     for fn in os.listdir(root):
-        m = re.match(r'albaqara_p(\d+)\.html$', fn)
+        m = pat.match(fn)
         if not m:
             continue
         try:
             with open(os.path.join(root, fn), encoding='utf-8') as f:
                 ws = _t_ayat_words(f.read())
             if ws:
-                _BAQARA_FIRST_WORD[int(m.group(1))] = ws[0]
+                table[int(m.group(1))] = ws[0]
         except Exception:
             pass
+    _BAQARA_FIRST_WORD[prefix] = table
 
 
 def fix_tanween_rasm(path, out):
@@ -5300,11 +5310,13 @@ def fix_tanween_rasm(path, out):
 
     # آخر كلمة في صفحة البقرة حكمها من أول كلمة في الصفحة اللي بعدها
     tail = None
-    m = re.match(r'albaqara_p(\d+)\.html$', fn)
+    m = re.match(r'([A-Za-z]+)_p(\d+)\.html$', fn)
     if m:
-        _t_load_baqara_first_words(os.path.dirname(os.path.abspath(path)))
-        tail = _BAQARA_FIRST_WORD.get(int(m.group(1)) + 1)
-        if tail is None and (int(m.group(1)) + 1) <= 49:
+        prefix, pg = m.group(1), int(m.group(2))
+        _t_load_first_words(os.path.dirname(os.path.abspath(path)), prefix)
+        table = _BAQARA_FIRST_WORD.get(prefix, {})
+        tail = table.get(pg + 1)
+        if tail is None and table and (pg + 1) <= max(table):
             TANWEEN_SKIPPED.append(fn + ' (الصفحة التالية مش متاحة — آخر كلمة اتساب)')
     page = _TanweenPage(words, tail)
 
@@ -9112,6 +9124,491 @@ def report_missing_yaa_rules(root):
         print('      %s   (النطق المتوقع: %sي)' % (w, bq))
 
 
+
+# ======================================================
+#  مولّد صفحات الاختبار (أغسطس ٢٠٢٦)
+#
+#  الغرض: بناء صفحة اختبار كاملة (٤ مستويات) من مواصفة صغيرة:
+#      رقم السورة + نطاق الآيات + رقم صفحة المصحف + عنوان وصفي.
+#
+#  مصدر النص: ملف quran-uthmani.txt (نص عثماني متحقَّق منه — البقرة
+#  ٢٨٦/٢٨٦ وجزء عمّ ٥٥٤/٥٥٤ مطابقة لنصوص الموقع). صفر كتابة من
+#  الذاكرة: كل حرف قرآني في الملف الناتج منسوخ حرفيًا من الملف ده.
+#
+#  القالب: BAQARA_CLEAN_TEMPLATE نفسه (قالب alalaq/allayl النضيف)
+#  — مفيش قالب جديد، ومفيش CSS ولا JS مبتكر.
+#
+#  الاستخدام:
+#      python Scripts/fix_files.py --gen Scripts/pages_kahf.json
+#      python Scripts/fix_files.py --gen Scripts/pages_kahf.json --dry-run
+#
+#  ملاحظة مهمة: المولّد بيكتب الملف الخام بس. كل التحسينات التانية
+#  (PWA، وسوم og، زر التلاوة، توحيد normalize، أرقام الآيات...)
+#  بتتطبق تلقائيًا لما fix_file() تمرّ على الملف في نفس التشغيلة —
+#  فالمولّد ما بيكرّرش أي منطق موجود.
+# ======================================================
+
+GEN_QURAN_TXT = 'quran-uthmani.txt'
+
+GEN_SURAH_NAMES = {
+    1: 'الفاتحة', 2: 'البقرة', 3: 'آل عمران', 4: 'النساء', 5: 'المائدة',
+    6: 'الأنعام', 7: 'الأعراف', 8: 'الأنفال', 9: 'التوبة', 10: 'يونس',
+    11: 'هود', 12: 'يوسف', 13: 'الرعد', 14: 'إبراهيم', 15: 'الحجر',
+    16: 'النحل', 17: 'الإسراء', 18: 'الكهف', 19: 'مريم', 20: 'طه',
+    21: 'الأنبياء', 22: 'الحج', 23: 'المؤمنون', 24: 'النور', 25: 'الفرقان',
+    26: 'الشعراء', 27: 'النمل', 28: 'القصص', 29: 'العنكبوت', 30: 'الروم',
+    31: 'لقمان', 32: 'السجدة', 33: 'الأحزاب', 34: 'سبأ', 35: 'فاطر',
+    36: 'يس', 37: 'الصافات', 38: 'ص', 39: 'الزمر', 40: 'غافر',
+    41: 'فصلت', 42: 'الشورى', 43: 'الزخرف', 44: 'الدخان', 45: 'الجاثية',
+    46: 'الأحقاف', 47: 'محمد', 48: 'الفتح', 49: 'الحجرات', 50: 'ق',
+    51: 'الذاريات', 52: 'الطور', 53: 'النجم', 54: 'القمر', 55: 'الرحمن',
+    56: 'الواقعة', 57: 'الحديد', 58: 'المجادلة', 59: 'الحشر', 60: 'الممتحنة',
+    61: 'الصف', 62: 'الجمعة', 63: 'المنافقون', 64: 'التغابن', 65: 'الطلاق',
+    66: 'التحريم', 67: 'الملك', 68: 'القلم', 69: 'الحاقة', 70: 'المعارج',
+    71: 'نوح', 72: 'الجن', 73: 'المزمل', 74: 'المدثر', 75: 'القيامة',
+    76: 'الإنسان', 77: 'المرسلات', 78: 'النبأ', 79: 'النازعات', 80: 'عبس',
+    81: 'التكوير', 82: 'الانفطار', 83: 'المطففين', 84: 'الانشقاق',
+    85: 'البروج', 86: 'الطارق', 87: 'الأعلى', 88: 'الغاشية', 89: 'الفجر',
+    90: 'البلد', 91: 'الشمس', 92: 'الليل', 93: 'الضحى', 94: 'الشرح',
+    95: 'التين', 96: 'العلق', 97: 'القدر', 98: 'البينة', 99: 'الزلزلة',
+    100: 'العاديات', 101: 'القارعة', 102: 'التكاثر', 103: 'العصر',
+    104: 'الهمزة', 105: 'الفيل', 106: 'قريش', 107: 'الماعون', 108: 'الكوثر',
+    109: 'الكافرون', 110: 'النصر', 111: 'المسد', 112: 'الإخلاص',
+    113: 'الفلق', 114: 'الناس',
+}
+
+# كلمات وظيفية: مش صالحة كإجابة (مش بتختبر حفظ، وبتتكرر كتير)
+GEN_STOPWORDS = {
+    'من', 'في', 'ما', 'لا', 'ان', 'انا', 'او', 'ثم', 'قد', 'كل', 'هو',
+    'هي', 'هم', 'هذا', 'هذه', 'ذلك', 'التي', 'الذي', 'الذين', 'علي',
+    'الي', 'عن', 'بل', 'لم', 'لن', 'كان', 'كانوا', 'به', 'له', 'لهم',
+    'بها', 'فيها', 'فيه', 'عليه', 'عليهم', 'اذا', 'اذ', 'حتي', 'الا',
+    'وما', 'ولا', 'وان', 'فان', 'يا', 'كما', 'لك', 'لكم', 'منه', 'منها',
+    'انه', 'انهم', 'وهو', 'وهم', 'بين', 'عند', 'قال', 'قالوا', 'قل',
+    'مع', 'كي', 'لما', 'لو', 'اي', 'الله',
+}
+
+GEN_BLANK = '_____'
+GEN_SKIPPED = []
+GEN_DROPPED = []
+GEN_WRITTEN = []
+
+
+def _gen_load_quran(root):
+    """يحمّل النص العثماني المتحقَّق منه: {(سورة, آية): نص}."""
+    for cand in (os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              GEN_QURAN_TXT),
+                 os.path.join(root, GEN_QURAN_TXT),
+                 os.path.join(root, 'Scripts', GEN_QURAN_TXT)):
+        if os.path.isfile(cand):
+            data = {}
+            with open(cand, encoding='utf-8') as f:
+                for ln in f:
+                    ln = ln.strip()
+                    if not ln or ln.startswith('#'):
+                        continue
+                    parts = ln.split('|', 2)
+                    if len(parts) == 3 and parts[0].isdigit() and parts[1].isdigit():
+                        data[(int(parts[0]), int(parts[1]))] = parts[2]
+            return data, cand
+    return None, None
+
+
+def _gen_ayah_text(quran, surah, ayah):
+    """نص الآية حرفيًا، مع نزع البسملة من أول آية في السورة (البسملة
+    ليست آية إلا في الفاتحة)."""
+    t = quran[(surah, ayah)]
+    if ayah == 1 and surah not in (1, 9):
+        bas = quran[(1, 1)]
+        if t.startswith(bas):
+            t = t[len(bas):].lstrip()
+    return t
+
+
+def _gen_norm(w):
+    """تطبيع للمقارنة الداخلية فقط — نفس تطبيع التدقيق (_aud_norm)."""
+    return _aud_norm(w)
+
+
+def _gen_is_candidate(word, page_freq):
+    """هل الكلمة صالحة كإجابة؟"""
+    n = _gen_norm(word)
+    if len(n) < 4 or n in GEN_STOPWORDS:
+        return False
+    if any(ch.isdigit() for ch in n):
+        return False
+    return True
+
+
+def _gen_window(words, idx, before, after):
+    """مقطع حول الكلمة المستهدفة، والكلمة نفسها مستبدَلة بفراغ."""
+    lo = max(0, idx - before)
+    hi = min(len(words), idx + after + 1)
+    seg = list(words[lo:hi])
+    seg[idx - lo] = GEN_BLANK
+    return ' '.join(seg)
+
+
+def _gen_contains(hay_words, needle_words):
+    n = len(needle_words)
+    if not n or n > len(hay_words):
+        return False
+    return any(hay_words[k:k + n] == needle_words
+               for k in range(len(hay_words) - n + 1))
+
+
+def _gen_qwords(q):
+    return _gen_norm(q.replace(GEN_BLANK, ' ')).split()
+
+
+WIN_SIZES = ((5, 3), (4, 3), (4, 2), (3, 2), (2, 2), (2, 1), (1, 2), (1, 1),
+             (2, 0), (0, 2), (1, 0), (0, 1))
+
+
+def _gen_best_window(words, idx, answers):
+    """أوسع مقطع حول الكلمة المستهدفة لا تظهر فيه إجابة أي سؤال (ولا
+    الإجابة نفسها مكررة). بيرجّع None لو مفيش مقطع نضيف."""
+    for before, after in WIN_SIZES:
+        q = _gen_window(words, idx, before, after)
+        qw = _gen_qwords(q)
+        if not any(_gen_contains(qw, aw) for aw in answers):
+            return q
+    return None
+
+
+def _gen_pick_questions(quran, surah, level_of, page_freq, rnd=None,
+                        dropped=None):
+    """يختار سؤالًا واحدًا لكل آية بحيث:
+        • الإجابة مش كلمة وظيفية، ومتمايزة عن كل الإجابات التانية بعد
+          التطبيع (صفر تكرار للكلمة المستهدفة بين السهل والمتوسط)
+        • مقطع أي سؤال مافيهوش إجابة أي سؤال تاني ولا إجابته هو نفسه
+          (زر «السؤال السابق» موجود، فكل الأسئلة مكشوفة لبعض)
+
+    الطريقة على مرحلتين: نثبّت الكلمات المستهدفة الأول، وبعدين نختار
+    لكل آية أوسع مقطع نضيف. لو آية مالقتش مقطع، بنغيّر كلمتها المستهدفة
+    ونعيد الحساب. بيرجّع None لو الصفحة مافيهاش توزيع نضيف خالص —
+    وساعتها الصفحة بتتخطّى للمراجعة اليدوية بدل ما يترفع تسريب."""
+    nums = list(level_of.keys())
+    dropped[:] = []
+    words_of, cands_of = {}, {}
+    for num in nums:
+        w = _gen_ayah_text(quran, surah, num).split()
+        words_of[num] = w
+        c = [i for i, x in enumerate(w) if _gen_is_candidate(x, page_freq)]
+        c.sort(key=lambda i: (page_freq.get(_gen_norm(w[i]), 0),
+                              -len(_gen_norm(w[i])), i))
+        if rnd is not None:
+            rnd.shuffle(c)
+        cands_of[num] = c
+    nums = [n for n in nums if cands_of[n]]
+    dropped.extend(n for n in level_of if not cands_of[n])
+    if not nums:
+        return None
+
+    pos = {num: 0 for num in nums}          # مؤشر المرشّح الحالي لكل آية
+
+    def targets_ok():
+        seen = set()
+        for num in nums:
+            if pos[num] >= len(cands_of[num]):
+                return False
+            an = _gen_norm(words_of[num][cands_of[num][pos[num]]])
+            if an in seen:
+                return False
+            seen.add(an)
+        return True
+
+    for _ in range(400):
+        # ١) كلمات مستهدفة متمايزة
+        guard = 0
+        while not targets_ok() and guard < 400:
+            guard += 1
+            seen = {}
+            bumped = False
+            for num in list(nums):
+                if pos[num] >= len(cands_of[num]):
+                    nums.remove(num)
+                    dropped.append(num)
+                    bumped = True
+                    break
+                an = _gen_norm(words_of[num][cands_of[num][pos[num]]])
+                if an in seen:
+                    pos[num] += 1
+                    bumped = True
+                    break
+                seen[an] = num
+            if not bumped:
+                break
+        if not nums:
+            return None
+        if not targets_ok():
+            continue
+
+        # ٢) المقاطع: أوسع مقطع خالٍ من كل الإجابات
+        answers = [_gen_norm(words_of[n][cands_of[n][pos[n]]]).split()
+                   for n in nums]
+        res, bad = {}, None
+        for num in nums:
+            idx = cands_of[num][pos[num]]
+            q = _gen_best_window(words_of[num], idx, answers)
+            if q is None:
+                bad = num
+                break
+            res[num] = {'num': num, 'q': q,
+                        'ans': words_of[num][idx],
+                        'an': _gen_norm(words_of[num][idx]),
+                        'level': level_of[num]}
+        if bad is None:
+            return res
+        # غيّر الكلمة المستهدفة للآية دي؛ ولو خلصت مرشّحاتها يبقى مفيش
+        # سؤال نضيف منها خالص (آية قصيرة مكررة حرفيًا في نفس الصفحة،
+        # زي «ثُمَّ أَتْبَعَ سَبَبًا») — تتشال من الأسئلة وتتسجّل في التقرير.
+        # الترتيب والصعب لسه بيغطّوها، فمفيش آية بتضيع من الصفحة.
+        pos[bad] += 1
+        if pos[bad] >= len(cands_of[bad]):
+            nums.remove(bad)
+            dropped.append(bad)
+            if not nums:
+                return None
+    return None
+
+
+def _gen_choices(item, pool, page_freq, rnd):
+    """٤ اختيارات: الإجابة + ٣ مشتّتات من كلمات الصفحة نفسها، متمايزة
+    بعد التطبيع (منعًا لاختيارين متطابقين)."""
+    correct = item['ans']
+    used = {item['an']}
+    target_len = len(_gen_norm(correct))
+    ranked = sorted(pool, key=lambda w: (abs(len(_gen_norm(w)) - target_len),
+                                         _gen_norm(w)))
+    distractors = []
+    for w in ranked:
+        n = _gen_norm(w)
+        if n in used:
+            continue
+        used.add(n)
+        distractors.append(w)
+        if len(distractors) == 3:
+            break
+    if len(distractors) < 3:
+        return None
+    opts = [correct] + distractors
+    rnd.shuffle(opts)
+    return opts, opts.index(correct)
+
+
+def _gen_js(s):
+    return json.dumps(s, ensure_ascii=False)
+
+
+def _gen_build_page(spec, quran):
+    """يبني نص HTML كامل لصفحة واحدة، أو يرجّع None مع سبب التخطّي."""
+    surah = int(spec['surah'])
+    start, end = int(spec['start']), int(spec['end'])
+    page = int(spec['page'])
+    label = spec.get('title', '').strip()
+    sname = GEN_SURAH_NAMES.get(surah, '')
+
+    for a in range(start, end + 1):
+        if (surah, a) not in quran:
+            return None, 'الآية %d غير موجودة في ملف النص' % a
+
+    nums = list(range(start, end + 1))
+    texts = [_gen_ayah_text(quran, surah, a) for a in nums]
+
+    page_freq = {}
+    for w in _gen_norm(' '.join(texts)).split():
+        page_freq[w] = page_freq.get(w, 0) + 1
+
+    # السهل يغطي أول النص، والمتوسط يكمّله — كل آية في مستوى واحد فقط
+    cut = (len(nums) + 1) // 2
+    easy_nums, med_nums = nums[:cut], nums[cut:]
+
+    # المحاولة صفر بترتيب حتمي (الكلمة الفريدة الأطول الأول). لو صفحة
+    # فيها تكرار كتير (زي قصة موسى والخضر) مافيش توزيع نضيف بالترتيب
+    # ده، فبنعيد المحاولة بترتيب عشوائي مبذور — نفس البذرة = نفس
+    # الناتج دايمًا، فالتوليد يفضل قابل لإعادة الإنتاج بالحرف.
+    level_of = {}
+    for n in easy_nums:
+        level_of[n] = 'easy'
+    for n in med_nums:
+        level_of[n] = 'medium'
+
+    # المحاولة صفر بترتيب حتمي (الكلمة الفريدة الأطول الأول). لو الصفحة
+    # فيها تكرار كتير (زي قصة موسى والخضر) بنعيد بترتيب عشوائي مبذور —
+    # نفس البذرة = نفس الناتج دايمًا، فالتوليد قابل لإعادة الإنتاج بالحرف.
+    res, dropped, best = None, [], None
+    for attempt in range(80):
+        rnd_a = None if attempt == 0 else random.Random(
+            '%d-%d-%d-%d' % (surah, start, end, attempt))
+        dr = []
+        r = _gen_pick_questions(quran, surah, level_of, page_freq, rnd_a, dr)
+        if r is None:
+            continue
+        if not dr:                     # تغطية كاملة — أحسن ناتج ممكن
+            res, dropped = r, dr
+            break
+        if best is None or len(dr) < len(best[1]):
+            best = (r, list(dr))
+    if res is None and best is not None:
+        res, dropped = best
+    if res is None:
+        return None, 'مافيش توزيع خالٍ من التسريب — الصفحة محتاجة مراجعة يدوية'
+    if dropped:
+        GEN_DROPPED.append((spec['file'], sorted(set(dropped))))
+    easy = [res[n] for n in easy_nums if n in res]
+    med = [res[n] for n in med_nums if n in res]
+    if not easy or not med:
+        return None, 'مستوى كامل بدون أسئلة بعد استبعاد الآيات المتكررة'
+    chosen = easy + med
+
+    answers = {c['an'] for c in chosen}
+    pool = [w for t in texts for w in t.split()
+            if _gen_is_candidate(w, page_freq) and _gen_norm(w) not in answers]
+
+    rnd = random.Random('%d-%d-%d' % (surah, start, end))
+    easy_js = []
+    for it in easy:
+        got = _gen_choices(it, pool, page_freq, rnd)
+        if got is None:
+            return None, 'مافيش مشتّتات كفاية لآية %d' % it['num']
+        opts, ai = got
+        easy_js.append('  {q:%s,choices:[%s],answer:%d}' % (
+            _gen_js(it['q']), ','.join(_gen_js(o) for o in opts), ai))
+
+    med_js = ['  {q:%s,answer:%s}' % (_gen_js(it['q']), _gen_js(it['ans']))
+              for it in med]
+
+    hard_js = ['  {ayah:%d,q:%s,answer:%s}' % (
+        a, _gen_js('اكتب الآية رقم %d من سورة %s كاملة' % (a, sname)),
+        _gen_js(t)) for a, t in zip(nums, texts)]
+
+    rng = ('الآية %d' % start) if start == end else ('من الآية %d إلى الآية %d'
+                                                    % (start, end))
+    info = 'صفحة %d من المصحف' % page
+    if label:
+        info += ' — ' + label
+    title = 'اختبار حفظ سورة %s — صفحة %d' % (sname, page)
+    if label:
+        title += ' | ' + label
+
+    html = BAQARA_CLEAN_TEMPLATE
+    html = html.replace('__TITLE__', title)
+    html = html.replace('__SURAH_TITLE__', 'سورة ' + sname)
+    html = html.replace('__AYAT_RANGE__', rng)
+    html = html.replace('__PAGE_INFO__', info)
+    html = html.replace('__PREV_PAGE__', spec.get('prev', 'index.html'))
+    html = html.replace('__NEXT_PAGE__', spec.get('next', 'index.html'))
+    html = html.replace('__RESUME_KEY__', 'quranResume_' + spec['file'][:-5])
+    html = html.replace('__AYAT_JSON__',
+                        '[\n' + ',\n'.join('  ' + _gen_js(t) for t in texts) + '\n]')
+    html = html.replace('__AYAT_NUMS_JSON__',
+                        '[' + ','.join(str(n) for n in nums) + ']')
+    html = html.replace('__EASY_Q_JSON__', '[\n' + ',\n'.join(easy_js) + '\n]')
+    html = html.replace('__MEDIUM_Q_JSON__', '[\n' + ',\n'.join(med_js) + '\n]')
+    html = html.replace('__HARD_Q_JSON__', '[\n' + ',\n'.join(hard_js) + '\n]')
+    return html, None
+
+
+def _gen_selfcheck(html, spec, quran):
+    """تحقق إلزامي قبل الكتابة. أي فشل = الصفحة ما تتكتبش.
+       ١) كل نص قرآني في الملف منسوخ حرفيًا من ملف النص المتحقَّق منه
+       ٢) صفر تسريب: إجابة أي سؤال مش ظاهرة في نص أي سؤال تاني
+       ٣) صفر تكرار للكلمة المستهدفة بين السهل والمتوسط
+       ٤) عدد الفراغات = عدد كلمات الإجابة، وبلا علامات ترقيم
+       ٥) HARD_Q فيها ayah لكل سؤال وبترتيب تصاعدي"""
+    surah, start, end = int(spec['surah']), int(spec['start']), int(spec['end'])
+    src_words = set()
+    for a in range(start, end + 1):
+        src_words.update(_gen_ayah_text(quran, surah, a).split())
+
+    ab = _aud_array(html, 'AYAT')
+    ayat = re.findall(r'"((?:[^"\\]|\\.)*)"', ab or '')
+    ayat = [json.loads('"%s"' % t) for t in ayat]
+    expect = [_gen_ayah_text(quran, surah, a) for a in range(start, end + 1)]
+    if ayat != expect:
+        return 'AYAT مش مطابقة حرفيًا لملف النص'
+
+    hb = _aud_array(html, 'HARD_Q')
+    ho = _aud_objects(hb or '')
+    hnums = [int(m.group(1)) for o in ho
+             for m in [re.search(r'ayah\s*:\s*(\d+)', o)] if m]
+    if len(hnums) != len(ho) or hnums != list(range(start, end + 1)):
+        return 'HARD_Q: أرقام الآيات ناقصة أو غير تصاعدية'
+    if [_aud_field(o, 'answer') for o in ho] != expect:
+        return 'HARD_Q: إجابة مش مطابقة حرفيًا لنص الآية'
+
+    items = _aud_items(html)
+    if not items:
+        return 'مافيش أسئلة'
+    easy_t = [_gen_norm(a) for lv, q, a in items if lv == 'سهل']
+    med_t = [_gen_norm(a) for lv, q, a in items if lv == 'متوسط']
+    if set(easy_t) & set(med_t):
+        return 'تكرار الكلمة المستهدفة بين السهل والمتوسط'
+
+    for lv, q, a in items:
+        for w in a.split():
+            if w not in src_words:
+                return 'كلمة إجابة مش موجودة حرفيًا في نص الصفحة: %s' % w
+        if lv == 'متوسط':
+            if _AUD_PUNCT.search(a):
+                return 'علامة ترقيم في إجابة متوسط: %s' % a
+            if len(a.split()) > 2:
+                return 'إجابة متوسط أطول من كلمتين: %s' % a
+            if len(re.findall(r'_+', q)) != len(a.split()):
+                return 'عدد الفراغات لا يطابق عدد كلمات الإجابة: %s' % a
+
+    for i, (lv, q, a) in enumerate(items):
+        aw = _gen_norm(a).split()
+        for j, (lv2, q2, a2) in enumerate(items):
+            if i == j:
+                continue
+            if _gen_contains(_gen_qwords(q2), aw):
+                return 'تسريب: إجابة «%s» ظاهرة في نص سؤال آخر' % a
+    return None
+
+
+def generate_pages(root, spec_path, dry_run=False):
+    """يقرأ ملف المواصفة (JSON) ويولّد الصفحات. مافيش صفحة بتتكتب
+    إلا بعد ما تعدّي كل فحوص _gen_selfcheck."""
+    quran, src = _gen_load_quran(root)
+    if quran is None:
+        print('❌ مالقيتش %s — لازم يكون جنب fix_files.py' % GEN_QURAN_TXT)
+        return
+    with open(spec_path, encoding='utf-8') as f:
+        specs = json.load(f)
+    print('=== مولّد صفحات الاختبار ===')
+    print('مصدر النص: %s' % src)
+    for spec in specs:
+        fn = spec['file']
+        path = os.path.join(root, fn)
+        if os.path.exists(path) and not spec.get('overwrite'):
+            GEN_SKIPPED.append((fn, 'الملف موجود بالفعل (ضِف "overwrite": true للاستبدال)'))
+            continue
+        html, err = _gen_build_page(spec, quran)
+        if html is None:
+            GEN_SKIPPED.append((fn, err))
+            continue
+        err = _gen_selfcheck(html, spec, quran)
+        if err:
+            GEN_SKIPPED.append((fn, 'فشل التحقق: ' + err))
+            continue
+        if not dry_run:
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(html)
+        GEN_WRITTEN.append(fn)
+    for fn in GEN_WRITTEN:
+        print(('  ✅ %s' % fn) + (' (تجربة فقط)' if dry_run else ''))
+    for fn, why in GEN_SKIPPED:
+        print('  ⏭️  %s — %s' % (fn, why))
+    if GEN_DROPPED:
+        print('-- آيات بلا سؤال سهل/متوسط (مكررة حرفيًا في نفس الصفحة، '
+              'ومغطّاة في الصعب والترتيب) --')
+        for fn, ns in GEN_DROPPED:
+            print('   %s : %s' % (fn, '، '.join(str(n) for n in ns)))
+    print('تم: %d صفحة · متخطّاة: %d' % (len(GEN_WRITTEN), len(GEN_SKIPPED)))
+
+
 def main():
     skip = {'index.html', 'recitation.html'}
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9319,8 +9816,14 @@ def main():
             print('  -', s)
 
 if __name__ == '__main__':
+    _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if '--audit' in sys.argv:
-        _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         run_audit(_root)
+    elif '--gen' in sys.argv:
+        _i = sys.argv.index('--gen')
+        if _i + 1 >= len(sys.argv):
+            print('الاستخدام: python Scripts/fix_files.py --gen <ملف المواصفة.json> [--dry-run]')
+        else:
+            generate_pages(_root, sys.argv[_i + 1], dry_run='--dry-run' in sys.argv)
     else:
         main()
