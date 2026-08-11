@@ -1015,6 +1015,7 @@ YAA_MUTAKALLIM = [
     ('يقضي', 'يقض'),
     ('ينتهي', 'ينته'),
     ('اوفي', 'اوف'),
+    ('يسري', 'يسر'),
 ]
 
 YAA_RULES_JS = "".join(
@@ -6542,7 +6543,7 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   if(typeof saveResumeState==='function')saveResumeState();
 }'''
 
-CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ا').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/(?<=^|\\s)اهاني(?=\\s|$)/g,'اهان').replace(/(?<=^|\\s)تكفروني(?=\\s|$)/g,'تكفرون').replace(/(?<=^|\\s)فاتقوني(?=\\s|$)/g,'فاتقون').replace(/(?<=^|\\s)فارهبوني(?=\\s|$)/g,'فارهبون').replace(/(?<=^|\\s)وتقوني(?=\\s|$)/g,'وتقون').replace(/(?<=^|\\s)يقضي(?=\\s|$)/g,'يقض').replace(/(?<=^|\\s)ينتهي(?=\\s|$)/g,'ينته').replace(/(?<=^|\\s)اوفي(?=\\s|$)/g,'اوف')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
+CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ا').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/(?<=^|\\s)اهاني(?=\\s|$)/g,'اهان').replace(/(?<=^|\\s)تكفروني(?=\\s|$)/g,'تكفرون').replace(/(?<=^|\\s)فاتقوني(?=\\s|$)/g,'فاتقون').replace(/(?<=^|\\s)فارهبوني(?=\\s|$)/g,'فارهبون').replace(/(?<=^|\\s)وتقوني(?=\\s|$)/g,'وتقون').replace(/(?<=^|\\s)يقضي(?=\\s|$)/g,'يقض').replace(/(?<=^|\\s)ينتهي(?=\\s|$)/g,'ينته').replace(/(?<=^|\\s)اوفي(?=\\s|$)/g,'اوف').replace(/(?<=^|\\s)يسري(?=\\s|$)/g,'يسر')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
 
 
 
@@ -9038,6 +9039,79 @@ def run_audit(root):
     return problems
 
 
+
+def report_missing_yaa_rules(root):
+    """يكشف أفعالًا معتلّة الآخر محذوفة الياء مش في قائمة YAA_MUTAKALLIM.
+
+    الظاهرة: في المصحف تُحذف ياء الفعل المعتلّ المجزوم رسمًا وتُنطق
+    وصلًا (﴿نَأْتِ﴾ ﴿يَقْضِ﴾ ﴿يَنتَهِ﴾ ﴿أُوفِ﴾)، وكذلك ياء المتكلم
+    (﴿فَٱتَّقُونِ﴾). التعرّف الصوتي بيكتبها بياء فالتلاوة الصحيحة
+    بتترفض. الفحص بينبّه على أي فعل جديد من النوع ده مع كل سورة تتضاف.
+
+    الفلترة لغوية عشان ما يطلعش إنذار كاذب على الأسماء المجرورة:
+    الاسم المجرور بيجي بعد حرف جر أو مضاف إليه، والفعل المجزوم بيجي
+    بعد أداة جزم (لم/لمّا/لا الناهية/إن الشرطية...). فبنفحص الكلمة
+    اللي قبلها في النص بدل ما نحكم على الكلمة لوحدها.
+
+    الفحص قراءة فقط — بينبّه ومابيعدّلش، عشان كل حالة تتراجع يدويًا."""
+    rp = os.path.join(root, 'recitation.html')
+    if not os.path.exists(rp):
+        return
+    with open(rp, encoding='utf-8') as fh:
+        rec = fh.read()
+
+    diac = r'[\u064B-\u0655\u0670\u0640\u06D6-\u06ED\u08F0-\u08F3\u06E5\u06E6]'
+
+    def bare(w):
+        return re.sub(diac, '', w)
+
+    # أدوات الجزم/النصب اللي بتسبق الفعل المعتلّ
+    # ملحوظة: «من» و«ما» اتشالوا عن قصد — «من» حرف جر في الغالب
+    # (مِنْ أَهْلِ، مِنْ أَلْفِ) فكان بيطلّع إنذار كاذب على الأسماء
+    # المجرورة. و«إن» بتفضل لأنها شرطية جازمة، لكن بنستبعد الحالة
+    # اللي بعدها اسم معرّف بأل (إِن نَّفَعَتِ ٱلذِّكْرَىٰ — كسرة
+    # التقاء ساكنين مش ياء محذوفة).
+    JAZM = {'لم', 'لما', 'لا', 'ولا', 'الا', 'ان', 'وان', 'فان', 'لن',
+            'حتي', 'كي', 'لكي', 'فل', 'ول', 'اذا', 'متي',
+            'لئن', 'ولئن'}
+    known = {m for _, m in YAA_MUTAKALLIM} | {'نات'}
+
+    found = {}
+    for t in re.findall(r'`([^`]*)`', rec):
+        if not re.search(r'[\u0621-\u064A]', t):
+            continue
+        ws = t.split()
+        for i, w in enumerate(ws):
+            if not w.endswith('\u0650'):
+                continue
+            bq = bare(w)
+            if len(bq) < 3 or bq.endswith('ي'):
+                continue
+            if not re.match(r'^[يتنأا]', bq):
+                continue
+            prev = bare(ws[i - 1]) if i else ''
+            prev = re.sub(r'[^\u0621-\u064A]', '', prev)
+            prev = re.sub(r'[إأآٱ]', 'ا', prev).replace('ى', 'ي')
+            if prev not in JAZM:
+                continue          # اسم مجرور غالبًا، مش فعل مجزوم
+            nxt = bare(ws[i + 1]) if i + 1 < len(ws) else ''
+            nxt = re.sub(r'[^\u0621-\u064A\u0671]', '', nxt)
+            nxt = re.sub(r'[إأآٱ\u0671]', 'ا', nxt)
+            if nxt.startswith('ال'):
+                continue      # كسرة التقاء ساكنين مش ياء محذوفة
+            if any(bq.startswith(k[:4]) for k in known):
+                continue
+            found[w] = bq
+
+    print('\n=== تقرير الياء المحذوفة رسمًا (قراءة فقط) ===')
+    if not found:
+        print('   كل الأفعال المعتلّة مغطّاة بالقائمة ✅')
+        return
+    print('   ⚠️ أفعال محتملة مش في YAA_MUTAKALLIM — محتاجة مراجعة:')
+    for w, bq in sorted(found.items()):
+        print('      %s   (النطق المتوقع: %sي)' % (w, bq))
+
+
 def main():
     skip = {'index.html', 'recitation.html'}
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9071,6 +9145,8 @@ def main():
     # humans.txt — بطاقة تعريف بصاحبة المشروع وحقوقها
     if write_humans_txt(root):
         print('humans.txt: تم إنشاؤه/تحديثه')
+
+    report_missing_yaa_rules(root)
 
     sm_changed, sm_count = build_sitemap_and_robots(root)
     if sm_changed:
