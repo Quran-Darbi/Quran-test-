@@ -690,7 +690,7 @@ function showQuestion(){
           for(let i=e.resultIndex;i<e.results.length;i++){
             if(e.results[i].isFinal){
               const newWords=e.results[i][0].transcript.trim().split(/\s+/);
-              _words=_fixWords(_words.concat(newWords));_cur='';
+              _addWords(newWords);_cur='';
             }
           }
           renderWords();
