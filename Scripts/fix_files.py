@@ -8855,6 +8855,45 @@ def add_kahf_to_index(path, out):
     return out, changed
 
 
+
+# ===== ٣) بطاقات «الأجزاء القادمة» بعد نشر الكهف =====
+# الجزء 15 (الإسراء — الكهف) والجزء 16 (الكهف — طه) كانوا لسه
+# بيتعرضوا بـ«قريباً» وفيهم اسم الكهف، مع إن قسم الكهف بقى متاح
+# فوقهم على طول — فالزائر يحتار هي متاحة ولا لأ. بنشيل اسم السورة
+# المنشورة من البطاقتين بس، وباقي البطاقات ما بتتلمسش.
+# بيشتغل بشرط إن ملفات الكهف موجودة فعلًا؛ لو اتشالت، النصوص
+# القديمة بترجع لوحدها.
+KAHF_REMAINING_JUZ = {
+    '15': ('الإسراء — الكهف', 'الإسراء'),
+    '16': ('الكهف — طه', 'مريم — طه'),
+}
+
+
+def fix_remaining_juz_after_kahf(path, out):
+    """يشيل اسم الكهف من بطاقات «قريباً» بعد ما بقت متاحة."""
+    if os.path.basename(path) != 'index.html':
+        return out, False
+
+    root = os.path.dirname(os.path.abspath(path))
+    have_kahf = bool(_kahf_read_pages(root))
+    changed = False
+
+    for juz, (old_label, new_label) in KAHF_REMAINING_JUZ.items():
+        want = new_label if have_kahf else old_label
+        pat = re.compile(r"\['" + juz + r"','([^']*)','([^']*)'\]")
+        m = pat.search(out)
+        if not m or m.group(1) == want:
+            continue
+        # مانعدّلش غير النصين المعروفين — أي صياغة تانية تبع هند تُحترم
+        if m.group(1) not in (old_label, new_label):
+            continue
+        out = (out[:m.start()] + "['%s','%s','%s']" % (juz, want, m.group(2))
+               + out[m.end():])
+        changed = True
+
+    return out, changed
+
+
 # ===== ٢) recitation.html =====
 
 _KAHF_ENTRY_RE = re.compile(r'^[ \t]*alkahf_p\d+\s*:.*\n', re.M)
@@ -9000,6 +9039,7 @@ def fix_index_recitation(path):
     # الاتنين بيقروا من ملفات alkahf_p*.html نفسها، فمافيش بيانات
     # مكررة ولا نص قرآني مكتوب في السكربت.
     out, _kahf_idx = add_kahf_to_index(path, out)
+    out, _kahf_juz = fix_remaining_juz_after_kahf(path, out)
     out, _kahf_rec = add_kahf_to_recitation(path, out)
 
     # شارة الإطلاق التجريبي (index.html فقط)
