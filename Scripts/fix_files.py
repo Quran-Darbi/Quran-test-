@@ -5856,6 +5856,109 @@ _SW_ADD = """  function _addWords(nw){
 """
 
 
+# ======================================================
+# إصلاح: الكلمة البديلة كانت بتتحط في آخر النص بدل مكان
+# الكلمة المحدَّدة (اتكشف في alfatiha.html — أغسطس ٢٠٢٦)
+# ------------------------------------------------------
+# port_selword_feature() بتعمل ٦ استبدالات، وأولها حارس بيوقف
+# الدالة كلها لو الملف فيه '_sel=null'. فلو ملف خد شريط التحديد
+# ودالة _addWords لكن سطر r.onresult عنده بصيغة مختلفة (متغيّر
+# وسيط newWords، أو مسافات زيادة) ومطابقش الـregex ساعتها، بيفضل
+# محبوس على الغلط للأبد: بيحدّد الكلمة، وبعدين يضيف التسجيل في
+# الآخر بـ_words.concat بدل ما يحطه مكانها.
+#
+# الدالة دي بتعالج الحالة دي وحدها: بتدوّر على أي مسار إضافة
+# فاضل (بأي تشكيلة مسافات) وبتحوّله لـ_addWords. مطابقة الأقواس
+# بتتعمل بعدّاد مش بـregex عشان تستوعب split(/\s+/) و
+# filter(Boolean) وأي شكل تاني للتعبير.
+# ======================================================
+SELWORD_REPAIRED = []
+
+# _words = _fixWords( _words.concat(   /   _words = _words.concat(
+_SW_APPEND_RE = re.compile(
+    r"_words\s*=\s*(_fixWords\s*\(\s*)?_words\s*\.\s*concat\s*\(")
+
+
+def _sw_balance(src, i):
+    """موضع القوس المقابل للقوس المفتوح اللي قبل i مباشرة."""
+    d = 1
+    while i < len(src):
+        if src[i] == '(':
+            d += 1
+        elif src[i] == ')':
+            d -= 1
+            if d == 0:
+                return i
+        i += 1
+    return -1
+
+
+def _sw_rewrite_appends(src):
+    """يحوّل كل مسارات _words.concat(...) لـ_addWords(...)."""
+    n, pos = 0, 0
+    while True:
+        m = _SW_APPEND_RE.search(src, pos)
+        if not m:
+            break
+        end = _sw_balance(src, m.end())
+        if end < 0:
+            break
+        arg = src[m.end():end].strip()
+        j = end + 1
+        if m.group(1):                       # لازم نقفل قوس _fixWords كمان
+            while j < len(src) and src[j].isspace():
+                j += 1
+            if j >= len(src) or src[j] != ')':
+                pos = m.end()
+                continue
+            j += 1
+        while j < len(src) and src[j].isspace():
+            j += 1
+        if j >= len(src) or src[j] != ';':
+            pos = m.end()
+            continue
+        rep = '_addWords(%s);' % arg
+        src = src[:m.start()] + rep + src[j + 1:]
+        pos = m.start() + len(rep)
+        n += 1
+    return src, n
+
+
+def repair_selword_addwords(path, out):
+    """يضمن إن كل إدخال صوتي بيمرّ على _addWords (استبدال في المكان).
+
+    idempotent: بعد أول تشغيل مافيش مسار concat فاضل، فبترجع False.
+    مابتلمسش السطر اللي جوّه _addWords نفسها لأنه بيستخدم
+    [].concat(_words,nw) مش _words.concat(.
+    """
+    fn = os.path.basename(path)
+    if '_sel' not in out or 'function renderWords(' not in out:
+        return out, False
+
+    before = quran_text_fingerprint(out)
+    src = out
+
+    # لو شريط التحديد موجود من غير _addWords (حقن ناقص) — نكمّله
+    if 'function _addWords(' not in out:
+        if 'المحدَّدة' not in out:
+            return out, False
+        m = re.search(r"(\n\s*)function renderWords\(\)\{", out)
+        if not m:
+            return out, False
+        out = out[:m.start()] + m.group(1) + _SW_ADD + m.group(0) + out[m.end():]
+
+    out, n = _sw_rewrite_appends(out)
+    if out == src:
+        return src, False
+
+    if quran_text_fingerprint(out) != before:      # حارس النص القرآني
+        print('⛔ %s: البصمة اتغيّرت — الإصلاح اتلغى' % fn)
+        return src, False
+
+    SELWORD_REPAIRED.append((fn, n))
+    return out, True
+
+
 def port_selword_feature(path, out):
     """ينقل ميزة تحديد الكلمة من التلاوة لدالة renderHard.
 
@@ -8509,6 +8612,10 @@ def fix_file(path):
     # الصفر المستطيل) بدل حذف آخر حرف [اي] من كل كلمة.
     out, rasm_rules = upgrade_rasm_voice_rules(path, out)
     out, rasm_ported = port_rasm_snap_to_legacy_voice(path, out)
+
+    # ضمان إن البديل الصوتي يحلّ محل الكلمة المحدَّدة مش يتضاف في
+    # الآخر — لازم تيجي بعد دوال الرسم عشان متسبقهاش على مطابقاتها
+    out, selword_repaired = repair_selword_addwords(path, out)
 
     # 9ح. توحيد الدوال المشتركة من نسخة قياسية واحدة
     out, canon_done = apply_canonical_functions(path, out)
