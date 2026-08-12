@@ -1,6 +1,6 @@
 ==================================================================
   تقرير فحص موقع دربي لحفظ القرآن
-  2026-08-12 10:01
+  2026-08-12 10:16
   عدد ملفات الاختبار المفحوصة: 98
 ==================================================================
 
@@ -8,35 +8,13 @@
    ✅ سليم
 
 ── ملفات غير مربوطة في index.html ──
-   ⚠️  alkahf_p293.html
-   ⚠️  alkahf_p294.html
-   ⚠️  alkahf_p295.html
-   ⚠️  alkahf_p296.html
-   ⚠️  alkahf_p297.html
-   ⚠️  alkahf_p298.html
-   ⚠️  alkahf_p299.html
-   ⚠️  alkahf_p300.html
-   ⚠️  alkahf_p301.html
-   ⚠️  alkahf_p302.html
-   ⚠️  alkahf_p303.html
-   ⚠️  alkahf_p304.html
+   ✅ سليم
 
 ── دالة normalize مفقودة ──
    ✅ سليم
 
 ── مفتاح ?surah= غير موجود في recitation.html ──
-   ❌ alkahf_p293.html → alkahf_p293
-   ❌ alkahf_p294.html → alkahf_p294
-   ❌ alkahf_p295.html → alkahf_p295
-   ❌ alkahf_p296.html → alkahf_p296
-   ❌ alkahf_p297.html → alkahf_p297
-   ❌ alkahf_p298.html → alkahf_p298
-   ❌ alkahf_p299.html → alkahf_p299
-   ❌ alkahf_p300.html → alkahf_p300
-   ❌ alkahf_p301.html → alkahf_p301
-   ❌ alkahf_p302.html → alkahf_p302
-   ❌ alkahf_p303.html → alkahf_p303
-   ❌ alkahf_p304.html → alkahf_p304
+   ✅ سليم
 
 ── صيغة مؤنث (يجب المذكر الرسمي) ──
    ✅ سليم
@@ -114,5 +92,5 @@
    ✅ سليم
 
 ==================================================================
-  إجمالي البنود المرصودة: 396
+  إجمالي البنود المرصودة: 372
 ==================================================================
