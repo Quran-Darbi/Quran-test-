@@ -5872,7 +5872,7 @@ _SW_ADD = """  function _addWords(nw){
 # بتتعمل بعدّاد مش بـregex عشان تستوعب split(/\s+/) و
 # filter(Boolean) وأي شكل تاني للتعبير.
 # ======================================================
-SELWORD_REPAIRED = []
+SELWORD_ADDWORDS_FIXED = []
 
 # _words = _fixWords( _words.concat(   /   _words = _words.concat(
 _SW_APPEND_RE = re.compile(
@@ -5955,7 +5955,7 @@ def repair_selword_addwords(path, out):
         print('⛔ %s: البصمة اتغيّرت — الإصلاح اتلغى' % fn)
         return src, False
 
-    SELWORD_REPAIRED.append((fn, n))
+    SELWORD_ADDWORDS_FIXED.append((fn, n))
     return out, True
 
 
@@ -6099,6 +6099,8 @@ def fix_broken_page_nav_links(path, out):
     fn = os.path.basename(path)
     fixed = []
 
+    self_key = fn[:-5] if fn.endswith('.html') else fn
+
     def _one(m):
         key = m.group(2)
         if key in _VALID_PAGE_KEYS:
@@ -6107,12 +6109,21 @@ def fix_broken_page_nav_links(path, out):
         if cand in _VALID_PAGE_KEYS:
             fixed.append(key + ' → ' + cand)
             return m.group(1) + cand + m.group(3)
+        # الهدف مش في السلسلة (زي index.html اللي بيحطه المولّد لأول
+        # وآخر صفحة في المواصفة): نستنتج الصح من موقع الملف نفسه في
+        # NEXT_SEQUENCE بدل ما نسيب رابط بيرجّع للرئيسية في نص السلسلة
+        tgt = (NEXT_MAP if m.group('dir') == 'next' else PREV_MAP).get(self_key)
+        if tgt:
+            fixed.append(key + ' → ' + tgt)
+            return m.group(1) + tgt + m.group(3)
+        if key == 'index':
+            return m.group(0)          # أول/آخر السلسلة — رجوع للرئيسية سليم
         fixed.append('⚠ ' + key + ' (مش معروف)')
         return m.group(0)
 
-    out2 = re.sub(r'(href=")([\w\-]+)(\.html"[^>]*class="(?:next|prev)-page-btn")',
+    out2 = re.sub(r'(href=")([\w\-]+)(\.html"[^>]*class="(?P<dir>next|prev)-page-btn")',
                   _one, out)
-    out2 = re.sub(r'(href=")([\w\-]+)(\.html" class="(?:next|prev)-page-btn")',
+    out2 = re.sub(r'(href=")([\w\-]+)(\.html" class="(?P<dir>next|prev)-page-btn")',
                   _one, out2)
     if fixed:
         BROKEN_NAV_FIXED.append((fn, sorted(set(fixed))))
@@ -10155,6 +10166,10 @@ def main():
     print('اتطبّقت دلوقتي   : %d ملف' % len(SELWORD_FIXED))
     if SELWORD_REPAIRED:
         print('⛔ اتصلح استدعاء ذاتي مكسور في %d ملف' % len(SELWORD_REPAIRED))
+    if SELWORD_ADDWORDS_FIXED:
+        print('⛔ اتصلح مسار إضافة في الآخر بدل الاستبدال في %d ملف: %s'
+              % (len(SELWORD_ADDWORDS_FIXED),
+                 ' · '.join(x[0] for x in SELWORD_ADDWORDS_FIXED[:10])))
     print('كانت مطبّقة قبل  : %d ملف' % len(SELWORD_ALREADY))
     print('القالب مااتطابقش : %d ملف' % len(SELWORD_NOMATCH))
     if SELWORD_NOMATCH:
