@@ -8526,6 +8526,306 @@ def fix_file(path):
         return True
     return False
 
+# ============================================================
+#  سورة الكهف (أغسطس ٢٠٢٦) — ربط صفحاتها في index.html
+#  وإضافة نصوصها لـrecitation.html
+#
+#  مصدر البيانات الوحيد: ملفات alkahf_p*.html نفسها الموجودة في
+#  المستودع (AYAT / AYAT_NUMS). صفر كتابة من الذاكرة، وصفر أرقام
+#  آيات أو نصوص قرآنية مكتوبة هنا — الدالتين بيقروا من الملفات في
+#  كل تشغيلة، فلو اتضافت صفحة كهف جديدة أو اتصلّح نطاق صفحة،
+#  الـindex والتلاوة بيتحدّثوا لوحدهم في أول push.
+#
+#  الترتيب مطابق لـNEXT_SEQUENCE: البقرة ص٤٩ ← الكهف ← جزء عمّ.
+# ============================================================
+
+KAHF_FILE_RE = re.compile(r'^alkahf_p(\d+)\.html$')
+KAHF_SKIPPED = []
+
+
+def _kahf_js_array(src, name):
+    """يقرأ مصفوفة JS (const NAME=[...]) ويرجّعها كقائمة بايثون."""
+    m = re.search(r'const\s+' + name + r'\s*=\s*\[', src)
+    if not m:
+        return None
+    i, d = m.end() - 1, 0
+    while i < len(src):
+        if src[i] == '[':
+            d += 1
+        elif src[i] == ']':
+            d -= 1
+            if d == 0:
+                break
+        i += 1
+    raw = src[m.end() - 1:i + 1]
+    try:
+        return json.loads(raw)
+    except ValueError:
+        pass
+    items = re.findall(r'`([^`]*)`', raw)
+    if items:
+        return items
+    return None
+
+
+def _kahf_read_pages(root):
+    """[(رقم الصفحة, اسم الملف, المفتاح, أرقام الآيات, نصوصها)] مرتّبة."""
+    pages = []
+    try:
+        names = os.listdir(root)
+    except OSError:
+        return pages
+    for fn in sorted(names):
+        m = KAHF_FILE_RE.match(fn)
+        if not m:
+            continue
+        with open(os.path.join(root, fn), encoding='utf-8') as f:
+            ps = f.read()
+        ayat = _kahf_js_array(ps, 'AYAT')
+        nums = _kahf_js_array(ps, 'AYAT_NUMS')
+        if not ayat or not nums or len(ayat) != len(nums):
+            KAHF_SKIPPED.append((fn, 'AYAT/AYAT_NUMS ناقصة أو غير متطابقة'))
+            continue
+        pages.append((int(m.group(1)), fn, fn[:-5],
+                      [int(n) for n in nums], list(ayat)))
+    pages.sort(key=lambda p: p[0])
+    return pages
+
+
+def _kahf_range(nums):
+    """نطاق الآيات بنفس صيغة باقي الموقع (شرطة en-dash)."""
+    return str(nums[0]) if len(nums) == 1 else '%d–%d' % (nums[0], nums[-1])
+
+
+def _kahf_obj_span(src, name):
+    """(بداية جسم الكائن, موضع قوس الإغلاق) لـ const NAME={...}."""
+    m = re.search(r'const\s+' + name + r'\s*=\s*\{', src)
+    if not m:
+        return None
+    i, d = m.end() - 1, 0
+    while i < len(src):
+        if src[i] == '{':
+            d += 1
+        elif src[i] == '}':
+            d -= 1
+            if d == 0:
+                return m.end(), i
+        i += 1
+    return None
+
+
+# ===== ١) index.html =====
+
+KAHF_ACC_HTML = """<!-- الكهف -->
+<div class="acc" id="acc-kahf">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    <div class="acc-left">
+      <div class="juz-badge">الجزء 15–16</div>
+      <div class="juz-title notranslate" translate="no">سورة الكهف</div>
+    </div>
+    <div class="acc-right">
+      <div class="juz-prog" id="kahf-prog">%d متاح</div>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </button>
+  <div class="acc-body">
+    <div class="cards-grid" id="kahf-grid"></div>
+  </div>
+</div>
+
+"""
+
+
+def add_kahf_to_index(path, out):
+    """يربط صفحات سورة الكهف في index.html (قسم + مصفوفة + تقدّم).
+
+    idempotent بالكامل: المصفوفة بتتبني من الملفات في كل مرة وبتتقارن
+    بالموجود، وكل حقنة ليها حارس بيمنع التكرار."""
+    if os.path.basename(path) != 'index.html':
+        return out, False
+
+    root = os.path.dirname(os.path.abspath(path))
+    pages = _kahf_read_pages(root)
+    if not pages:
+        return out, False
+
+    changed = False
+
+    # 1) مصفوفة الصفحات — نفس تنسيق baqaraPages (اتنين في السطر)
+    rows = ["['%s','ص %d','%s']" % (fn, pg, _kahf_range(nums))
+            for pg, fn, key, nums, ayat in pages]
+    body = '\n'.join('  ' + ','.join(rows[i:i + 2]) + ','
+                     for i in range(0, len(rows), 2))
+    arr = 'const kahfPages=[\n' + body + '\n];\n'
+
+    m_arr = re.search(r'const kahfPages=\[.*?\];\n', out, re.S)
+    if m_arr:
+        if m_arr.group(0) != arr:
+            out = out[:m_arr.start()] + arr + out[m_arr.end():]
+            changed = True
+    elif 'const ammaData=[' in out:
+        out = out.replace('const ammaData=[', arr + '\nconst ammaData=[', 1)
+        changed = True
+    else:
+        return out, changed
+
+    # 2) قسم الأكورديون — قبل جزء عمّ عشان ترتيب المصحف
+    if 'id="kahf-grid"' not in out and '<!-- جزء عمّ -->' in out:
+        out = out.replace('<!-- جزء عمّ -->',
+                          (KAHF_ACC_HTML % len(pages)) + '<!-- جزء عمّ -->', 1)
+        changed = True
+    else:
+        m_pg = re.search(r'(<div class="juz-prog" id="kahf-prog">)([^<]*)(</div>)',
+                         out)
+        if m_pg and m_pg.group(2) != '%d متاح' % len(pages):
+            out = (out[:m_pg.start()] + m_pg.group(1) + '%d متاح' % len(pages)
+                   + m_pg.group(3) + out[m_pg.end():])
+            changed = True
+
+    # 3) رسم البطاقات
+    if "getElementById('kahf-grid')" not in out:
+        anchor = "document.getElementById('amma-grid').innerHTML ="
+        if anchor in out:
+            out = out.replace(
+                anchor,
+                "document.getElementById('kahf-grid').innerHTML =\n"
+                "  kahfPages.map(p=>card(p[0],p[1],p[2],true)).join('');\n\n"
+                + anchor, 1)
+            changed = True
+
+    # 4) تتبّع التقدّم — أربع حقن مستقلة، كل واحدة بحارسها
+    anc = "  ammaData.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة '+p[1];});"
+    if anc in out and "'سورة الكهف '+p[1]" not in out:
+        out = out.replace(
+            anc,
+            "  kahfPages.forEach(p=>{nameByKey[p[0].replace('.html','')]="
+            "'سورة الكهف '+p[1];});\n" + anc, 1)
+        changed = True
+
+    if 'let ammaDone=0;' in out and 'kahfDone' not in out:
+        out = out.replace(
+            '  let ammaDone=0;',
+            "  let kahfDone=0;\n"
+            "  kahfPages.forEach(p=>{if(darbiPageComplete("
+            "all[p[0].replace('.html','')]))kahfDone++;});\n"
+            "  let ammaDone=0;", 1)
+        changed = True
+
+    anc = "  const ap=document.getElementById('amma-prog');"
+    if anc in out and "getElementById('kahf-prog')" not in out:
+        out = out.replace(
+            anc,
+            "  const kp=document.getElementById('kahf-prog');\n"
+            "  if(kp)kp.textContent=kahfDone+' / '+kahfPages.length+' مكتمل'"
+            "+(kahfDone===kahfPages.length?' ✓':'');\n" + anc, 1)
+        changed = True
+
+    old = 'const totalPages=1+baqaraPages.length+ammaData.filter(p=>p[3]).length;'
+    if old in out:
+        out = out.replace(
+            old,
+            'const totalPages=1+baqaraPages.length+kahfPages.length'
+            '+ammaData.filter(p=>p[3]).length;', 1)
+        changed = True
+
+    old = 'const doneCount=fatihaDone+baqaraDone+ammaDone;'
+    if old in out:
+        out = out.replace(
+            old, 'const doneCount=fatihaDone+baqaraDone+kahfDone+ammaDone;', 1)
+        changed = True
+
+    return out, changed
+
+
+# ===== ٢) recitation.html =====
+
+_KAHF_ENTRY_RE = re.compile(r'^[ \t]*alkahf_p\d+\s*:.*\n', re.M)
+_KAHF_OPT_RE = re.compile(
+    r'[ \t]*<optgroup label="سورة الكهف">.*?</optgroup>\n', re.S)
+_KAHF_SEQ_RE = re.compile(r"[ \t]*(?:'alkahf_p\d+',)+\n")
+
+
+def add_kahf_to_recitation(path, out):
+    """يضيف صفحات الكهف لـrecitation.html: القائمة المنسدلة + AYAHS +
+    TEXTS + SURAH_NAMES + AYAH_START + RECITE_SEQUENCE.
+
+    النص القرآني منسوخ حرفيًا من ملفات alkahf_p*.html (نفس النص اللي
+    اتحقق منه وقت توليدها) — مافيش حرف واحد مكتوب هنا.
+
+    idempotent: بيمسح أي مدخلات كهف قديمة الأول وبيعيد بناءها، فلو
+    نطاق صفحة اتغيّر بيتزامن تلقائيًا."""
+    if os.path.basename(path) != 'recitation.html':
+        return out, False
+
+    root = os.path.dirname(os.path.abspath(path))
+    pages = _kahf_read_pages(root)
+    if not pages:
+        return out, False
+
+    src = out
+
+    # تنظيف أي مدخلات كهف سابقة (الأساس اللي بيخلّي الدالة idempotent)
+    out = _KAHF_ENTRY_RE.sub('', out)
+    out = _KAHF_OPT_RE.sub('', out)
+    out = _KAHF_SEQ_RE.sub('', out)
+
+    # القائمة المنسدلة — بعد optgroup البقرة
+    opts = ''.join(
+        '      <option value="%s">ص%d — %s %s</option>\n'
+        % (key, pg, 'آية' if len(nums) == 1 else 'آيات', _kahf_range(nums))
+        for pg, fn, key, nums, ayat in pages)
+    m_opt = re.search(r'<option value="baqara_p49">.*?</option>\n[ \t]*</optgroup>\n',
+                      out, re.S)
+    if m_opt:
+        out = (out[:m_opt.end()]
+               + '    <optgroup label="سورة الكهف">\n' + opts
+               + '    </optgroup>\n' + out[m_opt.end():])
+
+    # AYAHS — كل آية على حدة (لأرقام الآيات ومحاذاة التلاوة)
+    ayahs_block = ''.join(
+        '  %s: [%s],\n' % (key, ', '.join('`%s`' % t for t in ayat))
+        for pg, fn, key, nums, ayat in pages)
+    m = re.search(r'^  baqara_p49: \[.*\n', out, re.M)
+    if m:
+        out = out[:m.end()] + ayahs_block + out[m.end():]
+
+    # TEXTS — نص الصفحة كامل
+    texts_block = ''.join(
+        '  %s: `%s`,\n' % (key, ' '.join(ayat))
+        for pg, fn, key, nums, ayat in pages)
+    m = re.search(r'^  baqara_p49: `.*\n', out, re.M)
+    if m:
+        out = out[:m.end()] + texts_block + out[m.end():]
+
+    # SURAH_NAMES — الاسم الظاهر فوق منطقة التلاوة
+    names_block = ''.join(
+        "  %s:'الكهف ص%d — %s %s',\n"
+        % (key, pg, 'آية' if len(nums) == 1 else 'آيات', _kahf_range(nums))
+        for pg, fn, key, nums, ayat in pages)
+    m = re.search(r"^  baqara_p49:'.*\n", out, re.M)
+    if m:
+        out = out[:m.end()] + names_block + out[m.end():]
+
+    # AYAH_START — أول آية في كل صفحة (بيها بتتحسب أرقام الآيات)
+    span = _kahf_obj_span(out, 'AYAH_START')
+    if span:
+        b, e = span
+        head = out[b:e].rstrip()
+        if not head.endswith(','):
+            head += ','
+        start_block = ',\n'.join('  %s:%d' % (key, nums[0])
+                                 for pg, fn, key, nums, ayat in pages)
+        out = out[:b] + head + '\n' + start_block + '\n' + out[e:]
+
+    # RECITE_SEQUENCE — ترتيب المصحف لأزرار السابق/التالي
+    seq_block = ''.join("'%s'," % key for pg, fn, key, nums, ayat in pages)
+    m = re.search(r"^'baqara_p41'.*'baqara_p49',\n", out, re.M)
+    if m:
+        out = out[:m.end()] + seq_block + '\n' + out[m.end():]
+
+    return out, out != src
+
+
 def fix_index_recitation(path):
     """index.html و recitation.html — PWA + زر مشاركة + وضع المطوّر"""
     with open(path, encoding='utf-8') as f:
@@ -8577,6 +8877,12 @@ def fix_index_recitation(path):
     # تصحيح نطاقات آيات جدول البقرة في index.html من رؤوس الصفحات
     out, _idx_ranges_fixed = fix_index_baqara_ranges(
         os.path.dirname(os.path.abspath(path)), out)
+
+    # سورة الكهف: ربط الصفحات في index.html وإضافة نصوصها للتلاوة.
+    # الاتنين بيقروا من ملفات alkahf_p*.html نفسها، فمافيش بيانات
+    # مكررة ولا نص قرآني مكتوب في السكربت.
+    out, _kahf_idx = add_kahf_to_index(path, out)
+    out, _kahf_rec = add_kahf_to_recitation(path, out)
 
     # شارة الإطلاق التجريبي (index.html فقط)
     out, _beta_note_added = add_beta_note(path, out)
