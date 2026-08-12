@@ -2634,6 +2634,11 @@ def add_order_help_panel(out):
 NEXT_SEQUENCE = (
     ['alfatiha'] +
     [f'albaqara_p{i}' for i in range(2, 50)] +
+    # سورة الكهف — صفحات المصحف ٢٩٣–٣٠٤ (أغسطس ٢٠٢٦). موضعها هنا
+    # بيحافظ على ترتيب المصحف: البقرة تنتهي عند ص٤٩ ← الكهف ← جزء عمّ.
+    # الأثر الجانبي الوحيد: زر «التالي» في albaqara_p49 بقى يودّي على
+    # alkahf_p293 بدل annaba، وزر «السابق» في annaba بقى من alkahf_p304.
+    [f'alkahf_p{i}' for i in range(293, 305)] +
     [
         'annaba', 'annaziat', 'abasa', 'attakwir', 'alinfitar',
         'almutaffifin', 'alinshiqaq', 'alburuj', 'altariq', 'alaala',
