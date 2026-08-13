@@ -6094,6 +6094,46 @@ BROKEN_NAV_FIXED = []
 _VALID_PAGE_KEYS = set(NEXT_SEQUENCE)
 
 
+# ======================================================
+# مزامنة أهداف أزرار التنقل مع NEXT_SEQUENCE
+# ------------------------------------------------------
+# add_page_nav_row() بتسيب الأزرار الملفوفة السليمة زي ما هي عن قصد،
+# فلما اتضافت الكهف في النص (البقرة ص٤٩ ← الكهف ← النبأ) الأزرار
+# القديمة فضلت على هدفها القديم: albaqara_p49 «التالي» ← annaba،
+# وannaba «السابق» ← albaqara_p49. الدالة دي بتعيد ضبط الـhref على
+# السلسلة الرسمية، فأي إدراج سورة جديدة في النص بيتزامن لوحده.
+# ======================================================
+NAV_TARGET_RES = (
+    re.compile(r'(href=")([\w\-]+)(\.html"[^>]*class="(?P<dir>next|prev)-page-btn")'),
+    re.compile(r'(class="(?P<dir>next|prev)-page-btn"[^>]*href=")([\w\-]+)(\.html")'),
+)
+NAV_RESYNCED = []
+
+
+def resync_page_nav_targets(path, out):
+    """يخلّي href بتاع أزرار السابق/التالي مطابق لـNEXT_SEQUENCE."""
+    fn = os.path.splitext(os.path.basename(path))[0]
+    if fn not in NEXT_MAP and fn not in PREV_MAP:
+        return out, False
+
+    fixes = []
+
+    def _one(m, key_grp, pre_grp, post_grp):
+        tgt = NEXT_MAP.get(fn) if m.group('dir') == 'next' else PREV_MAP.get(fn)
+        if not tgt or m.group(key_grp) == tgt:
+            return m.group(0)
+        fixes.append('%s → %s' % (m.group(key_grp), tgt))
+        return m.group(pre_grp) + tgt + m.group(post_grp)
+
+    out = NAV_TARGET_RES[0].sub(lambda m: _one(m, 2, 1, 3), out)
+    out = NAV_TARGET_RES[1].sub(lambda m: _one(m, 3, 1, 4), out)
+
+    if not fixes:
+        return out, False
+    NAV_RESYNCED.append((os.path.basename(path), fixes))
+    return out, True
+
+
 def fix_broken_page_nav_links(path, out):
     """يصلّح أي href في صف التنقل بيشاور على مفتاح مش في السلسلة."""
     fn = os.path.basename(path)
@@ -6103,19 +6143,22 @@ def fix_broken_page_nav_links(path, out):
 
     def _one(m):
         key = m.group(2)
+        # NEXT_SEQUENCE هي مصدر الحقيقة للترتيب: أي زر بيوديّ لمكان
+        # مخالف بيتصلّح، حتى لو الهدف الحالي صفحة موجودة فعلًا. ده
+        # اللي بيخلّي إدراج سورة جديدة في نص السلسلة (زي الكهف بين
+        # البقرة وجزء عمّ) يعيد ربط الأزرار على الجانبين لوحده.
+        tgt = (NEXT_MAP if m.group('dir') == 'next' else PREV_MAP).get(self_key)
+        if tgt:
+            if key != tgt:
+                fixed.append(key + ' → ' + tgt)
+                return m.group(1) + tgt + m.group(3)
+            return m.group(0)
         if key in _VALID_PAGE_KEYS:
             return m.group(0)
         cand = key.replace('-', '')
         if cand in _VALID_PAGE_KEYS:
             fixed.append(key + ' → ' + cand)
             return m.group(1) + cand + m.group(3)
-        # الهدف مش في السلسلة (زي index.html اللي بيحطه المولّد لأول
-        # وآخر صفحة في المواصفة): نستنتج الصح من موقع الملف نفسه في
-        # NEXT_SEQUENCE بدل ما نسيب رابط بيرجّع للرئيسية في نص السلسلة
-        tgt = (NEXT_MAP if m.group('dir') == 'next' else PREV_MAP).get(self_key)
-        if tgt:
-            fixed.append(key + ' → ' + tgt)
-            return m.group(1) + tgt + m.group(3)
         if key == 'index':
             return m.group(0)          # أول/آخر السلسلة — رجوع للرئيسية سليم
         fixed.append('⚠ ' + key + ' (مش معروف)')
@@ -8502,6 +8545,7 @@ def fix_file(path):
     out, result_nav_added = add_result_page_nav_row(path, out)
 
     out, nav_links_fixed = fix_broken_page_nav_links(path, out)
+    out, nav_resynced = resync_page_nav_targets(path, out)
 
 
     # ====================================================
@@ -8894,12 +8938,221 @@ def fix_remaining_juz_after_kahf(path, out):
     return out, changed
 
 
+
+# ======================================================
+# رموز الوقف كلمات وهمية في اختبار التلاوة
+# ------------------------------------------------------
+# في النص العثماني بتيجي رموز الوقف (ج، صلى، قلى، ۜ …) مفصولة
+# بمسافة، فـsplit(/\s+/) بيعتبرها «كلمة». norm() بتفضّيها تمامًا،
+# فبتفضل واقفة في القائمة ككلمة مستحيل ينطقها القارئ → بتتحسب
+# ناقصة غلط (اتكشفت في الكهف — أغسطس ٢٠٢٦؛ نصوص البقرة القديمة
+# كانت متكتوبة من غير الرموز دي فالمشكلة ماظهرتش قبل كده).
+# الحل: فلتر واحد مشترك بين refWords وcomputeAyahBounds — لازم
+# الاتنين يستخدموه بنفس الطريقة وإلا أرقام الآيات هتزحلق.
+# النص نفسه ما بيتغيرش: صندوق «اعرض نص السورة» لسه بيعرض AYAHS
+# كاملة برموزها زي المصحف.
+# ======================================================
+_SPLIT_REF_WORDS = """function splitRefWords(t){
+  // رموز الوقف بتيجي أحيانًا كلمة مستقلة — norm بتفضّيها، فلو
+  // سبناها بتتحسب كلمة ناقصة غلط
+  return t.split(/\\s+/).filter(w=>w.length>0&&norm(w).length>0);
+}
+
+"""
+
+
+def filter_waqf_tokens_in_recitation(path, out):
+    """يمنع رموز الوقف من إنها تتحسب كلمات ناقصة في اختبار التلاوة."""
+    if os.path.basename(path) != 'recitation.html':
+        return out, False
+
+    changed = False
+
+    if 'function splitRefWords(' not in out:
+        m = re.search(r'function computeAyahBounds\(', out)
+        if not m:
+            return out, False
+        out = out[:m.start()] + _SPLIT_REF_WORDS + out[m.start():]
+        changed = True
+
+    pairs = (
+        (re.compile(r'ayahText\.split\(/\\s\+/\)\.filter\(w=>w\.length>0\)'),
+         'splitRefWords(ayahText)'),
+        (re.compile(r'TEXTS\[currentKey\]\.split\(/\\s\+/\)\.filter\(w=>w\.length>0\)'),
+         'splitRefWords(TEXTS[currentKey])'),
+    )
+    for pat, rep in pairs:
+        out, n = pat.subn(rep, out)
+        if n:
+            changed = True
+
+    return out, changed
+
+
+# ======================================================
+# خانة بحث فوق قائمة السور في اختبار التلاوة
+# ------------------------------------------------------
+# القائمة بقت ٩٨ خيار وهتوصل لـ٦٠٤ لو المصحف اكتمل — التمرير
+# فيها على الموبايل مرهق. الحل: خانة بحث بترشّح الخيارات بالاسم
+# أو برقم الصفحة، والقائمة نفسها ما بتتغيّرش لو الخانة فاضية.
+#
+# نقاط مهمة في التنفيذ:
+#  • بنحتفظ بنسخة كاملة من الـoptgroups وقت التحميل وبنعيد بناء
+#    القائمة منها كل مرة — أنضف من إخفاء <option> اللي دعمه
+#    مايتغيّرش من متصفح للتاني.
+#  • البحث بيشوف عنوان المجموعة كمان («سورة الكهف»)، عشان كتابة
+#    «الكهف» تطلّع صفحاتها رغم إن نص الخيار «ص293 — آيات 1–4».
+#  • رقم لوحده = بحث برقم الصفحة بالظبط، مش أي رقم في السطر،
+#    عشان «43» ما تطلّعش كل صفحة فيها آية ٤٣.
+#  • الخيار المختار حاليًا بيفضل في القائمة دايمًا حتى لو مطابقش،
+#    عشان قيمة الـselect ما تضيعش والتلاوة الجارية ما تتلغيش.
+# ======================================================
+_SEARCH_CSS = """.surah-search{width:100%;padding:10px 14px;margin-bottom:8px;font-family:inherit;font-size:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);direction:rtl;outline:none;}
+.surah-search:focus{border-color:var(--accent);}
+.surah-search-empty{font-size:12.5px;color:var(--accent);text-align:center;padding:6px;display:none;}
+"""
+
+_SEARCH_HTML = """  <input type="search" class="surah-search" id="surahSearch"
+         inputmode="search" autocomplete="off" enterkeyhint="search"
+         aria-label="ابحث باسم السورة أو رقم الصفحة"
+         placeholder="🔍 ابحث باسم السورة أو رقم الصفحة"
+         oninput="filterSurahOptions()">
+  <div class="surah-search-empty" id="surahSearchEmpty">لا توجد نتائج مطابقة</div>
+"""
+
+_SEARCH_JS = """
+// ===== بحث قائمة السور =====
+let _surahGroups=null;
+
+function _surahSearchNorm(s){
+  return (s||'')
+    .replace(/[\\u064B-\\u0652\\u0670\\u0640]/g,'')
+    .replace(/[\\u0660-\\u0669]/g,d=>String(d.charCodeAt(0)-0x0660))
+    .replace(/[\\u06F0-\\u06F9]/g,d=>String(d.charCodeAt(0)-0x06F0))
+    .replace(/[\\u0622\\u0623\\u0625\\u0671]/g,'\\u0627')
+    .replace(/\\u0649/g,'\\u064A')
+    .replace(/\\u0629/g,'\\u0647')
+    .replace(/\\s+/g,' ')
+    .trim().toLowerCase();
+}
+
+function _surahEsc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _surahSnapshot(){
+  const sel=document.getElementById('surahSelect');
+  if(!sel)return null;
+  const groups=[];
+  Array.from(sel.children).forEach(node=>{
+    if(node.tagName==='OPTGROUP'){
+      groups.push({label:node.label,options:Array.from(node.children).map(o=>({
+        value:o.value,text:o.textContent,
+        page:(o.value.match(/_p(\\d+)$/)||[])[1]||''
+      }))});
+    }else if(node.tagName==='OPTION'){
+      groups.push({label:null,options:[{value:node.value,text:node.textContent,page:''}]});
+    }
+  });
+  return groups;
+}
+
+function _surahOptHTML(o){
+  return '<option value="'+_surahEsc(o.value)+'">'+_surahEsc(o.text)+'</option>';
+}
+
+function filterSurahOptions(){
+  const sel=document.getElementById('surahSelect');
+  const box=document.getElementById('surahSearch');
+  const empty=document.getElementById('surahSearchEmpty');
+  if(!sel||!box)return;
+  if(!_surahGroups)_surahGroups=_surahSnapshot();
+  if(!_surahGroups)return;
+
+  const q=_surahSearchNorm(box.value);
+  const digits=/^[0-9]+$/.test(q);
+  const keep=sel.value;
+  let real=0,html='';
+
+  _surahGroups.forEach(g=>{
+    if(g.label===null){html+=_surahOptHTML(g.options[0]);return;}
+    const gl=_surahSearchNorm(g.label);
+    const hits=g.options.filter(o=>{
+      if(!q)return true;
+      if(digits)return o.page.indexOf(q)===0;      // رقم = رقم الصفحة بس
+      const name=(typeof SURAH_NAMES!=='undefined'&&SURAH_NAMES[o.value])||'';
+      return (gl+' '+_surahSearchNorm(o.text)+' '+_surahSearchNorm(name)
+              +' '+o.value.toLowerCase()).indexOf(q)>=0;
+    });
+    if(q)real+=hits.length;
+    let show=hits;
+    if(q&&keep&&!hits.some(o=>o.value===keep)){
+      const k=g.options.find(o=>o.value===keep);   // المختار حاليًا يفضل ظاهر
+      if(k)show=hits.concat([k]);
+    }
+    if(!show.length)return;
+    html+='<optgroup label="'+_surahEsc(g.label)+'">'
+        +show.map(_surahOptHTML).join('')+'</optgroup>';
+  });
+
+  if(empty)empty.style.display=(q&&real===0)?'block':'none';
+  if(q&&real===0)return;        // مافيش نتيجة — نسيب القائمة زي ما هي
+  sel.innerHTML=html;
+  sel.value=keep;
+}
+"""
+
+
+def add_surah_search_box(path, out):
+    """يضيف خانة بحث فوق قائمة السور في recitation.html (idempotent)."""
+    if os.path.basename(path) != 'recitation.html':
+        return out, False
+
+    changed = False
+
+    if '.surah-search{' not in out:
+        anchor = '.surah-select:focus{border-color:var(--accent);}\n'
+        if anchor not in out:
+            return out, False
+        out = out.replace(anchor, anchor + _SEARCH_CSS, 1)
+        changed = True
+
+    if 'id="surahSearch"' not in out:
+        m = re.search(r'[ \t]*<select class="surah-select" id="surahSelect"', out)
+        if not m:
+            return out, changed
+        out = out[:m.start()] + _SEARCH_HTML + out[m.start():]
+        changed = True
+
+    if 'function filterSurahOptions(' not in out:
+        m = re.search(r'\nfunction onSelectSurah\(\)\{', out)
+        if not m:
+            return out, changed
+        out = out[:m.start()] + '\n' + _SEARCH_JS + out[m.start():]
+        changed = True
+
+    return out, changed
+
 # ===== ٢) recitation.html =====
 
 _KAHF_ENTRY_RE = re.compile(r'^[ \t]*alkahf_p\d+\s*:.*\n', re.M)
 _KAHF_OPT_RE = re.compile(
     r'[ \t]*<optgroup label="سورة الكهف">.*?</optgroup>\n', re.S)
 _KAHF_SEQ_RE = re.compile(r"[ \t]*(?:'alkahf_p\d+',)+\n")
+
+
+# رموز الوقف والتحزيب اللي بيفصلها المصدر بمسافات (ۖ ۗ ۚ ۜ ۞ ۟).
+# نصوص البقرة في recitation.html خالية منها تمامًا، فلو سابناها في
+# نصوص الكهف بتتحسب "كلمات" مستقلة والمستخدم عمره ما هينطقها —
+# فتظهر رمادية كأنها محذوفة وتنقص النسبة. بنشيلها من نصوص التلاوة
+# بس؛ صفحات الاختبار نفسها بتفضل بالرسم كامل زي المصحف.
+# ملحوظة: ۥ ۦ (الواو والياء الصغيرتين) حروف رسم — مش في القائمة دي.
+_WAQF_MARKS_RE = re.compile('[\u06D6-\u06DF\u06E9]')
+
+
+def _strip_waqf(t):
+    return re.sub(r'\s{2,}', ' ', _WAQF_MARKS_RE.sub('', t)).strip()
 
 
 def add_kahf_to_recitation(path, out):
@@ -8920,6 +9173,9 @@ def add_kahf_to_recitation(path, out):
         return out, False
 
     src = out
+    # نص التلاوة بدون رموز الوقف (شوف تعليق _strip_waqf فوق)
+    pages = [(pg, fn, key, nums, [_strip_waqf(t) for t in ayat])
+             for pg, fn, key, nums, ayat in pages]
 
     # تنظيف أي مدخلات كهف سابقة (الأساس اللي بيخلّي الدالة idempotent)
     out = _KAHF_ENTRY_RE.sub('', out)
@@ -9041,6 +9297,8 @@ def fix_index_recitation(path):
     out, _kahf_idx = add_kahf_to_index(path, out)
     out, _kahf_juz = fix_remaining_juz_after_kahf(path, out)
     out, _kahf_rec = add_kahf_to_recitation(path, out)
+    out, _waqf_fix = filter_waqf_tokens_in_recitation(path, out)
+    out, _search_box = add_surah_search_box(path, out)
 
     # شارة الإطلاق التجريبي (index.html فقط)
     out, _beta_note_added = add_beta_note(path, out)
@@ -10195,6 +10453,10 @@ def main():
     if VERDICT_SKIPPED:
         print('  ', ' · '.join(x[0] for x in VERDICT_SKIPPED[:20]))
 
+    if NAV_RESYNCED:
+        print('\n=== مزامنة أهداف التنقل مع ترتيب المصحف ===')
+        for f, fx in NAV_RESYNCED[:20]:
+            print('  - %s : %s' % (f, ' | '.join(fx)))
     print('\n=== تقرير روابط التنقل ===')
     if BROKEN_NAV_FIXED:
         for fn2, w in BROKEN_NAV_FIXED:
