@@ -11,10 +11,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبر تلاوتك — دربي لحفظ القرآن</title>
-<meta name="description" content="سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة">
-<meta property="og:title" content="اختبر تلاوتك — دربي لحفظ القرآن">
-<meta property="og:description" content="سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة">
+<title>اختبر حفظك — دربي لحفظ القرآن</title>
+<meta name="description" content="سجّل حفظك بصوتك ونقارنه بالنص القرآني كلمة بكلمة">
+<meta property="og:title" content="اختبر حفظك — دربي لحفظ القرآن">
+<meta property="og:description" content="سجّل حفظك بصوتك ونقارنه بالنص القرآني كلمة بكلمة">
 <meta property="og:url" content="https://quran-darbi.com/recitation.html">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://quran-darbi.com/og-image.png">
@@ -24,8 +24,8 @@
 <meta property="og:site_name" content="دربي لحفظ القرآن">
 <meta property="og:locale" content="ar_AR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="اختبر تلاوتك — دربي لحفظ القرآن">
-<meta name="twitter:description" content="سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة">
+<meta name="twitter:title" content="اختبر حفظك — دربي لحفظ القرآن">
+<meta name="twitter:description" content="سجّل حفظك بصوتك ونقارنه بالنص القرآني كلمة بكلمة">
 <meta name="twitter:image" content="https://quran-darbi.com/og-image.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
@@ -87,6 +87,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .score-bar{background:var(--surface2);border-radius:8px;height:10px;margin-bottom:14px;overflow:hidden;}
 .score-fill{height:100%;border-radius:8px;transition:width .6s;}
 .where-msg{font-size:12px;color:var(--accent);background:var(--surface2);border-radius:8px;padding:7px 12px;margin-bottom:12px;text-align:center;}
+.scope-note{font-size:12.5px;color:var(--text);background:var(--hint-btn-bg);border:1.5px dashed var(--gold);border-radius:10px;padding:10px 12px;margin-bottom:12px;text-align:center;line-height:1.8;}
 .legend{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:12px;}
 .legend-dot{width:13px;height:13px;border-radius:3px;}
@@ -133,7 +134,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 </div>  </div>
 </div>
 <div class="info-card">
-  <div class="page-title">🎤 اختبر تلاوتك</div>
+  <div class="page-title">🎤 اختبر حفظك</div>
   <div class="page-sub">اختر السورة — اقرأ من أي آية تريد — الموقع يصحح كل كلمة</div>
 </div>
 <div class="select-card">
@@ -281,6 +282,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
   </div>
   <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
   <div class="where-msg" id="whereMsg"></div>
+  <div class="scope-note">ℹ️ هذا الاختبار يتحقق من الكلمات وترتيبها في حفظك، ولا يتحقق حالياً من دقة الحركات (التشكيل) أو أحكام التجويد والمدود — هذا الجزء قيد البحث والتطوير.</div>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c3e6cb;border:1px solid #155724"></div>صحيحة</div>
     <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div>خاطئة</div>
@@ -1383,7 +1385,7 @@ function checkRecitation(){
   fill.style.width=pct+'%';
   fill.style.background=pct>=80?'#4a7c4a':pct>=60?'#e67e22':'#c0392b';
   document.getElementById('resultTitle').textContent=
-    pct===100?'🌟 ممتاز! تلاوة مثالية':pct>=80?'✨ أحسنت!':pct>=60?'📖 جيد — راجع الكلمات الحمراء':'💪 تحتاج مراجعة';
+    pct===100?'🌟 ممتاز! حفظك مطابق للنص':pct>=80?'✨ أحسنت! حفظك قوي':pct>=60?'📖 جيد — راجع الكلمات الحمراء':'💪 تحتاج مراجعة';
   if(pct===100){
     launchConfetti();
   }
