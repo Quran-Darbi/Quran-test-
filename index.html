@@ -292,6 +292,23 @@ document.addEventListener('DOMContentLoaded',function(){
   </div>
 </div>
 
+<!-- يس -->
+<div class="acc" id="acc-yaseen">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    <div class="acc-left">
+      <div class="juz-badge">الجزء 22–23</div>
+      <div class="juz-title notranslate" translate="no">سورة يس</div>
+    </div>
+    <div class="acc-right">
+      <div class="juz-prog" id="yaseen-prog">6 متاح</div>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </button>
+  <div class="acc-body">
+    <div class="cards-grid" id="yaseen-grid"></div>
+  </div>
+</div>
+
 <!-- جزء عمّ -->
 <div class="acc" id="acc-amma">
   <button class="acc-btn" onclick="toggleAcc(this)">
@@ -379,6 +396,12 @@ const kahfPages=[
   ['alkahf_p303.html','ص 303','84–97'],['alkahf_p304.html','ص 304','98–110'],
 ];
 
+const yaseenPages=[
+  ['yaseen_p440.html','ص 440','1–12'],['yaseen_p441.html','ص 441','13–27'],
+  ['yaseen_p442.html','ص 442','28–40'],['yaseen_p443.html','ص 443','41–54'],
+  ['yaseen_p444.html','ص 444','55–70'],['yaseen_p445.html','ص 445','71–83'],
+];
+
 const ammaData=[
   ['annaba.html','النبأ','40 آية',true],['annaziat.html','النازعات','46 آية',true],
   ['abasa.html','عبس','42 آية',true],['attakwir.html','التكوير','29 آية',true],
@@ -439,6 +462,9 @@ document.getElementById('baqara-grid').innerHTML =
 document.getElementById('kahf-grid').innerHTML =
   kahfPages.map(p=>card(p[0],p[1],p[2],true)).join('');
 
+document.getElementById('yaseen-grid').innerHTML =
+  yaseenPages.map(p=>card(p[0],p[1],p[2],true)).join('');
+
 document.getElementById('amma-grid').innerHTML =
   ammaData.map(p=>card(p[0],p[1],p[2],p[3])).join('');
 
@@ -457,6 +483,7 @@ function renderDarbiProgress(){
   const nameByKey={alfatiha:'الفاتحة'};
   baqaraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة البقرة '+p[1];});
   kahfPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الكهف '+p[1];});
+  yaseenPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة يس '+p[1];});
   ammaData.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة '+p[1];});
 
   const fatihaDone=darbiPageComplete(all['alfatiha'])?1:0;
@@ -464,6 +491,8 @@ function renderDarbiProgress(){
   baqaraPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))baqaraDone++;});
   let kahfDone=0;
   kahfPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))kahfDone++;});
+  let yaseenDone=0;
+  yaseenPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))yaseenDone++;});
   let ammaDone=0;
   ammaData.forEach(p=>{if(!p[3])return;if(darbiPageComplete(all[p[0].replace('.html','')]))ammaDone++;});
 
@@ -473,11 +502,13 @@ function renderDarbiProgress(){
   if(bp)bp.textContent=baqaraDone+' / '+baqaraPages.length+' مكتمل';
   const kp=document.getElementById('kahf-prog');
   if(kp)kp.textContent=kahfDone+' / '+kahfPages.length+' مكتمل'+(kahfDone===kahfPages.length?' ✓':'');
+  const yp=document.getElementById('yaseen-prog');
+  if(yp)yp.textContent=yaseenDone+' / '+yaseenPages.length+' مكتمل'+(yaseenDone===yaseenPages.length?' ✓':'');
   const ap=document.getElementById('amma-prog');
   if(ap)ap.textContent=ammaDone+' / '+ammaData.length+' مكتمل'+(ammaDone===ammaData.length?' ✓':'');
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+ammaData.filter(p=>p[3]).length;
-  const doneCount=fatihaDone+baqaraDone+kahfDone+ammaDone;
+  const totalPages=1+baqaraPages.length+kahfPages.length+yaseenPages.length+ammaData.filter(p=>p[3]).length;
+  const doneCount=fatihaDone+baqaraDone+kahfDone+yaseenDone+ammaDone;
   if(doneCount>0){
     const pct=Math.round(doneCount/totalPages*100);
     const heroProg=document.getElementById('hero-progress');
