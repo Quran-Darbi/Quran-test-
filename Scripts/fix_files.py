@@ -5668,12 +5668,16 @@ def _nf_one(body):
     #         خطوتين — الفاحص القديم كان بيعدّي عليها وبيقول "سليمة")
     if r"replace(/[ئؤ]/g,'ء').replace(/ء/g,'')" in body:
         body = body.replace(r"replace(/[ئؤ]/g,'ء').replace(/ء/g,'')",
-                            r"replace(/[ئؤ]/g,'ا').replace(/ء/g,'')")
-        done.append('ئؤ→ا')
+                            r"replace(/ئ/g,'').replace(/ؤ/g,'ا').replace(/ء/g,'')")
+        done.append('ئ→∅ؤ→ا')
     if r"replace(/[ءئؤ]/g,'')" in body:
         body = body.replace(r"replace(/[ءئؤ]/g,'')",
-                            r"replace(/[ئؤ]/g,'ا').replace(/ء/g,'')")
-        done.append('ئؤ→ا')
+                            r"replace(/ئ/g,'').replace(/ؤ/g,'ا').replace(/ء/g,'')")
+        done.append('ئ→∅ؤ→ا')
+    if r"replace(/[ئؤ]/g,'ا').replace(/ء/g,'')" in body:
+        body = body.replace(r"replace(/[ئؤ]/g,'ا').replace(/ء/g,'')",
+                            r"replace(/ئ/g,'').replace(/ؤ/g,'ا').replace(/ء/g,'')")
+        done.append('ئ→∅ؤ→ا')
 
     # ١) نقل كتلة الكشيدة قبل حذف التشكيل
     mk = _NF_KASHIDA.search(body)
@@ -6717,7 +6721,7 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   if(typeof saveResumeState==='function')saveResumeState();
 }'''
 
-CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/[ئؤ]/g,'ا').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/(?<=^|\\s)اهاني(?=\\s|$)/g,'اهان').replace(/(?<=^|\\s)تكفروني(?=\\s|$)/g,'تكفرون').replace(/(?<=^|\\s)فاتقوني(?=\\s|$)/g,'فاتقون').replace(/(?<=^|\\s)فارهبوني(?=\\s|$)/g,'فارهبون').replace(/(?<=^|\\s)وتقوني(?=\\s|$)/g,'وتقون').replace(/(?<=^|\\s)يقضي(?=\\s|$)/g,'يقض').replace(/(?<=^|\\s)ينتهي(?=\\s|$)/g,'ينته').replace(/(?<=^|\\s)اوفي(?=\\s|$)/g,'اوف').replace(/(?<=^|\\s)يسري(?=\\s|$)/g,'يسر')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
+CANON_FN['normalize'] = 'function normalize(str)' + "{\n  if(!str)return'';\n  return str\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي')\n    .replace(/ي\\u0653?ـ\\u064E\\u0654/g,'ي').replace(/ـ\\u064E\\u0654/g,'ا')\n    .replace(/ـ[\\u064B-\\u065F]*[\\u0654\\u0655]/g,'')\n    .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')\n    .replace(/[\\u064B-\\u065F\\u0610-\\u061A\\u06D6-\\u06DC\\u06DF-\\u06E4\\u06E7\\u06E8\\u06EA-\\u06ED\\u08F0-\\u08F2]/g,'')\n    .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\\S)/g,'هالا')\n    .replace(/وٱ(?!ل)/g,'و')\n    .replace(/(?<=^|\\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد)/g,'و')\n    .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')\n    .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')\n    .replace(/نٰ/g,'نا')\n    .replace(/(?<=^|\\s)بلىٰ(?=\\s|$)/g,'بلا').replace(/ىٰ(?=\\S)/g,'ا').replace(/ىٰ/g,'ي')\n    .replace(/(.)ٰ/g,'$1ا')\n    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n    .replace(/ه[ۥۦ]/g,'ه')\n    .replace(/(?<=^|\\s)لشئ(?=\\s|$)/g,'لشاي').replace(/ئ/g,'').replace(/ؤ/g,'ا').replace(/ء/g,'')\n    .replace(/[آأإٱا]/g,'ا')\n    .replace(/[ىی]/g,'ي')\n    .replace(/ة/g,'ه')\n    .replace(/(?<=^|\\s)ممنع(?=\\s|$)/g,'ممن منع').replace(/(.)\\1+/g,'$1')\n    .replace(/الربوا/g,'الربا').replace(/رحمان/g,'رحمن').replace(/(?<=^|\\s)فازالهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فاذلهما(?=\\s|$)/g,'فازلهما').replace(/(?<=^|\\s)فادراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فادرأتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)فاداراتم(?=\\s|$)/g,'فادارتم').replace(/(?<=^|\\s)بن(?=\\s|$)/g,'ابن').replace(/نصاري(?=\\s|$)/g,'نصارا').replace(/(?<=^|\\s)ناتي(?=\\s|$)/g,'نات').replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا').replace(/(?<=^|\\s)اهاني(?=\\s|$)/g,'اهان').replace(/(?<=^|\\s)تكفروني(?=\\s|$)/g,'تكفرون').replace(/(?<=^|\\s)فاتقوني(?=\\s|$)/g,'فاتقون').replace(/(?<=^|\\s)فارهبوني(?=\\s|$)/g,'فارهبون').replace(/(?<=^|\\s)وتقوني(?=\\s|$)/g,'وتقون').replace(/(?<=^|\\s)يقضي(?=\\s|$)/g,'يقض').replace(/(?<=^|\\s)ينتهي(?=\\s|$)/g,'ينته').replace(/(?<=^|\\s)اوفي(?=\\s|$)/g,'اوف').replace(/(?<=^|\\s)يسري(?=\\s|$)/g,'يسر')\n    .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')\n    .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')\n    .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')\n    .replace(/(?<=^|\\s)تراني(?=\\s|$)/g,'ترن').replace(/(?<=^|\\s)ياتيني(?=\\s|$)/g,'ياتين').replace(/(?<=^|\\s)تعلمني(?=\\s|$)/g,'تعلمن').replace(/(?<=^|\\s)تسالني(?=\\s|$)/g,'تسالن').replace(/(?<=^|\\s)تسالنى(?=\\s|$)/g,'تسالن')\n    .replace(/(?<=^|\\s)وراي(?=\\s|$)/g,'ورا').replace(/(?<=^|\\s)لاتخذت(?=\\s|$)/g,'لتخذت').replace(/(?<=^|\\s)تستطيع(?=\\s|$)/g,'تستطع')\n    .replace(/(?<=^|\\s)فانطلق(?=\\s|$)/g,'فانطلقا').replace(/(?<=^|\\s)فوجد(?=\\s|$)/g,'فوجدا')\n    .replace(/\\s+/g,' ')\n    .trim();\n}"
 
 
 
@@ -7145,7 +7149,10 @@ def fix_recitation_norm_hamza(path, out):
     idempotent: بعد أول تطبيق الصيغة القديمة مابقتش موجودة.
     """
     old = r".replace(/[ئؤ]/g,'ء').replace(/ء/g,'')"
-    new = r".replace(/[ئؤ]/g,'ا').replace(/ء/g,'')"
+    new = r".replace(/ئ/g,'').replace(/ؤ/g,'ا').replace(/ء/g,'')"
+    # handle the intermediate form that was the old canonical
+    if r".replace(/[ئؤ]/g,'ا').replace(/ء/g,'')" in out:
+        old = r".replace(/[ئؤ]/g,'ا').replace(/ء/g,'')"
     if old not in out:
         return out, False
     before = quran_text_fingerprint(out)
@@ -8299,7 +8306,7 @@ def fix_file(path):
         "    .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')\n"
         "    .replace(/ۦ(?=\\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')\n"
         "    .replace(/ه[ۥۦ]/g,'ه')\n"
-        "    .replace(/[ئؤ]/g,'ا').replace(/ء/g,'')\n"
+        "    .replace(/(?<=^|\\s)لشئ(?=\\s|$)/g,'لشاي').replace(/ئ/g,'').replace(/ؤ/g,'ا').replace(/ء/g,'')\n"
         "    .replace(/[آأإٱا]/g,'ا')\n"
         "    .replace(/[ىی]/g,'ي')\n"
         "    .replace(/ة/g,'ه')\n"
@@ -8318,6 +8325,9 @@ def fix_file(path):
         "    .replace(/(?<=^|\\s)ولا تجدنهم(?=\\s|$)/g,'ولتجدنهم').replace(/(?<=^|\\s)ولاتجدنهم(?=\\s|$)/g,'ولتجدنهم')\n"
         "    .replace(/(?<=^|\\s)او كل ما(?=\\s|$)/g,'اوكلما').replace(/(?<=^|\\s)او كلما(?=\\s|$)/g,'اوكلما')\n"
         "    .replace(/(?<=^|\\s)بلي(?=\\s|$)/g,'بلا')\n"
+        "    .replace(/(?<=^|\\s)تراني(?=\\s|$)/g,'ترن').replace(/(?<=^|\\s)ياتيني(?=\\s|$)/g,'ياتين').replace(/(?<=^|\\s)تعلمني(?=\\s|$)/g,'تعلمن').replace(/(?<=^|\\s)تسالني(?=\\s|$)/g,'تسالن').replace(/(?<=^|\\s)تسالنى(?=\\s|$)/g,'تسالن')\n"
+        "    .replace(/(?<=^|\\s)وراي(?=\\s|$)/g,'ورا').replace(/(?<=^|\\s)لاتخذت(?=\\s|$)/g,'لتخذت').replace(/(?<=^|\\s)تستطيع(?=\\s|$)/g,'تستطع')\n"
+        "    .replace(/(?<=^|\\s)فانطلق(?=\\s|$)/g,'فانطلقا').replace(/(?<=^|\\s)فوجد(?=\\s|$)/g,'فوجدا')\n"
         "    .replace(/\\s+/g,' ')\n"
         "    .trim();\n"
         "}"
