@@ -348,7 +348,7 @@ function normalize(str){
     .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')
     .replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')
     .replace(/ه[ۥۦ]/g,'ه')
-    .replace(/ئ(?=و)/g,'').replace(/ئ/g,'ي').replace(/ؤ/g,'و').replace(/ء/g,'')
+    .replace(/(?<=^|\s)لشئ(?=\s|$)/g,'لشاي').replace(/ئ(?=و)/g,'').replace(/ئ/g,'ي').replace(/ؤ/g,'و').replace(/ء/g,'')
     .replace(/[آأإٱا]/g,'ا')
     .replace(/[ىی]/g,'ي')
     .replace(/ة/g,'ه')
@@ -357,6 +357,9 @@ function normalize(str){
     .replace(/مولانا/g,'مولنا').replace(/يا ايها/g,'يايها').replace(/يا ايتها/g,'يايتها').replace(/الاه/g,'اله').replace(/ارايت/g,'اريت').replace(/اولااك/g,'اولاك').replace(/ياايها/g,'يايها').replace(/ياايتها/g,'يايتها').replace(/نب/g,'مب').replace(/وا(?=\s|$)/g,'و').replace(/اولك/g,'اولاك').replace(/يا ?ايها/g,'يايها').replace(/يا ?ايتها/g,'يايتها')
     .replace(/الاه/g,'اله').replace(/ارايت/g,'اريت')
     .replace(/هاذا/g,'هذا').replace(/هاذه/g,'هذه').replace(/ذالك/g,'ذلك').replace(/لاكن/g,'لكن')
+    .replace(/(?<=^|\s)تراني(?=\s|$)/g,'ترن').replace(/(?<=^|\s)ياتيني(?=\s|$)/g,'ياتين').replace(/(?<=^|\s)تعلمني(?=\s|$)/g,'تعلمن').replace(/(?<=^|\s)تسالني(?=\s|$)/g,'تسالن').replace(/(?<=^|\s)تسالنى(?=\s|$)/g,'تسالن')
+    .replace(/(?<=^|\s)وراي(?=\s|$)/g,'ورا').replace(/(?<=^|\s)لاتخذت(?=\s|$)/g,'لتخذت').replace(/(?<=^|\s)تستطيع(?=\s|$)/g,'تستطع')
+    .replace(/(?<=^|\s)فانطلق(?=\s|$)/g,'فانطلقا').replace(/(?<=^|\s)فوجد(?=\s|$)/g,'فوجدا')
     .replace(/\s+/g,' ')
     .trim();
 }
