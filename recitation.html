@@ -1441,7 +1441,7 @@ function makeRec(){
       if(e.results[i].isFinal){
         if(i>=doneUpTo){
           doneUpTo=i+1;
-          addWords(tr.replace(/\b300\b|٣٠٠/g,'ثلاث مائة').trim().split(/\s+/).filter(w=>w));
+          addWords(tr.replace(/\b300\b|300/g,'ثلاث مائة').trim().split(/\s+/).filter(w=>w));
         }
       }else{
         interim+=tr;
