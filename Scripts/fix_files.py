@@ -716,6 +716,20 @@ def fix_levels_wording(path, out):
         out = out.replace(lang_btn, about_item + lang_btn, 1)
         changed = True
 
+    # زر «تقدّمي» في قائمة الأدوات (سبتمبر ٢٠٢٦): نفس أسلوب ABOUT_IN_TOOLS
+    # بالظبط ولنفس السبب — add_tools_menu بتعيد بناء القائمة من قالب
+    # مشترك كل ما تلاقي .tools-fab بوضع fixed (وده الوضع الطبيعي الحالي
+    # مش بس القديم)، فبتمسح أي عنصر مش في القالب الأساسي. الحل: نتأكد
+    # من وجوده بعلامة PROGRESS_IN_TOOLS كل تشغيلة، زي «عن المشروع» بالظبط.
+    if 'PROGRESS_IN_TOOLS' not in out and lang_btn in out:
+        progress_item = (
+            '<!--PROGRESS_IN_TOOLS-->'
+            '<button class="tools-item" '
+            'onclick="toolsClose();location.href=\'progress.html\';">'
+            '\U0001F4CA تقدّمي</button>\n    ')
+        out = out.replace(lang_btn, progress_item + lang_btn, 1)
+        changed = True
+
     # الدالة تتحقن جوه <head> مش قبل </body>: الجزء اللي قبل </body>
     # بتعيد add_tools_menu بناءه، فالسكربت كان بيتنقل مكانه كل تشغيلة
     # وidempotency تفشل رغم إن المحتوى واحد.
@@ -873,7 +887,8 @@ def build_hero_stats(root):
     """يحسب إحصائيات الهيرو من ملفات المستودع"""
     files = [f for f in os.listdir(root)
              if f.endswith('.html') and f not in ('index.html',
-                                                  'recitation.html')]
+                                                  'recitation.html',
+                                                  'progress.html')]
     quizzes = len(files)
     baqara = len([f for f in files if f.startswith('albaqara_p')])
     amma = len([f for f in files
@@ -932,7 +947,7 @@ def compute_site_stats(root):
     juz_surahs = 0
     baqara = 0
     for fn in sorted(os.listdir(root)):
-        if not fn.endswith('.html') or fn in ('index.html', 'recitation.html'):
+        if not fn.endswith('.html') or fn in ('index.html', 'recitation.html', 'progress.html'):
             continue
         quizzes += 1
         if fn.startswith('albaqara_'):
@@ -6899,7 +6914,7 @@ def _qa_medium_answers(body):
 
 def audit_question_quality(root):
     files = sorted(f for f in os.listdir(root)
-                   if f.endswith('.html') and f not in ('index.html', 'recitation.html'))
+                   if f.endswith('.html') and f not in ('index.html', 'recitation.html', 'progress.html'))
     dup_files, over_files, long_files, punct_files = [], [], [], []
     for fn in files:
         try:
@@ -9543,7 +9558,7 @@ def _aud_contains(hay_words, needle_words):
 
 def run_audit(root):
     """يفحص كل الملفات ويكتب audit_report.txt. لا يعدّل شيئًا."""
-    skip = {'index.html', 'recitation.html'}
+    skip = {'index.html', 'recitation.html', 'progress.html'}
     files = [f for f in sorted(os.listdir(root))
              if f.endswith('.html') and f not in skip
              and os.path.isfile(os.path.join(root, f))]
@@ -10365,7 +10380,7 @@ def generate_pages(root, spec_path, dry_run=False):
 
 
 def main():
-    skip = {'index.html', 'recitation.html'}
+    skip = {'index.html', 'recitation.html', 'progress.html'}
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     fixed = 0
 
