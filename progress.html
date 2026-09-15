@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<!--
+  دربي لحفظ القرآن — https://quran-darbi.com
+  جميع الحقوق محفوظة © 2026 هند هاني أبوبكر
+  العمل مملوك ملكية كاملة: الشيفرة والتصميم وصياغة الاختبارات
+  وخوارزميات المقارنة والتطبيع. لا يُرخَّص استعماله أو نسخه أو
+  اشتقاقه إلا بإذن كتابي صريح. راجع ملف LICENSE.
+-->
+<html lang="ar" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقدّمي — دربي لحفظ القرآن</title>
+<meta name="description" content="تابع تقدّمك في حفظ القرآن الكريم: نسبة الإنجاز، المواظبة، ومراجعة الأسئلة اللي بتتكرر فيها الأخطاء">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4a7c4a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="دربي">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<meta property="og:title" content="تقدّمي — دربي لحفظ القرآن">
+<meta property="og:description" content="تابع تقدّمك في حفظ القرآن الكريم">
+<meta property="og:url" content="https://quran-darbi.com/progress.html">
+<meta property="og:type" content="website">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://quran-darbi.com/progress.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Amiri',serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;transition:background .3s,color .3s;direction:rtl;}
+
+:root{
+  --bg:#FAFAFA;--card:#FFFFFF;--nav:#FFFFFF;
+  --green:#2E6B3E;--green2:#3A8C50;--green3:#F0F7F2;
+  --gold:#B8963A;--gold2:#F0E4C0;
+  --text:#1A1A1A;--soft:#6A8A6A;--border:#E4EAE4;
+  --shadow:rgba(45,90,39,0.10);
+}
+html[data-theme="dark"]{
+  --bg:#101810;--card:#182018;--nav:#182018;
+  --green:#6BBF5A;--green2:#4A9E40;--green3:#1A2A18;
+  --gold:#D4A84A;--gold2:#2A2418;
+  --text:#DCF0D8;--soft:#8AB885;--border:#2A4028;
+  --shadow:rgba(0,0,0,0.35);
+}
+
+/* ===== NAV ===== */
+nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px var(--shadow);}
+.nav-logo{font-family:'Scheherazade New',serif;font-size:1.1rem;color:var(--green);font-weight:700;display:flex;align-items:center;gap:6px;text-decoration:none;}
+.nav-logo span{font-size:1.3rem;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.theme-btn{background:var(--green3);border:1px solid var(--border);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.home-btn{display:flex;align-items:center;gap:5px;background:var(--green3);color:var(--green);border:1px solid var(--border);border-radius:18px;padding:7px 14px;font-size:0.85rem;font-family:'Amiri',serif;text-decoration:none;white-space:nowrap;}
+
+/* ===== HEADER ===== */
+.phead{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:26px 20px 30px;text-align:center;position:relative;overflow:hidden;}
+.phead::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);pointer-events:none;}
+.phead::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06);pointer-events:none;}
+.phead-inner{position:relative;z-index:1;}
+.phead-title{font-family:'Scheherazade New',serif;font-size:1.9rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:6px;}
+.phead-sub{font-size:0.85rem;color:rgba(255,255,255,0.8);margin-bottom:16px;}
+.ring-wrap{display:flex;justify-content:center;}
+.ring{position:relative;width:132px;height:132px;}
+.ring svg{transform:rotate(-90deg);width:132px;height:132px;}
+.ring-track{fill:none;stroke:rgba(255,255,255,0.2);stroke-width:10;}
+.ring-fill{fill:none;stroke:#fff;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;}
+.ring-pct{font-size:1.5rem;font-weight:700;}
+.ring-cnt{font-size:0.68rem;opacity:.85;margin-top:2px;}
+
+/* ===== MAIN ===== */
+.main{max-width:760px;margin:16px auto 0;padding:0 14px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 16px;margin-bottom:14px;box-shadow:0 1px 6px var(--shadow);}
+.card h2{font-family:'Scheherazade New',serif;font-size:1.1rem;color:var(--green);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+
+/* streak */
+.streak-row{display:flex;gap:10px;flex-wrap:wrap;}
+.streak-box{flex:1;min-width:120px;background:var(--green3);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
+.streak-box b{display:block;font-size:1.35rem;color:var(--green);}
+.streak-box small{font-size:0.72rem;color:var(--soft);}
+
+/* per-surah breakdown */
+.grp-list{display:flex;flex-direction:column;gap:9px;}
+.grp-item{padding:4px 0;}
+.grp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px;}
+.grp-name{font-family:'Scheherazade New',serif;font-size:0.95rem;color:var(--text);font-weight:700;}
+.grp-count{font-size:0.72rem;color:var(--soft);white-space:nowrap;}
+.grp-bar{background:var(--green3);border-radius:8px;height:8px;overflow:hidden;border:1px solid var(--border);}
+.grp-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:8px;transition:width .5s;}
+
+/* review queue */
+.rev-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);}
+.rev-item:last-child{border-bottom:none;}
+.rev-chip{flex-shrink:0;background:var(--gold2);color:#7A6220;font-size:0.68rem;padding:3px 9px;border-radius:8px;white-space:nowrap;}
+html[data-theme="dark"] .rev-chip{color:var(--gold);}
+.rev-mid{flex:1;min-width:0;}
+.rev-verse{font-family:'Scheherazade New',serif;font-size:0.92rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rev-meta{font-size:0.68rem;color:var(--soft);margin-top:2px;}
+.rev-count{flex-shrink:0;font-size:0.72rem;color:var(--soft);}
+
+/* backup */
+.backup-status{font-size:0.82rem;color:var(--soft);margin-bottom:12px;}
+.backup-suggest{background:var(--gold2);color:#7A6220;border-radius:10px;padding:8px 12px;font-size:0.78rem;margin-bottom:12px;}
+html[data-theme="dark"] .backup-suggest{color:var(--gold);}
+.backup-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.bk-btn{flex:1;min-width:140px;padding:10px;border-radius:10px;border:none;font-size:0.85rem;font-family:'Amiri',serif;cursor:pointer;}
+.bk-export{background:var(--green);color:#fff;}
+.bk-import{background:var(--green3);color:var(--green);border:1px solid var(--border);}
+.bk-msg{font-size:0.78rem;margin-top:10px;}
+.bk-msg.ok{color:var(--green);}
+.bk-msg.err{color:#B23A3A;}
+
+/* empty state */
+.empty{text-align:center;padding:30px 16px;}
+.empty-emoji{font-size:2.4rem;margin-bottom:10px;}
+.empty p{color:var(--soft);font-size:0.9rem;margin-bottom:16px;line-height:1.8;}
+.empty a{display:inline-block;background:var(--green);color:#fff;text-decoration:none;padding:10px 26px;border-radius:20px;font-size:0.9rem;}
+
+.hidden{display:none !important;}
+
+footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid var(--border);}
+.footer-ayah{font-family:'Scheherazade New',serif;font-size:1rem;color:var(--green);margin-bottom:4px;}
+.footer-ref{font-size:0.75rem;color:var(--soft);margin-bottom:14px;}
+.footer-copy{font-size:0.8rem;color:var(--soft);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span>📖</span> دربي لحفظ القرآن</a>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    <a href="index.html" class="home-btn">🏠 الرئيسية</a>
+  </div>
+</nav>
+
+<div class="phead">
+  <div class="phead-inner">
+    <div class="phead-title">📊 تقدّمي</div>
+    <div class="phead-sub" id="phead-sub">تابع رحلتك في حفظ القرآن</div>
+    <div class="ring-wrap" id="ring-wrap">
+      <div class="ring">
+        <svg viewBox="0 0 132 132">
+          <circle class="ring-track" cx="66" cy="66" r="56"></circle>
+          <circle class="ring-fill" id="ring-fill" cx="66" cy="66" r="56" stroke-dasharray="352" stroke-dashoffset="352"></circle>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-pct" id="ring-pct">0%</div>
+          <div class="ring-cnt" id="ring-cnt">0 / 0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main">
+
+  <div id="empty-state" class="card empty hidden">
+    <div class="empty-emoji">🌱</div>
+    <p>لسه ما بدأت رحلة الحفظ هنا — ابدأ أول اختبار وهيبان تقدّمك في الصفحة دي أول بأول</p>
+    <a href="index.html">ابدأ دلوقتي</a>
+  </div>
+
+  <div id="data-sections">
+
+    <div class="card">
+      <h2>🔥 المواظبة</h2>
+      <div class="streak-row">
+        <div class="streak-box"><b id="streak-cur">0</b><small>يوم متتالي</small></div>
+        <div class="streak-box"><b id="streak-best">0</b><small>أطول سلسلة</small></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📚 تقدّمك في كل سورة</h2>
+      <div class="grp-list" id="grp-list"></div>
+    </div>
+
+    <div class="card" id="review-card">
+      <h2>🔁 قائمة المراجعة الذكية</h2>
+      <div id="review-list"></div>
+      <div id="review-empty" class="hidden" style="color:var(--soft);font-size:0.85rem;">مفيش أسئلة محتاجة مراجعة دلوقتي — استمر كده 👏</div>
+    </div>
+
+    <div class="card">
+      <h2>💾 نسخة احتياطية</h2>
+      <div class="backup-status" id="backup-status">لسه ما أخدتيش نسخة احتياطية</div>
+      <div class="backup-suggest hidden" id="backup-suggest">⏰ عدّت فترة — يفضّل تاخدي نسخة احتياطية جديدة عشان بياناتك محفوظة في المتصفح بس</div>
+      <div class="backup-actions">
+        <button class="bk-btn bk-export" onclick="doExport()">⬇️ تنزيل نسخة احتياطية</button>
+        <label class="bk-btn bk-import" style="display:flex;align-items:center;justify-content:center;">
+          ⬆️ استيراد نسخة
+          <input type="file" id="import-file" accept="application/json" style="display:none" onchange="doImport(this.files[0])">
+        </label>
+      </div>
+      <div class="bk-msg hidden" id="bk-msg"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-ayah notranslate" translate="no">﴿ وَقُل رَّبِّ زِدْنِى عِلْمًا ﴾</div>
+  <div class="footer-ref notranslate" translate="no">سورة طه — آية 114</div>
+  <div class="footer-copy">© 2026 دربي لحفظ القرآن — جميع الحقوق محفوظة</div>
+</footer>
+
+<script>window.DARBI_NO_REMINDER = true;</script>
+<script src="darbi-progress-plus.js"></script>
+<script>
+const alfatihaPage=[['alfatiha.html','الفاتحة']];
+const baqaraPages=[
+  ['albaqara_p2.html','ص 2','1–5'],['albaqara_p3.html','ص 3','6–16'],
+  ['albaqara_p4.html','ص 4','17–24'],['albaqara_p5.html','ص 5','25–29'],
+  ['albaqara_p6.html','ص 6','30–37'],['albaqara_p7.html','ص 7','38–48'],
+  ['albaqara_p8.html','ص 8','49–57'],['albaqara_p9.html','ص 9','58–61'],
+  ['albaqara_p10.html','ص 10','62–69'],['albaqara_p11.html','ص 11','70–76'],
+  ['albaqara_p12.html','ص 12','77–83'],['albaqara_p13.html','ص 13','84–88'],
+  ['albaqara_p14.html','ص 14','89–93'],['albaqara_p15.html','ص 15','94–101'],
+  ['albaqara_p16.html','ص 16','102–105'],['albaqara_p17.html','ص 17','106–112'],
+  ['albaqara_p18.html','ص 18','113–119'],['albaqara_p19.html','ص 19','120–126'],
+  ['albaqara_p20.html','ص 20','127–134'],['albaqara_p21.html','ص 21','135–141'],
+  ['albaqara_p22.html','ص 22','142–145'],['albaqara_p23.html','ص 23','146–153'],
+  ['albaqara_p24.html','ص 24','154–163'],['albaqara_p25.html','ص 25','164–169'],
+  ['albaqara_p26.html','ص 26','170–176'],['albaqara_p27.html','ص 27','177–181'],
+  ['albaqara_p28.html','ص 28','182–186'],['albaqara_p29.html','ص 29','187–190'],
+  ['albaqara_p30.html','ص 30','191–196'],['albaqara_p31.html','ص 31','197–202'],
+  ['albaqara_p32.html','ص 32','203–210'],['albaqara_p33.html','ص 33','211–215'],
+  ['albaqara_p34.html','ص 34','216–219'],['albaqara_p35.html','ص 35','220–224'],
+  ['albaqara_p36.html','ص 36','225–230'],['albaqara_p37.html','ص 37','231–233'],
+  ['albaqara_p38.html','ص 38','234–237'],['albaqara_p39.html','ص 39','238–245'],
+  ['albaqara_p40.html','ص 40','246–248'],['albaqara_p41.html','ص 41','249–252'],
+  ['albaqara_p42.html','ص 42','آية الكرسي'],['albaqara_p43.html','ص 43','257–259'],
+  ['albaqara_p44.html','ص 44','260–264'],['albaqara_p45.html','ص 45','265–269'],
+  ['albaqara_p46.html','ص 46','270–274'],['albaqara_p47.html','ص 47','275–281'],
+  ['albaqara_p48.html','ص 48','آية الدَّين'],['albaqara_p49.html','ص 49','283–286'],
+];
+const kahfPages=[
+  ['alkahf_p293.html','ص 293','1–4'],['alkahf_p294.html','ص 294','5–15'],
+  ['alkahf_p295.html','ص 295','16–20'],['alkahf_p296.html','ص 296','21–27'],
+  ['alkahf_p297.html','ص 297','28–34'],['alkahf_p298.html','ص 298','35–45'],
+  ['alkahf_p299.html','ص 299','46–53'],['alkahf_p300.html','ص 300','54–61'],
+  ['alkahf_p301.html','ص 301','62–74'],['alkahf_p302.html','ص 302','75–83'],
+  ['alkahf_p303.html','ص 303','84–97'],['alkahf_p304.html','ص 304','98–110'],
+];
+const maryamPages=[
+  ['maryam_p305.html','ص 305','1–11'],['maryam_p306.html','ص 306','12–25'],
+  ['maryam_p307.html','ص 307','26–38'],['maryam_p308.html','ص 308','39–51'],
+  ['maryam_p309.html','ص 309','52–64'],['maryam_p310.html','ص 310','65–76'],
+  ['maryam_p311.html','ص 311','77–95'],['maryam_p312.html','ص 312','96–98'],
+];
+const yaseenPages=[
+  ['yaseen_p440.html','ص 440','1–12'],['yaseen_p441.html','ص 441','13–27'],
+  ['yaseen_p442.html','ص 442','28–40'],['yaseen_p443.html','ص 443','41–54'],
+  ['yaseen_p444.html','ص 444','55–70'],['yaseen_p445.html','ص 445','71–83'],
+];
+const arrahmanPages=[
+  ['arrahman_p531.html','ص 531','1–16'],['arrahman_p532.html','ص 532','17–40'],
+  ['arrahman_p533.html','ص 533','41–67'],['arrahman_p534.html','ص 534','68–78'],
+];
+const alwaqiahPages=[
+  ['alwaqiah_p534.html','ص 534','1–16'],['alwaqiah_p535.html','ص 535','17–50'],
+  ['alwaqiah_p536.html','ص 536','51–76'],['alwaqiah_p537.html','ص 537','77–96'],
+];
+const almulkPages=[
+  ['almulk_p562.html','ص 562','1–12'],['almulk_p563.html','ص 563','13–26'],
+  ['almulk_p564.html','ص 564','27–30'],
+];
+const ammaData=[
+  ['annaba.html','النبأ'],['annaziat.html','النازعات'],
+  ['abasa.html','عبس'],['attakwir.html','التكوير'],
+  ['alinfitar.html','الانفطار'],['almutaffifin.html','المطففين'],
+  ['alinshiqaq.html','الانشقاق'],['alburuj.html','البروج'],
+  ['altariq.html','الطارق'],['alaala.html','الأعلى'],
+  ['alghasiya.html','الغاشية'],['alfajr.html','الفجر'],
+  ['albalad.html','البلد'],['alshams.html','الشمس'],
+  ['allayl.html','الليل'],['alduha.html','الضحى'],
+  ['alsharh.html','الشرح'],['atteen.html','التين'],
+  ['alalaq.html','العلق'],['alqadr.html','القدر'],
+  ['albayyina.html','البيِّنة'],['alzalzala.html','الزلزلة'],
+  ['alaadiyat.html','العاديات'],['alqaria.html','القارعة'],
+  ['altakathur.html','التكاثر'],['alasr.html','العصر'],
+  ['alhumaza.html','الهمزة'],['alfiyl.html','الفيل'],
+  ['aquraysh.html','قريش'],['almaoon.html','الماعون'],
+  ['alkawthur.html','الكوثر'],['alkafirun.html','الكافرون'],
+  ['alnnasr.html','النصر'],['almasad.html','المسد'],
+  ['alikhlas.html','الإخلاص'],['alfalaq.html','الفلق'],
+  ['alnnas.html','الناس'],
+];
+
+const GROUPS=[
+  {label:'الفاتحة',pages:alfatihaPage.map(p=>[p[0].replace('.html',''),p[1]])},
+  {label:'سورة البقرة',pages:baqaraPages.map(p=>[p[0].replace('.html',''),'البقرة '+p[1]])},
+  {label:'سورة الكهف',pages:kahfPages.map(p=>[p[0].replace('.html',''),'الكهف '+p[1]])},
+  {label:'سورة مريم',pages:maryamPages.map(p=>[p[0].replace('.html',''),'مريم '+p[1]])},
+  {label:'سورة يس',pages:yaseenPages.map(p=>[p[0].replace('.html',''),'يس '+p[1]])},
+  {label:'سورة الرحمن',pages:arrahmanPages.map(p=>[p[0].replace('.html',''),'الرحمن '+p[1]])},
+  {label:'سورة الواقعة',pages:alwaqiahPages.map(p=>[p[0].replace('.html',''),'الواقعة '+p[1]])},
+  {label:'سورة الملك',pages:almulkPages.map(p=>[p[0].replace('.html',''),'الملك '+p[1]])},
+  {label:'جزء عمّ',pages:ammaData.map(p=>[p[0].replace('.html',''),p[1]])},
+];
+const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
+
+const LEVEL_LABEL={easy:'سهل',medium:'متوسط',hard:'صعب',order:'ترتيب'};
+
+function darbiPageComplete(entry){
+  return !!(entry && entry.easy && entry.easy.done && entry.medium && entry.medium.done && entry.hard && entry.hard.done);
+}
+function darbiPageStarted(entry){
+  return !!(entry && (entry.easy || entry.medium || entry.hard));
+}
+
+function safeAll(){
+  try{return JSON.parse(localStorage.getItem('darbi_progress')||'{}');}catch(e){return {};}
+}
+
+function render(){
+  const all=safeAll();
+  const hasAny=Object.keys(all).length>0;
+  document.getElementById('empty-state').classList.toggle('hidden',hasAny);
+  document.getElementById('data-sections').classList.toggle('hidden',!hasAny);
+  document.getElementById('ring-wrap').classList.toggle('hidden',!hasAny);
+  if(!hasAny){
+    document.getElementById('phead-sub').textContent='لسه بدايتك — ابدأ أول اختبار';
+    return;
+  }
+
+  // ---- نظرة عامة ----
+  let doneCount=0, nameByKey={};
+  GROUPS.forEach(g=>{
+    g.pages.forEach(p=>{
+      nameByKey[p[0]]=p[1];
+      if(darbiPageComplete(all[p[0]]))doneCount++;
+    });
+  });
+  const pct=TOTAL_PAGES>0?Math.round(doneCount/TOTAL_PAGES*100):0;
+  document.getElementById('ring-pct').textContent=pct+'٪';
+  document.getElementById('ring-cnt').textContent=doneCount+' / '+TOTAL_PAGES;
+  const circumference=2*Math.PI*56;
+  const fillEl=document.getElementById('ring-fill');
+  fillEl.setAttribute('stroke-dasharray',circumference.toFixed(1));
+  fillEl.setAttribute('stroke-dashoffset',(circumference*(1-pct/100)).toFixed(1));
+  document.getElementById('phead-sub').textContent=doneCount>0?('أنجزت '+doneCount+' من '+TOTAL_PAGES+' صفحة — استمر 🌿'):'تابع رحلتك في حفظ القرآن';
+
+  // ---- المواظبة ----
+  if(window.DarbiExtra){
+    const s=DarbiExtra.getStreak();
+    document.getElementById('streak-cur').textContent=s.currentStreak||0;
+    document.getElementById('streak-best').textContent=s.longestStreak||0;
+  }
+
+  // ---- تقدّم كل سورة ----
+  const grpList=document.getElementById('grp-list');
+  grpList.innerHTML='';
+  GROUPS.forEach(g=>{
+    let done=0;
+    g.pages.forEach(p=>{if(darbiPageComplete(all[p[0]]))done++;});
+    const gp=Math.round(done/g.pages.length*100);
+    const div=document.createElement('div');
+    div.className='grp-item';
+    div.innerHTML=
+      '<div class="grp-top"><span class="grp-name">'+g.label+'</span>'+
+      '<span class="grp-count">'+done+' / '+g.pages.length+'</span></div>'+
+      '<div class="grp-bar"><div class="grp-bar-fill" style="width:'+gp+'%"></div></div>';
+    grpList.appendChild(div);
+  });
+
+  // ---- قائمة المراجعة الذكية ----
+  const revList=document.getElementById('review-list');
+  const revEmpty=document.getElementById('review-empty');
+  revList.innerHTML='';
+  if(window.DarbiExtra){
+    const q=DarbiExtra.getReviewQueue(8);
+    if(!q.length){
+      revEmpty.classList.remove('hidden');
+    }else{
+      revEmpty.classList.add('hidden');
+      q.forEach(item=>{
+        const a=document.createElement('a');
+        a.className='rev-item';
+        a.href=(item.pageKey||'')+'.html';
+        const name=nameByKey[item.pageKey]||item.pageKey||'';
+        const lvl=LEVEL_LABEL[item.level]||item.level||'';
+        a.innerHTML=
+          '<span class="rev-chip">'+lvl+'</span>'+
+          '<span class="rev-mid"><span class="rev-verse notranslate" translate="no">'+
+          (item.verseText||name)+'</span>'+
+          '<span class="rev-meta">'+name+'</span></span>'+
+          '<span class="rev-count">×'+item.missCount+'</span>';
+        revList.appendChild(a);
+      });
+    }
+  }
+
+  // ---- النسخة الاحتياطية ----
+  if(window.DarbiExtra){
+    const last=DarbiExtra.getLastBackupDate();
+    document.getElementById('backup-status').textContent=last?('آخر نسخة احتياطية: '+last):'لسه ما أخدتيش نسخة احتياطية';
+    document.getElementById('backup-suggest').classList.toggle('hidden',!DarbiExtra.shouldSuggestBackup());
+  }
+}
+
+function doExport(){
+  if(!window.DarbiExtra)return;
+  DarbiExtra.exportBackup();
+  showBkMsg('تم تنزيل النسخة الاحتياطية ✅','ok');
+  render();
+}
+function doImport(file){
+  if(!file||!window.DarbiExtra)return;
+  DarbiExtra.importBackup(file,function(success,err){
+    if(success){
+      showBkMsg('تم استيراد النسخة الاحتياطية بنجاح ✅','ok');
+      render();
+    }else{
+      showBkMsg('تعذّر الاستيراد: '+(err||'خطأ غير معروف'),'err');
+    }
+  });
+  document.getElementById('import-file').value='';
+}
+function showBkMsg(text,cls){
+  const el=document.getElementById('bk-msg');
+  el.textContent=text;
+  el.className='bk-msg '+cls;
+  setTimeout(()=>{el.classList.add('hidden');},4000);
+}
+
+function applyTheme(m){document.documentElement.setAttribute('data-theme',m);document.getElementById('theme-btn').textContent=m==='dark'?'☀️':'🌙';}
+function toggleTheme(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';applyTheme(n);try{localStorage.setItem('quranTheme',n);}catch(e){}}
+(function(){let s;try{s=localStorage.getItem('quranTheme');}catch(e){}if(!s)s=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';applyTheme(s);})();
+
+render();
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('service-worker.js')
+      .then(r=>console.log('SW:',r.scope))
+      .catch(e=>console.log('SW err:',e));
+  });
+}
+</script>
+</body>
+</html>

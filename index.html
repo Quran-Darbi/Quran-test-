@@ -180,6 +180,7 @@ document.addEventListener('DOMContentLoaded',function(){
   <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
     <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();">📖 عن المشروع</button>
+    <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';">📊 تقدّمي</button>
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
       <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
@@ -222,6 +223,7 @@ document.addEventListener('DOMContentLoaded',function(){
       </div>
       <div style="font-size:0.78rem;color:rgba(255,255,255,0.9);" id="hero-progress-text"></div>
       <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:4px;" id="hero-last-visited"></div>
+      <div style="margin-top:6px;"><a href="progress.html" style="color:#fff;font-size:0.72rem;text-decoration:underline;">تقدّمي بالتفصيل ◀</a></div>
     </div>
   </div>
 </div>

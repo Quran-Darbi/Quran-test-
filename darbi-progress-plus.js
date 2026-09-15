@@ -197,6 +197,7 @@
   // ---------- شريط تذكير الورد اليومي (داخل الموقع فقط) ----------
   function maybeShowReminderBanner() {
     try {
+      if (window.DARBI_NO_REMINDER) return; // صفحات مخصّصة (زي تقدّمي) بتعرض تذكيرها بنفسها
       if (localStorage.getItem('darbiReminderOff') === '1') return;
       var today = todayStr();
       if (sessionStorage.getItem('darbiReminderDismissed') === today) return;
