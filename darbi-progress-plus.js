@@ -211,8 +211,8 @@
         'font-family:"Amiri",Tahoma,sans-serif', 'font-size:.82rem', 'position:relative', 'z-index:300'
       ].join(';');
       bar.innerHTML =
-        '<span>🌙 لسه ما بدأتِ وردك النهارده — كمّلي حفظك دلوقتي</span>' +
-        '<button type="button" data-darbi-dismiss style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:4px 10px;font-size:.76rem;cursor:pointer;">تذكّريني بكرة</button>' +
+        '<span>🌙 لم تبدأ وردك اليوم بعد — أكمل حفظك الآن</span>' +
+        '<button type="button" data-darbi-dismiss style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:4px 10px;font-size:.76rem;cursor:pointer;">ذكّرني غدًا</button>' +
         '<button type="button" data-darbi-off style="background:transparent;border:0;color:#e7f0e2;font-size:.72rem;text-decoration:underline;cursor:pointer;">إيقاف نهائي</button>';
 
       document.body.insertBefore(bar, document.body.firstChild);
