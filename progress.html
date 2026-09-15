@@ -13,7 +13,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تقدّمي — دربي لحفظ القرآن</title>
-<meta name="description" content="تابع تقدّمك في حفظ القرآن الكريم: نسبة الإنجاز، المواظبة، ومراجعة الأسئلة اللي بتتكرر فيها الأخطاء">
+<meta name="description" content="تابع تقدّمك في حفظ القرآن الكريم: نسبة الإنجاز، والمواظبة، ومراجعة الأسئلة التي تتكرر فيها الأخطاء">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -161,8 +161,8 @@ footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid 
 
   <div id="empty-state" class="card empty hidden">
     <div class="empty-emoji">🌱</div>
-    <p>لسه ما بدأت رحلة الحفظ هنا — ابدأ أول اختبار وهيبان تقدّمك في الصفحة دي أول بأول</p>
-    <a href="index.html">ابدأ دلوقتي</a>
+    <p>لم تبدأ رحلة الحفظ هنا بعد — ابدأ أول اختبار وسيظهر تقدّمك في هذه الصفحة أولًا بأول</p>
+    <a href="index.html">ابدأ الآن</a>
   </div>
 
   <div id="data-sections">
@@ -183,13 +183,13 @@ footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid 
     <div class="card" id="review-card">
       <h2>🔁 قائمة المراجعة الذكية</h2>
       <div id="review-list"></div>
-      <div id="review-empty" class="hidden" style="color:var(--soft);font-size:0.85rem;">مفيش أسئلة محتاجة مراجعة دلوقتي — استمر كده 👏</div>
+      <div id="review-empty" class="hidden" style="color:var(--soft);font-size:0.85rem;">لا توجد أسئلة بحاجة إلى مراجعة حاليًا — واصل هكذا 👏</div>
     </div>
 
     <div class="card">
       <h2>💾 نسخة احتياطية</h2>
-      <div class="backup-status" id="backup-status">لسه ما أخدتيش نسخة احتياطية</div>
-      <div class="backup-suggest hidden" id="backup-suggest">⏰ عدّت فترة — يفضّل تاخدي نسخة احتياطية جديدة عشان بياناتك محفوظة في المتصفح بس</div>
+      <div class="backup-status" id="backup-status">لم تُؤخذ أي نسخة احتياطية بعد</div>
+      <div class="backup-suggest hidden" id="backup-suggest">⏰ مرّت فترة طويلة — يُستحسن أخذ نسخة احتياطية جديدة، لأن بياناتك محفوظة في هذا المتصفح فقط</div>
       <div class="backup-actions">
         <button class="bk-btn bk-export" onclick="doExport()">⬇️ تنزيل نسخة احتياطية</button>
         <label class="bk-btn bk-import" style="display:flex;align-items:center;justify-content:center;">
@@ -326,7 +326,7 @@ function render(){
   document.getElementById('data-sections').classList.toggle('hidden',!hasAny);
   document.getElementById('ring-wrap').classList.toggle('hidden',!hasAny);
   if(!hasAny){
-    document.getElementById('phead-sub').textContent='لسه بدايتك — ابدأ أول اختبار';
+    document.getElementById('phead-sub').textContent='هذه بدايتك — ابدأ أول اختبار';
     return;
   }
 
@@ -400,7 +400,7 @@ function render(){
   // ---- النسخة الاحتياطية ----
   if(window.DarbiExtra){
     const last=DarbiExtra.getLastBackupDate();
-    document.getElementById('backup-status').textContent=last?('آخر نسخة احتياطية: '+last):'لسه ما أخدتيش نسخة احتياطية';
+    document.getElementById('backup-status').textContent=last?('آخر نسخة احتياطية: '+last):'لم تُؤخذ أي نسخة احتياطية بعد';
     document.getElementById('backup-suggest').classList.toggle('hidden',!DarbiExtra.shouldSuggestBackup());
   }
 }

@@ -1466,9 +1466,9 @@ function getBrowserIssueMessage(){
   const ua=navigator.userAgent||'';
   const isInApp=/FBAN|FBAV|Instagram|Line\/|WhatsApp|MicroMessenger|Twitter/i.test(ua);
   if(isInApp){
-    return '⚠️ التسجيل الصوتي مش بيشتغل جوه متصفح التطبيق ده (ماسنجر / إنستجرام / إلخ).\n\nافتح الموقع من متصفح Chrome مباشرة:\n1) اضغط على النقط التلات (⋮) فوق الصفحة\n2) اختر "افتح في المتصفح" أو "Open in Browser"\n\nأو انسخ رابط الموقع والصقه في تطبيق Chrome.';
+    return '⚠️ التسجيل الصوتي لا يعمل داخل متصفح التطبيق هذا (ماسنجر / إنستغرام / إلخ).\n\nافتح الموقع من متصفح Chrome مباشرة:\n1) اضغط على النقاط الثلاث (⋮) أعلى الصفحة\n2) اختر "افتح في المتصفح" أو "Open in Browser"\n\nأو انسخ رابط الموقع والصقه في تطبيق Chrome.';
   }
-  return '⚠️ التسجيل الصوتي محتاج متصفح Chrome عشان يشتغل.\n\nلو حضرتك على آيفون: حمّل تطبيق Chrome من App Store وافتح الموقع منه (مش من Safari).\nلو على أندرويد: افتح الموقع من تطبيق Chrome.';
+  return '⚠️ التسجيل الصوتي يحتاج إلى متصفح Chrome ليعمل.\n\nإذا كنت على آيفون: حمّل تطبيق Chrome من App Store وافتح الموقع منه (وليس من Safari).\nوإذا كنت على أندرويد: افتح الموقع من تطبيق Chrome.';
 }
 
 function toggleRec(){
