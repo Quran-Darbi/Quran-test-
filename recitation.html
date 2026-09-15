@@ -807,6 +807,11 @@ function norm(s){
     .replace(/^تستطيع$/,'تستطع')
     // ألف التثنية: التعرف يسقط الألف رغم الإطالة الصوتية
     .replace(/^فانطلق$/,'فانطلقا').replace(/^فوجد$/,'فوجدا')
+    // أُولَـٰٓئِكَ/هَـٰٓؤُلَاءِ: رسم المصحف يكتب مدّ الهمزة الإلزامي بتتويل+ألف خنجرية+مدة
+    // فتتحول لألف حقيقية بالقاعدة العامة، لكن الرسم العادي (وتفريغ التعرف الصوتي) بلا هذه الألف أصلاً
+    .replace(/^اولايك$/,'اوليك').replace(/^هاولا$/,'هالا')
+    // يُؤۡتِيَنِ: التعرف الصوتي يكتب الياء كاملة بدل الكسرة القصيرة (نفس فكرة ترن/تعلمن)
+    .replace(/^يوتيني$/,'يوتين')
     .replace(/\s+/g,' ')
     .trim();
 }
@@ -1214,6 +1219,51 @@ function muqGroupLen(){
   }
   return muqRun.n;
 }
+// ===== تحويل الأرقام إلى كلمات =====
+// بعض متصفحات التعرف الصوتي بتكتب الأعداد المنطوقة كأرقام (300)
+// بدل الكلمات القرآنية (ثَلَـٰثَ مِائَةࣲ). بندوّر فى المرجع عن تتابع
+// كلمات (1-3) قيمتها العددية مجموعة/مضروبة تساوي الرقم المسموع،
+// وبنستبدلها برسمها الأصلي من المصحف (نفس فكرة restoreWaslAlif).
+const NUM_WORDS={
+  'واحد':1,'واحده':1,'احد':1,'اثنان':2,'اثنين':2,'اثنتان':2,'اثنتين':2,
+  'ثلاثه':3,'ثلاث':3,'اربعه':4,'اربع':4,'خمسه':5,'خمس':5,'سته':6,'ست':6,
+  'سبعه':7,'سبع':7,'ثمانيه':8,'ثمان':8,'تسعه':9,'تسع':9,'تسعا':9,
+  'عشره':10,'عشر':10,
+  'عشرون':20,'عشرين':20,'ثلاثون':30,'ثلاثين':30,'اربعون':40,'اربعين':40,
+  'خمسون':50,'خمسين':50,'ستون':60,'ستين':60,'سبعون':70,'سبعين':70,
+  'ثمانون':80,'ثمانين':80,'تسعون':90,'تسعين':90,
+  'مايه':100,'مئه':100,'مايتان':200,'مايتين':200,'مئتان':200,'مئتين':200,
+  'الف':1000,'الفين':2000,'الفان':2000
+};
+function numWordValue(refWord){
+  const n=norm(refWord);
+  return NUM_WORDS.hasOwnProperty(n)?NUM_WORDS[n]:null;
+}
+function combineNumVals(vals){
+  if(vals.length===1)return vals[0];
+  const [a,b,c]=vals;
+  if(vals.length===2)return((b===100||b===1000)&&a>=1&&a<=9)?a*b:a+b;
+  return((b===100||b===1000)&&a>=1&&a<=9)?a*b+c:a+b+c;
+}
+function expandDigits(words){
+  if(!words||!words.length||!refWords.length)return words;
+  const out=[];
+  for(const raw of words){
+    if(!/^[0-9٠-٩]+$/.test(raw)){out.push(raw);continue;}
+    const val=parseInt(raw.replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
+    let matched=null;
+    for(let start=0;start<refWords.length&&!matched;start++){
+      for(let len=1;len<=3&&start+len<=refWords.length;len++){
+        const seq=refWords.slice(start,start+len);
+        const vals=seq.map(numWordValue);
+        if(vals.some(v=>v===null))continue;
+        if(combineNumVals(vals)===val){matched=seq;break;}
+      }
+    }
+    out.push(...(matched||[raw]));
+  }
+  return out;
+}
 function addWords(newW){
   if(!newW||!newW.length)return;
   if(selWord!==null&&selWord<savedWords.length){
@@ -1224,6 +1274,7 @@ function addWords(newW){
   }else{
     savedWords=savedWords.concat(newW);
   }
+  savedWords=expandDigits(savedWords);
   savedWords=mergeYaAyyuha(savedWords);
   savedWords=mergeSplitLam(savedWords);
   savedWords=fixPronunciation(savedWords);
@@ -1289,13 +1340,25 @@ function restoreHaaSakt(heard){
   return null;
 }
 
+// (4) ألف التثنية بتسقط أحيانًا فى التعرف الصوتي رغم إطالة الصوت («بَلَغَا» تُسمع «بلغ»).
+//     بندوّر فى المرجع عن نفس الكلمة + ألف — لازم نبحث فى المرجع (مش قاعدة عامة)
+//     عشان الكلمة المفردة ("بَلَغَ" بلا تثنية) ممكن تكون صح فى صفحة تانية.
+function restoreDualAlif(heard){
+  const n=norm(heard);
+  if(!n)return null;
+  for(const w of refWords){
+    if(norm(w)===n+'ا')return w;
+  }
+  return null;
+}
+
 // بتتطبّق على الكلمات اللي مالهاش مقابل في المرجع بس
 function fixPronunciation(words){
   if(!words||!words.length||!refWords.length)return words;
   const S=new Set(refWords.map(norm));
   return words.map(function(w){
     if(S.has(norm(w)))return w;                 // مطابقة — ما نلمسهاش
-    return restoreWaslAlif(w)||restoreHaaSakt(w)||w;
+    return restoreWaslAlif(w)||restoreHaaSakt(w)||restoreDualAlif(w)||w;
   });
 }
 
