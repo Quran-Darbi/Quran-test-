@@ -1,7 +1,7 @@
 ==================================================================
   تقرير فحص موقع دربي لحفظ القرآن
-  2026-09-16 20:15
-  عدد ملفات الاختبار المفحوصة: 123
+  2026-09-16 20:16
+  عدد ملفات الاختبار المفحوصة: 133
 ==================================================================
 
 ── روابط مكسورة في index.html ──
@@ -127,6 +127,16 @@
    ❌ maryam_p310.html
    ❌ maryam_p311.html
    ❌ maryam_p312.html
+   ❌ taha_p312.html
+   ❌ taha_p313.html
+   ❌ taha_p314.html
+   ❌ taha_p315.html
+   ❌ taha_p316.html
+   ❌ taha_p317.html
+   ❌ taha_p318.html
+   ❌ taha_p319.html
+   ❌ taha_p320.html
+   ❌ taha_p321.html
    ❌ yaseen_p440.html
    ❌ yaseen_p441.html
    ❌ yaseen_p442.html
@@ -146,6 +156,16 @@
    ❌ alfatiha.html : حقل ayah ناقص في 3 سؤال
    ❌ annaba.html : حقل ayah ناقص في 5 سؤال
    ❌ annaziat.html : حقل ayah ناقص في 5 سؤال
+   ❌ taha_p312.html : حقل ayah ناقص في 12 سؤال
+   ❌ taha_p313.html : حقل ayah ناقص في 25 سؤال
+   ❌ taha_p314.html : حقل ayah ناقص في 14 سؤال
+   ❌ taha_p315.html : حقل ayah ناقص في 13 سؤال
+   ❌ taha_p316.html : حقل ayah ناقص في 12 سؤال
+   ❌ taha_p317.html : حقل ayah ناقص في 11 سؤال
+   ❌ taha_p318.html : حقل ayah ناقص في 11 سؤال
+   ❌ taha_p319.html : حقل ayah ناقص في 15 سؤال
+   ❌ taha_p320.html : حقل ayah ناقص في 12 سؤال
+   ❌ taha_p321.html : حقل ayah ناقص في 10 سؤال
 
 ── تكرار الكلمة المستهدفة بين سهل ومتوسط ──
    ⚠️  alkahf_p296.html : اعلم
@@ -232,7 +252,7 @@
 
    🟡 تسريب ضعيف (كلمة متكررة في الصفحة): 92 حالة في 46 ملف
 
-   ✅ ملفات نظيفة تمامًا: 9
+   ✅ ملفات نظيفة تمامًا: 19
       · abasa.html
       · alaala.html
       · albalad.html
@@ -242,7 +262,17 @@
       · alnnasr.html
       · alqadr.html
       · alsharh.html
+      · taha_p312.html
+      · taha_p313.html
+      · taha_p314.html
+      · taha_p315.html
+      · taha_p316.html
+      · taha_p317.html
+      · taha_p318.html
+      · taha_p319.html
+      · taha_p320.html
+      · taha_p321.html
 
 ==================================================================
-  إجمالي البنود المرصودة: 1249
+  إجمالي البنود المرصودة: 1269
 ==================================================================
