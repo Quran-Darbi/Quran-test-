@@ -732,7 +732,7 @@ function norm(s){
     .replace(/يٓ?ـَٔ/g,'ي')
     // همزة على كشيدة في باقي الحالات: ـَٔ = صوت ألف (لتسألن)، غيرها = همزة تتحذف
     .replace(/ـَٔ/g,'ا')
-    .replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
+    .replace(/ـِ[ٕٔ]/g,'ي').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'')
     .replace(/ـ/g,'')
     // حذف التشكيل أولاً لضمان صحة ىٰ وغيرها
     .replace(/[ًࣰٌࣱٍࣲَؘُؙِؚّْٕٖٜٟۣ۪ۭٓٔٗ٘ٙٚٛٝٞؐؑؒؓؔؕؖؗۖۗۘۙۚۛۜ۟۠ۡۢۤۧۨ۫۬]/g,'')
@@ -740,7 +740,7 @@ function norm(s){
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا')
     .replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
     // ألف وصل بعد واو (وَٱسۡجُدۡ → وسجد) ما عدا ال التعريف
-    .replace(/وٱ(?!ل)/g,'و')
+    .replace(/([وف])ٱ(?!ل)/g,'$1')
     // واسجد/واقترب: المستخدم يكتب الألف في وصل الكلام — مقصورة على أفعال الوصل الفعلية
     // عشان متمسحش الهمزة القطعية غلط (وأولئك، وأنتم، وأمر...)
     // قائمة موسّعة يوليو 2026: أضيفت تبع/سمع/ستكبر/ستعين/ركع وغيرها بعد ملاحظات اختبار حقيقية
@@ -1249,8 +1249,8 @@ function expandDigits(words){
   if(!words||!words.length||!refWords.length)return words;
   const out=[];
   for(const raw of words){
-    if(!/^[0-90-9]+$/.test(raw)){out.push(raw);continue;}
-    const val=parseInt(raw.replace(/[0-9]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
+    if(!/^[0-9٠-٩]+$/.test(raw)){out.push(raw);continue;}
+    const val=parseInt(raw.replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
     let matched=null;
     for(let start=0;start<refWords.length&&!matched;start++){
       for(let len=1;len<=3&&start+len<=refWords.length;len++){
@@ -1379,6 +1379,10 @@ function _rasmVoiceForms(w){
     out.push(w.replace(/\u0649\u0670([^\u0621-\u064A]*)$/,'\u0627$1'));
   if(/[\u06DF\u06E0]/.test(w))
     out.push(w.replace(/[\u0627\u0648\u064A\u0649][\u06DF\u06E0]/g,''));
+  if(/\u0646\u064E$/.test(w))
+    out.push(w+'\u0627');
+  if(/\u0647[\u0652\u06E1]$/.test(w))
+    out.push(w.replace(/\u0647[\u0652\u06E1]$/,''));
   return out;
 }
 function _rasmMatch(refWord,refNorm,u){
