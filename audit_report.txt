@@ -1,6 +1,6 @@
 ==================================================================
   تقرير فحص موقع دربي لحفظ القرآن
-  2026-09-15 18:54
+  2026-09-16 11:10
   عدد ملفات الاختبار المفحوصة: 123
 ==================================================================
 
@@ -11,7 +11,88 @@
    ✅ سليم
 
 ── دالة normalize مفقودة ──
-   ✅ سليم
+   ❌ albaqara_p41.html
+   ❌ albaqara_p42.html
+   ❌ albaqara_p43.html
+   ❌ albaqara_p44.html
+   ❌ albaqara_p45.html
+   ❌ albaqara_p46.html
+   ❌ albaqara_p47.html
+   ❌ albaqara_p48.html
+   ❌ albaqara_p49.html
+   ❌ albaqara_p5.html
+   ❌ albaqara_p6.html
+   ❌ albaqara_p7.html
+   ❌ albaqara_p8.html
+   ❌ albaqara_p9.html
+   ❌ albayyina.html
+   ❌ alburuj.html
+   ❌ alduha.html
+   ❌ alfajr.html
+   ❌ alfalaq.html
+   ❌ alfatiha.html
+   ❌ alfiyl.html
+   ❌ alghasiya.html
+   ❌ alhumaza.html
+   ❌ alikhlas.html
+   ❌ alinfitar.html
+   ❌ alinshiqaq.html
+   ❌ alkafirun.html
+   ❌ alkahf_p293.html
+   ❌ alkahf_p294.html
+   ❌ alkahf_p295.html
+   ❌ alkahf_p296.html
+   ❌ alkahf_p297.html
+   ❌ alkahf_p298.html
+   ❌ alkahf_p299.html
+   ❌ alkahf_p300.html
+   ❌ alkahf_p301.html
+   ❌ alkahf_p302.html
+   ❌ alkahf_p303.html
+   ❌ alkahf_p304.html
+   ❌ alkawthur.html
+   ❌ allayl.html
+   ❌ almaoon.html
+   ❌ almasad.html
+   ❌ almulk_p562.html
+   ❌ almulk_p563.html
+   ❌ almulk_p564.html
+   ❌ almutaffifin.html
+   ❌ alnnas.html
+   ❌ alnnasr.html
+   ❌ alqadr.html
+   ❌ alqaria.html
+   ❌ alshams.html
+   ❌ alsharh.html
+   ❌ altakathur.html
+   ❌ altariq.html
+   ❌ alwaqiah_p534.html
+   ❌ alwaqiah_p535.html
+   ❌ alwaqiah_p536.html
+   ❌ alwaqiah_p537.html
+   ❌ alzalzala.html
+   ❌ annaba.html
+   ❌ annaziat.html
+   ❌ aquraysh.html
+   ❌ arrahman_p531.html
+   ❌ arrahman_p532.html
+   ❌ arrahman_p533.html
+   ❌ arrahman_p534.html
+   ❌ atteen.html
+   ❌ maryam_p305.html
+   ❌ maryam_p306.html
+   ❌ maryam_p307.html
+   ❌ maryam_p308.html
+   ❌ maryam_p309.html
+   ❌ maryam_p310.html
+   ❌ maryam_p311.html
+   ❌ maryam_p312.html
+   ❌ yaseen_p440.html
+   ❌ yaseen_p441.html
+   ❌ yaseen_p442.html
+   ❌ yaseen_p443.html
+   ❌ yaseen_p444.html
+   ❌ yaseen_p445.html
 
 ── مفتاح ?surah= غير موجود في recitation.html ──
    ✅ سليم
@@ -123,5 +204,5 @@
       · alsharh.html
 
 ==================================================================
-  إجمالي البنود المرصودة: 1127
+  إجمالي البنود المرصودة: 1209
 ==================================================================
