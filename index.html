@@ -40,7 +40,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Amiri',serif;background:#F2F5F0;color:#1A2E1A;min-height:100vh;padding-bottom:60px;transition:background .3s,color .3s;direction:rtl;}
+body{font-family:'Amiri',serif;background:var(--bg,#F2F5F0);color:var(--text,#1A2E1A);min-height:100vh;padding-bottom:60px;transition:background .3s,color .3s;direction:rtl;}
 
 /* ===== VARS ===== */
 :root{
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
   <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
-    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();">📖 عن المشروع</button>
+    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();"><img src="icons/darbi_favicon_64.png" alt="" width="16" height="16" style="vertical-align:-3px;border-radius:3px;margin-inline-end:2px;"> عن المشروع</button>
     <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';">📊 تقدّمي</button>
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
