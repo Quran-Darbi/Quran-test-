@@ -1219,6 +1219,12 @@ function toggleReveal(){
 
 function findStart(userWords){
   if(!userWords.length)return 0;
+  // الحروف المقطعة (مثل الم / كهيعص / يس) التسجيل أحيانًا بيكتبها
+  // كلمة واحدة برسم المصحف مش بأسماء الحروف المنفصلة اللي refWords
+  // اتمدّت ليها (الف لام ميم)، فمفيش بايجرام أو كلمة مفردة هتتطابق
+  // وكان بيرجع 0 بالصدفة أحيانًا أو يبدأ من مكان غلط تمامًا — يعني
+  // علامة الآية بتضيع أو الترقيم كله بيتزاح. نتأكد من الحالة دي الأول.
+  if(muqRun&&norm(userWords[0])===norm(muqRun.raw))return 0;
   for(let i=0;i<=refWords.length-2;i++){
     const u2=userWords.slice(0,2).map(norm).join(' ');
     const r2=refWords.slice(i,i+2).map(norm).join(' ');
@@ -1290,8 +1296,8 @@ function expandDigits(words){
   if(!words||!words.length||!refWords.length)return words;
   const out=[];
   for(const raw of words){
-    if(!/^[0-90-9]+$/.test(raw)){out.push(raw);continue;}
-    const val=parseInt(raw.replace(/[0-9]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
+    if(!/^[0-9٠-٩]+$/.test(raw)){out.push(raw);continue;}
+    const val=parseInt(raw.replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
     let matched=null;
     for(let start=0;start<refWords.length&&!matched;start++){
       for(let len=1;len<=3&&start+len<=refWords.length;len++){
@@ -1432,6 +1438,20 @@ function _rasmVoiceForms(w){
     out.push(w+'\u064A');
   if(/\u0646[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
     out.push(w+'\u0627');
+  // تنوين الفتح على الألف بيتسمع أحيانًا ألف مقصورة (نُّكۡرًا → نكرى)
+  if(/[\u064B\u08F0]\u0627$/.test(w))
+    out.push(w.replace(/[\u064B\u08F0]\u0627$/,'\u0649'));
+  // ألف خنجرية + مدة قبل همزة (أُو۟لَٰٓئِكَ، هَـٰٓؤُلَاءِ...): قاعدة تطبيع
+  // (.)ٰ→ا العامة بتضيف ألف زيادة عن الرسم المعتاد اللي بيكتبها
+  // التعرف الصوتي (واولئك مش واولايك) — بنحذفها كبديل فقط قبل حرف همزة
+  if(/\u0670\u0653(?=[\u0621\u0623\u0624\u0626])/.test(w))
+    out.push(w.replace(/\u0670\u0653/g,''));
+  // همزة القطع بعد واو/فاء الوصل (وَأَسۡمِعۡ) أحيانًا بيلخبطها التعرف
+  // الصوتي فبيكتبها بألف عادية بس من غير همزة أصلًا (واسمع) — بنولّد
+  // بديل بحذف الهمزة زي ما بيكتبها التعرف، مش بتحويلها لألف عادي
+  // (عشان محرف الوصل التلقائي بيدمجها فيبقى الناتج مختلف عن اللي اتسمع)
+  if(/^[وف][\u064B-\u065F]?\u0623/.test(w))
+    out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0623/,'$1'));
   return out;
 }
 function _rasmMatch(refWord,refNorm,u){
@@ -1465,10 +1485,16 @@ function _savedToRefIdx(){
   const map=new Array(savedWords.length).fill(-1);
   if(!refWords.length)return map;
   let p=0;
+  // نطاق البحث للأمام كان 8 كلمات بس — لو التسجيل جاب سلسلة كلمات
+  // غلط أو غير مفهومة أطول من كده (زي محاولات إعادة التلاوة المتكررة)
+  // كانت p بتفضل واقفة، وأي تطابق صحيح بعد كده يضيع، فترقيم الآيات
+  // كله بيختفي من باقي النص. وسّعنا النطاق عشان يلحق الرجوع للمسار
+  // الصحيح، مع فرق منطقي واقعي (صفحات التسجيل قصيرة، أقل من ٢٠٠ كلمة).
+  const LOOKAHEAD=30;
   for(let i=0;i<savedWords.length;i++){
     const u=norm(savedWords[i]);
     if(!u)continue;
-    for(let k=p;k<refWords.length&&k<p+8;k++){
+    for(let k=p;k<refWords.length&&k<p+LOOKAHEAD;k++){
       if(norm(refWords[k])===u){map[i]=k;p=k+1;break;}
     }
   }
