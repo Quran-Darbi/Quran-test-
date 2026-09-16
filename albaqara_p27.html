@@ -112,7 +112,11 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="دربي">
-<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/darbi_favicon_32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/darbi_favicon_64.png">
+<link rel="icon" type="image/png" sizes="128x128" href="icons/darbi_favicon_128.png">
+<link rel="icon" type="image/png" sizes="256x256" href="icons/darbi_favicon_256.png">
+<link rel="apple-touch-icon" href="icons/darbi_favicon_512.png">
 <link rel="canonical" href="https://quran-darbi.com/albaqara_p27.html">
 </head>
 <body>
@@ -300,13 +304,14 @@ let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctC
 function normalize(str){
   if(!str)return'';
   return str
+    .replace(/ـ([ٕٔ])([ً-ٟ])/g,'ـ$2$1')
     .replace(/ي\u0653?ـ\u064E\u0654/g,'ي')
     .replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')
     .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'')
     .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
-    .replace(/وٱ(?!ل)/g,'و')
+    
     .replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد|جتب|متاز)/g,'و')
     .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')
     .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')
@@ -402,6 +407,7 @@ function _rasmVoiceForms(w){
     out.push(w.replace(/\u0647[\u0652\u06E1]$/,''));
   if(/^[وف][\u064B-\u065F]?\u0671(?!\u0644)/.test(w))
     out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0671/,'$1'));
+  // ياء المتكلم المحذوفة رسمًا بعد نون مثل «يَهۡدِيَنِ»: قد تُنطق فيسمعها التسجيل ياء زيادة
   if(/\u0646\u0650$/.test(w))
     out.push(w+'\u064A');
   if(/\u0646[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
