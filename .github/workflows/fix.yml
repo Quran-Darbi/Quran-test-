@@ -1,8 +1,7 @@
 name: Fix HTML Files
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   fix:
