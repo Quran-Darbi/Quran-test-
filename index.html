@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
   <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
-    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();">📖 عن المشروع</button>
+    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();"><img src="icons/darbi_favicon_64.png" alt="" width="16" height="16" style="vertical-align:-3px;border-radius:3px;margin-inline-end:2px;"> عن المشروع</button>
     <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';">📊 تقدّمي</button>
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <a href="recitation.html" class="hero-rec-btn">🎤 اختبر حفظك</a>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><b>123</b><small>اختباراً متاحاً</small></div>
+      <div class="hstat"><b>133</b><small>اختباراً متاحاً</small></div>
       <div class="hstat"><b>4</b><small>أجزاء</small></div>
       <div class="hstat"><b>76</b><small>سورة</small></div>
     </div>
@@ -313,6 +313,23 @@ document.addEventListener('DOMContentLoaded',function(){
   </button>
   <div class="acc-body">
     <div class="cards-grid" id="maryam-grid"></div>
+  </div>
+</div>
+
+<!-- طه -->
+<div class="acc" id="acc-taha">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    <div class="acc-left">
+      <div class="juz-badge">الجزء 16</div>
+      <div class="juz-title notranslate" translate="no">سورة طه</div>
+    </div>
+    <div class="acc-right">
+      <div class="juz-prog" id="taha-prog">10 متاح</div>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </button>
+  <div class="acc-body">
+    <div class="cards-grid" id="taha-grid"></div>
   </div>
 </div>
 
@@ -482,6 +499,19 @@ const maryamPages=[
   ['maryam_p312.html','ص 312','96–98'],
 ];
 
+const tahaPages=[
+  ['taha_p312.html','ص 312','1–12'],
+  ['taha_p313.html','ص 313','13–37'],
+  ['taha_p314.html','ص 314','38–51'],
+  ['taha_p315.html','ص 315','52–64'],
+  ['taha_p316.html','ص 316','65–76'],
+  ['taha_p317.html','ص 317','77–87'],
+  ['taha_p318.html','ص 318','88–98'],
+  ['taha_p319.html','ص 319','99–113'],
+  ['taha_p320.html','ص 320','114–125'],
+  ['taha_p321.html','ص 321','126–135'],
+];
+
 const yaseenPages=[
   ['yaseen_p440.html','ص 440','1–12'],['yaseen_p441.html','ص 441','13–27'],
   ['yaseen_p442.html','ص 442','28–40'],['yaseen_p443.html','ص 443','41–54'],
@@ -542,7 +572,7 @@ const remainingJuz=[
   ['10','الأنفال — التوبة','ص 182'],['11','التوبة — هود','ص 201'],
   ['12','هود — يوسف','ص 221'],['13','يوسف — إبراهيم','ص 241'],
   ['14','الحجر — النحل','ص 262'],['15','الإسراء','ص 282'],
-  ['16','مريم — طه','ص 301'],['17','الأنبياء — الحج','ص 322'],
+  ['17','الأنبياء — الحج','ص 322'],
   ['18','المؤمنون — الفرقان','ص 342'],['19','الفرقان — النمل','ص 362'],
   ['20','النمل — العنكبوت','ص 382'],['21','العنكبوت — الأحزاب','ص 402'],
   ['22','الأحزاب — يس','ص 421'],['23','يس — الزمر','ص 442'],
@@ -566,6 +596,9 @@ document.getElementById('kahf-grid').innerHTML =
 
 document.getElementById('maryam-grid').innerHTML =
   maryamPages.map(p=>card(p[0],p[1],p[2],true,'مريم')).join('');
+
+document.getElementById('taha-grid').innerHTML =
+  tahaPages.map(p=>card(p[0],p[1],p[2],true,'طه')).join('');
 
 document.getElementById('yaseen-grid').innerHTML =
   yaseenPages.map(p=>card(p[0],p[1],p[2],true,'يس')).join('');
@@ -598,6 +631,7 @@ function renderDarbiProgress(){
   baqaraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة البقرة '+p[1];});
   kahfPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الكهف '+p[1];});
   maryamPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة مريم '+p[1];});
+  tahaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة طه '+p[1];});
   yaseenPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة يس '+p[1];});
   arrahmanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الرحمن '+p[1];});
   alwaqiahPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الواقعة '+p[1];});
@@ -611,6 +645,8 @@ function renderDarbiProgress(){
   kahfPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))kahfDone++;});
   let maryamDone=0;
   maryamPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))maryamDone++;});
+  let tahaDone=0;
+  tahaPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))tahaDone++;});
   let yaseenDone=0;
   yaseenPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))yaseenDone++;});
   let arrahmanDone=0;
@@ -630,6 +666,8 @@ function renderDarbiProgress(){
   if(kp)kp.textContent=kahfDone+' / '+kahfPages.length+' مكتمل'+(kahfDone===kahfPages.length?' ✓':'');
   const map=document.getElementById('maryam-prog');
   if(map)map.textContent=maryamDone+' / '+maryamPages.length+' مكتمل'+(maryamDone===maryamPages.length?' ✓':'');
+  const tap=document.getElementById('taha-prog');
+  if(tap)tap.textContent=tahaDone+' / '+tahaPages.length+' مكتمل'+(tahaDone===tahaPages.length?' ✓':'');
   const yp=document.getElementById('yaseen-prog');
   if(yp)yp.textContent=yaseenDone+' / '+yaseenPages.length+' مكتمل'+(yaseenDone===yaseenPages.length?' ✓':'');
   const rp=document.getElementById('arrahman-prog');
@@ -641,8 +679,8 @@ function renderDarbiProgress(){
   const ap=document.getElementById('amma-prog');
   if(ap)ap.textContent=ammaDone+' / '+ammaData.length+' مكتمل'+(ammaDone===ammaData.length?' ✓':'');
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+ammaData.filter(p=>p[3]).length;
-  const doneCount=fatihaDone+baqaraDone+kahfDone+maryamDone+yaseenDone+arrahmanDone+alwaqiahDone+almulkDone+ammaDone;
+  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+ammaData.filter(p=>p[3]).length;
+  const doneCount=fatihaDone+baqaraDone+kahfDone+maryamDone+tahaDone+yaseenDone+arrahmanDone+alwaqiahDone+almulkDone+ammaDone;
   if(doneCount>0){
     const pct=Math.round(doneCount/totalPages*100);
     const heroProg=document.getElementById('hero-progress');
