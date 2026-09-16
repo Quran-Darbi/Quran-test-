@@ -348,13 +348,14 @@ let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctC
 function normalize(str){
   if(!str)return'';
   return str
+    .replace(/ـ([ٕٔ])([ً-ٟ])/g,'ـ$2$1')
     .replace(/ي\u0653?ـ\u064E\u0654/g,'ي')
     .replace(/ي\u0653?ـ\u064E\u0654/g,'ي').replace(/ـ\u064E\u0654/g,'ا')
     .replace(/ـ[\u064B-\u065F]*[\u0654\u0655]/g,'')
     .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
-    .replace(/وٱ(?!ل)/g,'و')
+    
     .replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد|جتب|متاز)/g,'و')
     .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')
     .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')
@@ -463,6 +464,12 @@ function _rasmVoiceForms(w){
     out.push(w+'\u0627');
   if(/\u0647[\u0652\u06E1]$/.test(w))
     out.push(w.replace(/\u0647[\u0652\u06E1]$/,''));
+  if(/^[وف][\u064B-\u065F]?\u0671(?!\u0644)/.test(w))
+    out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0671/,'$1'));
+  if(/\u0646\u0650$/.test(w))
+    out.push(w+'\u064A');
+  if(/\u0646[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
+    out.push(w+'\u0627');
   return out;
 }
 function _rasmMaps(ans){
@@ -492,13 +499,14 @@ function snapToRasm(words,ans){
     return w;
   });
 }
-function wordDiff(userVal,correctAnswer){
+function _hardQAyahMarks(q){if(!q||!q.q)return null;const nums=(String(q.q).match(/\d+/g)||[]).map(Number);if(!nums.length)return null;const start=nums[0],end=nums.length>1?nums[1]:nums[0];if(typeof AYAT==='undefined'||!AYAT||!AYAT.length)return null;const m=new Map();let idx=-1;for(let a=start;a<=end;a++){const wc=(AYAT[a-1]||'').trim().split(/\s+/).filter(Boolean).length;if(!wc)continue;idx+=wc;m.set(idx,a);}return m;}
+function wordDiff(userVal,correctAnswer,q){
   const nm=s=>{
     if(!s)return'';
     return s
       .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
       .replace(/[ىی]ٰ(?=\S)/g,'ا').replace(/[ىی]ٰ/g,'ي')
-      .replace(/([وف])ٱ(?!ل)/g,'$1').replace(/اٰ/g,'ا')
+      .replace(/اٰ/g,'ا')
       .replace(/نٰ/g,'نا')
       .replace(/ٰ/g,'ا')
       .replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
@@ -534,9 +542,9 @@ function wordDiff(userVal,correctAnswer){
   }
   aligned.reverse();
   const correct=aligned.filter(x=>x.ok).length;const extra=aligned.filter(x=>x.extra).length;window._lastDiff={matched:correct,total:n,extra:extra};
-  const html=aligned.map(x=>x.extra?`<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">${x.ref}</span>`:x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`
+  let __refI=-1;const __ab=(q&&typeof AYAT!=='undefined')?_hardQAyahMarks(q):null;const html=aligned.map(x=>{const __seg=(x.extra?`<span style="color:#7a4a00;background:#ffe0a3;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;text-decoration:line-through;" translate="no" class="notranslate">${x.ref}</span>`:x.ok?`<span style="color:#155724;background:#c3e6cb;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;font-weight:bold;" translate="no" class="notranslate">${x.ref}</span>`
     :`<span style="color:#fff;background:#c0392b;border-radius:5px;padding:2px 6px;margin:2px 1px;display:inline-block;" title="${x.user||'محذوف'}">${x.ref}</span>`
-  ).join(' ');
+  );if(!x.extra)__refI++;return __seg+((!x.extra&&__ab&&__ab.has(__refI))?' <span class="ayah-end" translate="no">﴿'+toArabicNum(__ab.get(__refI))+'﴾</span>':'');}).join(' ');
   return `<div style="margin-bottom:6px;font-size:13px;color:var(--text-soft);">${correct} / ${n} كلمة صحيحة${extra?` — و${extra} كلمة زيادة`:''}</div>`
         +`<div style="font-size:18px;line-height:2.5;direction:rtl;text-align:right;">${html}</div>`;
 }
@@ -629,7 +637,7 @@ function renderHard(q,zone){
   // عرض رقم الآية
   const ayahNum=document.createElement('div');
   ayahNum.style.cssText='text-align:center;font-size:13px;color:var(--text-soft);margin-bottom:8px;';
-  ayahNum.textContent=`الآية ${toArabicNum(q.ayah)}`;
+  ayahNum.textContent=(function(){const mm=String(q.q||'').match(/^اكتب\s+(\S+\s+\d+(?:[–-]\d+)?)/);return mm?mm[1]:`الآية ${toArabicNum(q.ayah)}`;})();
   zone.appendChild(ayahNum);
 
   const modeRow=document.createElement('div');modeRow.style.cssText='display:flex;gap:10px;margin-bottom:12px;';
@@ -800,7 +808,7 @@ function checkTextVal(q,userVal){
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
   const ansNorm=normalize(_pre(q.answer));
-  const _dh=wordDiff(userVal,q.answer);
+  const _dh=wordDiff(userVal,q.answer,q);
   const _st=window._lastDiff||{};
   if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
   // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة

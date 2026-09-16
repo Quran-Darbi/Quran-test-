@@ -726,6 +726,7 @@ function saveDarbiProgress(level,correct,total){
 function norm(s){
   if(!s)return'';
   return s
+    .replace(/ـ([ٕٔ])([ً-ٟ])/g,'ـ$2$1')
     // الياء المعكوفة (كشيدة + علامة ۧ) = ي مدية دايمًا، قبل قواعد حذف الكشيدة (مثل إِبْرَٰهِـۧمُ)
     .replace(/ـۧ/g,'ي')
     // همزة على كشيدة بعد ياء (خطيئة، سيئة...) = همزة "ئ" فعلياً وتُحذف زي باقي الهمزات
@@ -740,7 +741,7 @@ function norm(s){
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا')
     .replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
     // ألف وصل بعد واو (وَٱسۡجُدۡ → وسجد) ما عدا ال التعريف
-    .replace(/([وف])ٱ(?!ل)/g,'$1')
+    
     // واسجد/واقترب: المستخدم يكتب الألف في وصل الكلام — مقصورة على أفعال الوصل الفعلية
     // عشان متمسحش الهمزة القطعية غلط (وأولئك، وأنتم، وأمر...)
     // قائمة موسّعة يوليو 2026: أضيفت تبع/سمع/ستكبر/ستعين/ركع وغيرها بعد ملاحظات اختبار حقيقية
@@ -816,6 +817,29 @@ function norm(s){
     .trim();
 }
 
+// إخفاء النون (زي أَنْ قبل طَهِّرَا) بيخلي التعرف الصوتي يلزق كلمتين
+// متجاورتين فى المرجع فى كلمة واحدة (وممكن كمان يسقط ألف التثنية من
+// تانى كلمة، زي "انطهر" بدل "أن طهرا") — بنفصلها لو طابقت زوج متجاور
+function splitMergedWords(words){
+  if(!words||!words.length||!refWords.length)return words;
+  const out=[];
+  for(let i=0;i<words.length;i++){
+    const a=norm(words[i]);
+    let split=null;
+    if(a){
+      for(let k=0;k<refWords.length-1;k++){
+        const r1=norm(refWords[k]),r2=norm(refWords[k+1]);
+        if(!r1||!r2)continue;
+        if(a===r1+r2||(r2.endsWith('ا')&&a===r1+r2.slice(0,-1))){
+          split=[refWords[k],refWords[k+1]];break;
+        }
+      }
+    }
+    if(split){out.push(...split);continue;}
+    out.push(words[i]);
+  }
+  return out;
+}
 function mergeYaAyyuha(words){
   const out=[];
   for(let i=0;i<words.length;i++){
@@ -994,6 +1018,19 @@ function ayahMarkerAt(wordIdx){
   const ar='0123456789';
   const toAr=n=>String(n).split('').map(d=>ar[+d]).join('');
   return '<span class="ayah-num">﴿'+toAr(b.num)+'﴾</span> ';
+}
+// رقم الآية بيتحط بعد آخر كلمة فيها (مطابقة لترتيب المصحف)، مش قبل أول كلمة —
+// عكس ayahMarkerAt القديمة اللي كانت بتحط الرقم قبل رأس الآية التالية غلط
+function ayahMarkerAfter(wordIdx){
+  for(let j=0;j<ayahBounds.length;j++){
+    const nx=(j+1<ayahBounds.length)?ayahBounds[j+1].start:refWords.length;
+    if(wordIdx===nx-1){
+      const ar='0123456789';
+      const toAr=n=>String(n).split('').map(d=>ar[+d]).join('');
+      return '<span class="ayah-num">﴿'+toAr(ayahBounds[j].num)+'﴾</span> ';
+    }
+  }
+  return'';
 }
 
 // ===== ترتيب المصحف لأزرار ⏮️ السابق / التالي ⏭️ (نفس ترتيب باقي الموقع) =====
@@ -1249,8 +1286,8 @@ function expandDigits(words){
   if(!words||!words.length||!refWords.length)return words;
   const out=[];
   for(const raw of words){
-    if(!/^[0-90-9]+$/.test(raw)){out.push(raw);continue;}
-    const val=parseInt(raw.replace(/[0-9]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
+    if(!/^[0-9٠-٩]+$/.test(raw)){out.push(raw);continue;}
+    const val=parseInt(raw.replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
     let matched=null;
     for(let start=0;start<refWords.length&&!matched;start++){
       for(let len=1;len<=3&&start+len<=refWords.length;len++){
@@ -1275,6 +1312,7 @@ function addWords(newW){
     savedWords=savedWords.concat(newW);
   }
   savedWords=expandDigits(savedWords);
+  savedWords=splitMergedWords(savedWords);
   savedWords=mergeYaAyyuha(savedWords);
   savedWords=mergeSplitLam(savedWords);
   savedWords=fixPronunciation(savedWords);
@@ -1383,6 +1421,12 @@ function _rasmVoiceForms(w){
     out.push(w+'\u0627');
   if(/\u0647[\u0652\u06E1]$/.test(w))
     out.push(w.replace(/\u0647[\u0652\u06E1]$/,''));
+  if(/^[وف][\u064B-\u065F]?\u0671(?!\u0644)/.test(w))
+    out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0671/,'$1'));
+  if(/\u0646\u0650$/.test(w))
+    out.push(w+'\u064A');
+  if(/\u0646[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
+    out.push(w+'\u0627');
   return out;
 }
 function _rasmMatch(refWord,refNorm,u){
@@ -1435,13 +1479,11 @@ function _ayahEndMap(){
   return m;
 }
 function _ayahSepEl(num){
-  const ar='\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669';
-  const toAr=n=>String(n).split('').map(d=>ar[+d]).join('');
   const el=document.createElement('span');
   el.className='ayah-num';
   el.setAttribute('translate','no');
   el.style.cssText='margin:2px 4px;align-self:center;';
-  el.textContent='\uFD3F'+toAr(num)+'\uFD3E';
+  el.textContent='\uFD3F'+num+'\uFD3E';
   return el;
 }
 function renderTranscript(){
@@ -1621,12 +1663,6 @@ function checkRecitation(){
   // الحروف المقطعة بتتعرض كشريحة واحدة برسم المصحف بدل أسماء الحروف
   const muqN=(startIdx===0&&muqRun&&results.length>=muqRun.n)?muqRun.n:0;
   results.forEach((r,i)=>{
-    const marker=ayahMarkerAt(startIdx+i);
-    if(marker){
-      const m=document.createElement('span');
-      m.innerHTML=marker;
-      display.appendChild(m);
-    }
     if(muqN&&i<muqN){
       if(i<muqN-1)return;               // مستنيين آخر حرف في المجموعة
       const all=results.slice(0,muqN);
@@ -1637,6 +1673,8 @@ function checkRecitation(){
       sp0.textContent=muqRun.raw;
       if(st==='err')sp0.title='قلت: '+all.map(x=>x.user||'').join(' ').trim();
       display.appendChild(sp0);display.appendChild(document.createTextNode(' '));
+      const marker0=ayahMarkerAfter(startIdx+i);
+      if(marker0){const m0=document.createElement('span');m0.innerHTML=marker0;display.appendChild(m0);}
       return;
     }
     const sp=document.createElement('span');
@@ -1644,6 +1682,12 @@ function checkRecitation(){
     else if(r.status==='err'){sp.className='w-err';sp.textContent=r.ref;sp.title='قلت: '+(r.user||'');}
     else{sp.className='w-missing';sp.textContent=r.ref;}
     display.appendChild(sp);display.appendChild(document.createTextNode(' '));
+    const marker=ayahMarkerAfter(startIdx+i);
+    if(marker){
+      const m=document.createElement('span');
+      m.innerHTML=marker;
+      display.appendChild(m);
+    }
   });
   document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
 }
