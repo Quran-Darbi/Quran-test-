@@ -411,7 +411,7 @@ function checkTextVal(q,userVal){
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
   const ansNorm=normalize(_pre(q.answer));
-  const _dh=wordDiff(userVal,q.answer);
+  const _dh=wordDiff(userVal,q.answer,q);
   const _st=window._lastDiff||{};
   if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
   // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
