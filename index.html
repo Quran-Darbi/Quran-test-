@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
   <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
-    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();">📖 عن المشروع</button>
+    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();"><img src="icons/darbi_favicon_64.png" alt="" width="16" height="16" style="vertical-align:-3px;border-radius:3px;margin-inline-end:2px;"> عن المشروع</button>
     <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';">📊 تقدّمي</button>
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
@@ -551,32 +551,33 @@ const remainingJuz=[
   ['28','المجادلة — التحريم','ص 542'],
 ];
 
-function card(href,name,meta,ok){
+function card(href,name,meta,ok,surah){
+  const s=(surah?surah+' ':'')+name+' '+meta;
   return ok
-    ? `<a href="${href}" class="quiz-card" data-s="${name} ${meta}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-ok">✓</span></a>`
-    : `<div class="quiz-card soon" data-s="${name}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
+    ? `<a href="${href}" class="quiz-card" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-ok">✓</span></a>`
+    : `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
 }
 
 document.getElementById('baqara-grid').innerHTML =
-  baqaraPages.map(p=>card(p[0],p[1],p[2],true)).join('') + card('','آل عمران','ص 50',false);
+  baqaraPages.map(p=>card(p[0],p[1],p[2],true,'البقرة')).join('') + card('','آل عمران','ص 50',false,'آل عمران');
 
 document.getElementById('kahf-grid').innerHTML =
-  kahfPages.map(p=>card(p[0],p[1],p[2],true)).join('');
+  kahfPages.map(p=>card(p[0],p[1],p[2],true,'الكهف')).join('');
 
 document.getElementById('maryam-grid').innerHTML =
-  maryamPages.map(p=>card(p[0],p[1],p[2],true)).join('');
+  maryamPages.map(p=>card(p[0],p[1],p[2],true,'مريم')).join('');
 
 document.getElementById('yaseen-grid').innerHTML =
-  yaseenPages.map(p=>card(p[0],p[1],p[2],true)).join('');
+  yaseenPages.map(p=>card(p[0],p[1],p[2],true,'يس')).join('');
 
 document.getElementById('arrahman-grid').innerHTML =
-  arrahmanPages.map(p=>card(p[0],p[1],p[2],true)).join('');
+  arrahmanPages.map(p=>card(p[0],p[1],p[2],true,'الرحمن')).join('');
 
 document.getElementById('alwaqiah-grid').innerHTML =
-  alwaqiahPages.map(p=>card(p[0],p[1],p[2],true)).join('');
+  alwaqiahPages.map(p=>card(p[0],p[1],p[2],true,'الواقعة')).join('');
 
 document.getElementById('almulk-grid').innerHTML =
-  almulkPages.map(p=>card(p[0],p[1],p[2],true)).join('');
+  almulkPages.map(p=>card(p[0],p[1],p[2],true,'الملك')).join('');
 
 document.getElementById('amma-grid').innerHTML =
   ammaData.map(p=>card(p[0],p[1],p[2],p[3])).join('');
