@@ -320,7 +320,7 @@ function normalize(str){
     .replace(/ـۧ/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     .replace(/[\u064B-\u065F\u0610-\u061A\u06D6-\u06DC\u06DF-\u06E4\u06E7\u06E8\u06EA-\u06ED\u08F0-\u08F2]/g,'')
     .replace(/ها[ؤو]لاء|ها[ؤو]لا(?!\S)/g,'هالا').replace(/ه[ؤو]لاء|ه[ؤو]لا(?!\S)/g,'هالا')
-    .replace(/([وف])ٱ(?!ل)/g,'$1')
+    .replace(/وٱ(?!ل)/g,'و')
     .replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد|جتب|متاز)/g,'و')
     .replace(/وٰ(?=ة)/g,'ا').replace(/وٰ/g,'وا')
     .replace(/اٰ/g,'ا').replace(/يٰ/g,'يا')
@@ -342,7 +342,6 @@ function normalize(str){
     .replace(/(?<=^|\s)تراني(?=\s|$)/g,'ترن').replace(/(?<=^|\s)ياتيني(?=\s|$)/g,'ياتين').replace(/(?<=^|\s)تعلمني(?=\s|$)/g,'تعلمن').replace(/(?<=^|\s)تسالني(?=\s|$)/g,'تسالن').replace(/(?<=^|\s)تسالنى(?=\s|$)/g,'تسالن')
     .replace(/(?<=^|\s)وراي(?=\s|$)/g,'ورا').replace(/(?<=^|\s)لاتخذت(?=\s|$)/g,'لتخذت').replace(/(?<=^|\s)تستطيع(?=\s|$)/g,'تستطع')
     .replace(/(?<=^|\s)فانطلق(?=\s|$)/g,'فانطلقا').replace(/(?<=^|\s)فوجد(?=\s|$)/g,'فوجدا')
-    .replace(/^اولايك$/,'اوليك').replace(/^هاولا$/,'هالا').replace(/^يوتيني$/,'يوتين')
     .replace(/\s+/g,' ')
     .trim();
 }
@@ -483,7 +482,7 @@ function _combineNumVals(vals){
   return((b===100||b===1000)&&a>=1&&a<=9)?a*b+c:a+b+c;
 }
 function _expandDigitWord(raw,ansWords){
-  const val=parseInt(raw.replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
+  const val=parseInt(raw.replace(/[0-9]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
   if(isNaN(val))return null;
   for(let start=0;start<ansWords.length;start++){
     for(let len=1;len<=3&&start+len<=ansWords.length;len++){
@@ -512,7 +511,7 @@ function _fixWords(words){
           if(words[i]==='ممنع'){out.push('ممن','منع');continue;}
           if(words[i]==='بلا'){out.push('بلى');continue;}
           if(words[i]==='بن'){out.push('ابن');continue;}
-          if(_ansWords.length && /^[0-9٠-٩]+$/.test(words[i])){
+          if(_ansWords.length && /^[0-90-9]+$/.test(words[i])){
             const _exp=_expandDigitWord(words[i],_ansWords);
             if(_exp){out.push(..._exp);continue;}
           }

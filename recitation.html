@@ -1249,8 +1249,8 @@ function expandDigits(words){
   if(!words||!words.length||!refWords.length)return words;
   const out=[];
   for(const raw of words){
-    if(!/^[0-9٠-٩]+$/.test(raw)){out.push(raw);continue;}
-    const val=parseInt(raw.replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
+    if(!/^[0-90-9]+$/.test(raw)){out.push(raw);continue;}
+    const val=parseInt(raw.replace(/[0-9]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
     let matched=null;
     for(let start=0;start<refWords.length&&!matched;start++){
       for(let len=1;len<=3&&start+len<=refWords.length;len++){
