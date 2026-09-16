@@ -2229,7 +2229,16 @@ def add_muqattaat_support(out):
          اللي بتظهر للمستخدم أثناء التسجيل تبان بالرسم القرآني من الأول
 
     ولا قاعدة من قواعد normalize() اتغيّرت، ولا منطق المقارنة نفسه.
-    الملفات اللي متبدأش بحروف مقطعة مبيتغيّرش سلوكها إطلاقًا."""
+    الملفات اللي متبدأش بحروف مقطعة مبيتغيّرش سلوكها إطلاقًا.
+
+    حارس معماري (سبتمبر ٢٠٢٦): الصفحات اللي بتحمّل voice-engine.js
+    المشترك عندها MUQATTAAT/collapseMuqattaat جوه الملف الخارجي ده
+    خالص، مش جوه الصفحة. لو حقنّا نسخة تانية هنا هيبقى فيه تعريف
+    مكرر (SyntaxError: Identifier already declared) بيوقف كل كود
+    الصفحة. فأي ملف فيه <script src="voice-engine.js"> يتخطّى هنا
+    خالص، مهما كان شكل wordDiff/MUQATTAAT جواه."""
+    if 'src="voice-engine.js"' in out:
+        return out, False
     if 'function wordDiff' not in out:
         return out, False
 
@@ -6333,7 +6342,7 @@ _VD_JUDGE_OLD = """  const userNorm=normalize(userVal);
   if(userNorm===ansNorm){"""
 _VD_JUDGE_NEW = """  const userNorm=normalize(userVal);
   const ansNorm=normalize(q.answer);
-  const _dh=wordDiff(userVal,q.answer);
+  const _dh=wordDiff(userVal,q.answer,q);
   const _st=window._lastDiff||{};
   // الحكم من نفس مصدر العرض: لو كل كلمات الإجابة اتطابقت ومفيش
   // كلمة زيادة، تبقى صح — عشان مايحصلش تناقض بين "٢٣/٢٣ صحيحة"
@@ -6404,7 +6413,7 @@ def fix_verdict_and_progress(path, out):
 
     # ٤) الحكم: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
     _JUDGE_BODY = ("const userNorm=normalize(userVal),ansNorm=normalize(q.answer);"
-                   "const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};"
+                   "const _dh=wordDiff(userVal,q.answer,q);const _st=window._lastDiff||{};"
                    "const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);"
                    "if(_ok){")
     out, c = re.subn(
@@ -6418,7 +6427,7 @@ def fix_verdict_and_progress(path, out):
             r"(const\s+userNorm\s*=\s*[^;]+;\s*const\s+ansNorm\s*=\s*[^;]+;)\s*"
             r"if\s*\(\s*userNorm\s*===\s*ansNorm\s*\)\s*\{",
             lambda m: m.group(1) +
-                      "const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};"
+                      "const _dh=wordDiff(userVal,q.answer,q);const _st=window._lastDiff||{};"
                       "const _ok=(userNorm===ansNorm)||"
                       "(_st.total>0&&_st.matched===_st.total&&!_st.extra);if(_ok){",
             out, count=1)
@@ -6435,7 +6444,7 @@ def fix_verdict_and_progress(path, out):
         r"const userNorm=normalize\(userVal\)[,;]\s*(?:const\s+)?ansNorm=normalize\(q\.answer\);\s*"
         r"if\(userNorm===ansNorm\)\{",
         lambda m: "const userNorm=normalize(userVal),ansNorm=normalize(q.answer);"
-                  "const _dh=wordDiff(userVal,q.answer);const _st=window._lastDiff||{};"
+                  "const _dh=wordDiff(userVal,q.answer,q);const _st=window._lastDiff||{};"
                   "const _ok=(userNorm===ansNorm)||(_st.total>0&&_st.matched===_st.total&&!_st.extra);"
                   "if(_ok){", out, count=1)
     n += c
@@ -6723,7 +6732,7 @@ CANON_FN['checkTextVal'] = r'''function checkTextVal(q,userVal){
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
   const ansNorm=normalize(_pre(q.answer));
-  const _dh=wordDiff(userVal,q.answer);
+  const _dh=wordDiff(userVal,q.answer,q);
   const _st=window._lastDiff||{};
   if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
   // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
@@ -7345,8 +7354,15 @@ _SNAP_NEW = ("        return snapToRasm(out,(typeof q!=='undefined'&&q&&q.answer
 
 
 def add_rasm_snap_to_voice(path, out):
-    """يحقن snapToRasm ويوصّلها بآخر _fixWords (مسار التسجيل الصوتي)."""
+    """يحقن snapToRasm ويوصّلها بآخر _fixWords (مسار التسجيل الصوتي).
+
+    حارس معماري (سبتمبر ٢٠٢٦): نفس حارس add_muqattaat_support — الملفات
+    اللي بتحمّل voice-engine.js عندها snapToRasm/_rasmVoiceForms/_rasmMaps
+    جوه الملف الخارجي بالفعل، فحقن نسخة تانية هنا هيسبب تعريف مكرر
+    ويوقف الصفحة كلها."""
     fn = os.path.basename(path)
+    if 'src="voice-engine.js"' in out:
+        return out, False
     if 'function _fixWords(words){' not in out:
         return out, False
     added = False
