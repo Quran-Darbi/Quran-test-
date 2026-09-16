@@ -320,62 +320,12 @@ const HARD_Q=[
 let currentLevel=null,statuses=[],wrongIndices=[],questions=[],qIndex=0,correctCount=0,wrongCount=0;let wCorrect=0,wTotal=0;
 
 
-/* ===== الحروف المقطعة: تُنطق أسماء حروف منفصلة ===== */
 ;
-/* ===== نهاية الحروف المقطعة ===== */
-/* ===== محاذاة رسم التلاوة على المصحف (الصوت فقط) =====
-   محرك التعرّف بيكتب الكلمة برسم إملائي عادي: «امنهم» بدل
-   «وَءَامَنَهُم»، «ترى» بدل «تَرَ»، «فأثرنا» بدل «فَأَثَرْنَ».
-   بنقارن كل كلمة منطوقة بكلمات *الآية الحالية وحدها*، ولو طابقت
-   واحدة بنرجّع رسم المصحف بدل رسم المحرك.
-   طبقتان: تطابق تام بعد normalize، ثم تطابق متساهل بحذف ألف أو
-   ياء أخيرة — وده بالضبط عيب المحرك المتكرر.
-   أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة، فالإبدال
-   مابيحصلش إلا لما يبقى وحيد. normalize و wordDiff مابيتلمسوش. */
-/* ===== محاذاة رسم التلاوة على المصحف (الصوت فقط) =====
-   محرك التعرّف بيكتب الكلمة برسم إملائي عادي: «امنهم» بدل
-   «وَءَامَنَهُم»، «ترى» بدل «تَرَ». بنقارن كل كلمة منطوقة بكلمات
-   *الآية الحالية وحدها*، ولو طابقت واحدة بنرجّع رسم المصحف.
 
-   المحاذاة المتساهلة محكومة بقواعد الرسم — نطقًا لا كتابةً:
-     · ىٰ  ياء عليها ألف خنجرية: تُنطق ألفًا وتُكتب ياء
-     · ○  صفر مستدير (U+06DF): الحرف مكتوب رسمًا ولا يُنطق أبدًا،
-          لا وصلًا ولا وقفًا  (قَالُوا۟ ، أُو۟لَٰٓئِكَ)
-     · ▯  صفر مستطيل (U+06E0): الألف تثبت وقفًا وتسقط وصلًا
-          (الألفات السبع، ومنها أَنَا۠)
-   أي نهاية أخرى — ألف مدية، ياء متحركة، همزة — خارج القاعدة
-   ولا تُحاذى إطلاقًا، فـ«إلى» لا تساوي «إلا» ولا «ولا» تساوي «ولي».
-   أي مفتاح بيوصّل لأكتر من كلمة قرآنية بيتشال من الخريطة.
-   normalize و wordDiff مابيتلمسوش. */
+
 function _hardQAyahMarks(q){if(!q||!q.q)return null;const nums=(String(q.q).match(/\d+/g)||[]).map(Number);if(!nums.length)return null;const start=nums[0],end=nums.length>1?nums[1]:nums[0];if(typeof AYAT==='undefined'||!AYAT||!AYAT.length)return null;const m=new Map();let idx=-1;for(let a=start;a<=end;a++){const wc=(AYAT[a-1]||'').trim().split(/\s+/).filter(Boolean).length;if(!wc)continue;idx+=wc;m.set(idx,a);}return m;}
-/* ===== الحروف المقطعة: تُنطق أسماء حروف منفصلة ===== */
-const MUQATTAAT={
-  'الم':['الف','لام','ميم'],
-  'المص':['الف','لام','ميم','صاد'],
-  'الر':['الف','لام','را'],
-  'المر':['الف','لام','ميم','را'],
-  'كهيعص':['كاف','ها','يا','عين','صاد'],
-  'طه':['طا','ها'],
-  'طسم':['طا','سين','ميم'],
-  'طس':['طا','سين'],
-  'يس':['يا','سين'],
-  'ص':['صاد'],
-  'حم':['حا','ميم'],
-  'عسق':['عين','سين','قاف'],
-  'ق':['قاف'],
-  'ن':['نون']
-};
-function collapseMuqattaat(words,correctAnswer){
-  if(!words||!words.length||!correctAnswer)return words;
-  const cw=correctAnswer.trim().split(/\s+/);
-  const names=MUQATTAAT[normalize(cw[0])];
-  if(!names||words.length<names.length)return words;
-  for(let k=0;k<names.length;k++){
-    if(normalize(words[k])!==normalize(names[k]))return words;
-  }
-  return [cw[0]].concat(words.slice(names.length));
-}
-/* ===== نهاية الحروف المقطعة ===== */
+
+
 function wordDiff(userVal,correctAnswer,q){
   const nm=s=>{if(!s)return'';return s.replace(/ـ([ٕٔ])([ً-ٟ])/g,'ـ$2$1').replace(/ـِ[ٕٔ]/g,'ي').replace(/يٓ?ـَٔ/g,'ي').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـَٔ/g,'ا').replace(/ـ[ًٌٍَُِّْٕٖٜٟٓٔٗ٘ٙٚٛٝٞ]*[ٕٔ]/g,'').replace(/ـ/g,'')
     .replace(/[\u064B-\u0652]/g,'')
@@ -474,7 +424,7 @@ function checkTextVal(q,userVal){
   const _pre=(typeof normalizeHurufMuqattaa==='function')?normalizeHurufMuqattaa:(x=>x);
   const userNorm=normalize(_pre(userVal));
   const ansNorm=normalize(_pre(q.answer));
-  const _dh=wordDiff(userVal,q.answer);
+  const _dh=wordDiff(userVal,q.answer,q);
   const _st=window._lastDiff||{};
   if(_st.total){wCorrect+=_st.matched;wTotal+=_st.total;}
   // الحكم من نفس مصدر العرض: تطابق كامل أو كل الكلمات مطابقة ومفيش زيادة
