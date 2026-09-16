@@ -32,7 +32,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="دربي">
-<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/darbi_favicon_32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/darbi_favicon_64.png">
+<link rel="icon" type="image/png" sizes="128x128" href="icons/darbi_favicon_128.png">
+<link rel="icon" type="image/png" sizes="256x256" href="icons/darbi_favicon_256.png">
+<link rel="apple-touch-icon" href="icons/darbi_favicon_512.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -1286,8 +1290,8 @@ function expandDigits(words){
   if(!words||!words.length||!refWords.length)return words;
   const out=[];
   for(const raw of words){
-    if(!/^[0-90-9]+$/.test(raw)){out.push(raw);continue;}
-    const val=parseInt(raw.replace(/[0-9]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
+    if(!/^[0-9٠-٩]+$/.test(raw)){out.push(raw);continue;}
+    const val=parseInt(raw.replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-0x0660)),10);
     let matched=null;
     for(let start=0;start<refWords.length&&!matched;start++){
       for(let len=1;len<=3&&start+len<=refWords.length;len++){
@@ -1423,6 +1427,7 @@ function _rasmVoiceForms(w){
     out.push(w.replace(/\u0647[\u0652\u06E1]$/,''));
   if(/^[وف][\u064B-\u065F]?\u0671(?!\u0644)/.test(w))
     out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0671/,'$1'));
+  // ياء المتكلم المحذوفة رسمًا بعد نون مثل «يَهۡدِيَنِ»: قد تُنطق فيسمعها التسجيل ياء زيادة
   if(/\u0646\u0650$/.test(w))
     out.push(w+'\u064A');
   if(/\u0646[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
