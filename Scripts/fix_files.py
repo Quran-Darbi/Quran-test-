@@ -7665,25 +7665,18 @@ def add_recitation_button(path, out):
 BLANKS_FIXED = []
 BLANKS_SKIPPED = []
 
-_BLANK_STD = '_____'
+# طول شرطة الفراغ الموحّد. كان 5 شرطات ("_____")؛ اتقلّل لـ3 ("___")
+# بطلب هند 2026-09-17 (أسهل وأخف بصريًا، ومفيش أي منطق في الموقع بيعتمد
+# على الطول بالحرف — البحث كله بـ_+ regex مش بعدد ثابت).
+_BLANK_STD = '___'
 
 
-def fix_medium_blank_count(path, out):
-    """يخلّي عدد فراغات _____ في سؤال المتوسط مطابقًا لعدد كلمات الإجابة.
-
-    المستخدم بيشوف الفراغ فبيعرف كام كلمة مطلوبة. لو الإجابة كلمتين
-    والفراغ واحد، بيكتب كلمة واحدة ويتحسب عليه غلط.
-
-    جراحي: بيمسّ نص السؤال (q) بس، ومابيقربش للإجابة ولا للنص القرآني.
-    idempotent: لو العدد مطابق أصلاً مايعملش حاجة.
-    """
-    fn = os.path.basename(path)
-
-    m = re.search(r'(?:const|let|var)\s+MEDIUM_Q\s*=\s*\[', out)
+def _find_array_body(out, name):
+    """حدود جسم مصفوفة `const/let/var NAME = [ ... ]` (بموازنة أقواس
+    دقيقة، بتحترم النصوص جوه علامات تنصيص). None لو المصفوفة مش موجودة."""
+    m = re.search(r'(?:const|let|var)\s+' + name + r'\s*=\s*\[', out)
     if not m:
-        return out, False
-
-    # حدود المصفوفة
+        return None
     i = m.end() - 1
     depth = 0
     quote = None
@@ -7705,22 +7698,60 @@ def fix_medium_blank_count(path, out):
                 break
         i += 1
     else:
-        return out, False
+        return None
+    return m.end(), i
 
-    start, end = m.end(), i
+
+# مفتاح كائن بصيغ متعددة موجودة فعليًا في الموقع: قديمة بدون تنصيص
+# (q:"...")، حديثة بتنصيص (Taha/مريم/يس/الرحمن/الواقعة/الملك: "q": "...")،
+# وعلامة تنصيص مفردة (alfatiha.html القديمة: q:'...'). الكل لازم يتغطّى
+# عشان الدالة تشتغل على كل صفحات الموقع فعلًا مش بس الغالبية.
+def _obj_field(obj, key):
+    """يرجّع (المحتوى, بداية المحتوى, نهاية المحتوى) لحقل `key` جوه
+    كائن JS، أيًّا كانت علامة التنصيص (مزدوجة أو مفردة). None لو مش
+    موجود."""
+    m = re.search(r'"?' + key + r'"?\s*:\s*(["\'])((?:[^\\]|\\.)*?)\1', obj)
+    if not m:
+        return None
+    return m.group(2), m.start(2), m.end(2)
+
+
+def fix_medium_blank_count(path, out):
+    """يخلّي عدد فراغات الإجابة في سؤال المتوسط مطابقًا لعدد كلماتها.
+
+    المستخدم بيشوف الفراغ فبيعرف كام كلمة مطلوبة. لو الإجابة كلمتين
+    والفراغ واحد، بيكتب كلمة واحدة ويتحسب عليه غلط.
+
+    جراحي: بيمسّ نص السؤال (q) بس، ومابيقربش للإجابة ولا للنص القرآني.
+    idempotent: لو العدد مطابق أصلاً مايعملش حاجة.
+    """
+    fn = os.path.basename(path)
+
+    span = _find_array_body(out, 'MEDIUM_Q')
+    if not span:
+        return out, False
+    start, end = span
     body = out[start:end]
     hits = []
 
     def repl_obj(match):
         obj = match.group(0)
-        qm = re.search(r'q\s*:\s*"((?:[^"\\]|\\.)*)"', obj)
-        am = re.search(r'answer\s*:\s*"((?:[^"\\]|\\.)*)"', obj)
-        if not qm or not am:
+        qf = _obj_field(obj, 'q')
+        af = _obj_field(obj, 'answer')
+        if not qf or not af:
             return obj
-        q, a = qm.group(1), am.group(1)
+        q, qstart, qend = qf
+        a, _astart, _aend = af
         need = len(a.split())
         have = re.findall(r'_+', q)
         if need < 1 or len(have) == need:
+            return obj
+        # قاعدة هند 2026-09-17: سؤال المتوسط ميتخطّاش ٣ كلمات في الإجابة.
+        # لو أكتر من كده، المشكلة مش مجرد عدّاد فراغات — المقطع نفسه
+        # محتاج يتقصّر (تغيير حدود الجزء المُختبَر)، وده قرار بشري لازم
+        # مراجعة، مش تصحيح آلي أعمى.
+        if need > 3:
+            BLANKS_SKIPPED.append((fn, a, 'الإجابة %d كلمة (أكتر من ٣) — محتاجة تقصير يدوي' % need))
             return obj
         # لازم يكون فيه فراغ واحد بالظبط عشان نوسّعه بأمان؛
         # أي حالة تانية بتتساب للمراجعة اليدوية
@@ -7729,7 +7760,7 @@ def fix_medium_blank_count(path, out):
             return obj
         new_q = q.replace(have[0], ' '.join([_BLANK_STD] * need), 1)
         hits.append((a, 1, need))
-        return obj.replace(qm.group(0), 'q:"' + new_q + '"', 1)
+        return obj[:qstart] + new_q + obj[qend:]
 
     new_body = re.sub(r'\{[^{}]*\}', repl_obj, body)
     if not hits:
@@ -7737,6 +7768,46 @@ def fix_medium_blank_count(path, out):
 
     BLANKS_FIXED.append((fn, hits))
     return out[:start] + new_body + out[end:], True
+
+
+BLANK_LEN_FIXED = []
+
+
+def normalize_blank_dash_length(path, out):
+    """يوحّد طول شرطة كل فراغ (في أسئلة السهل والمتوسط) لـ_BLANK_STD
+    (٣ شرطات حاليًا)، أيًّا كان طولها الحالي (٥ شرطات النمط القديم، أو
+    أي طول تاني شاذ). بيمسّ نص السؤال (q) بس، جوه EASY_Q وMEDIUM_Q،
+    ومابيغيّرش عدد الفراغات ولا يلمس الإجابة أو النص القرآني.
+    idempotent: لو كل الفراغات بالطول الصح خلاص مايعملش حاجة.
+    """
+    fn = os.path.basename(path)
+    changed_any = False
+    for arr_name in ('EASY_Q', 'MEDIUM_Q'):
+        span = _find_array_body(out, arr_name)
+        if not span:
+            continue
+        start, end = span
+        body = out[start:end]
+
+        def repl_obj(match):
+            obj = match.group(0)
+            qf = _obj_field(obj, 'q')
+            if not qf:
+                return obj
+            q, qstart, qend = qf
+            new_q = re.sub(r'_+', lambda m: _BLANK_STD if len(m.group(0)) >= 3 else m.group(0), q)
+            if new_q == q:
+                return obj
+            return obj[:qstart] + new_q + obj[qend:]
+
+        new_body = re.sub(r'\{[^{}]*\}', repl_obj, body)
+        if new_body != body:
+            out = out[:start] + new_body + out[end:]
+            changed_any = True
+
+    if changed_any:
+        BLANK_LEN_FIXED.append(fn)
+    return out, changed_any
 
 
 NEXTBTN_FIXED = []
@@ -8015,6 +8086,7 @@ def fix_file(path):
     out, _rtl = fix_retry_btn_label(out)
     out, _recbtn = add_recitation_button(path, out)
     out, _blanks = fix_medium_blank_count(path, out)
+    out, _blanklen = normalize_blank_dash_length(path, out)
     out, _nxb = fix_next_btn_display(path, out)
 
     # ====================================================
@@ -9974,7 +10046,7 @@ GEN_STOPWORDS = {
     'مع', 'كي', 'لما', 'لو', 'اي', 'الله',
 }
 
-GEN_BLANK = '_____'
+GEN_BLANK = '___'
 GEN_SKIPPED = []
 GEN_DROPPED = []
 GEN_WRITTEN = []
@@ -10590,6 +10662,9 @@ def main():
         print('اتخطّى (مراجعة يدوية): %d' % len(BLANKS_SKIPPED))
         for fn2, a, why in BLANKS_SKIPPED:
             print('  -', fn2, ':', a, '|', why)
+
+    print('\n=== تقرير توحيد طول شرطة الفراغ ===')
+    print('اتصلّح في: %d ملف' % len(BLANK_LEN_FIXED))
 
     print('\n=== تقرير زر 🎤 اختبر تلاوتك ===')
     print('اتضاف في: %d ملف' % len(RECIT_BTN_ADDED))
