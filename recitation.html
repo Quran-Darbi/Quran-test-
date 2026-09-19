@@ -1431,6 +1431,7 @@ function addWords(newW){
   savedWords=splitMergedWords(savedWords);
   savedWords=mergeYaAyyuha(savedWords);
   savedWords=mergeSplitLam(savedWords);
+  savedWords=mergeMaLah(savedWords);
   savedWords=fixPronunciation(savedWords);
   savedWords=snapWordsToRasm(savedWords);
 }
@@ -1472,6 +1473,35 @@ function mergeSplitLam(words){
         const orig=refWords.find(w=>norm(w)===norm(a+nx));
         if(orig){out.push(orig);i++;continue;}
       }
+    }
+    out.push(words[i]);
+  }
+  return out;
+}
+
+// (1-ج) «لَهُمۡ / وَلَهُمۡ» بيسمعها التسجيل «ما له» (كلمتين: ما + له). بندمجهم في «ماله» فتتحاذى
+//      على «لهم» بصيغتها في `_rasmVoiceForms`. الحماية: الصفحة فيها «لهم» صريحة، ومفيش فيها
+//      «ما له» متجاورين في المصحف نفسه (وإلا يبقى كلام المستخدم صح ومانلمسوش).
+//      استثناء: لو الصفحة فيها «مَا لَهُمۡ» أصلاً (الكهف) وسياق الموضع مطابق لسياقها، نرجّع
+//      «ما» + «لهم» بدل الدمج (عشان «ما» ماتتحسبش ناقصة).
+function mergeMaLah(words){
+  if(!words||words.length<2||!refWords.length)return words;
+  const R=refWords.map(norm);
+  const isL=w=>/^[وف]?لهم$/.test(w);
+  if(!R.some(isL))return words;
+  const pairs=[];
+  for(let i=0;i<R.length-1;i++){
+    if(R[i]==='ما'&&/^[وف]?له$/.test(R[i+1]))return words;
+    if(R[i]==='ما'&&isL(R[i+1]))pairs.push(i);
+  }
+  const out=[];
+  for(let i=0;i<words.length;i++){
+    if(i+1<words.length&&norm(words[i])==='ما'&&norm(words[i+1])==='له'){
+      const prev=i>0?norm(words[i-1]):null,next=i+2<words.length?norm(words[i+2]):null;
+      const hit=pairs.find(r=>(prev!==null&&R[r-1]===prev)||(next!==null&&R[r+2]===next));
+      if(hit!==undefined){out.push(words[i],refWords[hit+1]);}
+      else out.push('ماله');
+      i++;continue;
     }
     out.push(words[i]);
   }
@@ -1608,6 +1638,8 @@ function _rasmVoiceForms(w,nextW,skip){
     const base=w.replace(/[ـ\u064B-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F2]/g,'');
     if(base.length-1>=3)out.push(w.replace(/ى$/,''));
   }
+  // «لَهُمۡ / وَلَهُمۡ» بيسمعها التعرف الصوتي «ما له» (بيتدمجوا «ماله» في mergeMaLah)
+  if(/^[وف]?لهم$/.test(_pkey(w)))out.push('ماله');
   return out;
 }
 function _rasmMatch(refWord,refNorm,u,nextRef,skip){

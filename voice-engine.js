@@ -163,6 +163,8 @@ function _rasmVoiceForms(w,nextW,skip){
     const base=w.replace(/[ـ\u064B-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F2]/g,'');
     if(base.length-1>=3)out.push(w.replace(/ى$/,''));
   }
+  // «لَهُمۡ / وَلَهُمۡ» بيسمعها التعرف الصوتي «ما له» (ملزوقة «ماله»)
+  if(/^[وف]?لهم$/.test(_pkey(w)))out.push('ماله');
   return out;
 }
 
@@ -275,6 +277,31 @@ function _fixWordsCore(words, answer){
     if(_ansWords.length && /^ي[سص](?:وم|م)(?:و?ن)كم$/.test(normalize(words[i]))){
       const _ya=_ansWords.find(aw=>normalize(aw)==='يسومونكم');
       if(_ya){ out.push(_ya); continue; }
+    }
+    // لَهُمۡ / وَلَهُمۡ: التعرف الصوتي بيسمعها «ما له» (كلمتين) أو «ماله» — بنرجّعها لرسمها من الإجابة
+    // حسب أقرب موضع «لهم» في الإجابة. الحماية: مفيش «ما له» متجاورين في الإجابة نفسها
+    if(_ansWords.length){
+      const _nw=normalize(words[i]);
+      const _two=(_nw==='ما'&&i+1<words.length&&normalize(words[i+1])==='له');
+      if(_two||_nw==='ماله'){
+        const _isL=w=>/^[وف]?لهم$/.test(_pkey(w));
+        const _cands=[];let _blocked=false;
+        for(let k=0;k<_ansWords.length;k++){
+          if(_isL(_ansWords[k]))_cands.push(k);
+          if(k>0&&normalize(_ansWords[k-1])==='ما'&&/^[وف]?له$/.test(_pkey(_ansWords[k])))_blocked=true;
+        }
+        if(_cands.length&&!_blocked){
+          let c=_cands[0];
+          for(const k of _cands)if(Math.abs(k-out.length)<Math.abs(c-out.length))c=k;
+          if(Math.abs(c-out.length)<=3||_cands.length===1){
+            // «مَا لَهُمۡ» أصلاً في الإجابة: «ما» موجودة قبلها فنحتفظ بها
+            if(c>0&&normalize(_ansWords[c-1])==='ما'&&_two)out.push(words[i]);
+            out.push(_ansWords[c]);
+            if(_two)i++;
+            continue;
+          }
+        }
+      }
     }
     if(_ansWords.length && /^[0-9٠-٩]+$/.test(words[i])){
       const _exp=_expandDigitWord(words[i],_ansWords);
