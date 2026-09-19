@@ -91,37 +91,78 @@ function collapseMuqattaat(words,correctAnswer){
   return [cw[0]].concat(words.slice(names.length));
 }
 
-function _rasmVoiceForms(w){
+// مفتاح "رسم" مبسّط للمقارنة بين كلمتين حقيقيتين: بلا تشكيل لكن بدون دمج الحروف المكررة
+// (norm بتدمج «ٱللَّهَ» و«إِلَٰهَ» في «اله» رغم إنهم كلمتين مختلفتين) والخنجرية بتتحسب ألف
+function _pkey(x){
+  return String(x).replace(/\u0670/g,'ا')
+    .replace(/[\u0640\u064B-\u065F\u06D6-\u06ED\u08F0-\u08F2]/g,'')
+    .replace(/[آأإٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+}
+function _rasmVoiceForms(w,nextW,skip){
   const out=[];
-  if(/\u0649\u0670[^\u0621-\u064A]*$/.test(w))
-    out.push(w.replace(/\u0649\u0670([^\u0621-\u064A]*)$/,'\u0627$1'));
+  // skip(alt): لو رجّعت true معناه الصيغة البديلة دي بتساوي كلمة تانية حقيقية في نفس الإجابة —
+  // فمانقبلهاش بديل (عشان ما نقبلش كلمة غلط مكان كلمة صح: كفر/كافر، قتل/قاتل)
+  const weak=alt=>{if(!(skip&&skip(alt)))out.push(alt);};
+  if(/ى\u0670[^ء-ي]*$/.test(w))
+    out.push(w.replace(/ى\u0670([^ء-ي]*)$/,'ا$1'));
   if(/[\u06DF\u06E0]/.test(w))
-    out.push(w.replace(/[\u0627\u0648\u064A\u0649][\u06DF\u06E0]/g,''));
-  if(/\u0646\u064E$/.test(w))
-    out.push(w+'\u0627');
-  if(/\u0647[\u0652\u06E1]$/.test(w))
-    out.push(w.replace(/\u0647[\u0652\u06E1]$/,''));
-  if(/^[وف][\u064B-\u065F]?\u0671(?!\u0644)/.test(w))
-    out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0671/,'$1'));
+    out.push(w.replace(/[اويى][\u06DF\u06E0]/g,''));
+  if(/ن\u064E$/.test(w))
+    out.push(w+'ا');
+  if(/ه[\u0652\u06E1]$/.test(w))
+    out.push(w.replace(/ه[\u0652\u06E1]$/,''));
+  if(/^[وف][\u064B-\u065F]?ٱ(?!ل)/.test(w))
+    out.push(w.replace(/^([وف])[\u064B-\u065F]?ٱ/,'$1'));
   // ياء المتكلم المحذوفة رسمًا بعد نون مثل «يَهۡدِيَنِ»: قد تُنطق فيسمعها التسجيل ياء زيادة
-  if(/\u0646\u0650$/.test(w))
-    out.push(w+'\u064A');
-  if(/\u0646[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
-    out.push(w+'\u0627');
+  if(/ن\u0650$/.test(w))
+    out.push(w+'ي');
+  if(/ن[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
+    out.push(w+'ا');
   // تنوين الفتح على الألف بيتسمع أحيانًا ألف مقصورة (نُّكۡرًا → نكرى)
-  if(/[\u064B\u08F0]\u0627$/.test(w))
-    out.push(w.replace(/[\u064B\u08F0]\u0627$/,'\u0649'));
-  // ألف خنجرية + مدة قبل همزة (أُو۟لَٰٓئِكَ، هَـٰٓؤُلَاءِ...): قاعدة تطبيع
+  if(/[\u064B\u08F0]ا$/.test(w))
+    out.push(w.replace(/[\u064B\u08F0]ا$/,'ى'));
+  // ...وأحيانًا تسقط ألف التنوين كليًّا وصلًا (إِلَٰهࣰا وَٰحِدࣰا → «إله واحدا»)
+  if(/[\u064B\u08F0]ا$/.test(w))
+    weak(w.replace(/ا$/,''));
+  // ألف خنجرية + [حركة] + مدة قبل همزة (أُو۟لَٰٓئِكَ، وَأُولَٰٓئِكَ، هَـٰٓؤُلَاءِ...): قاعدة تطبيع
   // (.)ٰ→ا العامة بتضيف ألف زيادة عن الرسم المعتاد اللي بيكتبها
-  // التعرف الصوتي (واولئك مش واولايك) — بنحذفها كبديل فقط قبل حرف همزة
-  if(/\u0670\u0653(?=[\u0621\u0623\u0624\u0626])/.test(w))
-    out.push(w.replace(/\u0670\u0653/g,''));
+  // التعرف الصوتي (واولئك مش واولايك) — بنحذفها كبديل فقط قبل حرف همزة.
+  // الحركة ممكن تيجي بين الخنجرية والمدة (لَٰٓ) أو قبلها، فبنسمح بأي حركة بينهم
+  if(/\u0670[\u064B-\u0652]*\u0653(?=[ءأؤإئ])/.test(w))
+    out.push(w.replace(/\u0670([\u064B-\u0652]*)\u0653/g,'$1'));
   // همزة القطع بعد واو/فاء الوصل (وَأَسۡمِعۡ) أحيانًا بيلخبطها التعرف
   // الصوتي فبيكتبها بألف عادية بس من غير همزة أصلًا (واسمع) — بنولّد
   // بديل بحذف الهمزة زي ما بيكتبها التعرف، مش بتحويلها لألف عادي
   // (عشان محرف الوصل التلقائي بيدمجها فيبقى الناتج مختلف عن اللي اتسمع)
-  if(/^[وف][\u064B-\u065F]?\u0623/.test(w))
-    out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0623/,'$1'));
+  if(/^[وف][\u064B-\u065F]?أ/.test(w))
+    out.push(w.replace(/^([وف])[\u064B-\u065F]?أ/,'$1'));
+  // كرسي الهمزة بعد ألف المد وقبل ضمير متصل (شُهَدَآءَكُم، أَبۡنَآءَكُمۡ، نِسَآءَكُمۡ):
+  // المصحف بيكتب الهمزة على السطر (آء)، أما التعرف الصوتي بيكتبها بكرسي
+  // حسب الإعراب اللي هو مابيسمعوش (شهدائكم / أبنائكم / نسائكم / نساؤكم)
+  const _hz=/(ا\u0653|آ)([ءؤئ])(?=[\u064B-\u065F\u0670\u06E1\u08F0-\u08F2]*[ء-ي])/;
+  const _hm=_hz.exec(w);
+  if(_hm){
+    for(const seat of ['ئ','ؤ','ء']){
+      if(seat===_hm[2])continue;
+      out.push(w.replace(new RegExp(_hz.source,'g'),'ا'+seat));
+    }
+  }
+  // ألف المد المكتوبة خنجرية (خَلَٰقࣲ، كِتَٰب...): التعرف الصوتي أحيانًا بيسقط ألف المد
+  // ويكتبها بدونها (خلق). ىٰ (ياء بخنجرية) ليها قاعدتها المستقلة فوق، ومدّة الهمزة (ٰٓ) فوق برضه
+  for(let k=w.indexOf('\u0670');k>=0;k=w.indexOf('\u0670',k+1)){
+    let b=k-1;
+    while(b>=0&&/[ـ\u064B-\u065F\u06E1\u08F0-\u08F2]/.test(w.charAt(b)))b--;
+    if(b<0||/[ىي]/.test(w.charAt(b)))continue;
+    if(w.charAt(k+1)==='\u0653')continue;
+    weak(w.slice(0,k)+w.slice(k+1));
+  }
+  // حذف ياء المتكلم/حرف المد الياء وصلًا قبل همزة الوصل (عَهۡدِى ٱلظَّٰلِمِينَ → «عهد الظالمين»):
+  // الياء بتفضل مكتوبة في المصحف وبتسقط نطقًا لالتقاء الساكنين، فالتعرف الصوتي بيكتبها بدونها.
+  // الشرط: كسرة + ياء بلا حركة في آخر الكلمة، والكلمة اللي بعدها بهمزة وصل، وأصل الكلمة ٣ حروف فأكتر
+  if(nextW&&nextW.charAt(0)==='ٱ'&&/\u0650ى$/.test(w)){
+    const base=w.replace(/[ـ\u064B-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F2]/g,'');
+    if(base.length-1>=3)out.push(w.replace(/ى$/,''));
+  }
   return out;
 }
 
@@ -132,9 +173,12 @@ function _rasmMaps(ans){
     if(!k)return;
     if(k in map){if(map[k]!==w)bad.push(k);}else map[k]=w;
   };
-  for(const w of ws){
+  const _own=new Set(ws.map(_pkey));
+  const _skip=alt=>_own.has(_pkey(alt));
+  for(let wi=0;wi<ws.length;wi++){
+    const w=ws[wi];
     put(E,bE,normalize(w),w);
-    const vs=_rasmVoiceForms(w);
+    const vs=_rasmVoiceForms(w,ws[wi+1],_skip);
     for(const v of vs)put(L,bL,normalize(v),w);
   }
   for(const k of bE)delete E[k];
@@ -177,6 +221,31 @@ function _expandDigitWord(raw,ansWords){
   return null;
 }
 
+// إدغام/إخفاء النون: التعرف الصوتي بيلزق كلمتين متجاورتين في الإجابة في كلمة واحدة
+// والنون مبلوعة («عَن مِّلَّةِ» ← «عمله»، «مِن رَّبِّهِمۡ» ← «مربهم»). بنجرّب صيغ الالتصاق
+// الممكنة (مع حذف النون وبدونه، والإقلاب قبل الباء) وبنرجّع الكلمتين برسمهم الأصلي لو طابقت
+function _mergedForms(r1,r2){
+  const dd=x=>x.replace(/(.)\1+/g,'$1');
+  const c=[r1+r2,dd(r1+r2)];
+  if(r1.endsWith('ن')&&r1.length>1){
+    const h=r1.slice(0,-1);
+    c.push(h+r2,dd(h+r2));
+    if(r2.charAt(0)==='ب')c.push(h+'م'+r2,dd(h+'م'+r2));
+  }
+  return c;
+}
+function _splitMergedFromAns(word,ansWords){
+  const a=normalize(word);
+  if(!a)return null;
+  for(const aw of ansWords)if(normalize(aw)===a)return null;   // موجودة بذاتها — مش ملزوقة
+  for(let k=0;k<ansWords.length-1;k++){
+    const r1=normalize(ansWords[k]),r2=normalize(ansWords[k+1]);
+    if(!r1||!r2)continue;
+    if(_mergedForms(r1,r2).indexOf(a)>=0)return [ansWords[k],ansWords[k+1]];
+  }
+  return null;
+}
+
 function _fixWordsCore(words, answer){
   words = collapseMuqattaat(words, answer || '');
   const _ansWords = answer ? answer.trim().split(/\s+/) : [];
@@ -197,6 +266,16 @@ function _fixWordsCore(words, answer){
     // أَن طَهِّرَا: إخفاء النون عند الطاء بيخلي التعرف الصوتي يلزقهم كلمة واحدة
     // "انطهر" (وبيسقط ألف التثنية كمان)، فبنفصلها لرسمها الصحيح
     if(normalize(words[i])==='انطهر'){ out.push('أَن','طَهِّرَا'); continue; }
+    // عَن مِّلَّةِ ← «عمله»: إدغام النون بيلزق الكلمتين (وبنفس الفكرة كل نون ساكنة قبل ي ر م ل و ن ب)
+    if(_ansWords.length>1){
+      const _sp=_splitMergedFromAns(words[i],_ansWords);
+      if(_sp){ out.push(..._sp); continue; }
+    }
+    // يَسُومُونَكُمۡ: كلمة نادرة على التعرف الصوتي، بيسمعها (يصومنكم / يسومنكم / يسمونكم) رغم النطق الصحيح بالسين
+    if(_ansWords.length && /^ي[سص](?:وم|م)(?:و?ن)كم$/.test(normalize(words[i]))){
+      const _ya=_ansWords.find(aw=>normalize(aw)==='يسومونكم');
+      if(_ya){ out.push(_ya); continue; }
+    }
     if(_ansWords.length && /^[0-9٠-٩]+$/.test(words[i])){
       const _exp=_expandDigitWord(words[i],_ansWords);
       if(_exp){ out.push(..._exp); continue; }

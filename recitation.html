@@ -807,8 +807,8 @@ function norm(s){
     .replace(/(.)ٰ/g,'$1ا')
     .replace(/هۥ/g,'ه').replace(/هۦ/g,'ه')
     .replace(/ۦ(?=\S)/g,'ي').replace(/ۦ/g,'').replace(/ۥ/g,'')
-    // لِشَاىۡءٍ: التعرف الصوتي يكتبها "لشئ" — استثناء خاص قبل حذف الهمزة (وإلا تختفي ألف المد)
-    .replace(/^لشئ$/,'لشاي')
+    // لِشَاىۡءٍ: التعرف الصوتي يكتبها "لشئ" أو "لشيء" أو "لشيئ" أو "لشىء" — كلها بتتوحّد قبل حذف الهمزة (وإلا تختفي ألف المد)
+    .replace(/^لش[يىئ][ءئ]?$/,'لشاي')
     // همزة ئ/ؤ = حرف "علة" (ي أو و) حامل همزة — الهمزة تختفي والكرسي يفضل
     // لكن: لو الكرسي بييجي قبل نفس نوع حرف العلة اللي بعده (متكئين رسمها
     // بيحذف الوحدة كلها زي متكئون) → لازم نحذف ئ اللي قبل و علشان ميتكررش
@@ -860,24 +860,40 @@ function norm(s){
     .replace(/^اولايك$/,'اوليك').replace(/^هاولا$/,'هالا')
     // يُؤۡتِيَنِ: التعرف الصوتي يكتب الياء كاملة بدل الكسرة القصيرة (نفس فكرة ترن/تعلمن)
     .replace(/^يوتيني$/,'يوتين')
+    // يَسُومُونَكُمۡ: كلمة نادرة على التعرف الصوتي، بيسمعها (يصومنكم / يسومنكم / يسمونكم) رغم النطق الصحيح بالسين
+    .replace(/^ي[سص](?:وم|م)(?:و?ن)كم$/,'يسومونكم')
     .replace(/\s+/g,' ')
     .trim();
 }
 
 // إخفاء النون (زي أَنْ قبل طَهِّرَا) بيخلي التعرف الصوتي يلزق كلمتين
 // متجاورتين فى المرجع فى كلمة واحدة (وممكن كمان يسقط ألف التثنية من
-// تانى كلمة، زي "انطهر" بدل "أن طهرا") — بنفصلها لو طابقت زوج متجاور
+// تانى كلمة، زي "انطهر" بدل "أن طهرا") — بنفصلها لو طابقت زوج متجاور.
+// وكمان إدغام النون الساكنة في (ي ر م ل و ن) والإقلاب قبل الباء: التعرف
+// بيكتب الكلمتين ملزوقتين والنون مبلوعة («عَن مِّلَّةِ» ← «عمله»،
+// «مِن رَّبِّهِمۡ» ← «مربهم»)، فبنجرّب صيغة الالتصاق مع حذف النون كمان
+function _mergedForms(r1,r2){
+  const dd=x=>x.replace(/(.)\1+/g,'$1');
+  const c=[r1+r2,dd(r1+r2)];
+  if(r1.endsWith('ن')&&r1.length>1){
+    const h=r1.slice(0,-1);
+    c.push(h+r2,dd(h+r2));
+    if(r2.charAt(0)==='ب')c.push(h+'م'+r2,dd(h+'م'+r2));
+  }
+  return c;
+}
 function splitMergedWords(words){
   if(!words||!words.length||!refWords.length)return words;
   const out=[];
+  const S=new Set(refWords.map(norm));    // الكلمات الموجودة بذاتها في الصفحة
   for(let i=0;i<words.length;i++){
     const a=norm(words[i]);
     let split=null;
-    if(a){
+    if(a&&!S.has(a)){                        // لو الكلمة موجودة بذاتها — مش ملزوقة
       for(let k=0;k<refWords.length-1;k++){
         const r1=norm(refWords[k]),r2=norm(refWords[k+1]);
         if(!r1||!r2)continue;
-        if(a===r1+r2||(r2.endsWith('ا')&&a===r1+r2.slice(0,-1))){
+        if(_mergedForms(r1,r2).indexOf(a)>=0||(r2.endsWith('ا')&&a===r1+r2.slice(0,-1))){
           split=[refWords[k],refWords[k+1]];break;
         }
       }
@@ -1448,6 +1464,15 @@ function mergeSplitLam(words){
         if(done)continue;
       }
     }
+    // (1-ب) نفس الفكرة لحرف واحد منفصل: «ل شيء» ← «لشيء» — بنلزق الحرف بالكلمة
+    //      اللي بعده بس لو الناتج كلمة في الصفحة والتتابع نفسه مش في المصحف
+    if((a==='ل'||a==='ب'||a==='ك')&&i+1<words.length){
+      const nx=norm(words[i+1]);
+      if(!P.has(a+' '+nx)&&S.has(norm(a+nx))){
+        const orig=refWords.find(w=>norm(w)===norm(a+nx));
+        if(orig){out.push(orig);i++;continue;}
+      }
+    }
     out.push(words[i]);
   }
   return out;
@@ -1511,42 +1536,83 @@ function fixPronunciation(words){
      · ○  صفر مستدير (U+06DF): مكتوب رسمًا ولا يُنطق أبدًا
      · ▯  صفر مستطيل (U+06E0): يثبت وقفًا ويسقط وصلًا
    أي نهاية أخرى (ألف مدية، ياء متحركة، همزة) خارج القاعدة. */
-function _rasmVoiceForms(w){
+// مفتاح "رسم" مبسّط للمقارنة بين كلمتين حقيقيتين: بلا تشكيل لكن بدون دمج الحروف المكررة
+// (norm بتدمج «ٱللَّهَ» و«إِلَٰهَ» في «اله» رغم إنهم كلمتين مختلفتين) والخنجرية بتتحسب ألف
+function _pkey(x){
+  return String(x).replace(/\u0670/g,'ا')
+    .replace(/[\u0640\u064B-\u065F\u06D6-\u06ED\u08F0-\u08F2]/g,'')
+    .replace(/[آأإٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+}
+function _rasmVoiceForms(w,nextW,skip){
   const out=[];
-  if(/\u0649\u0670[^\u0621-\u064A]*$/.test(w))
-    out.push(w.replace(/\u0649\u0670([^\u0621-\u064A]*)$/,'\u0627$1'));
+  // skip(alt): لو رجّعت true معناه الصيغة البديلة دي بتساوي كلمة تانية حقيقية في نفس الصفحة —
+  // فمانقبلهاش بديل (عشان ما نقبلش كلمة غلط مكان كلمة صح: كفر/كافر، قتل/قاتل)
+  const weak=alt=>{if(!(skip&&skip(alt)))out.push(alt);};
+  if(/ى\u0670[^ء-ي]*$/.test(w))
+    out.push(w.replace(/ى\u0670([^ء-ي]*)$/,'ا$1'));
   if(/[\u06DF\u06E0]/.test(w))
-    out.push(w.replace(/[\u0627\u0648\u064A\u0649][\u06DF\u06E0]/g,''));
-  if(/\u0646\u064E$/.test(w))
-    out.push(w+'\u0627');
-  if(/\u0647[\u0652\u06E1]$/.test(w))
-    out.push(w.replace(/\u0647[\u0652\u06E1]$/,''));
-  if(/^[وف][\u064B-\u065F]?\u0671(?!\u0644)/.test(w))
-    out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0671/,'$1'));
+    out.push(w.replace(/[اويى][\u06DF\u06E0]/g,''));
+  if(/ن\u064E$/.test(w))
+    out.push(w+'ا');
+  if(/ه[\u0652\u06E1]$/.test(w))
+    out.push(w.replace(/ه[\u0652\u06E1]$/,''));
+  if(/^[وف][\u064B-\u065F]?ٱ(?!ل)/.test(w))
+    out.push(w.replace(/^([وف])[\u064B-\u065F]?ٱ/,'$1'));
   // ياء المتكلم المحذوفة رسمًا بعد نون مثل «يَهۡدِيَنِ»: قد تُنطق فيسمعها التسجيل ياء زيادة
-  if(/\u0646\u0650$/.test(w))
-    out.push(w+'\u064A');
-  if(/\u0646[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
-    out.push(w+'\u0627');
+  if(/ن\u0650$/.test(w))
+    out.push(w+'ي');
+  if(/ن[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
+    out.push(w+'ا');
   // تنوين الفتح على الألف بيتسمع أحيانًا ألف مقصورة (نُّكۡرًا → نكرى)
-  if(/[\u064B\u08F0]\u0627$/.test(w))
-    out.push(w.replace(/[\u064B\u08F0]\u0627$/,'\u0649'));
-  // ألف خنجرية + مدة قبل همزة (أُو۟لَٰٓئِكَ، هَـٰٓؤُلَاءِ...): قاعدة تطبيع
+  if(/[\u064B\u08F0]ا$/.test(w))
+    out.push(w.replace(/[\u064B\u08F0]ا$/,'ى'));
+  // ...وأحيانًا تسقط ألف التنوين كليًّا وصلًا (إِلَٰهࣰا وَٰحِدࣰا → «إله واحدا»)
+  if(/[\u064B\u08F0]ا$/.test(w))
+    weak(w.replace(/ا$/,''));
+  // ألف خنجرية + [حركة] + مدة قبل همزة (أُو۟لَٰٓئِكَ، وَأُولَٰٓئِكَ، هَـٰٓؤُلَاءِ...): قاعدة تطبيع
   // (.)ٰ→ا العامة بتضيف ألف زيادة عن الرسم المعتاد اللي بيكتبها
-  // التعرف الصوتي (واولئك مش واولايك) — بنحذفها كبديل فقط قبل حرف همزة
-  if(/\u0670\u0653(?=[\u0621\u0623\u0624\u0626])/.test(w))
-    out.push(w.replace(/\u0670\u0653/g,''));
+  // التعرف الصوتي (واولئك مش واولايك) — بنحذفها كبديل فقط قبل حرف همزة.
+  // الحركة ممكن تيجي بين الخنجرية والمدة (لَٰٓ) أو قبلها، فبنسمح بأي حركة بينهم
+  if(/\u0670[\u064B-\u0652]*\u0653(?=[ءأؤإئ])/.test(w))
+    out.push(w.replace(/\u0670([\u064B-\u0652]*)\u0653/g,'$1'));
   // همزة القطع بعد واو/فاء الوصل (وَأَسۡمِعۡ) أحيانًا بيلخبطها التعرف
   // الصوتي فبيكتبها بألف عادية بس من غير همزة أصلًا (واسمع) — بنولّد
   // بديل بحذف الهمزة زي ما بيكتبها التعرف، مش بتحويلها لألف عادي
   // (عشان محرف الوصل التلقائي بيدمجها فيبقى الناتج مختلف عن اللي اتسمع)
-  if(/^[وف][\u064B-\u065F]?\u0623/.test(w))
-    out.push(w.replace(/^([وف])[\u064B-\u065F]?\u0623/,'$1'));
+  if(/^[وف][\u064B-\u065F]?أ/.test(w))
+    out.push(w.replace(/^([وف])[\u064B-\u065F]?أ/,'$1'));
+  // كرسي الهمزة بعد ألف المد وقبل ضمير متصل (شُهَدَآءَكُم، أَبۡنَآءَكُمۡ، نِسَآءَكُمۡ):
+  // المصحف بيكتب الهمزة على السطر (آء)، أما التعرف الصوتي بيكتبها بكرسي
+  // حسب الإعراب اللي هو مابيسمعوش (شهدائكم / أبنائكم / نسائكم / نساؤكم)
+  const _hz=/(ا\u0653|آ)([ءؤئ])(?=[\u064B-\u065F\u0670\u06E1\u08F0-\u08F2]*[ء-ي])/;
+  const _hm=_hz.exec(w);
+  if(_hm){
+    for(const seat of ['ئ','ؤ','ء']){
+      if(seat===_hm[2])continue;
+      out.push(w.replace(new RegExp(_hz.source,'g'),'ا'+seat));
+    }
+  }
+  // ألف المد المكتوبة خنجرية (خَلَٰقࣲ، كِتَٰب...): التعرف الصوتي أحيانًا بيسقط ألف المد
+  // ويكتبها بدونها (خلق). ىٰ (ياء بخنجرية) ليها قاعدتها المستقلة فوق، ومدّة الهمزة (ٰٓ) فوق برضه
+  for(let k=w.indexOf('\u0670');k>=0;k=w.indexOf('\u0670',k+1)){
+    let b=k-1;
+    while(b>=0&&/[ـ\u064B-\u065F\u06E1\u08F0-\u08F2]/.test(w.charAt(b)))b--;
+    if(b<0||/[ىي]/.test(w.charAt(b)))continue;
+    if(w.charAt(k+1)==='\u0653')continue;
+    weak(w.slice(0,k)+w.slice(k+1));
+  }
+  // حذف ياء المتكلم/حرف المد الياء وصلًا قبل همزة الوصل (عَهۡدِى ٱلظَّٰلِمِينَ → «عهد الظالمين»):
+  // الياء بتفضل مكتوبة في المصحف وبتسقط نطقًا لالتقاء الساكنين، فالتعرف الصوتي بيكتبها بدونها.
+  // الشرط: كسرة + ياء بلا حركة في آخر الكلمة، والكلمة اللي بعدها بهمزة وصل، وأصل الكلمة 3 حروف فأكتر
+  if(nextW&&nextW.charAt(0)==='ٱ'&&/\u0650ى$/.test(w)){
+    const base=w.replace(/[ـ\u064B-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F2]/g,'');
+    if(base.length-1>=3)out.push(w.replace(/ى$/,''));
+  }
   return out;
 }
-function _rasmMatch(refWord,refNorm,u){
+function _rasmMatch(refWord,refNorm,u,nextRef,skip){
   if(refNorm===u)return true;
-  const vs=_rasmVoiceForms(refWord);
+  const vs=_rasmVoiceForms(refWord,nextRef,skip);
   for(const v of vs)if(norm(v)===u)return true;
   return false;
 }
@@ -1554,14 +1620,19 @@ function snapWordsToRasm(words){
   if(!words||!words.length||!refWords||!refWords.length)return words;
   const n=refWords.length,m=words.length;
   const R=refWords.map(norm),U=words.map(norm);
+  // الصيغ البديلة بتتحسب مرة واحدة لكل كلمة مرجع (مش لكل زوج) — أسرع بكتير
+  const PK=new Set(refWords.map(_pkey));
+  const skip=alt=>PK.has(_pkey(alt));
+  const ALT=refWords.map((w,i)=>new Set(_rasmVoiceForms(w,refWords[i+1],skip).map(norm)));
+  const M=(i,j)=>R[i]===U[j]||ALT[i].has(U[j]);
   const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
   for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
-    dp[i][j]=_rasmMatch(refWords[i-1],R[i-1],U[j-1])?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+    dp[i][j]=M(i-1,j-1)?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
   }
   const out=words.slice();
   let i=n,j=m;
   while(i>0&&j>0){
-    if(_rasmMatch(refWords[i-1],R[i-1],U[j-1])){out[j-1]=refWords[i-1];i--;j--;}
+    if(M(i-1,j-1)){out[j-1]=refWords[i-1];i--;j--;}
     else if(dp[i][j-1]>=dp[i-1][j])j--;
     else i--;
   }
@@ -1572,21 +1643,23 @@ function snapWordsToRasm(words){
    بعد الكلمة اللي بتقفل الآية. مافيش أي أثر على savedWords ولا على
    المقارنة — دي عناصر عرض بحتة. */
 function _savedToRefIdx(){
-  const map=new Array(savedWords.length).fill(-1);
-  if(!refWords.length)return map;
-  let p=0;
-  // نطاق البحث للأمام كان 8 كلمات بس — لو التسجيل جاب سلسلة كلمات
-  // غلط أو غير مفهومة أطول من كده (زي محاولات إعادة التلاوة المتكررة)
-  // كانت p بتفضل واقفة، وأي تطابق صحيح بعد كده يضيع، فترقيم الآيات
-  // كله بيختفي من باقي النص. وسّعنا النطاق عشان يلحق الرجوع للمسار
-  // الصحيح، مع فرق منطقي واقعي (صفحات التسجيل قصيرة، أقل من 200 كلمة).
-  const LOOKAHEAD=30;
-  for(let i=0;i<savedWords.length;i++){
-    const u=norm(savedWords[i]);
-    if(!u)continue;
-    for(let k=p;k<refWords.length&&k<p+LOOKAHEAD;k++){
-      if(norm(refWords[k])===u){map[i]=k;p=k+1;break;}
-    }
+  const m=savedWords.length,n=refWords.length;
+  const map=new Array(m).fill(-1);
+  if(!n||!m)return map;
+  // محاذاة كلمات المستخدم على المرجع بـ LCS شاملة بدل المشي الأمامي الجشِع القديم:
+  // الجشِع كان أول كلمة مكررة (ٱللَّهُ، لَا يَعۡلَمُونَ...) أو غلطة تسمّع بتخلّي
+  // المؤشر يقفز لقدّام، فكل الكلمات اللي بعدها ما تلاقيش مكانها وأرقام
+  // الآيات كلها بتختفي من نص التسجيل. LCS بتدوّر على أحسن مطابقة للسلسلة كلها.
+  const R=refWords.map(norm),U=savedWords.map(norm);
+  const dp=Array.from({length:n+1},()=>new Int32Array(m+1));
+  for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
+    dp[i][j]=(U[j-1]&&R[i-1]===U[j-1])?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+  }
+  let i=n,j=m;
+  while(i>0&&j>0){
+    if(U[j-1]&&R[i-1]===U[j-1]){map[j-1]=i-1;i--;j--;}
+    else if(dp[i][j-1]>=dp[i-1][j])j--;
+    else i--;
   }
   return map;
 }
@@ -1598,6 +1671,37 @@ function _ayahEndMap(){
     if(nx-1>=0)m[nx-1]=ayahBounds[j].num;
   }
   return m;
+}
+// مواضع أرقام الآيات في نص التسجيل: {فهرس كلمة المستخدم: [أرقام]}.
+// الرقم بيتحط بعد آخر كلمة في الآية. لو آخر كلمة في الآية اتسمّعت غلط (فمالهاش
+// مطابقة) بنحط الرقم بعد آخر كلمة مطابقة + الكلمات الغلط اللي بعدها مباشرة
+// (اللي هي على الأرجح آخر الآية نفسها)، بشرط إن القارئ عدّى للآية اللي بعدها أو
+// كتب عدد كلمات يكفي لإنهاء الآية — عشان مانحطش رقم على آية لسه ما خلصتش.
+function _ayahMarkPositions(map){
+  const pos=Object.create(null);
+  const n=refWords.length,m=savedWords.length;
+  if(!ayahBounds.length||!n||!m)return pos;
+  for(let j=0;j<ayahBounds.length;j++){
+    const st=ayahBounds[j].start;
+    const en=((j+1<ayahBounds.length)?ayahBounds[j+1].start:n)-1;
+    let lastIn=-1,nextAfter=-1;
+    for(let k=0;k<m;k++){
+      if(map[k]>=st&&map[k]<=en)lastIn=k;
+      else if(map[k]>en&&nextAfter<0)nextAfter=k;
+    }
+    if(lastIn<0)continue;                       // مفيش كلمة من الآية دي اتطابقت
+    const miss=en-map[lastIn];                  // كلمات ناقصة في آخر الآية
+    let at=-1;
+    if(miss===0)at=lastIn;
+    else if(nextAfter>=0){
+      at=lastIn+Math.min(miss,nextAfter-lastIn-1);   // القارئ عدّى للآية اللي بعدها
+    }else{
+      const trailing=m-1-lastIn;                 // كلمات كُتبت بعد آخر مطابقة
+      if(trailing>=miss)at=lastIn+miss;         // حاول ينهي الآية (مع غلطات تسمّع)
+    }
+    if(at>=0)(pos[at]=pos[at]||[]).push(ayahBounds[j].num);
+  }
+  return pos;
 }
 function _ayahSepEl(num){
   const el=document.createElement('span');
@@ -1642,9 +1746,16 @@ function renderTranscript(){
     bar.appendChild(t);bar.appendChild(x);box.appendChild(bar);
   }
   const _g=muqGroupLen();
-  const _refMap=_savedToRefIdx(),_ayEnd=_ayahEndMap();
+  const _refMap=_savedToRefIdx(),_ayPos=_ayahMarkPositions(_refMap);
+  const _marks=(i)=>{
+    if(_refMap[i]>=0&&waqfMarks[_refMap[i]])box.appendChild(_waqfSepEl(waqfMarks[_refMap[i]]));
+    if(_ayPos[i])_ayPos[i].forEach(num=>box.appendChild(_ayahSepEl(num)));
+  };
   savedWords.forEach((w,i)=>{
-    if(_g&&i<_g&&i>0)return;              // اتعرضت مع الأولى
+    if(_g&&i<_g&&i>0){                    // اتعرضت مع الأولى — بس علامات الآخر تتحط بعد آخر حرف في المجموعة
+      if(i===_g-1)_marks(i);
+      return;
+    }
     const sp=document.createElement('span');sp.className='rec-word';
     sp.textContent=(_g&&i===0)?muqRun.raw:w;
     if(i===selWord){
@@ -1657,8 +1768,7 @@ function renderTranscript(){
     }
     sp.onclick=()=>{selWord=(selWord===i)?null:i;renderTranscript();updateBtns();};
     box.appendChild(sp);
-    if(_refMap[i]>=0&&waqfMarks[_refMap[i]])box.appendChild(_waqfSepEl(waqfMarks[_refMap[i]]));
-    if(_refMap[i]>=0&&_ayEnd[_refMap[i]]!==undefined)box.appendChild(_ayahSepEl(_ayEnd[_refMap[i]]));
+    if(!(_g&&i===0&&_g>1))_marks(i);      // المقطعة: العلامات بعد آخر حرف في المجموعة مش بعد الأول
   });
   if(currentText){
     const cur=document.createElement('span');
