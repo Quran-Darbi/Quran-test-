@@ -805,6 +805,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://quran-darbi.com/nuh_p570.html</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://quran-darbi.com/nuh_p571.html</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://quran-darbi.com/progress.html</loc>
     <lastmod>2026-09-20</lastmod>
     <changefreq>weekly</changefreq>
