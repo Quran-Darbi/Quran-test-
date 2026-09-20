@@ -9644,6 +9644,50 @@ def _aud_contains(hay_words, needle_words):
                for k in range(len(hay_words) - n + 1))
 
 
+# قواعد محرك التسجيل الصوتي اللي لازم تفضل موجودة في الملفين (recitation.html و voice-engine.js).
+# الفحص نصّي بس (بيدوّر على علامات ثابتة في الكود) ولا بيعدّل شيئًا: الغرض إنّك تعرف فورًا
+# لو حد رفع نسخة قديمة من أحد الملفين فضاعت القواعد — السكربت مابيرجّعهاش تلقائيًا.
+ENGINE_MARKERS = {
+    'voice-engine.js': [
+        ('function _pkey(',                        'مفتاح الرسم بلا دمج حروف (حماية القبول الغلط)'),
+        ('function _rasmVoiceForms(w,nextW,skip)', 'صيغ النطق المسموحة'),
+        ('function _splitMergedFromAns(',          'فصل الكلمات الملزوقة بالإدغام (عَن مِّلَّةِ)'),
+        ('function _unmaskFromAns(',               'فلتر الألفاظ (ز** ← زُبَرَ)'),
+        ('function _cleanSTT(',                    'تنظيف شوائب التعرف الصوتي'),
+        ("out.push('ماله')",                       'لَهُمۡ ← «ما له»'),
+        ("'يسومونكم'",                             'يَسُومُونَكُمۡ'),
+        ('function snapToRasm(',                   'محاذاة الكلمات على رسم المصحف'),
+    ],
+    'recitation.html': [
+        ('function _pkey(',                        'مفتاح الرسم بلا دمج حروف (حماية القبول الغلط)'),
+        ('function _rasmVoiceForms(w,nextW,skip)', 'صيغ النطق المسموحة'),
+        ('function splitMergedWords(',             'فصل الكلمات الملزوقة بالإدغام (عَن مِّلَّةِ)'),
+        ('function mergeMaLah(',                   'لَهُمۡ ← «ما له»'),
+        ('function unmaskWords(',                  'فلتر الألفاظ (ز** ← زُبَرَ)'),
+        ('function _cleanSTT(',                    'تنظيف شوائب التعرف الصوتي'),
+        ('function _ayahMarkPositions(',           'أرقام الآيات في نص التسجيل'),
+        ("'لشاي'",                                 'لِشَاىۡءٍ'),
+        ("'يسومونكم'",                             'يَسُومُونَكُمۡ'),
+    ],
+}
+
+
+def audit_engine_integrity(root):
+    """يرجّع قائمة (ملف, وصف القاعدة) للعلامات الناقصة. لا يعدّل شيئًا."""
+    missing = []
+    for fn, marks in ENGINE_MARKERS.items():
+        fp = os.path.join(root, fn)
+        if not os.path.isfile(fp):
+            missing.append((fn, 'الملف نفسه غير موجود'))
+            continue
+        with open(fp, encoding='utf-8') as f:
+            src = f.read()
+        for token, label in marks:
+            if token not in src:
+                missing.append((fn, label))
+    return missing
+
+
 def run_audit(root):
     """يفحص كل الملفات ويكتب audit_report.txt. لا يعدّل شيئًا."""
     skip = {'index.html', 'recitation.html', 'progress.html'}
@@ -9891,6 +9935,17 @@ def run_audit(root):
         add('   ✅ ملفات نظيفة تمامًا: %d' % len(clean))
         for f in clean:
             add('      · %s' % f)
+    add()
+
+    add('── سلامة قواعد التسجيل الصوتي (recitation.html + voice-engine.js) ──')
+    _eng = audit_engine_integrity(root)
+    if not _eng:
+        add('   ✅ كل القواعد الأساسية موجودة')
+    else:
+        problems += len(_eng)
+        add('   🔴 قواعد ناقصة — غالبًا اترفعت نسخة قديمة من الملف:')
+        for _fn, _lb in _eng:
+            add('      · %-16s %s' % (_fn, _lb))
     add()
 
     add('=' * 66)
