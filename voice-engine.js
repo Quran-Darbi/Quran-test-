@@ -191,13 +191,29 @@ function _rasmMaps(ans){
 function snapToRasm(words,ans){
   if(!words||!words.length||!ans)return words;
   const m=_rasmMaps(ans);
-  return words.map(function(w){
+  const out=words.map(function(w){
     const e=normalize(w);
     if(!e)return w;
     if(e in m.E)return m.E[e];
     if(e in m.L)return m.L[e];
     return w;
   });
+  // كلمات المفتاح المشترك (مِن/مَن/مِنۡ → «من»، ٱللَّهُ/ٱللَّهِ → «الله»): المفتاح الملتبس بيتشال من
+  // الخريطة فالكلمة كانت بتفضل كما نطقها التسجيل. بنحاذيها بالترتيب مع كلمات الإجابة (LCS) فتظهر برسم المصحف
+  const aw=String(ans).trim().split(/\s+/).filter(function(x){return normalize(x)!=='';});
+  const A=aw.map(normalize),U=words.map(normalize);
+  const n=A.length,k=words.length;
+  if(!n||n*k>40000)return out;
+  const dp=[];for(let i=0;i<=n;i++)dp.push(new Int32Array(k+1));
+  for(let i=1;i<=n;i++)for(let j=1;j<=k;j++)
+    dp[i][j]=(U[j-1]&&A[i-1]===U[j-1])?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+  let i=n,j=k;
+  while(i>0&&j>0){
+    if(U[j-1]&&A[i-1]===U[j-1]){out[j-1]=aw[i-1];i--;j--;}
+    else if(dp[i][j-1]>=dp[i-1][j])j--;
+    else i--;
+  }
+  return out;
 }
 
 function _numWordValue(w){const n=normalize(w);return NUM_WORDS.hasOwnProperty(n)?NUM_WORDS[n]:null;}
@@ -248,7 +264,39 @@ function _splitMergedFromAns(word,ansWords){
   return null;
 }
 
+// تنظيف كلمات التعرف الصوتي من الشوائب (أحرف الاتجاه/العرض الصفري، الترقيم، أشكال العرض، الياء/الكاف الفارسيتين).
+// النجمة (*) بتفضل عشان فلتر الألفاظ (انظر _unmaskFromAns)
+function _cleanSTT(words){
+  const out=[];
+  for(const w of words){
+    let x=String(w);
+    try{x=x.normalize('NFKC');}catch(e){}
+    x=x.replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g,'')
+       .replace(/[،؛؟,;:!?.…"'“”‘’«»()\[\]{}<>\-–—_]/g,'')
+       .replace(/ک/g,'ك').replace(/ی/g,'ى').replace(/ھ/g,'ه');
+    if(x)out.push(x);
+  }
+  return out;
+}
+// فلتر الألفاظ: «زُبَرَ» بيكتبها التعرف الصوتي «ز**» (أول حرف + نجوم بعدد الحروف الباقية).
+// بنرجّعها لكلمة الإجابة اللي بتطابق الحروف الظاهرة وعدد الحروف الكلي (الأقرب لموضعها لو تعدّدت)
+function _unmaskFromAns(w,ansWords,pos){
+  if(String(w).indexOf('*')<0||!ansWords.length)return null;
+  const t=_pkey(String(w).replace(/\*/g,'\u0001')).replace(/\u0001/g,'*');
+  if(!t||t.charAt(0)==='*')return null;
+  const re=new RegExp('^'+t.replace(/[.+?^${}()|[\]\\]/g,'\\$&').replace(/\*/g,'.')+'$');
+  const idxs=[];
+  for(let i=0;i<ansWords.length;i++)if(re.test(_pkey(ansWords[i])))idxs.push(i);
+  if(!idxs.length)return null;
+  const distinct=new Set(idxs.map(i=>_pkey(ansWords[i])));
+  if(distinct.size===1)return ansWords[idxs[0]];
+  let best=idxs[0];
+  for(const i of idxs)if(Math.abs(i-pos)<Math.abs(best-pos))best=i;
+  return Math.abs(best-pos)<=6?ansWords[best]:null;
+}
+
 function _fixWordsCore(words, answer){
+  words = _cleanSTT(words);
   words = collapseMuqattaat(words, answer || '');
   const _ansWords = answer ? answer.trim().split(/\s+/) : [];
   const out = [];
@@ -261,6 +309,10 @@ function _fixWordsCore(words, answer){
     }
     if(i<words.length-1 && normalize(words[i])==='ولا' && normalize(words[i+1])==='تجدنهم'){
       out.push('ولتجدنهم'); i++; continue;
+    }
+    if(_ansWords.length&&words[i].indexOf('*')>=0){
+      const _um=_unmaskFromAns(words[i],_ansWords,out.length);
+      if(_um){ out.push(_um); continue; }
     }
     if(words[i]==='ممنع'){ out.push('ممن','منع'); continue; }
     if(words[i]==='بلا'){ out.push('بلى'); continue; }

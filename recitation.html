@@ -1417,8 +1417,47 @@ function expandDigits(words){
   }
   return out;
 }
+// تنظيف كلمات التعرف الصوتي من الشوائب اللي مالهاش علاقة بالنطق: أحرف الاتجاه/العرض الصفري،
+// علامات الترقيم (لو المتصفح أضافها)، أشكال العرض (ﻻ ← لا)، والياء/الكاف الفارسيتين.
+// النجمة (*) بتفضل عشان فلتر الألفاظ (انظر unmaskWords).
+function _cleanSTT(words){
+  const out=[];
+  for(const w of words){
+    let x=String(w);
+    try{x=x.normalize('NFKC');}catch(e){}
+    x=x.replace(/[\u200B-\u200F\u202A-\u202E\u2066-\u2069\uFEFF]/g,'')
+       .replace(/[،؛؟,;:!?.…"'“”‘’«»()\[\]{}<>\-–—_]/g,'')
+       .replace(/ک/g,'ك').replace(/ی/g,'ى').replace(/ھ/g,'ه');
+    if(x)out.push(x);
+  }
+  return out;
+}
+// فلتر الألفاظ في التعرف الصوتي: كلمة زي «زُبَرَ» بيكتبها «ز**» (أول حرف + نجوم بعدد الحروف الباقية).
+// بنرجّعها لكلمة المرجع الوحيدة اللي بتطابق الحروف الظاهرة وعدد الحروف الكلي؛ ولو أكتر من كلمة
+// مختلفة بتطابق، بناخد الأقرب لموضع الكلمة، ولو بعيدة مانلمسهاش.
+function unmaskWords(words){
+  if(!words||!words.length||!refWords.length)return words;
+  if(!words.some(w=>w.indexOf('*')>=0))return words;
+  const PK=refWords.map(_pkey);
+  return words.map((w,pos)=>{
+    if(w.indexOf('*')<0)return w;
+    const t=_pkey(w.replace(/\*/g,'\u0001')).replace(/\u0001/g,'*');
+    if(!/^[^*]+[^]*$/.test(t)||t.charAt(0)==='*')return w;      // لازم أول حرف ظاهر
+    const re=new RegExp('^'+t.replace(/[.+?^${}()|[\]\\]/g,'\\$&').replace(/\*/g,'.')+'$');
+    const idxs=[];
+    for(let i=0;i<PK.length;i++)if(re.test(PK[i]))idxs.push(i);
+    if(!idxs.length)return w;
+    const distinct=new Set(idxs.map(i=>PK[i]));
+    if(distinct.size===1)return refWords[idxs[0]];
+    let best=idxs[0];
+    for(const i of idxs)if(Math.abs(i-pos)<Math.abs(best-pos))best=i;
+    return Math.abs(best-pos)<=15?refWords[best]:w;
+  });
+}
 function addWords(newW){
   if(!newW||!newW.length)return;
+  newW=_cleanSTT(newW);
+  if(!newW.length)return;
   if(selWord!==null&&selWord<savedWords.length){
     const _g=(selWord===0)?muqGroupLen():0;   // المقطعة تُستبدل كوحدة
     savedWords.splice(selWord,_g||1);
@@ -1428,6 +1467,7 @@ function addWords(newW){
     savedWords=savedWords.concat(newW);
   }
   savedWords=expandDigits(savedWords);
+  savedWords=unmaskWords(savedWords);
   savedWords=splitMergedWords(savedWords);
   savedWords=mergeYaAyyuha(savedWords);
   savedWords=mergeSplitLam(savedWords);
@@ -1815,6 +1855,22 @@ function updateBtns(){
   document.getElementById('clearBtn').className='clear-btn'+(hasWords?' visible':'');
 }
 
+// وضع التشخيص: افتح الصفحة بإضافة ?debug=1 للرابط فيظهر تحت النص المسجَّل ما أرجعه المتصفح حرفيًّا
+// (قبل أي معالجة) — مفيد لمعرفة كيف يكتب التعرف الصوتي كلمة معيّنة. لا يظهر شيء بدونه.
+function _dbgRaw(tr,fin){
+  try{
+    if(!/[?&]debug=1/.test(location.search))return;
+    let el=document.getElementById('dbgBox');
+    if(!el){
+      el=document.createElement('pre');el.id='dbgBox';
+      el.style.cssText='direction:rtl;text-align:right;white-space:pre-wrap;font-size:13px;background:var(--surface2,#eee);border:1px dashed var(--border,#999);border-radius:8px;padding:8px;margin-top:8px;';
+      const tb=document.getElementById('transcriptBox');
+      tb.parentNode.insertBefore(el,tb.nextSibling);
+    }
+    const esc=String(tr).replace(/[^\u0621-\u064A\u0671 0-9]/g,c=>'\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4));
+    el.textContent+=(fin?'● ':'○ ')+tr+'\n   '+esc+'\n';
+  }catch(_){}
+}
 function makeRec(){
   const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;let doneUpTo=0;
   r.onstart=()=>{recognizing=true;currentText='';setBtn('rec');renderTranscript();};
@@ -1822,6 +1878,7 @@ function makeRec(){
     let interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
       const tr=e.results[i][0].transcript;
+      _dbgRaw(tr,e.results[i].isFinal);
       if(e.results[i].isFinal){
         if(i>=doneUpTo){
           doneUpTo=i+1;
