@@ -148,7 +148,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
          inputmode="search" autocomplete="off" enterkeyhint="search"
          aria-label="ابحث باسم السورة أو رقم الصفحة"
          placeholder="🔍 ابحث باسم السورة أو رقم الصفحة"
-         oninput="filterSurahOptions()">
+         oninput="onSurahSearchInput()" onkeydown="onSurahSearchKey(event)">
   <div class="surah-search-empty" id="surahSearchEmpty">لا توجد نتائج مطابقة</div>
   <select class="surah-select" id="surahSelect" onchange="onSelectSurah()">
     <option value="">— اختر —</option>
@@ -1251,6 +1251,60 @@ function _surahOptHTML(o){
   return '<option value="'+_surahEsc(o.value)+'">'+_surahEsc(o.text)+'</option>';
 }
 
+// هل الخيار o (من المجموعة g) يطابق نص البحث q؟
+function _surahMatch(g,o,q,digits){
+  if(!q)return true;
+  if(digits){
+    return !!o.page&&o.page.indexOf(q)===0;        // رقم = رقم الصفحة فقط
+  }
+  const gl=_surahSearchNorm(g.label);
+  const name=(typeof SURAH_NAMES!=='undefined'&&SURAH_NAMES[o.value])||'';
+  return (gl+' '+_surahSearchNorm(o.text)+' '+_surahSearchNorm(name)
+          +' '+o.value.toLowerCase()).indexOf(q)>=0;
+}
+
+// ينتقل تلقائيًا إلى أول نتيجة مطابقة (رقم الصفحة الدقيق له الأولوية)
+let _surahPickTimer=null;
+function pickSurahFromSearch(){
+  const sel=document.getElementById('surahSelect');
+  const box=document.getElementById('surahSearch');
+  if(!sel||!box)return;
+  if(!_surahGroups)_surahGroups=_surahSnapshot();
+  if(!_surahGroups)return;
+  const q=_surahSearchNorm(box.value);
+  if(!q)return;
+  const digits=/^[0-9]+$/.test(q);
+  let exact=null,first=null;
+  _surahGroups.forEach(g=>{
+    if(g.label===null)return;
+    g.options.forEach(o=>{
+      if(!_surahMatch(g,o,q,digits))return;
+      if(!first)first=o;
+      if(digits&&!exact&&o.page===q)exact=o;
+    });
+  });
+  const pick=exact||first;
+  if(!pick)return;
+  filterSurahOptions();                       // يحدّث القائمة أولًا
+  if(sel.value!==pick.value){
+    sel.value=pick.value;
+    onSelectSurah();
+  }
+}
+function onSurahSearchInput(){
+  filterSurahOptions();
+  clearTimeout(_surahPickTimer);
+  _surahPickTimer=setTimeout(pickSurahFromSearch,450);   // ننتظر انتهاء الكتابة
+}
+function onSurahSearchKey(ev){
+  if(ev.key==='Enter'){
+    ev.preventDefault();
+    clearTimeout(_surahPickTimer);
+    pickSurahFromSearch();
+    ev.target.blur();                         // إغلاق لوحة المفاتيح
+  }
+}
+
 function filterSurahOptions(){
   const sel=document.getElementById('surahSelect');
   const box=document.getElementById('surahSearch');
@@ -1266,14 +1320,7 @@ function filterSurahOptions(){
 
   _surahGroups.forEach(g=>{
     if(g.label===null){html+=_surahOptHTML(g.options[0]);return;}
-    const gl=_surahSearchNorm(g.label);
-    const hits=g.options.filter(o=>{
-      if(!q)return true;
-      if(digits)return o.page.indexOf(q)===0;      // رقم = رقم الصفحة بس
-      const name=(typeof SURAH_NAMES!=='undefined'&&SURAH_NAMES[o.value])||'';
-      return (gl+' '+_surahSearchNorm(o.text)+' '+_surahSearchNorm(name)
-              +' '+o.value.toLowerCase()).indexOf(q)>=0;
-    });
+    const hits=g.options.filter(o=>_surahMatch(g,o,q,digits));
     if(q)real+=hits.length;
     let show=hits;
     if(q&&keep&&!hits.some(o=>o.value===keep)){
