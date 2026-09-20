@@ -1,6 +1,6 @@
 ==================================================================
   تقرير فحص موقع دربي لحفظ القرآن
-  2026-09-20 20:09
+  2026-09-20 20:19
   عدد ملفات الاختبار المفحوصة: 155
 ==================================================================
 
@@ -16,13 +16,10 @@
    ⚠️  almaarij_p568.html
    ⚠️  almaarij_p569.html
    ⚠️  almaarij_p570.html
-   ⚠️  almudaththir_p576.html
-   ⚠️  almudaththir_p577.html
-   ⚠️  almuzzammil_p574.html
-   ⚠️  almuzzammil_p575.html
    ⚠️  alqalam_p564.html
    ⚠️  alqalam_p565.html
    ⚠️  alqalam_p566.html
+   ⚠️  alqiyama_p577.html
    ⚠️  nuh_p570.html
    ⚠️  nuh_p571.html
 
@@ -191,10 +188,6 @@
    ❌ almaarij_p568.html → almaarij_p568
    ❌ almaarij_p569.html → almaarij_p569
    ❌ almaarij_p570.html → almaarij_p570
-   ❌ almudaththir_p576.html → almudaththir_p576
-   ❌ almudaththir_p577.html → almudaththir_p577
-   ❌ almuzzammil_p574.html → almuzzammil_p574
-   ❌ almuzzammil_p575.html → almuzzammil_p575
    ❌ alqalam_p564.html → alqalam_p564
    ❌ alqalam_p565.html → alqalam_p565
    ❌ alqalam_p566.html → alqalam_p566
@@ -379,5 +372,5 @@
    ✅ كل القواعد الأساسية موجودة
 
 ==================================================================
-  إجمالي البنود المرصودة: 1436
+  إجمالي البنود المرصودة: 1429
 ==================================================================
