@@ -218,9 +218,9 @@ document.addEventListener('DOMContentLoaded',function(){
       <a href="recitation.html" class="hero-rec-btn">🎤 اختبر حفظك</a>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><b>155</b><small>اختباراً متاحاً</small></div>
+      <div class="hstat"><b>141</b><small>اختباراً متاحاً</small></div>
       <div class="hstat"><b>4</b><small>أجزاء</small></div>
-      <div class="hstat"><b>108</b><small>سورة</small></div>
+      <div class="hstat"><b>94</b><small>سورة</small></div>
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
       <div style="background:rgba(255,255,255,0.2);border-radius:8px;height:8px;overflow:hidden;max-width:300px;margin:0 auto 6px;">
@@ -403,6 +403,38 @@ document.addEventListener('DOMContentLoaded',function(){
 
 
 <!-- المزمل -->
+<!-- المعارج -->
+<div class="acc" id="acc-almaarij">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    <div class="acc-left">
+      <div class="juz-badge">الجزء 29</div>
+      <div class="juz-title notranslate" translate="no">سورة المعارج</div>
+    </div>
+    <div class="acc-right">
+      <div class="juz-prog" id="almaarij-prog">3 متاح</div>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </button>
+  <div class="acc-body">
+    <div class="cards-grid" id="almaarij-grid"></div>
+  </div>
+</div>
+<!-- الجن -->
+<div class="acc" id="acc-aljinn">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    <div class="acc-left">
+      <div class="juz-badge">الجزء 29</div>
+      <div class="juz-title notranslate" translate="no">سورة الجن</div>
+    </div>
+    <div class="acc-right">
+      <div class="juz-prog" id="aljinn-prog">2 متاح</div>
+      <span class="acc-arrow">▾</span>
+    </div>
+  </button>
+  <div class="acc-body">
+    <div class="cards-grid" id="aljinn-grid"></div>
+  </div>
+</div>
 <div class="acc" id="acc-almuzzammil">
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
@@ -602,6 +634,12 @@ const almulkPages=[
   ['almulk_p564.html','ص 564','27–30'],
 ];
 
+const almaarijPages=[
+  ['almaarij_p568.html','ص 568','1–10'],['almaarij_p569.html','ص 569','11–39'],['almaarij_p570.html','ص 570','40–44'],
+];
+const aljinnPages=[
+  ['aljinn_p572.html','ص 572','1–13'],['aljinn_p573.html','ص 573','14–28'],
+];
 const almuzzammilPages=[
   ['almuzzammil_p574.html','ص 574','1–19'],['almuzzammil_p575.html','ص 575','20 + المدثر 1–17'],
 ];
@@ -698,6 +736,10 @@ document.getElementById('alwaqiah-grid').innerHTML =
 document.getElementById('almulk-grid').innerHTML =
   almulkPages.map(p=>card(p[0],p[1],p[2],true,'الملك')).join('');
 
+document.getElementById('almaarij-grid').innerHTML =
+  almaarijPages.map(p=>card(p[0],p[1],p[2],true,'المعارج')).join('');
+document.getElementById('aljinn-grid').innerHTML =
+  aljinnPages.map(p=>card(p[0],p[1],p[2],true,'الجن')).join('');
 document.getElementById('almuzzammil-grid').innerHTML =
   almuzzammilPages.map(p=>card(p[0],p[1],p[2],true,'المزمل')).join('');
 
@@ -734,7 +776,9 @@ function renderDarbiProgress(){
   arrahmanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الرحمن '+p[1];});
   alwaqiahPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الواقعة '+p[1];});
   almulkPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الملك '+p[1];});
-  almuzzammilPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المزمل '+p[1];});
+  almaarijPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المعارج '+p[1];});
+  aljinnPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الجن '+p[1];});
+  almuzzammilPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المزمل '+p[1];})
   almudaththirPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المدثر '+p[1];});
   alqiyamaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القيامة '+p[1];});
   alinsanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الإنسان '+p[1];});
@@ -757,6 +801,10 @@ function renderDarbiProgress(){
   alwaqiahPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))alwaqiahDone++;});
   let almulkDone=0;
   almulkPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))almulkDone++;});
+  let almaarijDone=0;
+  almaarijPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))almaarijDone++;});
+  let aljinnDone=0;
+  aljinnPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))aljinnDone++;});
   let almuzzammilDone=0;
   almuzzammilPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))almuzzammilDone++;});
   let almudaththirDone=0;
@@ -786,6 +834,11 @@ function renderDarbiProgress(){
   if(wp)wp.textContent=alwaqiahDone+' / '+alwaqiahPages.length+' مكتمل'+(alwaqiahDone===alwaqiahPages.length?' ✓':'');
   const mp=document.getElementById('almulk-prog');
   if(mp)mp.textContent=almulkDone+' / '+almulkPages.length+' مكتمل'+(almulkDone===almulkPages.length?' ✓':'');
+  const ap=document.getElementById('almaarij-prog');
+  if(ap)ap.textContent=almaarijDone+' / '+almaarijPages.length+' مكتمل'+(almaarijDone===almaarijPages.length?' ✓':'');
+  const jp=document.getElementById('aljinn-prog');
+  if(jp)jp.textContent=aljinnDone+' / '+aljinnPages.length+' مكتمل'+(aljinnDone===aljinnPages.length?' ✓':'');
+
   const mzp=document.getElementById('almuzzammil-prog');
   if(mzp)mzp.textContent=almuzzammilDone+' / '+almuzzammilPages.length+' مكتمل'+(almuzzammilDone===almuzzammilPages.length?' ✓':'');
   const mdp=document.getElementById('almudaththir-prog');
