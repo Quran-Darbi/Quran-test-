@@ -276,6 +276,46 @@ const almulkPages=[
   ['almulk_p562.html','ص 562','1–12'],['almulk_p563.html','ص 563','13–26'],
   ['almulk_p564.html','ص 564','27–30'],
 ];
+const tahaPages=[
+  ['taha_p312.html','ص 312','1–12'],['taha_p313.html','ص 313','13–37'],
+  ['taha_p314.html','ص 314','38–51'],['taha_p315.html','ص 315','52–64'],
+  ['taha_p316.html','ص 316','65–76'],['taha_p317.html','ص 317','77–87'],
+  ['taha_p318.html','ص 318','88–98'],['taha_p319.html','ص 319','99–113'],
+  ['taha_p320.html','ص 320','114–125'],['taha_p321.html','ص 321','126–135'],
+];
+const alqalamPages=[
+  ['alqalam_p564.html','ص 564','1–15'],
+  ['alqalam_p565.html','ص 565','16–42'],
+  ['alqalam_p566.html','ص 566','43–52'],
+];
+const alhaqqaPages=[
+  ['alhaqqa_p566.html','ص 566','1–8'],
+  ['alhaqqa_p567.html','ص 567','9–34'],
+  ['alhaqqa_p568.html','ص 568','35–52'],
+];
+const almaarijPages=[
+  ['almaarij_p568.html','ص 568','1–10'],['almaarij_p569.html','ص 569','11–39'],['almaarij_p570.html','ص 570','40–44'],
+];
+const nuhPages=[
+  ['nuh_p570.html','ص 570','1–10'],
+  ['nuh_p571.html','ص 571','11–28'],
+];
+const aljinnPages=[
+  ['aljinn_p572.html','ص 572','1–13'],['aljinn_p573.html','ص 573','14–28'],
+];
+const almuzzammilPages=[
+  ['almuzzammil_p574.html','ص 574','1–19'],['almuzzammil_p575.html','ص 575','20 + المدثر 1–17'],
+];
+const almudaththirPages=[
+  ['almuzzammil_p575.html','ص 575','1–17 (مع المزمل)'],['almudaththir_p576.html','ص 576','18–47'],['almudaththir_p577.html','ص 577','48–56 + القيامة 1–19'],
+];
+const alqiyamaPages=[
+  ['almudaththir_p577.html','ص 577','1–19 (مع المدثر)'],['alqiyama_p578.html','ص 578','20–40'],
+];
+const alinsanPages=[
+  ['alinsan_p578.html','ص 578','1–5'],['alinsan_p579.html','ص 579','6–25'],
+  ['alinsan_p580.html','ص 580','26–31'],
+];
 const ammaData=[
   ['annaba.html','النبأ'],['annaziat.html','النازعات'],
   ['abasa.html','عبس'],['attakwir.html','التكوير'],
@@ -303,10 +343,20 @@ const GROUPS=[
   {label:'سورة البقرة',pages:baqaraPages.map(p=>[p[0].replace('.html',''),'البقرة '+p[1]])},
   {label:'سورة الكهف',pages:kahfPages.map(p=>[p[0].replace('.html',''),'الكهف '+p[1]])},
   {label:'سورة مريم',pages:maryamPages.map(p=>[p[0].replace('.html',''),'مريم '+p[1]])},
+  {label:'سورة طه',pages:tahaPages.map(p=>[p[0].replace('.html',''),'طه '+p[1]])},
   {label:'سورة يس',pages:yaseenPages.map(p=>[p[0].replace('.html',''),'يس '+p[1]])},
   {label:'سورة الرحمن',pages:arrahmanPages.map(p=>[p[0].replace('.html',''),'الرحمن '+p[1]])},
   {label:'سورة الواقعة',pages:alwaqiahPages.map(p=>[p[0].replace('.html',''),'الواقعة '+p[1]])},
   {label:'سورة الملك',pages:almulkPages.map(p=>[p[0].replace('.html',''),'الملك '+p[1]])},
+  {label:'سورة القلم',pages:alqalamPages.map(p=>[p[0].replace('.html',''),'القلم '+p[1]])},
+  {label:'سورة الحاقة',pages:alhaqqaPages.map(p=>[p[0].replace('.html',''),'الحاقة '+p[1]])},
+  {label:'سورة المعارج',pages:almaarijPages.map(p=>[p[0].replace('.html',''),'المعارج '+p[1]])},
+  {label:'سورة نوح',pages:nuhPages.map(p=>[p[0].replace('.html',''),'نوح '+p[1]])},
+  {label:'سورة الجن',pages:aljinnPages.map(p=>[p[0].replace('.html',''),'الجن '+p[1]])},
+  {label:'سورة المزمل',pages:almuzzammilPages.map(p=>[p[0].replace('.html',''),'المزمل '+p[1]])},
+  {label:'سورة المدثر',pages:almudaththirPages.map(p=>[p[0].replace('.html',''),'المدثر '+p[1]])},
+  {label:'سورة القيامة',pages:alqiyamaPages.map(p=>[p[0].replace('.html',''),'القيامة '+p[1]])},
+  {label:'سورة الإنسان',pages:alinsanPages.map(p=>[p[0].replace('.html',''),'الإنسان '+p[1]])},
   {label:'جزء عمّ',pages:ammaData.map(p=>[p[0].replace('.html',''),p[1]])},
 ];
 const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
