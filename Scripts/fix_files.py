@@ -8876,6 +8876,25 @@ def fix_file(path):
         out = re.sub(r'function retryQuiz\(\)\{', 'function retryQuiz(){_resetBadges();', out, count=1)
         if 'function returnToLevels(){' in out:
             out = re.sub(r'function returnToLevels\(\)\{', 'function returnToLevels(){_resetBadges();', out, count=1)
+    # ===== إصلاح بقايا updateBadges القديمة (خطأ regex سبتمبر ٢٠٢٦) =====
+    # النمط الأول: بقايا في سطر واحد (الأغلبية)
+    _ORPH1 = (
+        " /<br>${toArabicNum(questions.length)}`;"
+        "document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;"
+        "document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;"
+        "}"
+    )
+    # النمط الثاني: بقايا في أسطر متعددة
+    _ORPH2 = (
+        " /<br>${toArabicNum(questions.length)}`;\n"
+        "  document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;\n"
+        "  document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;\n"
+        "}"
+    )
+    if '}' + _ORPH1 in out:
+        out = out.replace('}' + _ORPH1, '}')
+    if '}' + _ORPH2 in out:
+        out = out.replace('}' + _ORPH2, '}')
     # ===== نهاية تحسينات UI v2 =====
 
     if out != src:
