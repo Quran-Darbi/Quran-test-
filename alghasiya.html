@@ -87,6 +87,15 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .q-dot.wrong{background:var(--wrong-border);}
 .progress-bar-wrap{background:var(--surface-hover);border-radius:8px;height:8px;margin-bottom:18px;overflow:hidden;}
 .progress-bar-fill{height:100%;background:var(--accent);border-radius:8px;transition:width .3s;}
+/* ===== شارات الإحصاء بألوان ===== */
+.stat-badge.badge-wrong{background:var(--wrong-bg);color:var(--wrong-text);border:1.5px solid var(--wrong-border);}
+.stat-badge.badge-correct{background:var(--correct-bg);color:var(--correct-text);}
+.stat-badge.badge-neutral{background:var(--surface2);color:var(--text);border:1.5px solid var(--border);}
+/* ===== نجوم النتيجة ===== */
+.result-stars{font-size:30px;margin-bottom:4px;letter-spacing:6px;color:var(--gold);}
+/* ===== زر الصفحة التالية البارز في النتيجة ===== */
+#result-page-nav .next-page-btn{background:var(--accent)!important;color:#fff!important;border:none!important;border-radius:14px!important;padding:14px!important;font-size:16px!important;font-weight:700;transition:background .2s;}
+#result-page-nav .next-page-btn:hover{background:var(--accent-dark)!important;}
 .result-area{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:30px 20px;text-align:center;display:none;}
 .result-icon{font-size:52px;margin-bottom:12px;}
 .result-title{font-size:24px;font-weight:700;color:var(--text);margin-bottom:8px;}
@@ -145,9 +154,9 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div class="ayat-range">الآيات 1 إلى 26</div>
   <div class="page-info">اختبار الحفظ | جزء عمّ</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
-    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
+    <div class="stat-badge badge-neutral" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
+    <div class="stat-badge badge-neutral" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge badge-neutral" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 
@@ -354,7 +363,15 @@ function wordDiff(userVal,correctAnswer,q){
 }
 
 function toArabicNum(n){return n;}
-function updateBadges(){document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
+function updateBadges(){
+  document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;
+  const wb=document.getElementById('wrong-badge');
+  wb.innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;
+  wb.className='stat-badge '+(wrongCount>0?'badge-wrong':'badge-neutral');
+  const cb=document.getElementById('correct-badge');
+  cb.innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;
+  cb.className='stat-badge '+(correctCount>0?'badge-correct':'badge-neutral');
+} /<br>${toArabicNum(questions.length)}`;document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;}
 function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(AYAT.length);return;}
   currentLevel=lvl;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));
@@ -629,14 +646,15 @@ function showResult(){
   document.getElementById('result-area').style.display='block';
   const pct=wTotal?Math.round(wCorrect*100/wTotal):0;
   document.getElementById('result-score').textContent=`${toArabicNum(wCorrect)} / ${toArabicNum(wTotal)} كلمة — ${toArabicNum(pct)}%  |  ${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} سؤال`;
-  let icon,title,msg;
-  if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت السورة بالكامل';}
-  else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';}
-  else if(pct>=60){icon='📖';title='جيد';msg='راجع السورة مرة أخرى وأعد الاختبار';}
-  else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';}
+  let icon,title,msg,stars;
+  if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت السورة بالكامل';stars='★★★';}
+  else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';stars='★★☆';}
+  else if(pct>=60){icon='📖';title='جيد';msg='راجع السورة مرة أخرى وأعد الاختبار';stars='★☆☆';}
+  else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';stars='☆☆☆';}
   document.getElementById('result-icon').textContent=icon;
   document.getElementById('result-title').textContent=title;
   document.getElementById('result-msg').textContent=msg;
+  const stEl=document.getElementById('result-stars');if(stEl)stEl.textContent=stars;
   document.getElementById('progress-fill').style.width='100%';
   updateBadges();
   try{localStorage.removeItem(RESUME_KEY);}catch(e){}
@@ -644,8 +662,9 @@ function showResult(){
   if(pct===100)spawnConfetti();
 }
 
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
-function retryQuiz(){
+function returnToLevels(){_resetBadges();document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='0 ✗<br>خطأ';document.getElementById('correct-badge').innerHTML='0 ✓<br>صحيح';document.getElementById('qnum-badge').innerHTML='السؤال 1 /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function _resetBadges(){const wb=document.getElementById('wrong-badge');const cb=document.getElementById('correct-badge');const qb=document.getElementById('qnum-badge');if(wb){wb.className='stat-badge badge-neutral';}if(cb){cb.className='stat-badge badge-neutral';}if(qb){qb.className='stat-badge badge-neutral';}}
+function retryQuiz(){_resetBadges();
   document.getElementById('result-area').style.display='none';
   document.getElementById('level-card').style.display='block';
   currentLevel=null;
