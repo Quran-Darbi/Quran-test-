@@ -106,6 +106,15 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
 .rec-transcript[contenteditable]:focus{border-color:var(--accent);}
 .level-return-btn{display:block;width:100%;margin-top:14px;padding:11px;background:var(--surface2);color:var(--text-soft);border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;}
 .level-return-btn:hover{background:var(--surface-hover);border-color:var(--accent);color:var(--accent);}
+/* ===== شارات الإحصاء بألوان ===== */
+.stat-badge.badge-wrong{background:var(--wrong-bg);color:var(--wrong-text);border:1.5px solid var(--wrong-border);}
+.stat-badge.badge-correct{background:var(--correct-bg);color:var(--correct-text);}
+.stat-badge.badge-neutral{background:var(--surface2);color:var(--text);border:1.5px solid var(--border);}
+/* ===== نجوم النتيجة ===== */
+.result-stars{font-size:30px;margin-bottom:4px;letter-spacing:6px;color:var(--gold);}
+/* ===== زر الصفحة التالية البارز في النتيجة ===== */
+#result-page-nav .next-page-btn{background:var(--accent)!important;color:#fff!important;border:none!important;border-radius:14px!important;padding:14px!important;font-size:16px!important;font-weight:700;transition:background .2s;}
+#result-page-nav .next-page-btn:hover{background:var(--accent-dark)!important;}
 .order-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:18px;font-family:inherit;color:var(--text);cursor:pointer;text-align:right;transition:all .15s;line-height:1.9;width:100%;}.order-item:hover{background:var(--surface-hover);border-color:var(--accent);}.order-filled-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;}.order-slot{display:flex;gap:8px;align-items:center;border-radius:12px;padding:12px 14px;font-size:16px;line-height:1.7;cursor:pointer;}.order-slot.filled{background:var(--surface3);border:2px solid var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.07);}.order-slot.correct-slot{background:var(--correct-bg) !important;border-color:var(--accent) !important;color:var(--correct-text) !important;}.order-slot.wrong-slot{background:var(--wrong-bg) !important;border-color:var(--wrong-border) !important;color:var(--wrong-text) !important;}.order-empty-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}.order-dot{display:flex;align-items:center;justify-content:center;min-width:34px;height:32px;padding:0 3px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1.5px dashed var(--border);color:var(--hint-btn-text);font-size:15px;font-family:'Amiri','Scheherazade New',serif;cursor:pointer;transition:all .15s;}.order-dot:hover{border-color:var(--accent);}.order-dot.active{border-style:solid;border-color:var(--accent);background:var(--hint-bg);color:var(--accent-dark);font-weight:700;box-shadow:0 0 0 3px var(--surface-hover);}.order-badge{color:var(--hint-btn-text);font-size:16px;font-family:'Amiri','Scheherazade New',serif;flex-shrink:0;}.mushaf-block{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:18px 16px;margin-top:12px;font-size:19px;line-height:2.4;text-align:justify;direction:rtl;color:var(--text);}.ayah-end{color:var(--gold);font-size:15px;}
 /*OHCSS v5*/.order-help{background:var(--hint-bg);border:1.5px solid var(--accent);border-radius:12px;padding:14px 14px 12px;margin-bottom:14px;text-align:right;direction:rtl;}.order-help-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}.order-help-head .t{font-weight:700;color:var(--accent-dark);font-size:16px;flex:1;}.oh-count{font-size:12.5px;color:var(--hint-btn-text);font-family:'Amiri',serif;white-space:nowrap;}.oh-dots{display:flex;gap:5px;align-items:center;}.oh-dots i{width:9px;height:9px;flex:0 0 auto;border-radius:50%;background:var(--hint-btn-text);opacity:.3;display:block;transition:all .3s;}.oh-dots i.done{background:var(--accent);opacity:.55;}.oh-dots i.on{background:var(--accent);opacity:1;transform:scale(1.45);box-shadow:0 0 0 3px var(--surface-hover);}.oh-cap{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:12px;min-height:76px;}.oh-cap .act{font-size:15.5px;font-weight:700;color:var(--accent-dark);margin-bottom:3px;}.oh-cap .why{font-size:13.5px;color:var(--hint-btn-text);line-height:1.65;}.oh-cap.in{animation:ohcap .3s ease-out;}@keyframes ohcap{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}.oh-board{position:relative;}.order-help .order-item{font-size:16px;padding:11px 14px;cursor:default;}.order-help .order-item:hover{background:var(--surface2);border-color:var(--border);}.order-help .order-slot{font-size:15px;padding:10px 12px;cursor:default;transition:all .25s;}.order-help .order-dot{cursor:default;transition:all .25s;}.order-help .order-badge{cursor:default;}.oh-swap{border-color:var(--gold)!important;box-shadow:0 0 0 2px var(--gold);}.oh-flash{animation:ohflash 1.2s ease-out;}@keyframes ohflash{0%{box-shadow:0 0 0 0 var(--gold);}15%{box-shadow:0 0 0 4px var(--gold);}100%{box-shadow:0 0 0 0 rgba(196,168,74,0);}}.oh-tap{position:absolute;width:32px;height:32px;border-radius:50%;pointer-events:none;border:2.5px solid var(--accent);background:rgba(74,124,74,.16);z-index:5;opacity:0;transform:translate(-50%,-50%);transition:top .55s cubic-bezier(.4,0,.2,1),left .55s cubic-bezier(.4,0,.2,1),opacity .3s;}.oh-tap.on{opacity:1;}.oh-tap.press{animation:ohpress .55s ease-out;}@keyframes ohpress{0%{transform:translate(-50%,-50%) scale(1);}35%{transform:translate(-50%,-50%) scale(.5);background:rgba(74,124,74,.42);}100%{transform:translate(-50%,-50%) scale(1.6);background:rgba(74,124,74,0);}}@media (prefers-reduced-motion:reduce){.oh-tap{transition:none;}.oh-tap.press,.oh-flash,.oh-cap.in{animation:none;}}.oh-ctrls{display:flex;gap:7px;margin-top:12px;}.oh-ctrls button{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--accent-dark);padding:10px 8px;font-family:inherit;font-size:14px;cursor:pointer;min-height:44px;}.oh-ctrls button:hover{background:var(--surface-hover);border-color:var(--accent);}.order-help-close{margin-top:8px;width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px;font-family:inherit;font-size:15px;cursor:pointer;min-height:44px;}.order-help-close:hover{filter:brightness(1.08);}.order-help-row{display:flex;justify-content:flex-start;margin-bottom:10px;}.order-help-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--hint-btn-text);padding:8px 14px;font-family:inherit;font-size:14px;cursor:pointer;min-height:40px;transition:all .15s;}.order-help-btn:hover{border-color:var(--accent);color:var(--accent-dark);}/*OHCSS-END*/
 </style>
@@ -149,9 +158,9 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <div class="ayat-range">الآيات 1 إلى 36</div>
   <div class="page-info">اختبار الحفظ | جزء عمّ</div>
   <div class="stats-row">
-    <div class="stat-badge" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
-    <div class="stat-badge" id="wrong-badge">0 ✗<br>خطأ</div>
-    <div class="stat-badge" id="correct-badge">0 ✓<br>صحيح</div>
+    <div class="stat-badge badge-neutral" id="qnum-badge">السؤال 1 /<br><span id="total-q">-</span></div>
+    <div class="stat-badge badge-neutral" id="wrong-badge">0 ✗<br>خطأ</div>
+    <div class="stat-badge badge-neutral" id="correct-badge">0 ✓<br>صحيح</div>
   </div>
 </div>
 
@@ -437,6 +446,13 @@ function toArabicNum(n){return n;}
 
 function updateBadges(){
   document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;
+  const wb=document.getElementById('wrong-badge');
+  wb.innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;
+  wb.className='stat-badge '+(wrongCount>0?'badge-wrong':'badge-neutral');
+  const cb=document.getElementById('correct-badge');
+  cb.innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;
+  cb.className='stat-badge '+(correctCount>0?'badge-correct':'badge-neutral');
+} /<br>${toArabicNum(questions.length)}`;
   document.getElementById('wrong-badge').innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;
   document.getElementById('correct-badge').innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;
 }
@@ -729,14 +745,15 @@ function showResult(){
   document.getElementById('result-area').style.display='block';
   const pct=wTotal?Math.round(wCorrect*100/wTotal):0;
   document.getElementById('result-score').textContent=`${toArabicNum(wCorrect)} / ${toArabicNum(wTotal)} كلمة — ${toArabicNum(pct)}%  |  ${toArabicNum(correctCount)} / ${toArabicNum(questions.length)} سؤال`;
-  let icon,title,msg;
-  if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت السورة بالكامل';}
-  else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';}
-  else if(pct>=60){icon='📖';title='جيد';msg='راجع السورة مرة أخرى وأعد الاختبار';}
-  else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';}
+  let icon,title,msg,stars;
+  if(pct===100){icon='🌟';title='ممتاز! حفظ مثالي';msg='ما شاء الله! أتقنت السورة بالكامل';stars='★★★';}
+  else if(pct>=80){icon='✨';title='أحسنت!';msg='نتيجة رائعة، استمر في المراجعة';stars='★★☆';}
+  else if(pct>=60){icon='📖';title='جيد';msg='راجع السورة مرة أخرى وأعد الاختبار';stars='★☆☆';}
+  else{icon='🌱';title='تحتاج مراجعة';msg='لا تيأس، المراجعة المستمرة هي المفتاح';stars='☆☆☆';}
   document.getElementById('result-icon').textContent=icon;
   document.getElementById('result-title').textContent=title;
   document.getElementById('result-msg').textContent=msg;
+  const stEl=document.getElementById('result-stars');if(stEl)stEl.textContent=stars;
   document.getElementById('progress-fill').style.width='100%';
   updateBadges();
   try{localStorage.removeItem(RESUME_KEY);}catch(e){}
@@ -744,8 +761,9 @@ function showResult(){
   if(pct===100)spawnConfetti();
 }
 
-function returnToLevels(){document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
-function retryQuiz(){
+function returnToLevels(){_resetBadges();document.getElementById('quiz-area').style.display='none';document.getElementById('order-area').style.display='none';document.getElementById('level-card').style.display='block';currentLevel=null;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('start-btn').classList.remove('ready');document.getElementById('total-q').textContent='-';document.getElementById('wrong-badge').innerHTML='&#x6F0; &#x2717;<br>&#x62E;&#x637;&#x623;';document.getElementById('correct-badge').innerHTML='&#x6F0; &#x2713;<br>&#x635;&#x62D;&#x64A;&#x62D;';document.getElementById('qnum-badge').innerHTML='&#x627;&#x644;&#x633;&#x624;&#x627;&#x644; &#x6F1; /<br>-';document.getElementById('progress-fill').style.width='0%';}
+function _resetBadges(){const wb=document.getElementById('wrong-badge');const cb=document.getElementById('correct-badge');const qb=document.getElementById('qnum-badge');if(wb){wb.className='stat-badge badge-neutral';}if(cb){cb.className='stat-badge badge-neutral';}if(qb){qb.className='stat-badge badge-neutral';}}
+function retryQuiz(){_resetBadges();
   document.getElementById('result-area').style.display='none';
   document.getElementById('level-card').style.display='block';
   currentLevel=null;
