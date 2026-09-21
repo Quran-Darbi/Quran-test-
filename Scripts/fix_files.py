@@ -8813,6 +8813,71 @@ def fix_file(path):
     if 'service-worker.js' not in out:
         out = out.replace('</body>', PWA_SW + '\n</body>', 1)
 
+    # ===== تحسينات UI v2 (سبتمبر ٢٠٢٦) — شارات الإحصاء بألوان + نجوم النتيجة =====
+    # (idempotent — ما تأثّرش على الملفات اللي اتصلّحت بالفعل)
+    _UI2_CSS = (
+        '\n/* ===== شارات الإحصاء بألوان ===== */\n'
+        '.stat-badge.badge-wrong{background:var(--wrong-bg);color:var(--wrong-text);border:1.5px solid var(--wrong-border);}\n'
+        '.stat-badge.badge-correct{background:var(--correct-bg);color:var(--correct-text);}\n'
+        '.stat-badge.badge-neutral{background:var(--surface2);color:var(--text);border:1.5px solid var(--border);}\n'
+        '/* ===== نجوم النتيجة ===== */\n'
+        '.result-stars{font-size:30px;margin-bottom:4px;letter-spacing:6px;color:var(--gold);}\n'
+        '/* ===== زر الصفحة التالية البارز في النتيجة ===== */\n'
+        '#result-page-nav .next-page-btn{background:var(--accent)!important;color:#fff!important;border:none!important;border-radius:14px!important;padding:14px!important;font-size:16px!important;font-weight:700;transition:background .2s;}\n'
+        '#result-page-nav .next-page-btn:hover{background:var(--accent-dark)!important;}'
+    )
+    _UI2_UB = (
+        "function updateBadges(){\n"
+        "  document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;\n"
+        "  const wb=document.getElementById('wrong-badge');\n"
+        "  wb.innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;\n"
+        "  wb.className='stat-badge '+(wrongCount>0?'badge-wrong':'badge-neutral');\n"
+        "  const cb=document.getElementById('correct-badge');\n"
+        "  cb.innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;\n"
+        "  cb.className='stat-badge '+(correctCount>0?'badge-correct':'badge-neutral');\n"
+        "}"
+    )
+    _UI2_RESET = (
+        "function _resetBadges(){"
+        "const wb=document.getElementById('wrong-badge');"
+        "const cb=document.getElementById('correct-badge');"
+        "const qb=document.getElementById('qnum-badge');"
+        "if(wb){wb.className='stat-badge badge-neutral';}"
+        "if(cb){cb.className='stat-badge badge-neutral';}"
+        "if(qb){qb.className='stat-badge badge-neutral';}}"
+    )
+    if 'badge-wrong' not in out:
+        if '.level-return-btn:hover{' in out:
+            out = re.sub(r'(\.level-return-btn:hover\{[^\n]*)', lambda m: m.group(1) + _UI2_CSS, out, count=1)
+        elif '.progress-bar-fill{' in out:
+            out = re.sub(r'(\.progress-bar-fill\{[^\n]*)', lambda m: m.group(1) + _UI2_CSS, out, count=1)
+    for _bid in ('qnum-badge', 'wrong-badge', 'correct-badge'):
+        out = out.replace(f'class="stat-badge" id="{_bid}"', f'class="stat-badge badge-neutral" id="{_bid}"')
+    if 'result-stars' not in out:
+        out = out.replace(
+            '  <div class="result-icon" id="result-icon">',
+            '  <div class="result-stars" id="result-stars"></div>\n  <div class="result-icon" id="result-icon">'
+        )
+    if "wb.className='stat-badge '" not in out:
+        out = re.sub(r"function updateBadges\(\)\{[^\}]+\}", _UI2_UB, out, count=1)
+    out = out.replace('let icon,title,msg;', 'let icon,title,msg,stars;', 1)
+    if 'stars=' not in out:
+        out = re.sub(r"(if\(pct===100\)\{(?:[^}])*?msg='[^']*';)", r"\1stars='★★★';", out, count=1)
+        out = re.sub(r"(else if\(pct>=80\)\{(?:[^}])*?msg='[^']*';)", r"\1stars='★★☆';", out, count=1)
+        out = re.sub(r"(else if\(pct>=60\)\{(?:[^}])*?msg='[^']*';)", r"\1stars='★☆☆';", out, count=1)
+        out = re.sub(r"(else\{icon='[^']*';title='[^']*';msg='[^']*';)", r"\1stars='☆☆☆';", out, count=1)
+    if 'result-stars' in out and 'stEl' not in out:
+        out = out.replace(
+            "document.getElementById('result-msg').textContent=msg;",
+            "document.getElementById('result-msg').textContent=msg;\n  const stEl=document.getElementById('result-stars');if(stEl)stEl.textContent=stars;"
+        )
+    if '_resetBadges' not in out:
+        out = out.replace('function retryQuiz(){', _UI2_RESET + '\nfunction retryQuiz(){')
+        out = re.sub(r'function retryQuiz\(\)\{', 'function retryQuiz(){_resetBadges();', out, count=1)
+        if 'function returnToLevels(){' in out:
+            out = re.sub(r'function returnToLevels\(\)\{', 'function returnToLevels(){_resetBadges();', out, count=1)
+    # ===== نهاية تحسينات UI v2 =====
+
     if out != src:
         with open(path, 'w', encoding='utf-8') as f:
             f.write(out)
@@ -10739,6 +10804,127 @@ def main():
         for s in BAQARA_AYAHNUM_SKIPPED:
             print('  -', s)
 
+# ============================================================================
+# patch_ui_v2 — التحسينات البصرية الأربعة (سبتمبر ٢٠٢٦)
+# شارات الإحصاء بألوان · نجوم النتيجة · زر الصفحة التالية · إعادة ضبط الشارات
+# الاستخدام: python Scripts/fix_files.py --patch-ui
+# ============================================================================
+def patch_ui_v2(root):
+    SKIP = {'alfatiha.html', 'index.html', 'progress.html', 'recitation.html'}
+
+    CSS_NEW = (
+        '\n/* ===== شارات الإحصاء بألوان ===== */\n'
+        '.stat-badge.badge-wrong{background:var(--wrong-bg);color:var(--wrong-text);border:1.5px solid var(--wrong-border);}\n'
+        '.stat-badge.badge-correct{background:var(--correct-bg);color:var(--correct-text);}\n'
+        '.stat-badge.badge-neutral{background:var(--surface2);color:var(--text);border:1.5px solid var(--border);}\n'
+        '/* ===== نجوم النتيجة ===== */\n'
+        '.result-stars{font-size:30px;margin-bottom:4px;letter-spacing:6px;color:var(--gold);}\n'
+        '/* ===== زر الصفحة التالية البارز في النتيجة ===== */\n'
+        '#result-page-nav .next-page-btn{background:var(--accent)!important;color:#fff!important;border:none!important;border-radius:14px!important;padding:14px!important;font-size:16px!important;font-weight:700;transition:background .2s;}\n'
+        '#result-page-nav .next-page-btn:hover{background:var(--accent-dark)!important;}'
+    )
+
+    NEW_UPDATE_BADGES = (
+        "function updateBadges(){\n"
+        "  document.getElementById('qnum-badge').innerHTML=`السؤال ${toArabicNum(qIndex+1)} /<br>${toArabicNum(questions.length)}`;\n"
+        "  const wb=document.getElementById('wrong-badge');\n"
+        "  wb.innerHTML=`${toArabicNum(wrongCount)} ✗<br>خطأ`;\n"
+        "  wb.className='stat-badge '+(wrongCount>0?'badge-wrong':'badge-neutral');\n"
+        "  const cb=document.getElementById('correct-badge');\n"
+        "  cb.innerHTML=`${toArabicNum(correctCount)} ✓<br>صحيح`;\n"
+        "  cb.className='stat-badge '+(correctCount>0?'badge-correct':'badge-neutral');\n"
+        "}"
+    )
+
+    RESET_BADGES_FN = (
+        "function _resetBadges(){"
+        "const wb=document.getElementById('wrong-badge');"
+        "const cb=document.getElementById('correct-badge');"
+        "const qb=document.getElementById('qnum-badge');"
+        "if(wb){wb.className='stat-badge badge-neutral';}"
+        "if(cb){cb.className='stat-badge badge-neutral';}"
+        "if(qb){qb.className='stat-badge badge-neutral';}}"
+    )
+
+    patched, skipped_list, errors = [], [], []
+
+    for fname in sorted(os.listdir(root)):
+        if not fname.endswith('.html'):
+            continue
+        if fname in SKIP:
+            skipped_list.append(fname)
+            continue
+
+        fpath = os.path.join(root, fname)
+        with open(fpath, 'r', encoding='utf-8') as fh:
+            content = fh.read()
+        orig = content
+
+        # 1. CSS
+        if 'badge-wrong' not in content:
+            if '.level-return-btn:hover{' in content:
+                content = re.sub(r'(\.level-return-btn:hover\{[^\n]*)',
+                                 lambda m: m.group(1) + CSS_NEW, content, count=1)
+            elif '.progress-bar-fill{' in content:
+                content = re.sub(r'(\.progress-bar-fill\{[^\n]*)',
+                                 lambda m: m.group(1) + CSS_NEW, content, count=1)
+            else:
+                errors.append(f'{fname}: CSS anchor not found')
+
+        # 2. badge-neutral HTML
+        for bid in ('qnum-badge', 'wrong-badge', 'correct-badge'):
+            content = content.replace(
+                f'class="stat-badge" id="{bid}"',
+                f'class="stat-badge badge-neutral" id="{bid}"'
+            )
+
+        # 3. result-stars div
+        if 'result-stars' not in content:
+            content = content.replace(
+                '  <div class="result-icon" id="result-icon">',
+                '  <div class="result-stars" id="result-stars"></div>\n  <div class="result-icon" id="result-icon">'
+            )
+
+        # 4. updateBadges مع ألوان
+        if "wb.className='stat-badge '" not in content:
+            content = re.sub(r"function updateBadges\(\)\{[^\}]+\}",
+                             NEW_UPDATE_BADGES, content, count=1)
+
+        # 5. نجوم النتيجة في showResult
+        content = content.replace('let icon,title,msg;', 'let icon,title,msg,stars;', 1)
+        if 'stars=' not in content:
+            content = re.sub(r"(if\(pct===100\)\{(?:[^}])*?msg='[^']*';)", r"\1stars='★★★';", content, count=1)
+            content = re.sub(r"(else if\(pct>=80\)\{(?:[^}])*?msg='[^']*';)", r"\1stars='★★☆';", content, count=1)
+            content = re.sub(r"(else if\(pct>=60\)\{(?:[^}])*?msg='[^']*';)", r"\1stars='★☆☆';", content, count=1)
+            content = re.sub(r"(else\{icon='[^']*';title='[^']*';msg='[^']*';)", r"\1stars='☆☆☆';", content, count=1)
+        if 'result-stars' in content and 'stEl' not in content:
+            content = content.replace(
+                "document.getElementById('result-msg').textContent=msg;",
+                "document.getElementById('result-msg').textContent=msg;\n  const stEl=document.getElementById('result-stars');if(stEl)stEl.textContent=stars;"
+            )
+
+        # 6. _resetBadges + استدعاء في retryQuiz و returnToLevels
+        if '_resetBadges' not in content:
+            content = content.replace('function retryQuiz(){', RESET_BADGES_FN + '\nfunction retryQuiz(){')
+            content = re.sub(r'function retryQuiz\(\)\{', 'function retryQuiz(){_resetBadges();', content, count=1)
+            if 'function returnToLevels(){' in content:
+                content = re.sub(r'function returnToLevels\(\)\{', 'function returnToLevels(){_resetBadges();', content, count=1)
+
+        if content != orig:
+            with open(fpath, 'w', encoding='utf-8') as fh:
+                fh.write(content)
+            patched.append(fname)
+        else:
+            errors.append(f'{fname}: لم يتغير (مُعدَّل مسبقاً)')
+
+    print(f'\n✅  تم التعديل : {len(patched)} ملف')
+    print(f'⏭️   تم التخطي  : {len(skipped_list)} ملف')
+    if errors:
+        print(f'\n⚠️  ملاحظات ({len(errors)}):')
+        for e in errors:
+            print(f'   • {e}')
+
+
 if __name__ == '__main__':
     _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if '--audit' in sys.argv:
@@ -10749,5 +10935,7 @@ if __name__ == '__main__':
             print('الاستخدام: python Scripts/fix_files.py --gen <ملف المواصفة.json> [--dry-run]')
         else:
             generate_pages(_root, sys.argv[_i + 1], dry_run='--dry-run' in sys.argv)
+    elif '--patch-ui' in sys.argv:
+        patch_ui_v2(_root)
     else:
         main()
