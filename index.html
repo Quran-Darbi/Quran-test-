@@ -934,8 +934,8 @@ function renderDarbiProgress(){
   if(hqp)hqp.textContent=alhaqqaDone+' / '+alhaqqaPages.length+' مكتمل'+(alhaqqaDone===alhaqqaPages.length?' ✓':'');
   const nhp=document.getElementById('nuh-prog');
   if(nhp)nhp.textContent=nuhDone+' / '+nuhPages.length+' مكتمل'+(nuhDone===nuhPages.length?' ✓':'');
-  const ap=document.getElementById('amma-prog');
-  if(ap)ap.textContent=ammaDone+' / '+ammaData.length+' مكتمل'+(ammaDone===ammaData.length?' ✓':'');
+  const amp=document.getElementById('amma-prog');
+  if(amp)amp.textContent=ammaDone+' / '+ammaData.length+' مكتمل'+(ammaDone===ammaData.length?' ✓':'');
 
   const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+ammaData.filter(p=>p[3]).length;
   const doneCount=fatihaDone+baqaraDone+kahfDone+maryamDone+tahaDone+yaseenDone+arrahmanDone+alwaqiahDone+almulkDone+alqalamDone+alhaqqaDone+almaarijDone+nuhDone+aljinnDone+almuzzammilDone+almudaththirDone+alqiyamaDone+alinsanDone+ammaDone;
