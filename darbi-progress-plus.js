@@ -153,7 +153,8 @@
       : question.answer;
     var all = safeGetJSON(MISSED_KEY, {});
     var k = pageKey + '|' + level + '|' + qIndex;
-    var m = all[k] || { pageKey: pageKey, level: level, missCount: 0 };
+    var m = all[k] || { pageKey: pageKey, level: level, qIndex: qIndex, missCount: 0 };
+    m.qIndex = qIndex; // مضافة 2026-09-27 — تلزم لبناء رابط "أعد المحاولة" المباشر للسؤال نفسه
     m.missCount += 1;
     m.verseText = answerText || m.verseText || '';
     m.lastMissed = todayStr();
@@ -275,6 +276,36 @@
     }
   }
 
+  // ---------- القفز المباشر لسؤال معيّن من قائمة المراجعة الذكية ----------
+  // لو الصفحة اتفتحت برابط فيه ?review=easy:7 مثلًا، بنحاول نبدأ نفس
+  // المستوى وننده showQuestion() على نفس رقم السؤال (qIndex) اللي
+  // المستخدم غلط فيه، بدل ما تفضل تبدأ من شاشة اختيار المستوى. بيعتمد
+  // على المتغيرات/الدوال المشتركة الموجودة فعليًا في كل صفحة اختبار
+  // (selectLevel/startQuiz/showQuestion/qIndex/questions) — بنفس فكرة
+  // currentPageKey() فوق (سكوب مشترك بين وسوم <script> في نفس الصفحة).
+  // أي خطأ هنا (صفحة قديمة شكلها مختلف مثلًا) بيرجع بصمت لشاشة اختيار
+  // المستوى العادية، من غير ما يكسر تحميل الصفحة.
+  function jumpToReviewQuestion() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var rev = params.get('review');
+      if (!rev) return;
+      var parts = rev.split(':');
+      var level = parts[0];
+      var idx = parseInt(parts[1], 10);
+      if (['easy', 'medium', 'hard'].indexOf(level) === -1 || isNaN(idx) || idx < 0) return;
+      if (typeof selectLevel !== 'function' || typeof startQuiz !== 'function' || typeof showQuestion !== 'function') return;
+      selectLevel(level);
+      startQuiz();
+      if (typeof questions !== 'undefined' && questions && idx < questions.length) {
+        qIndex = idx;
+        showQuestion();
+      }
+    } catch (e) {
+      // فشل القفز التلقائي مايمنعش الصفحة من الفتح عادي على شاشة اختيار المستوى
+    }
+  }
+
   window.DarbiExtra = {
     recordMiss: recordMiss,
     getReviewQueue: getReviewQueue,
@@ -292,5 +323,6 @@
   touchStreak();
   recordTodayInHistory();
   maybeShowReminderBanner();
+  jumpToReviewQuestion();
 
 })(window);
