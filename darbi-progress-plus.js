@@ -61,7 +61,19 @@
   }
 
   // نفس طريقة استخراج مفتاح الصفحة المستخدمة في saveDarbiProgress الحالية
+  // ملحوظة مهمة (اكتُشفت 2026-09-27): RESUME_KEY مُعرَّفة في كل صفحة اختبار
+  // بـ`const RESUME_KEY=...` — وأي `const`/`let` في أعلى مستوى سكربت عادي
+  // (غير module) بيتحط في السكوب المشترك بين كل وسوم <script> بالصفحة، لكن
+  // مايتحطّش كخاصية على window. يعني `window.RESUME_KEY` بترجع undefined
+  // دايمًا حتى لو RESUME_KEY نفسها موجودة ومعرَّفة — وده كان بيخلّي
+  // currentPageKey() ترجع null دايمًا، وبالتالي recordMiss() كانت بترجع
+  // من غير ما تسجّل أي غلطة أبدًا، مهما كان الربط في صفحات الاختبار صحيح.
+  // الحل: نجرّب المتغيّر العاري RESUME_KEY الأول (لأنه بيتلاقى في نفس
+  // السكوب المشترك)، وwindow.RESUME_KEY كخيار احتياطي فقط.
   function currentPageKey() {
+    try {
+      if (typeof RESUME_KEY !== 'undefined' && RESUME_KEY) return String(RESUME_KEY).replace('quranResume_', '');
+    } catch (e) {}
     try {
       if (window.RESUME_KEY) return String(window.RESUME_KEY).replace('quranResume_', '');
     } catch (e) {}
