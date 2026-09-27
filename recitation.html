@@ -888,7 +888,7 @@ function norm(s){
     // واسجد/واقترب: المستخدم يكتب الألف في وصل الكلام — مقصورة على أفعال الوصل الفعلية
     // عشان متمسحش الهمزة القطعية غلط (وأولئك، وأنتم، وأمر...)
     // قائمة موسّعة يوليو 2026: أضيفت تبع/سمع/ستكبر/ستعين/ركع وغيرها بعد ملاحظات اختبار حقيقية
-    .replace(/(?<=^|\s)وا(?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد|جتب|متاز)/g,'و')
+    .replace(/(?<=^|\s)و[اٱ](?=سجد|قترب|دخل|دعو|ذكر|رحم|ستغفر|ستغن|غفر|عف|نحر|تق|ختلاف|مر[أا]|تبع|سمع|ستكبر|ستعين|ركع|صبر|صل|جتنب|هبط|ستبشر|ستقم|ضرب|عتصم|ئتلف|بتغ|حذر|شرب|صفح|تخذ|علم|رزق|جعل|خش|شكر|نظر|بعث|قتل|نصر|ستشهد|جتب|متاز)/g,'و')
     // وٰ: قبل ة = تتحذف الواو (الصلاة)، غيرها = واو + ا (السماوات، أبواب)
     .replace(/وٰ(?=ة)/g,'ا')
     .replace(/وٰ/g,'وا')
@@ -912,6 +912,10 @@ function norm(s){
     .replace(/ئ(?=و)/g,'')
     .replace(/ئ/g,'ي').replace(/ؤ/g,'و').replace(/ء/g,'')
     .replace(/[آأإٱا]/g,'ا').replace(/[ىی]/g,'ي').replace(/ة/g,'ه')
+    // الضاد الساكنة تحديدًا (وأحيانًا غيرها) بيسمعها التعرف الصوتي ظاء دايمًا
+    // (نَضْرَةَ↔نظرة، يُوفِضُونَ↔يوفظون...) — بمعاملة الحرفين كواحد في المقارنة
+    // الصوتية فقط (طلب هند 2026-09-27)، مايأثرش على أي جزء تاني من الموقع
+    .replace(/ظ/g,'ض')
     .replace(/(.)\1+/g,'$1')
     .replace(/رحمان/g,'رحمن')
     // الإقلاب: ن قبل ب تُنطق م (انبعث = امبعث، منبثاً = ممبثاً)
@@ -958,6 +962,16 @@ function norm(s){
     .replace(/^يوتيني$/,'يوتين')
     // يَسُومُونَكُمۡ: كلمة نادرة على التعرف الصوتي، بيسمعها (يصومنكم / يسومنكم / يسمونكم) رغم النطق الصحيح بالسين
     .replace(/^ي[سص](?:وم|م)(?:و?ن)كم$/,'يسومونكم')
+    // ملاحظات هند 2026-09-27 — كلمات بعينها بيسمعها التعرف الصوتي غلط تمامًا (مش فرق تشكيل/رسم عادي)
+    .replace(/^افجاجا$/,'ثجاجا')      // النبأ: ثَجَّاجًا
+    .replace(/^قطره$/,'قتره')          // عبس: قَتَرَةٌ (ت↔ط)
+    .replace(/^دافي$/,'دافق')          // الطارق: خُلِقَ مِن مَّآءٍ دَافِقٍ (ق↔ء، وئ سبقت تحويلها ي فوق)
+    .replace(/^يثمن$/,'يسمن')          // الغاشية: لَّا يُسْمِنُ (س↔ث)
+    .replace(/^بمسيطر$/,'بمصيطر')      // الغاشية: لَّسْتَ عَلَيْهِم بِمُصَيْطِرٍ (ص↔س)
+    .replace(/^صراعا$/,'سراعا')        // المعارج: يَخْرُجُونَ ... سِرَاعًا (س↔ص)
+    .replace(/^وجي$/,'وجاي')           // الفجر: وَجِاْيٓءَ يَوْمَئِذٍۭ بِجَهَنَّمَ
+    .replace(/^الحرف$/,'الحرث')        // البقرة ص31: نِسَآؤُكُمْ حَرْثٌ.../ٱلْحَرْثَ (ث↔ف)
+    .replace(/^ينسخ$/,'ينفخ')          // النبأ: يَوْمَ يُنفَخُ فِى ٱلصُّورِ (ف↔س)
     .replace(/\s+/g,' ')
     .trim();
 }
@@ -968,7 +982,7 @@ function norm(s){
 // وكمان إدغام النون الساكنة في (ي ر م ل و ن) والإقلاب قبل الباء: التعرف
 // بيكتب الكلمتين ملزوقتين والنون مبلوعة («عَن مِّلَّةِ» ← «عمله»،
 // «مِن رَّبِّهِمۡ» ← «مربهم»)، فبنجرّب صيغة الالتصاق مع حذف النون كمان
-function _mergedForms(r1,r2){
+function _mergedForms(r1,r2,raw2){
   const dd=x=>x.replace(/(.)\1+/g,'$1');
   const c=[r1+r2,dd(r1+r2)];
   if(r1.endsWith('ن')&&r1.length>1){
@@ -976,6 +990,11 @@ function _mergedForms(r1,r2){
     c.push(h+r2,dd(h+r2));
     if(r2.charAt(0)==='ب')c.push(h+'م'+r2,dd(h+'م'+r2));
   }
+  // فَلَا ٱقْتَحَمَ ← «فلقتحم»: التقاء الساكنين (ألف "لا" + همزة الوصل) بيسقط
+  // الألفين الاتنين نطقًا، فبنولّد بديل بحذف آخر حرف من الكلمة الأولى (لو منتهية
+  // بألف) وأول حرف من التانية (لو مبدوءة بهمزة وصل فعلًا في رسم المصحف)
+  if(r1.endsWith('ا')&&r1.length>1&&raw2&&raw2.charAt(0)==='ٱ')
+    c.push(r1.slice(0,-1)+r2.slice(1));
   return c;
 }
 function splitMergedWords(words){
@@ -989,7 +1008,7 @@ function splitMergedWords(words){
       for(let k=0;k<refWords.length-1;k++){
         const r1=norm(refWords[k]),r2=norm(refWords[k+1]);
         if(!r1||!r2)continue;
-        if(_mergedForms(r1,r2).indexOf(a)>=0||(r2.endsWith('ا')&&a===r1+r2.slice(0,-1))){
+        if(_mergedForms(r1,r2,refWords[k+1]).indexOf(a)>=0||(r2.endsWith('ا')&&a===r1+r2.slice(0,-1))){
           split=[refWords[k],refWords[k+1]];break;
         }
       }
@@ -1678,6 +1697,20 @@ function mergeSplitLam(words){
         if(orig){out.push(orig);i++;continue;}
       }
     }
+    // (1-ج) أَوَلَوْ (همزة استفهام + و + لو) بتتسمع أحيانًا كلمتين منفصلتين
+    //      «او لو» — بندمجهم في كلمة واحدة بس لو التتابع نفسه مش موجود صراحة
+    //      في الصفحة (يعني مافيش "أو" و"لو" منفصلتين فعلاً هنا) و"اولو" موجودة
+    if(a==='او'&&i+1<words.length&&norm(words[i+1])==='لو'&&!P.has('او لو')&&S.has('اولو')){
+      const orig=refWords.find(w=>norm(w)==='اولو');
+      if(orig){out.push(orig);i++;continue;}
+    }
+    // (1-د) أَلَّن (أ الاستفهام + لَّن بإدغام نون أَن في اللام) بتتسمع أحيانًا
+    //      «الا ان» — بندمجهم بس لو التتابع نفسه مش موجود صراحة كـ"إلا أن"
+    //      في نفس الصفحة (حماية) و"ألّن" (تطبيعها "الن") موجودة فعلًا
+    if(a==='الا'&&i+1<words.length&&norm(words[i+1])==='ان'&&!P.has('الا ان')&&S.has('الن')){
+      const orig=refWords.find(w=>norm(w)==='الن');
+      if(orig){out.push(orig);i++;continue;}
+    }
     out.push(words[i]);
   }
   return out;
@@ -1749,13 +1782,83 @@ function restoreDualAlif(heard){
   return null;
 }
 
+// (5) ياء منقوصة محذوفة رسمًا آخر الكلمة (دَعْوَةَ ٱلدَّاعِ) بتترسم كسرة بس،
+//     لكن نطقها بيتسمع ياء كاملة أحيانًا. بندوّر في المرجع عن نفس الكلمة + ي
+function restoreFinalYaa(heard){
+  const n=norm(heard);
+  if(!n)return null;
+  for(const w of refWords){
+    if(norm(w)===n+'ي')return w;
+  }
+  return null;
+}
+// (6) واو الجماعة بتسقط سماعًا كليًّا قبل همزة الوصل (وَٱسْتَغْفِرُوا۟ ٱللَّهَ
+//     بتتسمع أحيانًا «واستغفر الله» من غير الواو خالص، مش بس ألفها). بندوّر
+//     في المرجع عن نفس الكلمة + و
+function restoreJamaaWaw(heard){
+  const n=norm(heard);
+  if(!n)return null;
+  for(const w of refWords){
+    if(norm(w)===n+'و')return w;
+  }
+  return null;
+}
+// (7) أَلَمْ يَكُ (يك بدل يكن/يكون المجزومة بحذف النون): التعرف الصوتي بيرجّعها
+//     صيغتها الكاملة العادية. بنردّها لصيغة المرجع لو "يك" موجودة فعلاً في الصفحة
+function restoreYak(heard){
+  const n=norm(heard);
+  if(n==='يكن'||n==='يكون'||n==='يكونوا'){
+    const w=refWords.find(w=>norm(w)==='يك');
+    if(w)return w;
+  }
+  return null;
+}
+// (8) لِّذِي (لام الجر + ذي) بتتسمع "الذي" (وكأنها أل التعريف) — بنردّها
+//     لصيغة المرجع لو "لذي" موجودة فعلاً في الصفحة
+function restoreLamThi(heard){
+  const n=norm(heard);
+  if(n==='الذي'){
+    const w=refWords.find(w=>norm(w)==='لذي');
+    if(w)return w;
+  }
+  return null;
+}
+// (9) إِثْمُهُۥ بيتسمع "اسمه" (ث↔س) — بنردّها لصيغة المرجع لو "اثمه" موجودة في الصفحة
+function restoreThaAsSin(heard){
+  const n=norm(heard);
+  if(n==='اسمه'){
+    const w=refWords.find(w=>norm(w)==='اثمه');
+    if(w)return w;
+  }
+  return null;
+}
+
+// (10) أَهَٰنَنِ بيتسمع أحيانًا "اهانا" (ألف بدل كسرة ياء المتكلم المحذوفة)
+function restoreAhananiAlt(heard){
+  const n=norm(heard);
+  if(n==='اهانا'){
+    const w=refWords.find(w=>norm(w)==='اهان');
+    if(w)return w;
+  }
+  return null;
+}
+// (11) أَكْرَمَنِ بيتسمع أحيانًا "اكراما" أو "اكرم" (نفس فكرة اهانني/اهان)
+function restoreAkramaniAlt(heard){
+  const n=norm(heard);
+  if(n==='اكراما'||n==='اكرم'){
+    const w=refWords.find(w=>norm(w)==='اكرمن');
+    if(w)return w;
+  }
+  return null;
+}
+
 // بتتطبّق على الكلمات اللي مالهاش مقابل في المرجع بس
 function fixPronunciation(words){
   if(!words||!words.length||!refWords.length)return words;
   const S=new Set(refWords.map(norm));
   return words.map(function(w){
     if(S.has(norm(w)))return w;                 // مطابقة — ما نلمسهاش
-    return restoreWaslAlif(w)||restoreHaaSakt(w)||restoreDualAlif(w)||w;
+    return restoreWaslAlif(w)||restoreHaaSakt(w)||restoreDualAlif(w)||restoreFinalYaa(w)||restoreJamaaWaw(w)||restoreYak(w)||restoreLamThi(w)||restoreThaAsSin(w)||restoreAhananiAlt(w)||restoreAkramaniAlt(w)||w;
   });
 }
 
@@ -1792,8 +1895,9 @@ function _rasmVoiceForms(w,nextW,skip){
     out.push(w.replace(/ه[\u0652\u06E1]$/,''));
   if(/^[وف][\u064B-\u065F]?ٱ(?!ل)/.test(w))
     out.push(w.replace(/^([وف])[\u064B-\u065F]?ٱ/,'$1'));
-  // ياء المتكلم المحذوفة رسمًا بعد نون مثل «يَهۡدِيَنِ»: قد تُنطق فيسمعها التسجيل ياء زيادة
-  if(/ن\u0650$/.test(w))
+  // ياء منقوصة محذوفة رسمًا آخر الكلمة (دَعْوَةَ ٱلدَّاعِ، يَهْدِيَنِ...): الكسرة الأخيرة
+  // بديل عن الياء الكاملة في الرسم، وأحيانًا يسمعها التسجيل الصوتي ياء كاملة
+  if(/\u0650$/.test(w))
     out.push(w+'ي');
   if(/ن[\u064B\u064C\u064D\u08F0\u08F1\u08F2]$/.test(w))
     out.push(w+'ا');
@@ -1844,6 +1948,8 @@ function _rasmVoiceForms(w,nextW,skip){
   }
   // «لَهُمۡ / وَلَهُمۡ» بيسمعها التعرف الصوتي «ما له» (بيتدمجوا «ماله» في mergeMaLah)
   if(/^[وف]?لهم$/.test(_pkey(w)))out.push('ماله');
+  // فِيمَ (فتحة قصيرة على الميم، بلا ألف) بيسمعها التعرف الصوتي «فيما» (ألف مد كاملة)
+  if(/^فِيمَ$/.test(w))out.push('فيما');
   return out;
 }
 function _rasmMatch(refWord,refNorm,u,nextRef,skip){
