@@ -207,23 +207,18 @@ document.addEventListener('DOMContentLoaded',function(){
   <div class="nav-logo"><img src="icons/darbi_favicon_64.png" alt="دربي لحفظ القرآن" width="24" height="24"> <span data-i18n="home.title">دربي لحفظ القرآن</span></div>
   <div class="nav-right">
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
-  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
+  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" data-i18n-title="nav.tools_title" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
-    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();">📖 عن المشروع</button>
-    <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';">📊 تقدّمي</button>
-    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
+    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();"><span data-i18n="nav.about">📖 عن المشروع</span></button>
+    <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';"><span data-i18n="nav.progress">📊 تقدّمي</span></button>
+    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 <span data-i18n="nav.lang_label">اللغة</span> <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
       <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
       <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
     </div>
-    <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
-    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
-    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> كود QR</button>
+    <button class="tools-item" onclick="toolsClose();fdbkOpen();"><span data-i18n="nav.feedback">💬 الاقتراحات</span></button>
+    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> <span data-i18n="nav.share">مشاركة الصفحة</span></button>
+    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> <span data-i18n="nav.qr">كود QR</span></button>
   </div>
 </div>  </div>
 </nav>
@@ -245,9 +240,9 @@ document.addEventListener('DOMContentLoaded',function(){
       </a>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><b>156</b><small>اختباراً متاحاً</small></div>
-      <div class="hstat"><b>4</b><small>أجزاء</small></div>
-      <div class="hstat"><b>109</b><small>سورة</small></div>
+      <div class="hstat"><b>156</b><small data-i18n="home.stat_tests">اختباراً متاحاً</small></div>
+      <div class="hstat"><b id="hstat-parts-count">4</b><small data-i18n="home.stat_parts">أجزاء</small></div>
+      <div class="hstat"><b>109</b><small data-i18n="home.stat_surahs">سورة</small></div>
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
       <div style="background:rgba(255,255,255,0.2);border-radius:8px;height:8px;overflow:hidden;max-width:300px;margin:0 auto 6px;">
@@ -887,148 +882,6 @@ function copyQRLink(){
   navigator.clipboard.writeText(url).then(function(){b.textContent=darbiT('qr.copied');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);}).catch(function(){b.textContent=darbiT('qr.copy_failed');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);});
 }
 
-</script>
-<style>
-.tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
-.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
-.tools-fab-btn:hover{filter:brightness(1.05);}
-.tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
-.tools-fab.open .tools-menu{display:block;}
-.tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
-.tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
-.tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
-.tools-item .tools-lang-inline span:first-child{font-size:1em;color:inherit;}
-.tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
-.tools-item svg{flex-shrink:0;}
-.tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
-.tools-lang-list.open{display:block;}
-.tools-lang-list button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:10px 14px 10px 22px;font-size:0.82rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
-.tools-lang-list button:hover{background:var(--green3,var(--surface2,#F0F7F2));}
-.tools-lang-list button.lang-active{font-weight:700;}
-.tools-lang-list button .lang-check{margin-inline-start:auto;color:var(--green,#2E6B3E);font-weight:700;visibility:hidden;}
-.tools-lang-list button.lang-active .lang-check{visibility:visible;}
-#google_translate_element{display:none !important;}
-.goog-te-banner-frame.skiptranslate{display:none !important;}
-.goog-te-gadget{height:0;overflow:hidden;}
-body{top:0 !important;}
-.fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
-.fdbk-overlay.open{display:flex;}
-.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
-html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
-.fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
-html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
-.fdbk-modal label{display:block;font-size:14px;margin:12px 0 6px;}
-.fdbk-modal select,.fdbk-modal textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #d8e0d8;background:#f7faf7;color:#222;font-family:inherit;font-size:14px;box-sizing:border-box;}
-html[data-theme="dark"] .fdbk-modal select,html[data-theme="dark"] .fdbk-modal textarea{background:#101810;color:#DCF0D8;border-color:#2A4028;}
-.fdbk-modal textarea{min-height:80px;resize:vertical;}
-.fdbk-actions{display:flex;gap:8px;margin-top:16px;}
-.fdbk-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
-.fdbk-send{background:#2E6B3E;color:#fff;}
-html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
-.fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
-.qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:center;justify-content:center;padding:16px;}
-.qr-overlay.open{display:flex;}
-.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
-.qr-title{font-size:1.05rem;color:#2E6B3E;font-weight:700;margin-bottom:14px;}
-html[data-theme="dark"] .qr-title{color:#6BBF5A;}
-.qr-img{border-radius:12px;border:1px solid var(--border,#E4EAE4);background:#fff;padding:8px;}
-.qr-caption{font-size:0.8rem;color:var(--text,#1A1A1A);margin-top:12px;line-height:1.6;}
-.qr-caption .qr-caption-en{direction:ltr;display:inline-block;font-size:0.72em;color:var(--soft,#888);margin-top:2px;}
-.qr-url{font-size:0.72rem;color:var(--soft,#888);margin-top:8px;direction:ltr;word-break:break-all;}
-.qr-actions{display:flex;gap:8px;margin-top:16px;}
-.qr-actions button{flex:1;padding:10px;border-radius:10px;font-size:0.85rem;font-family:inherit;cursor:pointer;}
-.qr-copy-btn{background:#2E6B3E;color:#fff;border:none;}
-html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
-.qr-close-btn{background:none;border:1px solid var(--border,#E4EAE4);color:var(--text,#1A1A1A);}
-</style>
-<div class="fdbk-overlay" id="fdbk-overlay">
-  <div class="fdbk-modal">
-    <h3>💬 شاركنا رأيك</h3>
-    <label>نوع الملاحظة</label>
-    <select id="fdbk-type">
-      <option>خطأ في النص القرآني</option>
-      <option>خطأ في السؤال أو الإجابة</option>
-      <option>مشكلة في التسجيل الصوتي</option>
-      <option>مشكلة تصميم أو عرض</option>
-      <option>اقتراح تحسين</option>
-      <option>أخرى</option>
-    </select>
-    <label>تفاصيل الملاحظة (اختياري)</label>
-    <textarea id="fdbk-note" placeholder="اكتب ملاحظتك هنا..."></textarea>
-    <div class="fdbk-actions">
-      <button class="fdbk-send" onclick="fdbkSend()">إرسال عبر واتساب</button>
-      <button class="fdbk-cancel" onclick="fdbkClose()">إلغاء</button>
-    </div>
-  </div>
-</div>
-<div class="qr-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
-  <div class="qr-modal">
-    <div class="qr-title">🔲 امسح الكود لفتح الصفحة</div>
-    <img class="qr-img" id="qr-img" src="" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
-    <div class="qr-caption">امسح الكود لفتح الموقع على موبايلك<br><span class="qr-caption-en">Scan to open Quran Darbi</span></div>
-    <div class="qr-url notranslate" translate="no" id="qr-url-text"></div>
-    <div class="qr-actions">
-      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn">📋 نسخ الرابط</button>
-      <button class="qr-close-btn" onclick="closeQR()">إغلاق</button>
-    </div>
-  </div>
-</div>
-<div id="google_translate_element"></div>
-<script>
-function googleTranslateElementInit(){
-  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
-}
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
-<script>
-function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-fab').classList.toggle('open');}
-function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
-function toolsLangToggle(e){if(e)e.stopPropagation();var l=document.getElementById('tools-lang-list');var a=document.getElementById('tools-lang-arrow');l.classList.toggle('open');a.style.transform=l.classList.contains('open')?'rotate(180deg)':'rotate(0)';}
-document.addEventListener('click',function(e){var w=document.getElementById('tools-fab');if(w&&!w.contains(e.target))toolsClose();});
-
-function fdbkOpen(){toolsClose();document.getElementById('fdbk-overlay').classList.add('open');}
-function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
-function fdbkSend(){
-  var type=document.getElementById('fdbk-type').value;
-  var note=document.getElementById('fdbk-note').value.trim();
-  var page=document.title||location.pathname.split('/').pop();
-  var msg='ملاحظة من دربي لحفظ القرآن\nالصفحة: '+page+'\nالنوع: '+type+(note?'\nالتفاصيل: '+note:'');
-  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
-  fdbkClose();
-}
-
-function showQR(){
-  var url=location.href;
-  document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data='+encodeURIComponent(url);
-  document.getElementById('qr-url-text').textContent=url.replace(/^https?:\/\//,'');
-  document.getElementById('qr-overlay').classList.add('open');
-}
-function closeQR(){document.getElementById('qr-overlay').classList.remove('open');}
-function copyQRLink(){
-  var url=location.href;
-  var b=document.getElementById('qr-copy-btn');
-  navigator.clipboard.writeText(url).then(function(){b.textContent='✅ تم النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);}).catch(function(){b.textContent='تعذر النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);});
-}
-
-function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
-function langApplyLabel(){
-  var map={ar:'العربية',en:'English',fr:'Français',tr:'Türkçe',fa:'فارسی',de:'Deutsch',es:'Español'};
-  var c=langCookie();var code='ar';
-  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
-  var cur=document.getElementById('tools-lang-cur');
-  if(cur)cur.textContent=map[code]||map.ar;
-  document.querySelectorAll('#tools-lang-list button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
-}
-function langSelect(code){
-  if(code==='ar'){
-    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
-  }else{
-    document.cookie='googtrans=/ar/'+code+'; path=/;';
-  }
-  location.reload();
-}
-langApplyLabel();
 </script>
 </body>
 </html>
