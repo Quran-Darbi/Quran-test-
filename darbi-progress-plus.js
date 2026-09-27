@@ -32,6 +32,8 @@
   var PROGRESS_KEY = 'darbi_progress'; // النظام الحالي — قراءة فقط من هنا، الكتابة تفضل زي ما هي
   var MISSED_KEY = 'darbi_missed_v1';  // جديد، إضافي
   var STREAK_KEY = 'darbi_streak_v1';  // جديد، إضافي
+  var HISTORY_KEY = 'darbi_daily_log_v1'; // جديد، إضافي — تاريخ الأيام التي فيها نشاط (لعرض تتبع الأسبوع)
+  var HISTORY_MAX_DAYS = 35; // نحتفظ بآخر ٣٥ يوم بس (كفاية لعرض آخر أسبوع + هامش)
   var BACKUP_META_KEY = 'darbi_backup_meta_v1'; // جديد — آخر مرة اتصدّرت فيها نسخة احتياطية
   var BACKUP_REMIND_DAYS = 14; // كل كام يوم نقترح نسخة احتياطية جديدة
 
@@ -85,6 +87,38 @@
 
   function getStreak() {
     return safeGetJSON(STREAK_KEY, { lastActiveDate: null, currentStreak: 0, longestStreak: 0 });
+  }
+
+  // ---------- سجل الأيام (لتتبّع الأسبوع في "تقدّمي") ----------
+  // بيسجّل اليوم في السجل لو فيه نشاط فعلي النهاردة (نفس شرط hasDoneToday)
+  function recordTodayInHistory() {
+    if (!hasDoneToday()) return;
+    var today = todayStr();
+    var hist = safeGetJSON(HISTORY_KEY, []);
+    if (hist.indexOf(today) === -1) {
+      hist.push(today);
+      if (hist.length > HISTORY_MAX_DAYS) hist = hist.slice(hist.length - HISTORY_MAX_DAYS);
+      safeSetJSON(HISTORY_KEY, hist);
+    }
+  }
+
+  // بيرجّع آخر ٧ أيام (من ٦ أيام فاتوا لحد النهاردة) لعرضها كنقاط أسبوع
+  function getWeekTracker() {
+    var hist = safeGetJSON(HISTORY_KEY, []);
+    var shortLabels = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; // فهرسها Date.getDay(): 0=أحد .. 6=سبت
+    var days = [];
+    var base = new Date();
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date(base.getFullYear(), base.getMonth(), base.getDate() - i);
+      var ds = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      days.push({
+        date: ds,
+        done: hist.indexOf(ds) !== -1,
+        label: shortLabels[d.getDay()],
+        isToday: i === 0
+      });
+    }
+    return days;
   }
 
   // هل تم إنهاء أي مستوى في أي صفحة النهاردة؟ (مبني على lastVisited
@@ -233,6 +267,7 @@
     recordMiss: recordMiss,
     getReviewQueue: getReviewQueue,
     getStreak: getStreak,
+    getWeekTracker: getWeekTracker,
     hasDoneToday: hasDoneToday,
     getOverallFromProgress: getOverallFromProgress,
     exportBackup: exportBackup,
@@ -243,6 +278,7 @@
 
   // تشغيل تلقائي بمجرد تحميل السكربت في أي صفحة
   touchStreak();
+  recordTodayInHistory();
   maybeShowReminderBanner();
 
 })(window);
