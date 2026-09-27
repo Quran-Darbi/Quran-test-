@@ -963,6 +963,14 @@ def fix_hero_stats(path, out):
     """يستبدل بلوك إحصائيات الهيرو بأرقام محسوبة ودقيقة"""
     if os.path.basename(path) != 'index.html':
         return out, False
+    # حارس معماري (سبتمبر ٢٠٢٦): index.html بقى فيه حساب أدق وحي
+    # لعدد "الأجزاء" (بيتحسب من JUZ_GROUPS نفسها في المتصفح، مش رقم
+    # مجمّع هنا بمعادلة تقريبية قديمة)، وكمان بطاقات الإحصاء بقى فيها
+    # data-i18n للترجمة + id="hstat-parts-count" للـJS. النسخة القديمة
+    # هنا كانت بتستبدل الـ<div> كله وتشيل الاتنين دول بصمت. نتخطى
+    # index.html بالكامل هنا لو نظام الترجمة موجود.
+    if 'src="lang.js"' in out:
+        return out, False
     m = re.search(r'<div class="hero-stats">.*?</div>\s*</div>', out, re.S)
     if not m:
         return out, False
