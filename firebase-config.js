@@ -18,12 +18,12 @@
  * ---------------------------------------------------------------
  */
 self.DARBI_FIREBASE_CONFIG = {
-  apiKey: "ضعي القيمة هنا",
-  authDomain: "ضعي القيمة هنا",
-  projectId: "ضعي القيمة هنا",
-  storageBucket: "ضعي القيمة هنا",
-  messagingSenderId: "ضعي القيمة هنا",
-  appId: "ضعي القيمة هنا"
+  apiKey: "AIzaSyCdmE5x5kU7YWQsonpo11OVvvEljBm7Enw",
+  authDomain: "quran-darbi.firebaseapp.com",
+  projectId: "quran-darbi",
+  storageBucket: "quran-darbi.firebasestorage.app",
+  messagingSenderId: "539368696486",
+  appId: "1:539368696486:web:0665adbf273ea62b5d2267"
 };
 
 self.DARBI_FIREBASE_VAPID_KEY = "ضعي القيمة هنا";
