@@ -13,8 +13,10 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
 <title>دربي لحفظ القرآن</title>
 <meta name="description" content="اختبر حفظك للقرآن الكريم">
+<script src="lang.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -202,26 +204,21 @@ document.addEventListener('DOMContentLoaded',function(){
 <body>
 
 <nav>
-  <div class="nav-logo"><img src="icons/darbi_favicon_64.png" alt="دربي لحفظ القرآن" width="24" height="24"> دربي لحفظ القرآن</div>
+  <div class="nav-logo"><img src="icons/darbi_favicon_64.png" alt="دربي لحفظ القرآن" width="24" height="24"> <span data-i18n="home.title">دربي لحفظ القرآن</span></div>
   <div class="nav-right">
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
-  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
+  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" data-i18n-title="nav.tools_title" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
-    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();">📖 عن المشروع</button>
-    <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';">📊 تقدّمي</button>
-    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
+    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();showAbout();"><span data-i18n="nav.about">📖 عن المشروع</span></button>
+    <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';"><span data-i18n="nav.progress">📊 تقدّمي</span></button>
+    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 <span data-i18n="nav.lang_label">اللغة</span> <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
       <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
       <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
-      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
     </div>
-    <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
-    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
-    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> كود QR</button>
+    <button class="tools-item" onclick="toolsClose();fdbkOpen();"><span data-i18n="nav.feedback">💬 الاقتراحات</span></button>
+    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> <span data-i18n="nav.share">مشاركة الصفحة</span></button>
+    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> <span data-i18n="nav.qr">كود QR</span></button>
   </div>
 </div>  </div>
 </nav>
@@ -229,23 +226,23 @@ document.addEventListener('DOMContentLoaded',function(){
 <div class="hero">
   <div class="hero-inner">
     <div class="hero-bismillah notranslate" translate="no">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-    <div class="hero-title">دربي لحفظ القرآن</div>
-    <div class="hero-sub">اختبر حفظك صفحةً بصفحة — اختبارات تفاعلية لمراجعة الحفظ وتثبيته</div>
+    <div class="hero-title" data-i18n="home.title">دربي لحفظ القرآن</div>
+    <div class="hero-sub" data-i18n="home.subtitle">اختبر حفظك صفحةً بصفحة — اختبارات تفاعلية لمراجعة الحفظ وتثبيته</div>
     <div class="ayah-banner">
       <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
       <div class="ayah-ref notranslate" translate="no">سورة المزمل — آية 4</div>
     </div>
     <div class="hero-btn-row">
-      <a href="recitation.html" class="hero-rec-btn">🎤 اختبر حفظك</a>
+      <a href="recitation.html" class="hero-rec-btn" data-i18n="home.recite_btn">🎤 اختبر حفظك</a>
       <a href="progress.html" class="hero-progress-btn">
-        <span>📊 تقدّمي</span>
-        <span class="hero-progress-btn-sub">تقدّمي بالتفصيل ◀</span>
+        <span data-i18n="home.progress_btn">📊 تقدّمي</span>
+        <span class="hero-progress-btn-sub" data-i18n="home.progress_btn_sub">تقدّمي بالتفصيل ◀</span>
       </a>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><b>156</b><small>اختباراً متاحاً</small></div>
-      <div class="hstat"><b>4</b><small>أجزاء</small></div>
-      <div class="hstat"><b>109</b><small>سورة</small></div>
+      <div class="hstat"><b>156</b><small data-i18n="home.stat_tests">اختباراً متاحاً</small></div>
+      <div class="hstat"><b>4</b><small data-i18n="home.stat_parts">أجزاء</small></div>
+      <div class="hstat"><b>109</b><small data-i18n="home.stat_surahs">سورة</small></div>
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
       <div style="background:rgba(255,255,255,0.2);border-radius:8px;height:8px;overflow:hidden;max-width:300px;margin:0 auto 6px;">
@@ -260,24 +257,24 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <div class="beta-note">
   <div class="beta-note-inner">
-    <span class="beta-tag">✦ الإطلاق التجريبي</span>
-    <span class="beta-text">نرحب بـ<button type="button" class="beta-link" onclick="fdbkOpen()">ملاحظاتكم واقتراحاتكم</button></span>
+    <span class="beta-tag" data-i18n="home.beta_tag">✦ الإطلاق التجريبي</span>
+    <span class="beta-text"><span data-i18n="home.beta_text_prefix">نرحب بـ</span><button type="button" class="beta-link" onclick="fdbkOpen()" data-i18n="home.beta_link">ملاحظاتكم واقتراحاتكم</button></span>
   </div>
 </div>
 
 <div class="search-wrap">
-  <input class="search-input" type="text" placeholder="ابحث عن سورة أو صفحة..." oninput="doSearch(this.value)" />
+  <input class="search-input" type="text" data-i18n-placeholder="home.search_placeholder" placeholder="ابحث عن سورة أو صفحة..." oninput="doSearch(this.value)" />
 </div>
 
 <div class="juz-filter-row">
-  <button type="button" class="juz-filter-chip active" data-mode="all" onclick="setJuzFilter('all',this)">كل الأجزاء</button>
-  <button type="button" class="juz-filter-chip" data-mode="built" onclick="setJuzFilter('built',this)">متاح الآن</button>
-  <button type="button" class="juz-filter-chip" data-mode="soon" onclick="setJuzFilter('soon',this)">قريبًا</button>
+  <button type="button" class="juz-filter-chip active" data-mode="all" onclick="setJuzFilter('all',this)" data-i18n="home.filter_all">كل الأجزاء</button>
+  <button type="button" class="juz-filter-chip" data-mode="built" onclick="setJuzFilter('built',this)" data-i18n="home.filter_built">متاح الآن</button>
+  <button type="button" class="juz-filter-chip" data-mode="soon" onclick="setJuzFilter('soon',this)" data-i18n="home.filter_soon">قريبًا</button>
 </div>
 
 <div class="main" id="main">
 </div>
-<div class="juz-filter-empty" id="juz-filter-empty">لا يوجد أجزاء مطابقة لهذا الفلتر حاليًا.</div>
+<div class="juz-filter-empty" id="juz-filter-empty" data-i18n="home.filter_empty">لا يوجد أجزاء مطابقة لهذا الفلتر حاليًا.</div>
 
 <!-- عن المشروع -->
 <div id="about"></div>
@@ -286,10 +283,10 @@ document.addEventListener('DOMContentLoaded',function(){
     <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;">
       <div style="flex-shrink:0;"><img src="icons/darbi_favicon_128.png" alt="دربي لحفظ القرآن" width="52" height="52" style="border-radius:12px;display:block;"></div>
       <div style="flex:1;min-width:220px;">
-        <div style="font-family:'Scheherazade New',serif;font-size:1.35rem;color:var(--green);font-weight:700;margin-bottom:8px;">عن المشروع</div>
+        <div style="font-family:'Scheherazade New',serif;font-size:1.35rem;color:var(--green);font-weight:700;margin-bottom:8px;" data-i18n="home.about_title">عن المشروع</div>
         <div style="font-size:0.93rem;color:var(--soft);line-height:2;">
-          <p style="margin:0 0 12px;">«دربي لحفظ القرآن» منصة تفاعلية تهدف إلى مساعدة الجميع على حفظ كتاب الله ومراجعته، من خلال اختبارات متنوعة.</p>
-          <p style="margin:0;">مصممة بعناية لتثبيت الحفظ وتعزيز إتقانه، مع التركيز على متشابهات القرآن الكريم.</p>
+          <p style="margin:0 0 12px;" data-i18n="home.about_p1">«دربي لحفظ القرآن» منصة تفاعلية تهدف إلى مساعدة الجميع على حفظ كتاب الله ومراجعته، من خلال اختبارات متنوعة.</p>
+          <p style="margin:0;" data-i18n="home.about_p2">مصممة بعناية لتثبيت الحفظ وتعزيز إتقانه، مع التركيز على متشابهات القرآن الكريم.</p>
         </div>
         <div class="about-dua notranslate" translate="no">نسأل الله أن يجعل القرآن ربيع قلوبنا، ونور صدورنا، وأن يرزقنا حفظه وإتقانه والعمل به.</div>
         <div style="margin-top:14px;background:var(--green3);border-radius:12px;padding:12px 14px;text-align:center;">
@@ -304,7 +301,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <footer>
   <div class="footer-ayah notranslate" translate="no">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾</div>
   <div class="footer-ref notranslate" translate="no">سورة الحجر — آية 9</div>
-  <div class="footer-copy">© 2026<span id="copy-year"></span> دربي لحفظ القرآن — جميع الحقوق محفوظة</div>
+  <div class="footer-copy">© 2026<span id="copy-year"></span> <span data-i18n="home.footer_copy">دربي لحفظ القرآن — جميع الحقوق محفوظة</span></div>
 </footer>
 
 <script>
@@ -530,9 +527,9 @@ const SOON_JUZ = {
 
 function card(href,name,meta,ok,surah){
   const s=(surah?surah+' ':'')+name+' '+meta;
-  if(!ok) return `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
+  if(!ok) return `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">${darbiT('home.card_soon_badge')}</span></div>`;
   const key=(href||'').replace('.html','');
-  return `<a href="${href}" class="quiz-card" data-s="${s}" data-key="${key}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><div class="card-levels"><span class="lvl-dot" data-lvl="easy" title="سهل">س</span><span class="lvl-dot" data-lvl="medium" title="متوسط">م</span><span class="lvl-dot" data-lvl="hard" title="صعب">ص</span></div><span class="card-badge badge-ok card-complete" style="display:none">✓ مكتمل</span></a>`;
+  return `<a href="${href}" class="quiz-card" data-s="${s}" data-key="${key}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><div class="card-levels"><span class="lvl-dot" data-lvl="easy" title="${darbiT('home.lvl_easy_title')}">${darbiT('level.easy_name').slice(0,1)}</span><span class="lvl-dot" data-lvl="medium" title="${darbiT('home.lvl_medium_title')}">${darbiT('level.medium_name').slice(0,1)}</span><span class="lvl-dot" data-lvl="hard" title="${darbiT('home.lvl_hard_title')}">${darbiT('level.hard_name').slice(0,1)}</span></div><span class="card-badge badge-ok card-complete" style="display:none">${darbiT('home.card_complete_badge')}</span></a>`;
 }
 
 // مفاتيح التقدّم (نفس مفاتيح darbi_progress) اللي يغطيها مقطع واحد
@@ -567,14 +564,14 @@ function buildJuzRow(n){
 
   if(!meta){
     const s=SOON_JUZ[n];
-    const label=s?s[0]:'قريبًا';
+    const label=s?s[0]:darbiT('home.juz_soon');
     const startPage=s?s[1]:'';
     return `<div class="acc" id="${id}" data-state="soon">
   <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left"><div class="acc-left-top"><div class="juz-badge soon">الجزء ${n}</div><div class="juz-title notranslate" translate="no">${label}</div></div></div>
-    <div class="acc-right"><div class="juz-prog">قريبًا</div><span class="acc-arrow">▾</span></div>
+    <div class="acc-left"><div class="acc-left-top"><div class="juz-badge soon">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${label}</div></div></div>
+    <div class="acc-right"><div class="juz-prog">${darbiT('home.juz_soon')}</div><span class="acc-arrow">▾</span></div>
   </button>
-  <div class="acc-body"><div class="cards-grid">${card('',label.split('—')[0].trim(),startPage||'قريبًا',false)}</div></div>
+  <div class="acc-body"><div class="cards-grid">${card('',label.split('—')[0].trim(),startPage||darbiT('home.juz_soon'),false)}</div></div>
 </div>`;
   }
 
@@ -582,16 +579,16 @@ function buildJuzRow(n){
   meta.groups.forEach(g=>{ keys=keys.concat(groupPageKeys(g)); });
   const total=keys.length;
   const multi=meta.groups.length>1;
-  const countBadge = multi ? `<div class="juz-count">${meta.groups.length} سور</div>` : '';
+  const countBadge = multi ? `<div class="juz-count">${darbiT('home.juz_surahs_count',{n:meta.groups.length})}</div>` : '';
   const badgeClass='juz-badge'+(meta.amma?' amma':'');
 
   return `<div class="acc" id="${id}" data-state="built">
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
-      <div class="acc-left-top"><div class="${badgeClass}">الجزء ${n}</div><div class="juz-title notranslate" translate="no">${meta.title}</div>${countBadge}</div>
+      <div class="acc-left-top"><div class="${badgeClass}">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${meta.title}</div>${countBadge}</div>
       <div class="juz-bar-track"><div class="juz-bar-fill" id="juz${n}-bar" style="width:0%"></div></div>
     </div>
-    <div class="acc-right"><div class="juz-prog" id="juz${n}-prog">${total} متاح</div><span class="acc-arrow">▾</span></div>
+    <div class="acc-right"><div class="juz-prog" id="juz${n}-prog">${darbiT('home.juz_available_count',{n:total})}</div><span class="acc-arrow">▾</span></div>
   </button>
   <div class="acc-body">${buildAccBody(meta)}</div>
 </div>`;
@@ -651,7 +648,7 @@ function renderDarbiProgress(){
     const done=keys.filter(k=>darbiPageComplete(all[k])).length;
     const progEl=document.getElementById('juz'+n+'-prog');
     const barEl=document.getElementById('juz'+n+'-bar');
-    if(progEl && total>0) progEl.textContent = done+' / '+total+' مكتمل'+(done===total?' ✓':'');
+    if(progEl && total>0) progEl.textContent = darbiT('home.juz_completed_count',{done,total})+(done===total?' ✓':'');
     if(barEl) barEl.style.width = (total? Math.round(done/total*100):0)+'%';
   });
 
@@ -680,7 +677,7 @@ function renderDarbiProgress(){
     const fill=document.getElementById('hero-progress-fill');
     if(fill)fill.style.width=pct+'%';
     const text=document.getElementById('hero-progress-text');
-    if(text)text.textContent='أنجزت '+doneCount+' من '+totalPages+' صفحة ('+pct+'٪)';
+    if(text)text.textContent=darbiT('home.hero_progress_line',{done:doneCount,total:totalPages,pct:pct});
     let lastKey=null,lastTime=0;
     Object.keys(all).forEach(k=>{
       if(all[k]&&all[k].lastVisited){
@@ -689,10 +686,17 @@ function renderDarbiProgress(){
       }
     });
     const lv=document.getElementById('hero-last-visited');
-    if(lv&&lastKey)lv.textContent='آخر مراجعة: '+(nameByKey[lastKey]||lastKey);
+    if(lv&&lastKey)lv.textContent=darbiT('home.hero_last_visited',{name:(nameByKey[lastKey]||lastKey)});
   }
 }
 renderDarbiProgress();
+
+window.onDarbiLangChange = function(){
+  document.getElementById('main').innerHTML =
+    Array.from({length:30},(_,i)=>i+1).map(buildJuzRow).join('');
+  applyJuzFilters();
+  renderDarbiProgress();
+};
 
 
 function toggleAcc(btn){
@@ -778,10 +782,6 @@ if('serviceWorker' in navigator){
 .tools-lang-list button.lang-active{font-weight:700;}
 .tools-lang-list button .lang-check{margin-inline-start:auto;color:var(--green,#2E6B3E);font-weight:700;visibility:hidden;}
 .tools-lang-list button.lang-active .lang-check{visibility:visible;}
-#google_translate_element{display:none !important;}
-.goog-te-banner-frame.skiptranslate{display:none !important;}
-.goog-te-gadget{height:0;overflow:hidden;}
-body{top:0 !important;}
 .fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
 .fdbk-overlay.open{display:flex;}
 .fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
@@ -814,43 +814,36 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 </style>
 <div class="fdbk-overlay" id="fdbk-overlay">
   <div class="fdbk-modal">
-    <h3>💬 شاركنا رأيك</h3>
-    <label>نوع الملاحظة</label>
+    <h3 data-i18n="fdbk.title">💬 شاركنا رأيك</h3>
+    <label data-i18n="fdbk.type_label">نوع الملاحظة</label>
     <select id="fdbk-type">
-      <option>خطأ في النص القرآني</option>
-      <option>خطأ في السؤال أو الإجابة</option>
-      <option>مشكلة في التسجيل الصوتي</option>
-      <option>مشكلة تصميم أو عرض</option>
-      <option>اقتراح تحسين</option>
-      <option>أخرى</option>
+      <option data-i18n="fdbk.type_quran">خطأ في النص القرآني</option>
+      <option data-i18n="fdbk.type_question">خطأ في السؤال أو الإجابة</option>
+      <option data-i18n="fdbk.type_voice">مشكلة في التسجيل الصوتي</option>
+      <option data-i18n="fdbk.type_design">مشكلة تصميم أو عرض</option>
+      <option data-i18n="fdbk.type_suggestion">اقتراح تحسين</option>
+      <option data-i18n="fdbk.type_other">أخرى</option>
     </select>
-    <label>تفاصيل الملاحظة (اختياري)</label>
-    <textarea id="fdbk-note" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <label data-i18n="fdbk.note_label">تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" data-i18n-placeholder="fdbk.note_placeholder" placeholder="اكتب ملاحظتك هنا..."></textarea>
     <div class="fdbk-actions">
-      <button class="fdbk-send" onclick="fdbkSend()">إرسال عبر واتساب</button>
-      <button class="fdbk-cancel" onclick="fdbkClose()">إلغاء</button>
+      <button class="fdbk-send" onclick="fdbkSend()" data-i18n="fdbk.send">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()" data-i18n="fdbk.cancel">إلغاء</button>
     </div>
   </div>
 </div>
 <div class="qr-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
   <div class="qr-modal">
-    <div class="qr-title">🔲 امسح الكود لفتح الصفحة</div>
-    <img class="qr-img" id="qr-img" src="" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
-    <div class="qr-caption">امسح الكود لفتح الموقع على موبايلك<br><span class="qr-caption-en">Scan to open Quran Darbi</span></div>
+    <div class="qr-title" data-i18n="qr.title">🔲 امسح الكود لفتح الصفحة</div>
+    <img class="qr-img" id="qr-img" src="" data-i18n-alt="qr.img_alt" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
+    <div class="qr-caption" data-i18n="qr.caption">امسح الكود لفتح الموقع على موبايلك</div>
     <div class="qr-url notranslate" translate="no" id="qr-url-text"></div>
     <div class="qr-actions">
-      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn">📋 نسخ الرابط</button>
-      <button class="qr-close-btn" onclick="closeQR()">إغلاق</button>
+      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn" data-i18n="qr.copy_btn">📋 نسخ الرابط</button>
+      <button class="qr-close-btn" onclick="closeQR()" data-i18n="qr.close_btn">إغلاق</button>
     </div>
   </div>
 </div>
-<div id="google_translate_element"></div>
-<script>
-function googleTranslateElementInit(){
-  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
-}
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 <script>
 function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-fab').classList.toggle('open');}
 function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
@@ -878,28 +871,9 @@ function closeQR(){document.getElementById('qr-overlay').classList.remove('open'
 function copyQRLink(){
   var url=location.href;
   var b=document.getElementById('qr-copy-btn');
-  navigator.clipboard.writeText(url).then(function(){b.textContent='✅ تم النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);}).catch(function(){b.textContent='تعذر النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);});
+  navigator.clipboard.writeText(url).then(function(){b.textContent=darbiT('qr.copied');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);}).catch(function(){b.textContent=darbiT('qr.copy_failed');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);});
 }
 
-function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
-function langApplyLabel(){
-  var map={ar:'العربية',en:'English',fr:'Français',tr:'Türkçe',fa:'فارسی',de:'Deutsch',es:'Español'};
-  var c=langCookie();var code='ar';
-  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
-  var cur=document.getElementById('tools-lang-cur');
-  if(cur)cur.textContent=map[code]||map.ar;
-  document.querySelectorAll('#tools-lang-list button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
-}
-function langSelect(code){
-  if(code==='ar'){
-    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
-  }else{
-    document.cookie='googtrans=/ar/'+code+'; path=/;';
-  }
-  location.reload();
-}
-langApplyLabel();
 </script>
 </body>
 </html>
