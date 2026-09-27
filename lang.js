@@ -213,7 +213,7 @@ en: {
   'nav.back':'← Back',
 
   // ===== Home page =====
-  'home.title':'Darbi — Quran Memorization',
+  'home.title':'Quran Darbi — Memorization',
   'home.subtitle':'Test your memorization page by page — interactive quizzes to review and reinforce it',
   'home.recite_btn':'🎤 Test your recitation',
   'home.progress_btn':'📊 My Progress',
