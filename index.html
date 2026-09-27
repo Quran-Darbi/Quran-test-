@@ -74,8 +74,7 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .hero::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);pointer-events:none;}
 .hero::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06);pointer-events:none;}
 /* زخرفة نقاط */
-.hero-dots{position:absolute;top:16px;left:16px;color:rgba(255,255,255,0.15);font-size:1.4rem;letter-spacing:6px;pointer-events:none;}
-.hero-dots2{position:absolute;bottom:16px;right:16px;color:rgba(255,255,255,0.15);font-size:1.4rem;letter-spacing:6px;pointer-events:none;}
+.hero-stars-bottom{text-align:center;color:rgba(255,255,255,0.18);font-size:1.4rem;letter-spacing:6px;pointer-events:none;margin-top:20px;}
 .hero-inner{position:relative;z-index:1;}
 .hero-bismillah{font-family:'Scheherazade New',serif;font-size:1.1rem;color:rgba(255,255,255,0.75);margin-bottom:10px;letter-spacing:1px;}
 .hero-title{font-family:'Scheherazade New',serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:6px;}
@@ -87,9 +86,10 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 /* زر التلاوة */
 .hero-rec-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--green);border:none;border-radius:22px;padding:10px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.15);transition:transform .2s,box-shadow .2s;cursor:pointer;}
 .hero-rec-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.2);}
-.hero-btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.hero-progress-btn{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.16);color:#fff;border:1.5px solid rgba(255,255,255,0.55);border-radius:22px;padding:10px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;cursor:pointer;}
+.hero-btn-row{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.hero-progress-btn{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:rgba(255,255,255,0.16);color:#fff;border:1.5px solid rgba(255,255,255,0.55);border-radius:18px;padding:9px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;cursor:pointer;}
 .hero-progress-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,0.26);}
+.hero-progress-btn-sub{font-size:0.68rem;font-weight:400;opacity:0.85;text-decoration:underline;}
 /* إحصائيات */
 .hero-stats{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
 .hstat{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:6px 14px;text-align:center;color:rgba(255,255,255,0.9);}
@@ -149,6 +149,10 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .card-badge{display:inline-block;font-size:0.66rem;padding:2px 7px;border-radius:7px;margin-top:2px;}
 .badge-ok{background:#E4F4DE;color:#2D5A27;border:1px solid #B0D8A8;}
 .badge-soon{background:var(--green3);color:var(--soft);border:1px solid var(--border);}
+/* مستويات كل بطاقة اختبار (سهل/متوسط/صعب) + علامة الاكتمال الكامل */
+.card-levels{display:flex;gap:4px;margin-top:2px;}
+.lvl-dot{width:17px;height:17px;border-radius:50%;font-size:0.6rem;display:flex;align-items:center;justify-content:center;background:var(--green3);color:var(--soft);border:1px solid var(--border);line-height:1;}
+.lvl-dot.done{background:var(--green);color:#fff;border-color:var(--green);}
 
 /* ===== FOOTER ===== */
 footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid var(--border);}
@@ -223,8 +227,6 @@ document.addEventListener('DOMContentLoaded',function(){
 </nav>
 
 <div class="hero">
-  <div class="hero-dots">✦ ✦ ✦</div>
-  <div class="hero-dots2">✦ ✦ ✦</div>
   <div class="hero-inner">
     <div class="hero-bismillah notranslate" translate="no">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     <div class="hero-title">دربي لحفظ القرآن</div>
@@ -235,11 +237,14 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
     <div class="hero-btn-row">
       <a href="recitation.html" class="hero-rec-btn">🎤 اختبر حفظك</a>
-      <a href="progress.html" class="hero-progress-btn">📊 تقدّمي</a>
+      <a href="progress.html" class="hero-progress-btn">
+        <span>📊 تقدّمي</span>
+        <span class="hero-progress-btn-sub">تقدّمي بالتفصيل ◀</span>
+      </a>
     </div>
     <div class="hero-stats">
       <div class="hstat"><b>156</b><small>اختباراً متاحاً</small></div>
-      <div class="hstat"><b>4</b><small>أجزاء</small></div>
+      <div class="hstat"><b>10</b><small>أجزاء</small></div>
       <div class="hstat"><b>109</b><small>سورة</small></div>
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
@@ -248,8 +253,8 @@ document.addEventListener('DOMContentLoaded',function(){
       </div>
       <div style="font-size:0.78rem;color:rgba(255,255,255,0.9);" id="hero-progress-text"></div>
       <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:4px;" id="hero-last-visited"></div>
-      <div style="margin-top:6px;"><a href="progress.html" style="color:#fff;font-size:0.72rem;text-decoration:underline;">تقدّمي بالتفصيل ◀</a></div>
     </div>
+    <div class="hero-stars-bottom">✦ ✦ ✦</div>
   </div>
 </div>
 
@@ -473,19 +478,19 @@ const JUZ_GROUPS = {
       ] },
   15:{ title:'الإسراء، الكهف', groups:[
         { kind:'soon', name:'الإسراء' },
-        { kind:'range', arr:kahfPages, from:0, to:9, name:'سورة الكهف (1–74)', surah:'الكهف', note:'سورة الكهف تكمل في الجزء 16 ←', noteTarget:16 }
+        { kind:'range', arr:kahfPages, from:0, to:9, name:'سورة الكهف (١–٧٤)', surah:'الكهف', note:'سورة الكهف تكمل في الجزء ١٦ ←', noteTarget:16 }
       ] },
   16:{ title:'الكهف، مريم، طه', groups:[
-        { kind:'range', arr:kahfPages, from:9, to:12, name:'سورة الكهف (تتمة 75–110)', surah:'الكهف', note:'◄ سورة الكهف بدأت في الجزء 15', noteTarget:15 },
+        { kind:'range', arr:kahfPages, from:9, to:12, name:'سورة الكهف (تتمة ٧٥–١١٠)', surah:'الكهف', note:'◄ سورة الكهف بدأت في الجزء ١٥', noteTarget:15 },
         { kind:'full', arr:maryamPages, name:'مريم', surah:'مريم' },
         { kind:'full', arr:tahaPages, name:'طه', surah:'طه' }
       ] },
   22:{ title:'الأحزاب، يس', groups:[
         { kind:'soon', name:'الأحزاب' },
-        { kind:'range', arr:yaseenPages, from:0, to:2, name:'سورة يس (1–27)', surah:'يس', note:'سورة يس تكمل في الجزء 23 ←', noteTarget:23 }
+        { kind:'range', arr:yaseenPages, from:0, to:2, name:'سورة يس (١–٢٧)', surah:'يس', note:'سورة يس تكمل في الجزء ٢٣ ←', noteTarget:23 }
       ] },
   23:{ title:'يس، الزمر', groups:[
-        { kind:'range', arr:yaseenPages, from:2, to:6, name:'سورة يس (28–83)', surah:'يس', note:'◄ سورة يس بدأت في الجزء 22', noteTarget:22 },
+        { kind:'range', arr:yaseenPages, from:2, to:6, name:'سورة يس (٢٨–٨٣)', surah:'يس', note:'◄ سورة يس بدأت في الجزء ٢٢', noteTarget:22 },
         { kind:'soon', name:'الزمر' }
       ] },
   27:{ title:'الرحمن، الواقعة', groups:[
@@ -525,9 +530,9 @@ const SOON_JUZ = {
 
 function card(href,name,meta,ok,surah){
   const s=(surah?surah+' ':'')+name+' '+meta;
-  return ok
-    ? `<a href="${href}" class="quiz-card" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-ok">✓</span></a>`
-    : `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
+  if(!ok) return `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
+  const key=(href||'').replace('.html','');
+  return `<a href="${href}" class="quiz-card" data-s="${s}" data-key="${key}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><div class="card-levels"><span class="lvl-dot" data-lvl="easy" title="سهل">س</span><span class="lvl-dot" data-lvl="medium" title="متوسط">م</span><span class="lvl-dot" data-lvl="hard" title="صعب">ص</span></div><span class="card-badge badge-ok card-complete" style="display:none">✓ مكتمل</span></a>`;
 }
 
 // مفاتيح التقدّم (نفس مفاتيح darbi_progress) اللي يغطيها مقطع واحد
@@ -648,6 +653,18 @@ function renderDarbiProgress(){
     const barEl=document.getElementById('juz'+n+'-bar');
     if(progEl && total>0) progEl.textContent = done+' / '+total+' مكتمل'+(done===total?' ✓':'');
     if(barEl) barEl.style.width = (total? Math.round(done/total*100):0)+'%';
+  });
+
+  // تحديث كل بطاقة اختبار: نقط المستويات التلاتة + علامة الاكتمال الكامل
+  document.querySelectorAll('.quiz-card[data-key]').forEach(cardEl=>{
+    const key=cardEl.dataset.key;
+    const entry=all[key];
+    cardEl.querySelectorAll('.lvl-dot').forEach(dot=>{
+      const lvl=dot.dataset.lvl;
+      dot.classList.toggle('done', !!(entry && entry[lvl] && entry[lvl].done));
+    });
+    const badge=cardEl.querySelector('.card-complete');
+    if(badge) badge.style.display = darbiPageComplete(entry) ? '' : 'none';
   });
 
   if(!Object.keys(all).length)return;
