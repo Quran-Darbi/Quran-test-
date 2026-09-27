@@ -87,6 +87,9 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 /* زر التلاوة */
 .hero-rec-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--green);border:none;border-radius:22px;padding:10px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.15);transition:transform .2s,box-shadow .2s;cursor:pointer;}
 .hero-rec-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.2);}
+.hero-btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.hero-progress-btn{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.16);color:#fff;border:1.5px solid rgba(255,255,255,0.55);border-radius:22px;padding:10px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;cursor:pointer;}
+.hero-progress-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,0.26);}
 /* إحصائيات */
 .hero-stats{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
 .hstat{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:6px 14px;text-align:center;color:rgba(255,255,255,0.9);}
@@ -98,6 +101,13 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .search-input{font-family:'Amiri',serif;font-size:1rem;width:100%;max-width:580px;display:block;margin:0 auto;padding:10px 16px 10px 40px;border:1.5px solid var(--border);border-radius:24px;background:var(--card);color:var(--text);outline:none;text-align:right;direction:rtl;transition:border-color .2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235A7A55' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 14px center;}
 .search-input:focus{border-color:var(--green);}
 .search-input::placeholder{color:var(--soft);opacity:.7;}
+
+/* ===== JUZ FILTER ===== */
+.juz-filter-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:2px 16px 10px;}
+.juz-filter-chip{font-family:inherit;font-size:0.82rem;padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);color:var(--soft);cursor:pointer;transition:.18s;}
+.juz-filter-chip:hover{border-color:var(--green2);color:var(--green);}
+.juz-filter-chip.active{background:var(--green);border-color:var(--green);color:#fff;}
+.juz-filter-empty{display:none;text-align:center;color:var(--soft);font-size:0.9rem;padding:20px 12px;}
 
 /* ===== MAIN ===== */
 .main{max-width:840px;margin:14px auto 0;padding:0 13px;}
@@ -223,12 +233,13 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
       <div class="ayah-ref notranslate" translate="no">سورة المزمل — آية 4</div>
     </div>
-    <div>
+    <div class="hero-btn-row">
       <a href="recitation.html" class="hero-rec-btn">🎤 اختبر حفظك</a>
+      <a href="progress.html" class="hero-progress-btn">📊 تقدّمي</a>
     </div>
     <div class="hero-stats">
       <div class="hstat"><b>156</b><small>اختباراً متاحاً</small></div>
-      <div class="hstat"><b>4</b><small>أجزاء</small></div>
+      <div class="hstat"><b>10</b><small>أجزاء</small></div>
       <div class="hstat"><b>109</b><small>سورة</small></div>
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
@@ -249,12 +260,19 @@ document.addEventListener('DOMContentLoaded',function(){
   </div>
 </div>
 
+<div class="juz-filter-row">
+  <button type="button" class="juz-filter-chip active" data-mode="all" onclick="setJuzFilter('all',this)">الكل</button>
+  <button type="button" class="juz-filter-chip" data-mode="complete" onclick="setJuzFilter('complete',this)">مكتمل</button>
+  <button type="button" class="juz-filter-chip" data-mode="none" onclick="setJuzFilter('none',this)">لم يكتمل بعد</button>
+</div>
+
 <div class="search-wrap">
   <input class="search-input" type="text" placeholder="ابحث عن سورة أو صفحة..." oninput="doSearch(this.value)" />
 </div>
 
 <div class="main" id="main">
 </div>
+<div class="juz-filter-empty" id="juz-filter-empty">لا يوجد أجزاء مطابقة لهذا الفلتر حاليًا.</div>
 
 <!-- عن المشروع -->
 <div id="about"></div>
@@ -438,6 +456,9 @@ const ammaData=[
 
 // ===== تجميع الصفحات/السور حسب الجزء الفعلي (حدود الأجزاء الثلاثين القياسية للمصحف العثماني) =====
 // كل عنصر في groups يمثل مقطعًا واحدًا (سورة كاملة، أو جزء من سورة ممتدة، أو "قريبًا")
+let currentJuzFilter='all';
+let currentSearchQ='';
+
 const JUZ_GROUPS = {
   1: { title:'الفاتحة، البقرة', groups:[
         { kind:'single', href:'alfatiha.html', name:'الفاتحة', meta:'الآيات 1–7', key:'alfatiha' },
@@ -452,19 +473,19 @@ const JUZ_GROUPS = {
       ] },
   15:{ title:'الإسراء، الكهف', groups:[
         { kind:'soon', name:'الإسراء' },
-        { kind:'range', arr:kahfPages, from:0, to:9, name:'سورة الكهف (1–74)', surah:'الكهف', note:'سورة الكهف تكمل في الجزء 16 ←', noteTarget:16 }
+        { kind:'range', arr:kahfPages, from:0, to:9, name:'سورة الكهف (١–٧٤)', surah:'الكهف', note:'سورة الكهف تكمل في الجزء ١٦ ←', noteTarget:16 }
       ] },
   16:{ title:'الكهف، مريم، طه', groups:[
-        { kind:'range', arr:kahfPages, from:9, to:12, name:'سورة الكهف (تتمة 75–110)', surah:'الكهف', note:'◄ سورة الكهف بدأت في الجزء 15', noteTarget:15 },
+        { kind:'range', arr:kahfPages, from:9, to:12, name:'سورة الكهف (تتمة ٧٥–١١٠)', surah:'الكهف', note:'◄ سورة الكهف بدأت في الجزء ١٥', noteTarget:15 },
         { kind:'full', arr:maryamPages, name:'مريم', surah:'مريم' },
         { kind:'full', arr:tahaPages, name:'طه', surah:'طه' }
       ] },
   22:{ title:'الأحزاب، يس', groups:[
         { kind:'soon', name:'الأحزاب' },
-        { kind:'range', arr:yaseenPages, from:0, to:2, name:'سورة يس (1–27)', surah:'يس', note:'سورة يس تكمل في الجزء 23 ←', noteTarget:23 }
+        { kind:'range', arr:yaseenPages, from:0, to:2, name:'سورة يس (١–٢٧)', surah:'يس', note:'سورة يس تكمل في الجزء ٢٣ ←', noteTarget:23 }
       ] },
   23:{ title:'يس، الزمر', groups:[
-        { kind:'range', arr:yaseenPages, from:2, to:6, name:'سورة يس (28–83)', surah:'يس', note:'◄ سورة يس بدأت في الجزء 22', noteTarget:22 },
+        { kind:'range', arr:yaseenPages, from:2, to:6, name:'سورة يس (٢٨–٨٣)', surah:'يس', note:'◄ سورة يس بدأت في الجزء ٢٢', noteTarget:22 },
         { kind:'soon', name:'الزمر' }
       ] },
   27:{ title:'الرحمن، الواقعة', groups:[
@@ -543,7 +564,7 @@ function buildJuzRow(n){
     const s=SOON_JUZ[n];
     const label=s?s[0]:'قريبًا';
     const startPage=s?s[1]:'';
-    return `<div class="acc" id="${id}">
+    return `<div class="acc" id="${id}" data-state="soon">
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left"><div class="acc-left-top"><div class="juz-badge soon">الجزء ${n}</div><div class="juz-title notranslate" translate="no">${label}</div></div></div>
     <div class="acc-right"><div class="juz-prog">قريبًا</div><span class="acc-arrow">▾</span></div>
@@ -559,7 +580,7 @@ function buildJuzRow(n){
   const countBadge = multi ? `<div class="juz-count">${meta.groups.length} سور</div>` : '';
   const badgeClass='juz-badge'+(meta.amma?' amma':'');
 
-  return `<div class="acc" id="${id}">
+  return `<div class="acc" id="${id}" data-state="none">
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
       <div class="acc-left-top"><div class="${badgeClass}">الجزء ${n}</div><div class="juz-title notranslate" translate="no">${meta.title}</div>${countBadge}</div>
@@ -626,7 +647,14 @@ function renderDarbiProgress(){
     const barEl=document.getElementById('juz'+n+'-bar');
     if(progEl && total>0) progEl.textContent = done+' / '+total+' مكتمل'+(done===total?' ✓':'');
     if(barEl) barEl.style.width = (total? Math.round(done/total*100):0)+'%';
+    const accEl=document.getElementById('acc-juz'+n);
+    if(accEl){
+      let state='none';
+      if(total>0) state = (done===total) ? 'complete' : (done>0 ? 'partial' : 'none');
+      accEl.dataset.state = state;
+    }
   });
+  applyJuzFilters();
 
   if(!Object.keys(all).length)return;
 
@@ -669,14 +697,38 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function doSearch(val){
-  const q=val.trim();
+  currentSearchQ=(val||'').trim();
+  applyJuzFilters();
+}
+
+function setJuzFilter(mode,btn){
+  currentJuzFilter=mode;
+  document.querySelectorAll('.juz-filter-chip').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  applyJuzFilters();
+}
+
+function applyJuzFilters(){
+  const q=currentSearchQ;
+  let visibleCount=0;
   document.querySelectorAll('.acc').forEach(acc=>{
     const cards=acc.querySelectorAll('.quiz-card');
     let any=false;
     cards.forEach(c=>{const m=!q||(c.dataset.s||c.innerText).includes(q);c.style.display=m?'':'none';if(m)any=true;});
-    acc.style.display=any||!q?'':'none';
-    if(q&&any){acc.querySelector('.acc-body').classList.add('open');acc.querySelector('.acc-arrow').classList.add('open');}
+    const matchesSearch = !q || any;
+
+    const state=acc.dataset.state||'none';
+    let matchesFilter=true;
+    if(currentJuzFilter==='complete') matchesFilter = (state==='complete');
+    else if(currentJuzFilter==='none') matchesFilter = (state!=='complete');
+
+    const show = matchesSearch && matchesFilter;
+    acc.style.display = show ? '' : 'none';
+    if(show) visibleCount++;
+    if(q && any){acc.querySelector('.acc-body').classList.add('open');acc.querySelector('.acc-arrow').classList.add('open');}
   });
+  const emptyEl=document.getElementById('juz-filter-empty');
+  if(emptyEl) emptyEl.style.display = visibleCount===0 ? 'block' : 'none';
 }
 
 function shareApp(){var url=location.href;var t=document.title||'دربي لحفظ القرآن';if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}
