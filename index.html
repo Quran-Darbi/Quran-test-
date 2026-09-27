@@ -106,17 +106,26 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .acc{margin-bottom:8px;border-radius:14px;border:1px solid var(--border);overflow:hidden;background:var(--card);box-shadow:0 1px 6px var(--shadow);}
 .acc-btn{width:100%;background:none;border:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-family:inherit;color:var(--text);transition:background .18s;gap:8px;text-align:right;}
 .acc-btn:hover{background:var(--green3);}
-.acc-left{display:flex;align-items:center;gap:8px;}
+.acc-left{display:flex;flex-direction:column;align-items:flex-start;gap:5px;flex:1;min-width:0;}
+.acc-left-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
 .acc-right{display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .juz-badge{background:var(--green);color:#fff;font-family:'Scheherazade New',serif;font-size:0.82rem;padding:3px 11px;border-radius:10px;white-space:nowrap;}
 .juz-badge.amma{background:#1A6A1A;}
-html[data-theme="dark"] .juz-badge:not(.amma){background:#2E6B3E;}
+.juz-badge.soon{background:var(--border);color:var(--soft);}
+html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .juz-title{font-family:'Scheherazade New',serif;font-size:1rem;color:var(--green);font-weight:700;}
+.juz-count{font-size:0.62rem;color:var(--soft);background:var(--green3);border:1px solid var(--border);border-radius:7px;padding:1px 7px;white-space:nowrap;}
+.juz-bar-track{width:100%;max-width:260px;height:5px;background:var(--border);border-radius:4px;overflow:hidden;}
+.juz-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:4px;transition:width .4s;}
 .juz-prog{font-size:0.7rem;color:var(--soft);background:var(--green3);border:1px solid var(--border);border-radius:8px;padding:2px 8px;white-space:nowrap;}
 .acc-arrow{font-size:0.85rem;color:var(--gold);transition:transform .22s;display:inline-block;line-height:1;}
 .acc-arrow.open{transform:rotate(180deg);}
 .acc-body{display:none;padding:10px 10px 12px;border-top:1px solid var(--border);background:var(--bg);}
 .acc-body.open{display:block;}
+.surah-name{font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--green);font-weight:700;margin:10px 0 6px;}
+.surah-name:first-child{margin-top:2px;}
+.note-btn{margin-top:9px;width:100%;background:var(--green3);border:1px dashed var(--green2);color:var(--green);font-size:0.78rem;padding:8px;border-radius:10px;cursor:pointer;text-align:center;font-family:inherit;}
+.note-btn:hover{opacity:.85;}
 
 /* ===== CARDS ===== */
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:7px;}
@@ -219,7 +228,7 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
     <div class="hero-stats">
       <div class="hstat"><b>156</b><small>اختباراً متاحاً</small></div>
-      <div class="hstat"><b>4</b><small>أجزاء</small></div>
+      <div class="hstat"><b>10</b><small>أجزاء</small></div>
       <div class="hstat"><b>109</b><small>سورة</small></div>
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
@@ -245,333 +254,6 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 
 <div class="main" id="main">
-
-<!-- الفاتحة -->
-<div class="acc" id="acc-fatiha">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge" style="background:var(--gold);color:#fff;">الفاتحة</div>
-      <div class="juz-title notranslate" translate="no">أم الكتاب</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="fatiha-prog">1 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid">
-      <a href="alfatiha.html" class="quiz-card" data-s="الفاتحة أم الكتاب"><div class="card-bar"></div><div class="card-name notranslate" translate="no">الفاتحة</div><div class="card-meta">الآيات 1–7</div><span class="card-badge badge-ok">✓ متاح</span></a>
-    </div>
-  </div>
-</div>
-
-<!-- البقرة -->
-<div class="acc" id="acc-baqara">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 1–3</div>
-      <div class="juz-title notranslate" translate="no">سورة البقرة</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="baqara-prog">48 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="baqara-grid"></div>
-  </div>
-</div>
-
-<!-- الكهف -->
-<div class="acc" id="acc-kahf">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 15–16</div>
-      <div class="juz-title notranslate" translate="no">سورة الكهف</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="kahf-prog">12 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="kahf-grid"></div>
-  </div>
-</div>
-
-<!-- مريم -->
-<div class="acc" id="acc-maryam">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 16</div>
-      <div class="juz-title notranslate" translate="no">سورة مريم</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="maryam-prog">8 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="maryam-grid"></div>
-  </div>
-</div>
-
-<!-- طه -->
-<div class="acc" id="acc-taha">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 16</div>
-      <div class="juz-title notranslate" translate="no">سورة طه</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="taha-prog">10 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="taha-grid"></div>
-  </div>
-</div>
-
-<!-- يس -->
-<div class="acc" id="acc-yaseen">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 22–23</div>
-      <div class="juz-title notranslate" translate="no">سورة يس</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="yaseen-prog">6 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="yaseen-grid"></div>
-  </div>
-</div>
-
-<!-- الرحمن -->
-<div class="acc" id="acc-arrahman">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 27</div>
-      <div class="juz-title notranslate" translate="no">سورة الرحمن</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="arrahman-prog">4 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="arrahman-grid"></div>
-  </div>
-</div>
-
-<!-- الواقعة -->
-<div class="acc" id="acc-alwaqiah">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 27</div>
-      <div class="juz-title notranslate" translate="no">سورة الواقعة</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="alwaqiah-prog">4 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="alwaqiah-grid"></div>
-  </div>
-</div>
-
-<!-- الملك -->
-<div class="acc" id="acc-almulk">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة الملك</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="almulk-prog">3 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="almulk-grid"></div>
-  </div>
-</div>
-
-
-<!-- القلم -->
-<div class="acc" id="acc-alqalam">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة القلم</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="alqalam-prog">3 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="alqalam-grid"></div>
-  </div>
-</div>
-
-<!-- الحاقة -->
-<div class="acc" id="acc-alhaqqa">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة الحاقة</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="alhaqqa-prog">3 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="alhaqqa-grid"></div>
-  </div>
-</div>
-
-<!-- المعارج -->
-<div class="acc" id="acc-almaarij">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة المعارج</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="almaarij-prog">3 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="almaarij-grid"></div>
-  </div>
-</div>
-<!-- نوح -->
-<div class="acc" id="acc-nuh">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة نوح</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="nuh-prog">2 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="nuh-grid"></div>
-  </div>
-</div>
-
-<!-- الجن -->
-<div class="acc" id="acc-aljinn">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة الجن</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="aljinn-prog">2 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="aljinn-grid"></div>
-  </div>
-</div>
-<div class="acc" id="acc-almuzzammil">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة المزمل</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="almuzzammil-prog">2 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="almuzzammil-grid"></div>
-  </div>
-</div>
-
-<!-- المدثر -->
-<div class="acc" id="acc-almudaththir">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة المدثر</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="almudaththir-prog">3 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="almudaththir-grid"></div>
-  </div>
-</div>
-
-<!-- القيامة -->
-<div class="acc" id="acc-alqiyama">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة القيامة</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="alqiyama-prog">2 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="alqiyama-grid"></div>
-  </div>
-</div>
-
-<!-- الإنسان -->
-<div class="acc" id="acc-alinsan">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge">الجزء 29</div>
-      <div class="juz-title notranslate" translate="no">سورة الإنسان</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="alinsan-prog">3 متاح</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="alinsan-grid"></div>
-  </div>
-</div>
-
-<!-- جزء عمّ -->
-<div class="acc" id="acc-amma">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left">
-      <div class="juz-badge amma">الجزء 30</div>
-      <div class="juz-title notranslate" translate="no">جزء عمّ</div>
-    </div>
-    <div class="acc-right">
-      <div class="juz-prog" id="amma-prog">37 / 37 مكتمل ✓</div>
-      <span class="acc-arrow">▾</span>
-    </div>
-  </button>
-  <div class="acc-body">
-    <div class="cards-grid" id="amma-grid"></div>
-  </div>
-</div>
-
-<!-- الأجزاء القادمة -->
-<div id="remaining"></div>
-
 </div>
 
 <!-- عن المشروع -->
@@ -754,21 +436,71 @@ const ammaData=[
   ['alnnas.html','الناس','6 آيات',true],
 ];
 
-const remainingJuz=[
-  ['4','آل عمران — النساء','ص 63'],['5','النساء (تابع)','ص 83'],
-  ['6','النساء — المائدة','ص 102'],['7','المائدة — الأنعام','ص 121'],
-  ['8','الأنعام — الأعراف','ص 142'],['9','الأعراف — الأنفال','ص 163'],
-  ['10','الأنفال — التوبة','ص 182'],['11','التوبة — هود','ص 201'],
-  ['12','هود — يوسف','ص 221'],['13','يوسف — إبراهيم','ص 241'],
-  ['14','الحجر — النحل','ص 262'],['15','الإسراء','ص 282'],
-  ['17','الأنبياء — الحج','ص 322'],
-  ['18','المؤمنون — الفرقان','ص 342'],['19','الفرقان — النمل','ص 362'],
-  ['20','النمل — العنكبوت','ص 382'],['21','العنكبوت — الأحزاب','ص 402'],
-  ['22','الأحزاب — يس','ص 421'],['23','يس — الزمر','ص 442'],
-  ['24','الزمر — فصلت','ص 462'],['25','فصلت — الجاثية','ص 482'],
-  ['26','الأحقاف — الذاريات','ص 502'],
-  ['28','المجادلة — التحريم','ص 542'],
-];
+// ===== تجميع الصفحات/السور حسب الجزء الفعلي (حدود الأجزاء الثلاثين القياسية للمصحف العثماني) =====
+// كل عنصر في groups يمثل مقطعًا واحدًا (سورة كاملة، أو جزء من سورة ممتدة، أو "قريبًا")
+const JUZ_GROUPS = {
+  1: { title:'الفاتحة، البقرة', groups:[
+        { kind:'single', href:'alfatiha.html', name:'الفاتحة', meta:'الآيات 1–7', key:'alfatiha' },
+        { kind:'range', arr:baqaraPages, from:0, to:20, name:'سورة البقرة (البداية)', surah:'البقرة' }
+      ] },
+  2: { title:'البقرة', groups:[
+        { kind:'range', arr:baqaraPages, from:20, to:40, name:'سورة البقرة (يتبع)', surah:'البقرة' }
+      ] },
+  3: { title:'البقرة، آل عمران', groups:[
+        { kind:'range', arr:baqaraPages, from:40, to:48, name:'سورة البقرة (ختام الجزء)', surah:'البقرة' },
+        { kind:'soon', name:'آل عمران' }
+      ] },
+  15:{ title:'الإسراء، الكهف', groups:[
+        { kind:'soon', name:'الإسراء' },
+        { kind:'range', arr:kahfPages, from:0, to:9, name:'سورة الكهف (١–٧٤)', surah:'الكهف', note:'سورة الكهف تكمل في الجزء ١٦ ←', noteTarget:16 }
+      ] },
+  16:{ title:'الكهف، مريم، طه', groups:[
+        { kind:'range', arr:kahfPages, from:9, to:12, name:'سورة الكهف (تتمة ٧٥–١١٠)', surah:'الكهف', note:'◄ سورة الكهف بدأت في الجزء ١٥', noteTarget:15 },
+        { kind:'full', arr:maryamPages, name:'مريم', surah:'مريم' },
+        { kind:'full', arr:tahaPages, name:'طه', surah:'طه' }
+      ] },
+  22:{ title:'الأحزاب، يس', groups:[
+        { kind:'soon', name:'الأحزاب' },
+        { kind:'range', arr:yaseenPages, from:0, to:2, name:'سورة يس (١–٢٧)', surah:'يس', note:'سورة يس تكمل في الجزء ٢٣ ←', noteTarget:23 }
+      ] },
+  23:{ title:'يس، الزمر', groups:[
+        { kind:'range', arr:yaseenPages, from:2, to:6, name:'سورة يس (٢٨–٨٣)', surah:'يس', note:'◄ سورة يس بدأت في الجزء ٢٢', noteTarget:22 },
+        { kind:'soon', name:'الزمر' }
+      ] },
+  27:{ title:'الرحمن، الواقعة', groups:[
+        { kind:'full', arr:arrahmanPages, name:'الرحمن', surah:'الرحمن' },
+        { kind:'full', arr:alwaqiahPages, name:'الواقعة', surah:'الواقعة' }
+      ] },
+  29:{ title:'الملك وسور قصار', groups:[
+        { kind:'full', arr:almulkPages, name:'الملك', surah:'الملك' },
+        { kind:'full', arr:alqalamPages, name:'القلم', surah:'القلم' },
+        { kind:'full', arr:alhaqqaPages, name:'الحاقة', surah:'الحاقة' },
+        { kind:'full', arr:almaarijPages, name:'المعارج', surah:'المعارج' },
+        { kind:'full', arr:nuhPages, name:'نوح', surah:'نوح' },
+        { kind:'full', arr:aljinnPages, name:'الجن', surah:'الجن' },
+        { kind:'full', arr:almuzzammilPages, name:'المزمل', surah:'المزمل' },
+        { kind:'full', arr:almudaththirPages, name:'المدثر', surah:'المدثر' },
+        { kind:'full', arr:alqiyamaPages, name:'القيامة', surah:'القيامة' },
+        { kind:'full', arr:alinsanPages, name:'الإنسان', surah:'الإنسان' }
+      ] },
+  30:{ title:'جزء عمّ', amma:true, groups:[ { kind:'amma' } ] }
+};
+
+// الأجزاء اللي لسه معملهاش صفحات خالص (بنفس بيانات القائمة القديمة "الأجزاء القادمة")
+const SOON_JUZ = {
+  4:['آل عمران — النساء','ص 63'], 5:['النساء (تابع)','ص 83'],
+  6:['النساء — المائدة','ص 102'], 7:['المائدة — الأنعام','ص 121'],
+  8:['الأنعام — الأعراف','ص 142'], 9:['الأعراف — الأنفال','ص 163'],
+  10:['الأنفال — التوبة','ص 182'], 11:['التوبة — هود','ص 201'],
+  12:['هود — يوسف','ص 221'], 13:['يوسف — إبراهيم','ص 241'],
+  14:['الحجر — النحل','ص 262'],
+  17:['الأنبياء — الحج','ص 322'],
+  18:['المؤمنون — الفرقان','ص 342'], 19:['الفرقان — النمل','ص 362'],
+  20:['النمل — العنكبوت','ص 382'], 21:['العنكبوت — الأحزاب','ص 402'],
+  24:['الزمر — فصلت','ص 462'], 25:['فصلت — الجاثية','ص 482'],
+  26:['الأحقاف — الذاريات','ص 502'],
+  28:['المجادلة — التحريم','ص 542'],
+};
 
 function card(href,name,meta,ok,surah){
   const s=(surah?surah+' ':'')+name+' '+meta;
@@ -777,55 +509,80 @@ function card(href,name,meta,ok,surah){
     : `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">قريباً</span></div>`;
 }
 
-document.getElementById('baqara-grid').innerHTML =
-  baqaraPages.map(p=>card(p[0],p[1],p[2],true,'البقرة')).join('') + card('','آل عمران','ص 50',false,'آل عمران');
+// مفاتيح التقدّم (نفس مفاتيح darbi_progress) اللي يغطيها مقطع واحد
+function groupPageKeys(g){
+  if(g.kind==='single') return [g.key];
+  if(g.kind==='soon') return [];
+  if(g.kind==='amma') return ammaData.filter(p=>p[3]).map(p=>p[0].replace('.html',''));
+  const arr=g.arr, from=('from' in g)?g.from:0, to=('to' in g)?g.to:arr.length;
+  return arr.slice(from,to).map(p=>p[0].replace('.html',''));
+}
 
-document.getElementById('kahf-grid').innerHTML =
-  kahfPages.map(p=>card(p[0],p[1],p[2],true,'الكهف')).join('');
+function groupCardsHtml(g){
+  if(g.kind==='single') return card(g.href,g.name,g.meta,true,g.name);
+  if(g.kind==='soon') return card('',g.name,'قريباً',false,g.name);
+  if(g.kind==='amma') return ammaData.map(p=>card(p[0],p[1],p[2],p[3])).join('');
+  const arr=g.arr, from=('from' in g)?g.from:0, to=('to' in g)?g.to:arr.length;
+  return arr.slice(from,to).map(p=>card(p[0],p[1],p[2],true,g.surah)).join('');
+}
 
-document.getElementById('maryam-grid').innerHTML =
-  maryamPages.map(p=>card(p[0],p[1],p[2],true,'مريم')).join('');
+function buildAccBody(meta){
+  const multi = meta.groups.length>1;
+  return meta.groups.map(g=>{
+    const heading = (multi && g.name) ? `<div class="surah-name notranslate" translate="no">${g.name}</div>` : '';
+    const noteBtn = g.note ? `<button class="note-btn" onclick="goJuz(${g.noteTarget})">${g.note}</button>` : '';
+    return `${heading}<div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}`;
+  }).join('');
+}
 
-document.getElementById('taha-grid').innerHTML =
-  tahaPages.map(p=>card(p[0],p[1],p[2],true,'طه')).join('');
+function buildJuzRow(n){
+  const id='acc-juz'+n;
+  const meta=JUZ_GROUPS[n];
 
-document.getElementById('yaseen-grid').innerHTML =
-  yaseenPages.map(p=>card(p[0],p[1],p[2],true,'يس')).join('');
+  if(!meta){
+    const s=SOON_JUZ[n];
+    const label=s?s[0]:'قريبًا';
+    const startPage=s?s[1]:'';
+    return `<div class="acc" id="${id}">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    <div class="acc-left"><div class="acc-left-top"><div class="juz-badge soon">الجزء ${n}</div><div class="juz-title notranslate" translate="no">${label}</div></div></div>
+    <div class="acc-right"><div class="juz-prog">قريبًا</div><span class="acc-arrow">▾</span></div>
+  </button>
+  <div class="acc-body"><div class="cards-grid">${card('',label.split('—')[0].trim(),startPage||'قريبًا',false)}</div></div>
+</div>`;
+  }
 
-document.getElementById('arrahman-grid').innerHTML =
-  arrahmanPages.map(p=>card(p[0],p[1],p[2],true,'الرحمن')).join('');
+  let keys=[];
+  meta.groups.forEach(g=>{ keys=keys.concat(groupPageKeys(g)); });
+  const total=keys.length;
+  const multi=meta.groups.length>1;
+  const countBadge = multi ? `<div class="juz-count">${meta.groups.length} سور</div>` : '';
+  const badgeClass='juz-badge'+(meta.amma?' amma':'');
 
-document.getElementById('alwaqiah-grid').innerHTML =
-  alwaqiahPages.map(p=>card(p[0],p[1],p[2],true,'الواقعة')).join('');
+  return `<div class="acc" id="${id}">
+  <button class="acc-btn" onclick="toggleAcc(this)">
+    <div class="acc-left">
+      <div class="acc-left-top"><div class="${badgeClass}">الجزء ${n}</div><div class="juz-title notranslate" translate="no">${meta.title}</div>${countBadge}</div>
+      <div class="juz-bar-track"><div class="juz-bar-fill" id="juz${n}-bar" style="width:0%"></div></div>
+    </div>
+    <div class="acc-right"><div class="juz-prog" id="juz${n}-prog">${total} متاح</div><span class="acc-arrow">▾</span></div>
+  </button>
+  <div class="acc-body">${buildAccBody(meta)}</div>
+</div>`;
+}
 
-document.getElementById('almulk-grid').innerHTML =
-  almulkPages.map(p=>card(p[0],p[1],p[2],true,'الملك')).join('');
+document.getElementById('main').innerHTML =
+  Array.from({length:30},(_,i)=>i+1).map(buildJuzRow).join('');
 
-document.getElementById('almaarij-grid').innerHTML =
-  almaarijPages.map(p=>card(p[0],p[1],p[2],true,'المعارج')).join('');
-document.getElementById('aljinn-grid').innerHTML =
-  aljinnPages.map(p=>card(p[0],p[1],p[2],true,'الجن')).join('');
-document.getElementById('almuzzammil-grid').innerHTML =
-  almuzzammilPages.map(p=>card(p[0],p[1],p[2],true,'المزمل')).join('');
-
-document.getElementById('almudaththir-grid').innerHTML =
-  almudaththirPages.map(p=>card(p[0],p[1],p[2],true,'المدثر')).join('');
-
-document.getElementById('alqiyama-grid').innerHTML =
-  alqiyamaPages.map(p=>card(p[0],p[1],p[2],true,'القيامة')).join('');
-
-document.getElementById('alinsan-grid').innerHTML =
-  alinsanPages.map(p=>card(p[0],p[1],p[2],true,'الإنسان')).join('');
-
-document.getElementById('alqalam-grid').innerHTML =
-  alqalamPages.map(p=>card(p[0],p[1],p[2],true,'القلم')).join('');
-document.getElementById('alhaqqa-grid').innerHTML =
-  alhaqqaPages.map(p=>card(p[0],p[1],p[2],true,'الحاقة')).join('');
-document.getElementById('nuh-grid').innerHTML =
-  nuhPages.map(p=>card(p[0],p[1],p[2],true,'نوح')).join('');
-
-document.getElementById('amma-grid').innerHTML =
-  ammaData.map(p=>card(p[0],p[1],p[2],p[3])).join('');
+function goJuz(n){
+  const el=document.getElementById('acc-juz'+n);
+  if(!el)return;
+  const body=el.querySelector('.acc-body');
+  const arrow=el.querySelector('.acc-arrow');
+  if(body)body.classList.add('open');
+  if(arrow)arrow.classList.add('open');
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
 // ===== نظام تتبع التقدم الدائم (يوليو 2026) — يقرأ فقط، الكتابة تتم من
 // صفحات الاختبار وrecitation.html عبر saveDarbiProgress =====
@@ -837,7 +594,6 @@ function darbiPageComplete(entry){
 function renderDarbiProgress(){
   let all={};
   try{all=JSON.parse(localStorage.getItem('darbi_progress')||'{}');}catch(e){}
-  if(!Object.keys(all).length)return;
 
   const nameByKey={alfatiha:'الفاتحة'};
   baqaraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة البقرة '+p[1];});
@@ -850,7 +606,7 @@ function renderDarbiProgress(){
   almulkPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الملك '+p[1];});
   almaarijPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المعارج '+p[1];});
   aljinnPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الجن '+p[1];});
-  almuzzammilPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المزمل '+p[1];})
+  almuzzammilPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المزمل '+p[1];});
   almudaththirPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المدثر '+p[1];});
   alqiyamaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القيامة '+p[1];});
   alinsanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الإنسان '+p[1];});
@@ -859,86 +615,25 @@ function renderDarbiProgress(){
   nuhPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة نوح '+p[1];});
   ammaData.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة '+p[1];});
 
-  const fatihaDone=darbiPageComplete(all['alfatiha'])?1:0;
-  let baqaraDone=0;
-  baqaraPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))baqaraDone++;});
-  let kahfDone=0;
-  kahfPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))kahfDone++;});
-  let maryamDone=0;
-  maryamPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))maryamDone++;});
-  let tahaDone=0;
-  tahaPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))tahaDone++;});
-  let yaseenDone=0;
-  yaseenPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))yaseenDone++;});
-  let arrahmanDone=0;
-  arrahmanPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))arrahmanDone++;});
-  let alwaqiahDone=0;
-  alwaqiahPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))alwaqiahDone++;});
-  let almulkDone=0;
-  almulkPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))almulkDone++;});
-  let almaarijDone=0;
-  almaarijPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))almaarijDone++;});
-  let aljinnDone=0;
-  aljinnPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))aljinnDone++;});
-  let almuzzammilDone=0;
-  almuzzammilPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))almuzzammilDone++;});
-  let almudaththirDone=0;
-  almudaththirPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))almudaththirDone++;});
-  let alqiyamaDone=0;
-  alqiyamaPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))alqiyamaDone++;});
-  let alinsanDone=0;
-  alinsanPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))alinsanDone++;});
-  let alqalamDone=0;
-  alqalamPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))alqalamDone++;});
-  let alhaqqaDone=0;
-  alhaqqaPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))alhaqqaDone++;});
-  let nuhDone=0;
-  nuhPages.forEach(p=>{if(darbiPageComplete(all[p[0].replace('.html','')]))nuhDone++;});
-  let ammaDone=0;
-  ammaData.forEach(p=>{if(!p[3])return;if(darbiPageComplete(all[p[0].replace('.html','')]))ammaDone++;});
+  // تقدّم كل جزء — عدد الصفحات المتاحة فيه اللي اجتاز المستخدم اختباراتها فعليًا
+  Object.keys(JUZ_GROUPS).forEach(nStr=>{
+    const n=+nStr, meta=JUZ_GROUPS[n];
+    let keys=[];
+    meta.groups.forEach(g=>{ keys=keys.concat(groupPageKeys(g)); });
+    const total=keys.length;
+    const done=keys.filter(k=>darbiPageComplete(all[k])).length;
+    const progEl=document.getElementById('juz'+n+'-prog');
+    const barEl=document.getElementById('juz'+n+'-bar');
+    if(progEl && total>0) progEl.textContent = done+' / '+total+' مكتمل'+(done===total?' ✓':'');
+    if(barEl) barEl.style.width = (total? Math.round(done/total*100):0)+'%';
+  });
 
-  const fp=document.getElementById('fatiha-prog');
-  if(fp)fp.textContent=fatihaDone===1?'✓ مكتمل':'1 متاح';
-  const bp=document.getElementById('baqara-prog');
-  if(bp)bp.textContent=baqaraDone+' / '+baqaraPages.length+' مكتمل';
-  const kp=document.getElementById('kahf-prog');
-  if(kp)kp.textContent=kahfDone+' / '+kahfPages.length+' مكتمل'+(kahfDone===kahfPages.length?' ✓':'');
-  const map=document.getElementById('maryam-prog');
-  if(map)map.textContent=maryamDone+' / '+maryamPages.length+' مكتمل'+(maryamDone===maryamPages.length?' ✓':'');
-  const tap=document.getElementById('taha-prog');
-  if(tap)tap.textContent=tahaDone+' / '+tahaPages.length+' مكتمل'+(tahaDone===tahaPages.length?' ✓':'');
-  const yp=document.getElementById('yaseen-prog');
-  if(yp)yp.textContent=yaseenDone+' / '+yaseenPages.length+' مكتمل'+(yaseenDone===yaseenPages.length?' ✓':'');
-  const rp=document.getElementById('arrahman-prog');
-  if(rp)rp.textContent=arrahmanDone+' / '+arrahmanPages.length+' مكتمل'+(arrahmanDone===arrahmanPages.length?' ✓':'');
-  const wp=document.getElementById('alwaqiah-prog');
-  if(wp)wp.textContent=alwaqiahDone+' / '+alwaqiahPages.length+' مكتمل'+(alwaqiahDone===alwaqiahPages.length?' ✓':'');
-  const mp=document.getElementById('almulk-prog');
-  if(mp)mp.textContent=almulkDone+' / '+almulkPages.length+' مكتمل'+(almulkDone===almulkPages.length?' ✓':'');
-  const ap=document.getElementById('almaarij-prog');
-  if(ap)ap.textContent=almaarijDone+' / '+almaarijPages.length+' مكتمل'+(almaarijDone===almaarijPages.length?' ✓':'');
-  const jp=document.getElementById('aljinn-prog');
-  if(jp)jp.textContent=aljinnDone+' / '+aljinnPages.length+' مكتمل'+(aljinnDone===aljinnPages.length?' ✓':'');
-
-  const mzp=document.getElementById('almuzzammil-prog');
-  if(mzp)mzp.textContent=almuzzammilDone+' / '+almuzzammilPages.length+' مكتمل'+(almuzzammilDone===almuzzammilPages.length?' ✓':'');
-  const mdp=document.getElementById('almudaththir-prog');
-  if(mdp)mdp.textContent=almudaththirDone+' / '+almudaththirPages.length+' مكتمل'+(almudaththirDone===almudaththirPages.length?' ✓':'');
-  const qp=document.getElementById('alqiyama-prog');
-  if(qp)qp.textContent=alqiyamaDone+' / '+alqiyamaPages.length+' مكتمل'+(alqiyamaDone===alqiyamaPages.length?' ✓':'');
-  const ip=document.getElementById('alinsan-prog');
-  if(ip)ip.textContent=alinsanDone+' / '+alinsanPages.length+' مكتمل'+(alinsanDone===alinsanPages.length?' ✓':'');
-  const qlp=document.getElementById('alqalam-prog');
-  if(qlp)qlp.textContent=alqalamDone+' / '+alqalamPages.length+' مكتمل'+(alqalamDone===alqalamPages.length?' ✓':'');
-  const hqp=document.getElementById('alhaqqa-prog');
-  if(hqp)hqp.textContent=alhaqqaDone+' / '+alhaqqaPages.length+' مكتمل'+(alhaqqaDone===alhaqqaPages.length?' ✓':'');
-  const nhp=document.getElementById('nuh-prog');
-  if(nhp)nhp.textContent=nuhDone+' / '+nuhPages.length+' مكتمل'+(nuhDone===nuhPages.length?' ✓':'');
-  const amp=document.getElementById('amma-prog');
-  if(amp)amp.textContent=ammaDone+' / '+ammaData.length+' مكتمل'+(ammaDone===ammaData.length?' ✓':'');
+  if(!Object.keys(all).length)return;
 
   const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+ammaData.filter(p=>p[3]).length;
-  const doneCount=fatihaDone+baqaraDone+kahfDone+maryamDone+tahaDone+yaseenDone+arrahmanDone+alwaqiahDone+almulkDone+alqalamDone+alhaqqaDone+almaarijDone+nuhDone+aljinnDone+almuzzammilDone+almudaththirDone+alqiyamaDone+alinsanDone+ammaDone;
+  let doneCount=0;
+  Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
+
   if(doneCount>0){
     const pct=Math.round(doneCount/totalPages*100);
     const heroProg=document.getElementById('hero-progress');
@@ -960,14 +655,6 @@ function renderDarbiProgress(){
 }
 renderDarbiProgress();
 
-document.getElementById('remaining').innerHTML = remainingJuz.map(j=>`
-<div class="acc">
-  <button class="acc-btn" onclick="toggleAcc(this)">
-    <div class="acc-left"><div class="juz-badge">الجزء ${j[0]}</div><div class="juz-title notranslate" translate="no">${j[1]}</div></div>
-    <div class="acc-right"><div class="juz-prog">${j[2]}</div><span class="acc-arrow">▾</span></div>
-  </button>
-  <div class="acc-body"><div class="cards-grid">${card('',j[1].split('—')[0].trim(),j[2],false)}</div></div>
-</div>`).join('');
 
 function toggleAcc(btn){
   const body=btn.nextElementSibling;
