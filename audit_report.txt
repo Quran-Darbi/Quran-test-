@@ -1,6 +1,6 @@
 ==================================================================
   تقرير فحص موقع دربي لحفظ القرآن
-  2026-09-28 19:20
+  2026-09-28 19:36
   عدد ملفات الاختبار المفحوصة: 161
 ==================================================================
 
@@ -8,11 +8,7 @@
    ❌ progress.html
 
 ── ملفات غير مربوطة في index.html ──
-   ⚠️  alhashr_p545.html
-   ⚠️  almujadila_p542.html
-   ⚠️  almujadila_p543.html
-   ⚠️  almujadila_p544.html
-   ⚠️  almujadila_p545.html
+   ✅ سليم
 
 ── دالة normalize مفقودة ──
    ❌ abasa.html
@@ -177,11 +173,6 @@
    ❌ yaseen_p445.html
 
 ── مفتاح ?surah= غير موجود في recitation.html ──
-   ❌ alhashr_p545.html → alhashr_p545
-   ❌ almujadila_p542.html → almujadila_p542
-   ❌ almujadila_p543.html → almujadila_p543
-   ❌ almujadila_p544.html → almujadila_p544
-   ❌ almujadila_p545.html → almujadila_p545
    ❌ alqalam_p564.html → alqalam_p564
    ❌ alqalam_p565.html → alqalam_p565
    ❌ alqalam_p566.html → alqalam_p566
@@ -343,5 +334,5 @@
    ✅ كل القواعد الأساسية موجودة
 
 ==================================================================
-  إجمالي البنود المرصودة: 1567
+  إجمالي البنود المرصودة: 1557
 ==================================================================
