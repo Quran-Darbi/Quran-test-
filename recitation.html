@@ -45,7 +45,7 @@
 :root{--bg:#f0f4f0;--text:#2d4a2d;--card:#fff;--border:#c8d9c0;--gold:#c4a84a;--accent:#4a7c4a;--surface2:#f4f8f2;--surface3:#f8fbf6;--surface-hover:#e0edd8;--accent-dark:#3a6a3a;--wrong-border:#c0392b;--teal:#3a7a7c;--hint-btn-bg:#fff7e6;}
 html[data-theme="dark"]{--bg:#1c2420;--text:#d9ecd9;--card:#232f29;--border:#3a4d40;--gold:#d9b96a;--accent:#5fae5f;--surface2:#2a3830;--surface3:#1f2a24;--surface-hover:#324438;--accent-dark:#7fcf7f;--wrong-border:#e74c3c;--teal:#5fb8ba;--hint-btn-bg:#3a3324;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;}
+body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .top-bar{background:var(--bg);padding:12px 20px 12px 58px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
 .back-btn{background:none;border:none;color:var(--accent);font-size:18px;cursor:pointer;text-decoration:none;font-family:inherit;}
 #theme-toggle{background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;margin-right:auto;}
@@ -62,6 +62,31 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .surah-search:focus{border-color:var(--accent);}
 .surah-search-empty{font-size:12.5px;color:var(--accent);text-align:center;padding:6px;display:none;}
 .selected-info{margin-top:10px;font-size:13px;color:var(--accent);background:var(--surface2);border-radius:8px;padding:8px 12px;text-align:center;display:none;}
+.surah-picker-trigger{width:100%;padding:12px 14px;font-family:'Amiri',serif;font-size:16px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;text-align:start;}
+.surah-picker-trigger:hover{border-color:var(--accent);}
+.surah-picker-trigger:focus-visible{border-color:var(--accent);outline:none;}
+.surah-picker-trigger-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.surah-picker-trigger-chevron{flex:none;color:var(--accent);font-size:13px;}
+.legacy-surah-controls{display:none;}
+.surah-sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10005;display:none;}
+.surah-sheet-backdrop.open{display:block;}
+.surah-sheet{position:fixed;left:0;right:0;bottom:0;z-index:10006;max-height:85vh;background:var(--card);border:1.5px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,0.25);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .28s ease;font-family:'Amiri','Scheherazade New',serif;}
+.surah-sheet-backdrop.open .surah-sheet{transform:translateY(0);}
+.surah-sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 2px;flex:none;}
+.surah-sheet-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 16px 10px;border-bottom:1.5px solid var(--border);flex:none;}
+.surah-sheet-title{font-size:15px;font-weight:700;color:var(--accent);}
+.surah-sheet-close{background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:32px;height:32px;font-size:15px;line-height:1;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;}
+.surah-sheet-close:hover{border-color:var(--accent);color:var(--accent);}
+.surah-sheet-search-wrap{padding:12px 16px 4px;flex:none;}
+.surah-sheet-search{width:100%;padding:10px 14px;font-family:inherit;font-size:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);outline:none;}
+.surah-sheet-search:focus{border-color:var(--accent);}
+.surah-sheet-empty{font-size:12.5px;color:var(--accent);text-align:center;padding:22px 10px;display:none;}
+.surah-sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 10px 18px;flex:1 1 auto;}
+.surah-sheet-group-label{font-size:12.5px;font-weight:700;color:var(--accent);background:var(--surface2);border-radius:8px;padding:7px 12px;margin:10px 6px 6px;position:sticky;top:0;z-index:1;}
+.surah-sheet-row{width:100%;text-align:start;padding:13px 14px;margin:2px 6px;border-radius:12px;border:1.5px solid transparent;background:transparent;color:var(--text);font-family:inherit;font-size:15px;cursor:pointer;display:block;}
+.surah-sheet-row:hover{background:var(--surface2);}
+.surah-sheet-row.active{background:var(--surface2);border-color:var(--accent);color:var(--accent);font-weight:700;}
+@media (min-width:560px){.surah-sheet{left:50%;right:auto;width:min(480px,94vw);transform:translate(-50%,105%);}.surah-sheet-backdrop.open .surah-sheet{transform:translate(-50%,0);}}
 .rec-card{margin:0 16px 12px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:20px;}
 .rec-desc{font-size:13px;color:#888;text-align:center;margin-bottom:16px;line-height:1.8;}
 .rec-btn{width:100%;padding:18px;border-radius:14px;font-size:18px;font-family:inherit;cursor:pointer;border:2px solid var(--border);background:var(--surface2);color:var(--text);transition:all .25s;margin-bottom:10px;}
@@ -146,6 +171,11 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 </div>
 <div class="select-card">
   <div class="select-label" data-i18n="recite.select_label">اختر السورة أو الصفحة</div>
+  <button type="button" class="surah-picker-trigger" id="surahPickerTrigger" onclick="openSurahSheet()" aria-haspopup="dialog">
+    <span class="surah-picker-trigger-text" id="surahPickerTriggerText" data-i18n="recite.select_default_option">— اختر —</span>
+    <span class="surah-picker-trigger-chevron">▾</span>
+  </button>
+  <div class="legacy-surah-controls">
   <input type="search" class="surah-search" id="surahSearch"
          inputmode="search" autocomplete="off" enterkeyhint="search"
          aria-label="ابحث باسم السورة أو رقم الصفحة"
@@ -345,6 +375,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
       <option value="alnnas">سورة الناس كاملة (6 آيات)</option>
     </optgroup>
   </select>
+  </div>
   <div class="selected-info" id="selectedInfo"></div>
   <div id="reciteNavRow" style="display:none;gap:8px;margin-top:10px;">
     <a href="#" id="recitePrevBtn" onclick="reciteNav(-1);return false;" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;" data-i18n="recite.prev_btn">⏮️ السابق</a>
@@ -2349,6 +2380,80 @@ document.getElementById('recBtn').style.cursor='default';
 })();
 </script>
 <script>
+// ===== القائمة المنبثقة (Bottom sheet) لاختيار السورة/الصفحة =====
+// طبقة واجهة جديدة فوق <select id="surahSelect"> الأصلي: القائمة الأصلية
+// وكل منطق اختيارها (onSelectSurah, currentKey...) تبقى كما هي تمامًا،
+// بس مخفية بصريًا (.legacy-surah-controls{display:none}) وبنقرأ بياناتها
+// حية من الـDOM بتاعها في كل مرة تتفتح فيها القائمة، عشان تفضل مصدر
+// الحقيقة الوحيد ومتتكررش بيانات السور في الجافاسكريبت.
+var _surahSheetGroups=null;
+
+function updateSurahTriggerLabel(){
+  var sel=document.getElementById('surahSelect');
+  var span=document.getElementById('surahPickerTriggerText');
+  if(!sel||!span)return;
+  if(sel.value && sel.selectedIndex>-1 && sel.options[sel.selectedIndex]){
+    span.textContent=sel.options[sel.selectedIndex].textContent;
+  }else{
+    span.textContent=darbiT('recite.select_default_option');
+  }
+}
+
+function _surahSheetRowHTML(o){
+  var sel=document.getElementById('surahSelect');
+  var active=(sel&&sel.value===o.value)?' active':'';
+  return '<button type="button" class="surah-sheet-row'+active+'" data-value="'+_surahEsc(o.value)+'">'
+       +_surahEsc(o.text)+'</button>';
+}
+
+function renderSurahSheet(){
+  var list=document.getElementById('surahSheetList');
+  var empty=document.getElementById('surahSheetEmpty');
+  var box=document.getElementById('surahSheetSearch');
+  if(!list||!box)return;
+  if(!_surahSheetGroups)_surahSheetGroups=_surahSnapshot();
+  if(!_surahSheetGroups)return;
+  var q=_surahSearchNorm(box.value);
+  var digits=/^[0-9]+$/.test(q);
+  var html='',real=0;
+  _surahSheetGroups.forEach(function(g){
+    if(g.label===null){
+      var lone=g.options[0];
+      if(_surahMatch(g,lone,q,digits)){real++;html+=_surahSheetRowHTML(lone);}
+      return;
+    }
+    var hits=g.options.filter(function(o){return _surahMatch(g,o,q,digits);});
+    real+=hits.length;
+    if(!hits.length)return;
+    html+='<div class="surah-sheet-group-label">'+_surahEsc(g.label)+'</div>';
+    html+=hits.map(_surahSheetRowHTML).join('');
+  });
+  list.innerHTML=html;
+  if(empty)empty.style.display=(q&&real===0)?'block':'none';
+}
+
+function openSurahSheet(){
+  _surahSheetGroups=_surahSnapshot();          // أحدث نسخة من القائمة الحقيقية دائمًا
+  var box=document.getElementById('surahSheetSearch');
+  if(box)box.value='';
+  renderSurahSheet();
+  var backdrop=document.getElementById('surahSheetBackdrop');
+  if(backdrop)backdrop.classList.add('open');
+  if(box)setTimeout(function(){box.focus();},50);
+}
+function closeSurahSheet(){
+  var backdrop=document.getElementById('surahSheetBackdrop');
+  if(backdrop)backdrop.classList.remove('open');
+}
+function selectSurahFromSheet(value){
+  var sel=document.getElementById('surahSelect');
+  if(!sel)return;
+  sel.value=value;
+  sel.dispatchEvent(new Event('change'));       // يشغّل onSelectSurah() الأصلية زي ما هي
+  closeSurahSheet();
+}
+</script>
+<script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('service-worker.js')
@@ -2406,6 +2511,58 @@ html[data-theme="dark"] .qr-title{color:#6BBF5A;}
 html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 .qr-close-btn{background:none;border:1px solid var(--border,#E4EAE4);color:var(--text,#1A1A1A);}
 </style>
+<div class="surah-sheet-backdrop" id="surahSheetBackdrop" onclick="if(event.target===this)closeSurahSheet()">
+  <div class="surah-sheet" role="dialog" aria-modal="true" aria-labelledby="surahSheetTitle">
+    <div class="surah-sheet-handle"></div>
+    <div class="surah-sheet-header">
+      <div class="surah-sheet-title" id="surahSheetTitle" data-i18n="recite.select_label">اختر السورة أو الصفحة</div>
+      <button type="button" class="surah-sheet-close" onclick="closeSurahSheet()" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="surah-sheet-search-wrap">
+      <input type="search" class="surah-sheet-search" id="surahSheetSearch"
+             inputmode="search" autocomplete="off" enterkeyhint="search"
+             aria-label="ابحث باسم السورة أو رقم الصفحة"
+             data-i18n-placeholder="recite.search_placeholder"
+             placeholder="🔍 ابحث باسم السورة أو رقم الصفحة">
+      <div class="surah-sheet-empty" id="surahSheetEmpty" data-i18n="recite.no_results">لا توجد نتائج مطابقة</div>
+    </div>
+    <div class="surah-sheet-body" id="surahSheetList"></div>
+  </div>
+</div>
+<script>
+// ربط أحداث القائمة المنبثقة بعد إضافة عناصرها إلى الصفحة مباشرة
+// (لازم يكون بعد الـHTML بتاعها عشان getElementById يلاقيها).
+(function(){
+  var list=document.getElementById('surahSheetList');
+  if(list){
+    list.addEventListener('click',function(e){
+      var row=e.target.closest('.surah-sheet-row');
+      if(!row)return;
+      selectSurahFromSheet(row.getAttribute('data-value'));
+    });
+  }
+  var searchBox=document.getElementById('surahSheetSearch');
+  if(searchBox){
+    searchBox.addEventListener('input',renderSurahSheet);
+    searchBox.addEventListener('keydown',function(ev){
+      if(ev.key==='Enter'){
+        ev.preventDefault();
+        var firstRow=document.querySelector('#surahSheetList .surah-sheet-row');
+        if(firstRow)selectSurahFromSheet(firstRow.getAttribute('data-value'));
+      }
+    });
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      var b=document.getElementById('surahSheetBackdrop');
+      if(b&&b.classList.contains('open'))closeSurahSheet();
+    }
+  });
+  var sel=document.getElementById('surahSelect');
+  if(sel)sel.addEventListener('change',updateSurahTriggerLabel);
+  updateSurahTriggerLabel();
+})();
+</script>
 <div class="fdbk-overlay" id="fdbk-overlay">
   <div class="fdbk-modal">
     <h3 data-i18n="fdbk.title">💬 شاركنا رأيك</h3>
@@ -2470,6 +2627,7 @@ function copyQRLink(){
 
 // إعادة رسم أي نص ديناميكي (النتيجة، حالة زر التسجيل، معلومات السورة المختارة) عند تبديل اللغة
 window.onDarbiLangChange = function(){
+  updateSurahTriggerLabel();
   if(currentKey){
     var infoEl=document.getElementById('selectedInfo');
     if(infoEl && infoEl.style.display==='block'){
