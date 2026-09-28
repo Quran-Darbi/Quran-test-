@@ -12,6 +12,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
 <title>تقدّمي — دربي لحفظ القرآن</title>
 <meta name="description" content="تابع تقدّمك في حفظ القرآن الكريم: نسبة الإنجاز، والمواظبة، والأوسمة، ومراجعة الأسئلة التي تتكرر فيها الأخطاء">
 <link rel="manifest" href="manifest.json">
@@ -190,22 +191,88 @@ footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid 
 .footer-ayah{font-family:'Scheherazade New',serif;font-size:1rem;color:var(--green);margin-bottom:4px;}
 .footer-ref{font-size:0.75rem;color:var(--soft);margin-bottom:14px;}
 .footer-copy{font-size:0.8rem;color:var(--soft);}
+
+/* ===== أدوات (لغة/ملاحظات/مشاركة/QR) ===== */
+.tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,#EAF2EA);color:var(--green,#2E6B3E);border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.tools-fab-btn:hover{filter:brightness(1.05);}
+.tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
+.tools-fab.open .tools-menu{display:block;}
+.tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.tools-item:hover{background:var(--green3,#F0F7F2);}
+.tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
+.tools-item .tools-lang-inline span:first-child{font-size:1em;color:inherit;}
+.tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
+.tools-item svg{flex-shrink:0;}
+.tools-lang-list{display:none;border-top:1px solid var(--border,#E4EAE4);background:var(--bg,#F7FAF7);}
+.tools-lang-list.open{display:block;}
+.tools-lang-list button{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:10px 14px 10px 22px;font-size:0.82rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
+.tools-lang-list button:hover{background:var(--green3,#F0F7F2);}
+.tools-lang-list button.lang-active{font-weight:700;}
+.tools-lang-list button .lang-check{margin-inline-start:auto;color:var(--green,#2E6B3E);font-weight:700;visibility:hidden;}
+.tools-lang-list button.lang-active .lang-check{visibility:visible;}
+.fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
+.fdbk-overlay.open{display:flex;}
+.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
+html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
+.fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
+html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
+.fdbk-modal label{display:block;font-size:14px;margin:12px 0 6px;}
+.fdbk-modal select,.fdbk-modal textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #d8e0d8;background:#f7faf7;color:#222;font-family:inherit;font-size:14px;box-sizing:border-box;}
+html[data-theme="dark"] .fdbk-modal select,html[data-theme="dark"] .fdbk-modal textarea{background:#101810;color:#DCF0D8;border-color:#2A4028;}
+.fdbk-modal textarea{min-height:80px;resize:vertical;}
+.fdbk-actions{display:flex;gap:8px;margin-top:16px;}
+.fdbk-actions button{flex:1;padding:10px;border-radius:8px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
+.fdbk-send{background:#2E6B3E;color:#fff;}
+html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
+.fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
+.qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:center;justify-content:center;padding:16px;}
+.qr-overlay.open{display:flex;}
+.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.qr-title{font-size:1.05rem;color:#2E6B3E;font-weight:700;margin-bottom:14px;}
+html[data-theme="dark"] .qr-title{color:#6BBF5A;}
+.qr-img{border-radius:12px;border:1px solid var(--border,#E4EAE4);background:#fff;padding:8px;}
+.qr-caption{font-size:0.8rem;color:var(--text,#1A1A1A);margin-top:12px;line-height:1.6;}
+.qr-url{font-size:0.72rem;color:var(--soft,#888);margin-top:8px;direction:ltr;word-break:break-all;}
+.qr-actions{display:flex;gap:8px;margin-top:16px;}
+.qr-actions button{flex:1;padding:10px;border-radius:10px;font-size:0.85rem;font-family:inherit;cursor:pointer;}
+.qr-copy-btn{background:#2E6B3E;color:#fff;border:none;}
+html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
+.qr-close-btn{background:none;border:1px solid var(--border,#E4EAE4);color:var(--text,#1A1A1A);}
 </style>
+<script src="lang.js"></script>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo"><img src="icons/darbi_favicon_64.png" alt="دربي لحفظ القرآن" width="24" height="24"> دربي لحفظ القرآن</a>
+  <a href="index.html" class="nav-logo"><img src="icons/darbi_favicon_64.png" alt="دربي لحفظ القرآن" width="24" height="24"> <span data-i18n="home.title">دربي لحفظ القرآن</span></a>
   <div class="nav-right">
-    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-    <a href="index.html" class="home-btn">🏠 الرئيسية</a>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
+  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" data-i18n-title="nav.tools_title" title="الأدوات">☰</button>
+  <div class="tools-menu" id="tools-menu">
+    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 <span data-i18n="nav.lang_label">اللغة</span> <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
+    <div class="tools-lang-list" id="tools-lang-list">
+      <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
+    </div>
+    <button class="tools-item" onclick="toolsClose();fdbkOpen();"><span data-i18n="nav.feedback">💬 الاقتراحات</span></button>
+    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> <span data-i18n="nav.share">مشاركة الصفحة</span></button>
+    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> <span data-i18n="nav.qr">كود QR</span></button>
+  </div>
+</div>
+    <a href="index.html" class="home-btn" data-i18n="progress.home_btn">🏠 الرئيسية</a>
   </div>
 </nav>
 
 <div class="phead">
   <div class="phead-inner">
-    <div class="phead-title">📊 تقدّمي</div>
-    <div class="phead-sub" id="phead-sub">تابع رحلتك في حفظ القرآن</div>
+    <div class="phead-title" data-i18n="home.progress_btn">📊 تقدّمي</div>
+    <div class="phead-sub" id="phead-sub" data-i18n="progress.subtitle">تابع رحلتك في حفظ القرآن</div>
 
     <div class="streak-row" id="streak-row">
       <div class="nur">
@@ -228,9 +295,9 @@ footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid 
       </div>
       <div>
         <div class="streak-num" id="streak-cur">0</div>
-        <div class="streak-label">يوم متتالٍ</div>
+        <div class="streak-label" data-i18n="progress.streak_label">يوم متتالٍ</div>
       </div>
-      <div class="streak-best"><b id="streak-best">0</b>أطول سلسلة</div>
+      <div class="streak-best"><b id="streak-best">0</b><span data-i18n="progress.streak_best_label">أطول سلسلة</span></div>
     </div>
 
     <div class="week-row" id="week-row"></div>
@@ -254,14 +321,14 @@ footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid 
 
   <div id="empty-state" class="card empty hidden">
     <div class="empty-emoji">🌱</div>
-    <p>لم تبدأ رحلة الحفظ هنا بعد — ابدأ أول اختبار وسيظهر تقدّمك في هذه الصفحة أولًا بأول</p>
-    <a href="index.html">ابدأ الآن</a>
+    <p data-i18n="progress.empty_text">لم تبدأ رحلة الحفظ هنا بعد — ابدأ أول اختبار وسيظهر تقدّمك في هذه الصفحة أولًا بأول</p>
+    <a href="index.html" data-i18n="progress.empty_cta">ابدأ الآن</a>
   </div>
 
   <div id="data-sections">
 
     <div class="card">
-      <h2>🎯 هدفي اليومي</h2>
+      <h2 data-i18n="progress.goal_title">🎯 هدفي اليومي</h2>
       <div class="goal-row">
         <div class="goal-ring">
           <svg viewBox="0 0 76 76">
@@ -271,60 +338,60 @@ footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid 
           <div class="goal-center" id="goal-emoji">📖</div>
         </div>
         <div class="goal-text">
-          <b id="goal-headline">لم تنجز هدف اليوم بعد</b>
-          <span>الهدف: نشاط حفظ واحد يوميًا على الأقل</span>
+          <b id="goal-headline" data-i18n="progress.goal_not_done">لم تنجز هدف اليوم بعد</b>
+          <span data-i18n="progress.goal_desc">الهدف: نشاط حفظ واحد يوميًا على الأقل</span>
         </div>
       </div>
-      <div class="celebrate hidden" id="goal-celebrate"><span class="emoji">🎉</span><b>أنجزت هدف اليوم — أحسنت!</b></div>
+      <div class="celebrate hidden" id="goal-celebrate"><span class="emoji">🎉</span><b data-i18n="progress.goal_done_msg">أنجزت هدف اليوم — أحسنت!</b></div>
     </div>
 
     <div class="card">
-      <h2>🏅 الأوسمة</h2>
+      <h2 data-i18n="progress.badges_title">🏅 الأوسمة</h2>
       <div class="badge-grid" id="badge-grid"></div>
     </div>
 
     <div class="card">
-      <h2>📚 تقدّمك في كل سورة</h2>
+      <h2 data-i18n="progress.surah_progress_title">📚 تقدّمك في كل سورة</h2>
       <div class="grp-filter-row">
-        <button type="button" class="grp-filter-chip active" data-mode="all" onclick="setGrpFilter('all',this)">كل السور</button>
-        <button type="button" class="grp-filter-chip" data-mode="complete" onclick="setGrpFilter('complete',this)">مكتمل</button>
-        <button type="button" class="grp-filter-chip" data-mode="none" onclick="setGrpFilter('none',this)">لم يكتمل بعد</button>
+        <button type="button" class="grp-filter-chip active" data-mode="all" onclick="setGrpFilter('all',this)" data-i18n="progress.filter_all_surahs">كل السور</button>
+        <button type="button" class="grp-filter-chip" data-mode="complete" onclick="setGrpFilter('complete',this)" data-i18n="progress.filter_complete">مكتمل</button>
+        <button type="button" class="grp-filter-chip" data-mode="none" onclick="setGrpFilter('none',this)" data-i18n="progress.filter_incomplete">لم يكتمل بعد</button>
       </div>
       <div class="grp-list" id="grp-list"></div>
-      <div class="grp-filter-empty" id="grp-filter-empty">لا توجد سور مطابقة لهذا الفلتر حاليًا.</div>
+      <div class="grp-filter-empty" id="grp-filter-empty" data-i18n="progress.filter_empty">لا توجد سور مطابقة لهذا الفلتر حاليًا.</div>
     </div>
 
     <div class="card" id="review-card">
-      <h2>🔁 قائمة المراجعة الذكية</h2>
+      <h2 data-i18n="progress.review_title">🔁 قائمة المراجعة الذكية</h2>
       <div id="review-list"></div>
-      <div id="review-empty" class="hidden" style="color:var(--soft);font-size:0.85rem;">لا توجد أسئلة بحاجة إلى مراجعة حاليًا — واصل هكذا 👏</div>
+      <div id="review-empty" class="hidden" style="color:var(--soft);font-size:0.85rem;" data-i18n="progress.review_empty">لا توجد أسئلة بحاجة إلى مراجعة حاليًا — واصل هكذا 👏</div>
     </div>
 
     <div class="card" id="reminder-card">
-      <h2>🔔 التذكير اليومي</h2>
+      <h2 data-i18n="progress.reminder_title">🔔 التذكير اليومي</h2>
       <div id="reminder-controls" class="hidden">
         <div class="rem-row">
-          <div class="rem-label">تفعيل إشعارات التذكير<small>تصل حتى لو الموقع مغلق</small></div>
+          <div class="rem-label"><span data-i18n="progress.reminder_enable_label">تفعيل إشعارات التذكير</span><small data-i18n="progress.reminder_enable_sub">تصل حتى لو الموقع مغلق</small></div>
           <button class="switch" id="rem-switch" onclick="onReminderToggle()" aria-label="تفعيل التذكير"></button>
         </div>
         <div class="time-row hidden" id="rem-time-row">
-          <span style="font-size:0.82rem;color:var(--soft);">الوقت:</span>
+          <span style="font-size:0.82rem;color:var(--soft);" data-i18n="progress.reminder_time_label">الوقت:</span>
           <input class="time-input" type="time" id="rem-time" step="900" value="20:00" onchange="onReminderTimeChange()">
         </div>
-        <div class="rem-note">الإشعار مبني على الوقت فقط، ولا يعرف هل أنجزتِ ورد اليوم أم لا (لأن الموقع بلا حسابات، وبياناتك محفوظة في متصفحك فقط). قد ينحرف التوقيت بضع دقائق أحيانًا.</div>
+        <div class="rem-note" data-i18n="progress.reminder_note">الإشعار مبني على الوقت فقط، ولا يعرف هل أنجزتِ ورد اليوم أم لا (لأن الموقع بلا حسابات، وبياناتك محفوظة في متصفحك فقط). قد ينحرف التوقيت بضع دقائق أحيانًا.</div>
         <div class="rem-msg hidden" id="rem-msg"></div>
       </div>
       <div id="reminder-info" class="rem-info hidden"></div>
     </div>
 
     <div class="card">
-      <h2>💾 نسخة احتياطية</h2>
-      <div class="backup-status" id="backup-status">لم تُؤخذ أي نسخة احتياطية بعد</div>
-      <div class="backup-suggest hidden" id="backup-suggest">⏰ مرّت فترة طويلة — يُستحسن أخذ نسخة احتياطية جديدة، لأن بياناتك محفوظة في هذا المتصفح فقط</div>
+      <h2 data-i18n="progress.backup_title">💾 نسخة احتياطية</h2>
+      <div class="backup-status" id="backup-status" data-i18n="progress.backup_none">لم تُؤخذ أي نسخة احتياطية بعد</div>
+      <div class="backup-suggest hidden" id="backup-suggest" data-i18n="progress.backup_suggest">⏰ مرّت فترة طويلة — يُستحسن أخذ نسخة احتياطية جديدة، لأن بياناتك محفوظة في هذا المتصفح فقط</div>
       <div class="backup-actions">
-        <button class="bk-btn bk-export" onclick="doExport()">⬇️ تنزيل نسخة احتياطية</button>
+        <button class="bk-btn bk-export" onclick="doExport()" data-i18n="progress.backup_export_btn">⬇️ تنزيل نسخة احتياطية</button>
         <label class="bk-btn bk-import" style="display:flex;align-items:center;justify-content:center;">
-          ⬆️ استيراد نسخة
+          <span data-i18n="progress.backup_import_btn">⬆️ استيراد نسخة</span>
           <input type="file" id="import-file" accept="application/json" style="display:none" onchange="doImport(this.files[0])">
         </label>
       </div>
@@ -338,7 +405,7 @@ footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid 
 <footer>
   <div class="footer-ayah notranslate" translate="no">﴿ وَقُل رَّبِّ زِدْنِى عِلْمًا ﴾</div>
   <div class="footer-ref notranslate" translate="no">سورة طه — آية 114</div>
-  <div class="footer-copy">© 2026 دربي لحفظ القرآن — جميع الحقوق محفوظة</div>
+  <div class="footer-copy">© 2026 <span data-i18n="home.footer_copy">دربي لحفظ القرآن — جميع الحقوق محفوظة</span></div>
 </footer>
 
 <script>window.DARBI_NO_REMINDER = true;</script>
@@ -508,7 +575,10 @@ const GROUPS=[
 ];
 const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
 
-const LEVEL_LABEL={easy:'سهل',medium:'متوسط',hard:'صعب',order:'ترتيب'};
+function levelLabel(lvl){
+  const map={easy:'level.easy_name',medium:'level.medium_name',hard:'level.hard_name',order:'level.order_name'};
+  return map[lvl]?darbiT(map[lvl]):lvl;
+}
 
 function darbiPageComplete(entry){
   return !!(entry && entry.easy && entry.easy.done && entry.medium && entry.medium.done && entry.hard && entry.hard.done);
@@ -525,14 +595,14 @@ function safeAll(){
 function computeBadges(doneCount, streak, completedSurahCount, ammaComplete){
   const best = (streak && streak.longestStreak) || 0;
   return [
-    {icon:'✨', name:'أسبوع كامل', earned: best>=7},
-    {icon:'📖', name:'أول جزء مكتمل', earned: completedSurahCount>=1 || ammaComplete},
-    {icon:'🌙', name:'٣٠ يوم متتالٍ', earned: best>=30},
-    {icon:'⭐', name:'١٠٠ صفحة', earned: doneCount>=100},
-    {icon:'🕋', name:'جزء عمّ كاملًا', earned: ammaComplete},
-    {icon:'📿', name:'٦٠ يوم متتالٍ', earned: best>=60},
-    {icon:'🌿', name:'٣ سور كاملة', earned: completedSurahCount>=3},
-    {icon:'🏆', name:'٣٠٠ صفحة', earned: doneCount>=300},
+    {icon:'✨', name:darbiT('progress.badge_week'), earned: best>=7},
+    {icon:'📖', name:darbiT('progress.badge_first_juz'), earned: completedSurahCount>=1 || ammaComplete},
+    {icon:'🌙', name:darbiT('progress.badge_30days'), earned: best>=30},
+    {icon:'⭐', name:darbiT('progress.badge_100pages'), earned: doneCount>=100},
+    {icon:'🕋', name:darbiT('progress.badge_amma'), earned: ammaComplete},
+    {icon:'📿', name:darbiT('progress.badge_60days'), earned: best>=60},
+    {icon:'🌿', name:darbiT('progress.badge_3surahs'), earned: completedSurahCount>=3},
+    {icon:'🏆', name:darbiT('progress.badge_300pages'), earned: doneCount>=300},
   ];
 }
 
@@ -545,7 +615,7 @@ function render(){
   document.getElementById('streak-row').classList.toggle('hidden',!hasAny);
   document.getElementById('week-row').classList.toggle('hidden',!hasAny);
   if(!hasAny){
-    document.getElementById('phead-sub').textContent='هذه بدايتك — ابدأ أول اختبار';
+    document.getElementById('phead-sub').textContent=darbiT('progress.subtitle_empty');
     renderReminderCard();
     return;
   }
@@ -559,13 +629,13 @@ function render(){
     });
   });
   const pct=TOTAL_PAGES>0?Math.round(doneCount/TOTAL_PAGES*100):0;
-  document.getElementById('ring-pct').textContent=pct+'٪';
+  document.getElementById('ring-pct').textContent=darbiT('recite.pct_label',{pct:pct});
   document.getElementById('ring-cnt').textContent=doneCount+' / '+TOTAL_PAGES;
   const circumference=2*Math.PI*47.5;
   const fillEl=document.getElementById('ring-fill');
   fillEl.setAttribute('stroke-dasharray',circumference.toFixed(1));
   fillEl.setAttribute('stroke-dashoffset',(circumference*(1-pct/100)).toFixed(1));
-  document.getElementById('phead-sub').textContent=doneCount>0?('أنجزت '+doneCount+' من '+TOTAL_PAGES+' صفحة — استمر 🌿'):'تابع رحلتك في حفظ القرآن';
+  document.getElementById('phead-sub').textContent=doneCount>0?darbiT('progress.subtitle_progress',{done:doneCount,total:TOTAL_PAGES}):darbiT('progress.subtitle');
 
   // ---- المواظبة + تتبّع الأسبوع ----
   let streak={currentStreak:0,longestStreak:0};
@@ -594,7 +664,7 @@ function render(){
   goalFill.setAttribute('stroke-dasharray',CIRC_GOAL.toFixed(1));
   goalFill.setAttribute('stroke-dashoffset',(CIRC_GOAL*(1-goalPct/100)).toFixed(1));
   document.getElementById('goal-emoji').textContent = goalDone ? '🎉' : '📖';
-  document.getElementById('goal-headline').textContent = goalDone ? 'أنجزت هدف اليوم!' : 'لم تنجز هدف اليوم بعد';
+  document.getElementById('goal-headline').textContent = goalDone ? darbiT('progress.goal_done_headline') : darbiT('progress.goal_not_done');
   document.getElementById('goal-celebrate').classList.toggle('hidden', !goalDone);
 
   // ---- الأوسمة ----
@@ -650,11 +720,11 @@ function render(){
         const a=document.createElement('a');
         a.className='rev-item';
         const name=nameByKey[item.pageKey]||item.pageKey||'';
-        const lvl=LEVEL_LABEL[item.level]||item.level||'';
+        const lvl=levelLabel(item.level);
         const hasQIndex = (typeof item.qIndex==='number');
         const canJump = hasQIndex && ['easy','medium','hard'].includes(item.level);
         a.href=(item.pageKey||'')+'.html'+(canJump?('?review='+item.level+':'+item.qIndex):'');
-        const qLabel = hasQIndex ? ('سؤال '+(item.qIndex+1)) : '';
+        const qLabel = hasQIndex ? darbiT('progress.question_label',{n:item.qIndex+1}) : '';
         a.innerHTML=
           '<span class="rev-chip">'+lvl+'</span>'+
           '<span class="rev-mid">'+
@@ -671,7 +741,7 @@ function render(){
   // ---- النسخة الاحتياطية ----
   if(window.DarbiExtra){
     const last=DarbiExtra.getLastBackupDate();
-    document.getElementById('backup-status').textContent=last?('آخر نسخة احتياطية: '+last):'لم تُؤخذ أي نسخة احتياطية بعد';
+    document.getElementById('backup-status').textContent=last?(darbiT('progress.last_backup')+last):darbiT('progress.backup_none');
     document.getElementById('backup-suggest').classList.toggle('hidden',!DarbiExtra.shouldSuggestBackup());
   }
 
@@ -681,17 +751,17 @@ function render(){
 function doExport(){
   if(!window.DarbiExtra)return;
   DarbiExtra.exportBackup();
-  showBkMsg('تم تنزيل النسخة الاحتياطية ✅','ok');
+  showBkMsg(darbiT('progress.backup_export_ok'),'ok');
   render();
 }
 function doImport(file){
   if(!file||!window.DarbiExtra)return;
   DarbiExtra.importBackup(file,function(success,err){
     if(success){
-      showBkMsg('تم استيراد النسخة الاحتياطية بنجاح ✅','ok');
+      showBkMsg(darbiT('progress.backup_import_ok'),'ok');
       render();
     }else{
-      showBkMsg('تعذّر الاستيراد: '+(err||'خطأ غير معروف'),'err');
+      showBkMsg(darbiT('progress.backup_import_fail')+(err||darbiT('progress.unknown_error')),'err');
     }
   });
   document.getElementById('import-file').value='';
@@ -710,7 +780,7 @@ function renderReminderCard(){
   if(!window.DarbiPush){
     controls.classList.add('hidden');
     info.classList.remove('hidden');
-    info.textContent='ميزة التذكير عبر الإشعارات قيد التفعيل حاليًا على هذا الموقع.';
+    info.textContent=darbiT('progress.reminder_coming_soon');
     return;
   }
   const st=DarbiPush.status();
@@ -720,7 +790,7 @@ function renderReminderCard(){
   if(st==='unsupported' || st==='not-configured'){
     controls.classList.add('hidden');
     info.classList.remove('hidden');
-    info.textContent='ميزة التذكير عبر الإشعارات قيد التفعيل حاليًا على هذا الموقع.';
+    info.textContent=darbiT('progress.reminder_coming_soon');
     return;
   }
 
@@ -731,7 +801,7 @@ function renderReminderCard(){
     sw.disabled=true;
     sw.classList.remove('on');
     timeRow.classList.add('hidden');
-    showRemMsg('تم حظر إذن الإشعارات من إعدادات المتصفح لهذا الموقع — لتفعيله لاحقًا افتحي إعدادات الموقع في المتصفح واسمحي بالإشعارات','err');
+    showRemMsg(darbiT('progress.reminder_denied'),'err');
     return;
   }
 
@@ -758,13 +828,13 @@ function onReminderToggle(){
     return;
   }
   const t=document.getElementById('rem-time').value || '20:00';
-  showRemMsg('جارٍ التفعيل…','ok');
+  showRemMsg(darbiT('progress.activating'),'ok');
   DarbiPush.enable(t, function(ok, err){
     if(ok){
       localStorage.setItem('darbi_push_localtime_v1', t);
-      showRemMsg('تم تفعيل التذكير ✅','ok');
+      showRemMsg(darbiT('progress.reminder_enabled'),'ok');
     }else{
-      showRemMsg('تعذّر التفعيل: '+(err||''),'err');
+      showRemMsg(darbiT('progress.reminder_enable_fail')+(err||''),'err');
     }
     renderReminderCard();
   });
@@ -774,13 +844,13 @@ function onReminderTimeChange(){
   if(!window.DarbiPush)return;
   const t=document.getElementById('rem-time').value || '20:00';
   if(DarbiPush.status()!=='active')return;
-  showRemMsg('جارٍ الحفظ…','ok');
+  showRemMsg(darbiT('progress.saving'),'ok');
   DarbiPush.enable(t, function(ok, err){
     if(ok){
       localStorage.setItem('darbi_push_localtime_v1', t);
-      showRemMsg('تم تحديث الوقت ✅','ok');
+      showRemMsg(darbiT('progress.time_updated'),'ok');
     }else{
-      showRemMsg('تعذّر الحفظ: '+(err||''),'err');
+      showRemMsg(darbiT('progress.save_fail')+(err||''),'err');
     }
   });
 }
@@ -790,6 +860,87 @@ function toggleTheme(){const n=document.documentElement.getAttribute('data-theme
 (function(){let s;try{s=localStorage.getItem('quranTheme');}catch(e){}if(!s)s=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';applyTheme(s);})();
 
 render();
+</script>
+
+<div class="fdbk-overlay" id="fdbk-overlay">
+  <div class="fdbk-modal">
+    <h3 data-i18n="fdbk.title">💬 شاركنا رأيك</h3>
+    <label data-i18n="fdbk.type_label">نوع الملاحظة</label>
+    <select id="fdbk-type">
+      <option data-i18n="fdbk.type_quran">خطأ في النص القرآني</option>
+      <option data-i18n="fdbk.type_question">خطأ في السؤال أو الإجابة</option>
+      <option data-i18n="fdbk.type_voice">مشكلة في التسجيل الصوتي</option>
+      <option data-i18n="fdbk.type_design">مشكلة تصميم أو عرض</option>
+      <option data-i18n="fdbk.type_suggestion">اقتراح تحسين</option>
+      <option data-i18n="fdbk.type_other">أخرى</option>
+    </select>
+    <label data-i18n="fdbk.note_label">تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" data-i18n-placeholder="fdbk.note_placeholder" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <div class="fdbk-actions">
+      <button class="fdbk-send" onclick="fdbkSend()" data-i18n="fdbk.send">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()" data-i18n="fdbk.cancel">إلغاء</button>
+    </div>
+  </div>
+</div>
+<div class="qr-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
+  <div class="qr-modal">
+    <div class="qr-title" data-i18n="qr.title">🔲 امسح الكود لفتح الصفحة</div>
+    <img class="qr-img" id="qr-img" src="" data-i18n-alt="qr.img_alt" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
+    <div class="qr-caption" data-i18n="qr.caption">امسح الكود لفتح الموقع على موبايلك</div>
+    <div class="qr-url notranslate" translate="no" id="qr-url-text"></div>
+    <div class="qr-actions">
+      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn" data-i18n="qr.copy_btn">📋 نسخ الرابط</button>
+      <button class="qr-close-btn" onclick="closeQR()" data-i18n="qr.close_btn">إغلاق</button>
+    </div>
+  </div>
+</div>
+<script>
+function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-fab').classList.toggle('open');}
+function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
+function toolsLangToggle(e){if(e)e.stopPropagation();var l=document.getElementById('tools-lang-list');var a=document.getElementById('tools-lang-arrow');l.classList.toggle('open');a.style.transform=l.classList.contains('open')?'rotate(180deg)':'rotate(0)';}
+document.addEventListener('click',function(e){var w=document.getElementById('tools-fab');if(w&&!w.contains(e.target))toolsClose();});
+
+function fdbkOpen(){toolsClose();document.getElementById('fdbk-overlay').classList.add('open');}
+function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
+function fdbkSend(){
+  var type=document.getElementById('fdbk-type').value;
+  var note=document.getElementById('fdbk-note').value.trim();
+  var page=document.title||location.pathname.split('/').pop();
+  var msg='ملاحظة من دربي لحفظ القرآن\nالصفحة: '+page+'\nالنوع: '+type+(note?'\nالتفاصيل: '+note:'');
+  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
+  fdbkClose();
+}
+
+function shareApp(){
+  const url=location.href;
+  const title=darbiT('home.progress_btn')+' — '+darbiT('home.title');
+  if(navigator.share){
+    navigator.share({title,url}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url).then(()=>{
+      const btn=document.getElementById('tools-fab-btn');
+      if(btn){const old=btn.textContent;btn.textContent='✅';setTimeout(()=>btn.textContent=old,1800);}
+    }).catch(()=>{});
+  }
+}
+
+function showQR(){
+  var url=location.href;
+  document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data='+encodeURIComponent(url);
+  document.getElementById('qr-url-text').textContent=url.replace(/^https?:\/\//,'');
+  document.getElementById('qr-overlay').classList.add('open');
+}
+function closeQR(){document.getElementById('qr-overlay').classList.remove('open');}
+function copyQRLink(){
+  var url=location.href;
+  var b=document.getElementById('qr-copy-btn');
+  navigator.clipboard.writeText(url).then(function(){b.textContent=darbiT('qr.copied');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);}).catch(function(){b.textContent=darbiT('qr.copy_failed');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);});
+}
+
+// إعادة رسم أي نص ديناميكي (كل بيانات التقدّم المعروضة) عند تبديل اللغة
+window.onDarbiLangChange = function(){
+  render();
+};
 </script>
 
 <!-- إشعارات حقيقية (Firebase Cloud Messaging) — ملفات إضافية، لا تمسّ أي نظام موجود -->

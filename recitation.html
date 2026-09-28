@@ -11,6 +11,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
 <title>اختبر حفظك — دربي لحفظ القرآن</title>
 <meta name="description" content="سجّل تلاوتك بصوتك وقارنها بالنص القرآني كلمة بكلمة">
 <meta property="og:title" content="اختبر حفظك — دربي لحفظ القرآن">
@@ -114,15 +115,16 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 <meta property="og:site_name" content="دربي لحفظ القرآن">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://quran-darbi.com/recitation.html">
+<script src="lang.js"></script>
 </head>
 <body>
 <div class="top-bar">
-  <a href="index.html" class="back-btn">← الرجوع</a>
+  <a href="index.html" class="back-btn" data-i18n="nav.back">← الرجوع</a>
   <div style="display:flex;gap:8px;align-items:center;">
     <button id="theme-toggle" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
-  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" title="الأدوات">☰</button>
+  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" data-i18n-title="nav.tools_title" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
-    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 اللغة <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
+    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 <span data-i18n="nav.lang_label">اللغة</span> <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
       <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
       <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
@@ -132,26 +134,27 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
       <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
       <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
     </div>
-    <button class="tools-item" onclick="toolsClose();fdbkOpen();">💬 الاقتراحات</button>
-    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> مشاركة الصفحة</button>
-    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> كود QR</button>
+    <button class="tools-item" onclick="toolsClose();fdbkOpen();"><span data-i18n="nav.feedback">💬 الاقتراحات</span></button>
+    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> <span data-i18n="nav.share">مشاركة الصفحة</span></button>
+    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> <span data-i18n="nav.qr">كود QR</span></button>
   </div>
 </div>  </div>
 </div>
 <div class="info-card">
-  <div class="page-title">🎤 اختبر حفظك</div>
-  <div class="page-sub">اختر السورة — اقرأ من أي آية تريد — الموقع يصحح كل كلمة</div>
+  <div class="page-title" data-i18n="home.recite_btn">🎤 اختبر حفظك</div>
+  <div class="page-sub" data-i18n="recite.page_sub">اختر السورة — اقرأ من أي آية تريد — الموقع يصحح كل كلمة</div>
 </div>
 <div class="select-card">
-  <div class="select-label">اختر السورة أو الصفحة</div>
+  <div class="select-label" data-i18n="recite.select_label">اختر السورة أو الصفحة</div>
   <input type="search" class="surah-search" id="surahSearch"
          inputmode="search" autocomplete="off" enterkeyhint="search"
          aria-label="ابحث باسم السورة أو رقم الصفحة"
+         data-i18n-placeholder="recite.search_placeholder"
          placeholder="🔍 ابحث باسم السورة أو رقم الصفحة"
          oninput="onSurahSearchInput()" onkeydown="onSurahSearchKey(event)">
-  <div class="surah-search-empty" id="surahSearchEmpty">لا توجد نتائج مطابقة</div>
+  <div class="surah-search-empty" id="surahSearchEmpty" data-i18n="recite.no_results">لا توجد نتائج مطابقة</div>
   <select class="surah-select" id="surahSelect" onchange="onSelectSurah()">
-    <option value="">— اختر —</option>
+    <option value="" data-i18n="recite.select_default_option">— اختر —</option>
     <optgroup label="سورة الفاتحة">
       <option value="fatiha">سورة الفاتحة كاملة (7 آيات)</option>
     </optgroup>
@@ -344,24 +347,24 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
   </select>
   <div class="selected-info" id="selectedInfo"></div>
   <div id="reciteNavRow" style="display:none;gap:8px;margin-top:10px;">
-    <a href="#" id="recitePrevBtn" onclick="reciteNav(-1);return false;" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">⏮️ السابق</a>
-    <a href="#" id="reciteNextBtn" onclick="reciteNav(1);return false;" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;">التالي ⏭️</a>
+    <a href="#" id="recitePrevBtn" onclick="reciteNav(-1);return false;" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;" data-i18n="recite.prev_btn">⏮️ السابق</a>
+    <a href="#" id="reciteNextBtn" onclick="reciteNav(1);return false;" style="flex:1;text-align:center;text-decoration:none;padding:10px 4px;border-radius:12px;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);font-family:inherit;font-size:14px;" data-i18n="recite.next_btn">التالي ⏭️</a>
   </div>
 </div>
 <div class="rec-card" id="recCard">
-  <div class="rec-desc">اضغط 🎤 وابدأ التلاوة من أي آية<br>توقف متى شئت — سنحدد موضعك تلقائياً<br>🟢 صح &nbsp;|&nbsp; 🔴 غلط &nbsp;|&nbsp; ➖ محذوف</div>
-  <button class="rec-btn" id="recBtn" onclick="toggleRec()">اختر سورة أولاً</button>
-  <button class="reveal-btn" id="revealBtn" onclick="toggleReveal()" style="display:none;">📖 اعرض نص السورة</button>
-  <button class="reveal-btn" id="hintBtn" onclick="showHint()" style="display:none;">💡 مساعدة (أول 3 كلمات)</button>
+  <div class="rec-desc" data-i18n-html="recite.rec_desc_html">اضغط 🎤 وابدأ التلاوة من أي آية<br>توقف متى شئت — سنحدد موضعك تلقائياً<br>🟢 صح &nbsp;|&nbsp; 🔴 غلط &nbsp;|&nbsp; ➖ محذوف</div>
+  <button class="rec-btn" id="recBtn" onclick="toggleRec()" data-i18n="recite.choose_surah_first">اختر سورة أولاً</button>
+  <button class="reveal-btn" id="revealBtn" onclick="toggleReveal()" style="display:none;" data-i18n="recite.show_text_btn">📖 اعرض نص السورة</button>
+  <button class="reveal-btn" id="hintBtn" onclick="showHint()" style="display:none;" data-i18n="hint.btn">💡 مساعدة (أول 3 كلمات)</button>
   <div class="reveal-box" id="hintBox" style="display:none;"></div>
   <div class="reveal-box" id="revealBox" style="display:none;"></div>
   <div class="transcript-box" id="transcriptBox"></div>
-  <button class="clear-btn" id="clearBtn" onclick="clearAll()">🗑️ مسح والبدء من جديد</button>
-  <button class="check-btn" id="checkBtn" onclick="checkRecitation()">✓ تحقق من التلاوة</button>
+  <button class="clear-btn" id="clearBtn" onclick="clearAll()" data-i18n="recite.clear_btn">🗑️ مسح والبدء من جديد</button>
+  <button class="check-btn" id="checkBtn" onclick="checkRecitation()" data-i18n="recite.check_btn">✓ تحقق من التلاوة</button>
 </div>
 <div class="result-card" id="resultCard">
   <div class="result-header">
-    <div class="result-title" id="resultTitle">النتيجة</div>
+    <div class="result-title" id="resultTitle" data-i18n="recite.result_label">النتيجة</div>
     <div class="result-stats">
       <div class="stat ok" id="statOk">✓ 0</div>
       <div class="stat err" id="statErr">✗ 0</div>
@@ -370,14 +373,14 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
   </div>
   <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
   <div class="where-msg" id="whereMsg"></div>
-  <div class="scope-note">ℹ️ هذا الاختبار يتحقق من الكلمات وترتيبها في حفظك، ولا يتحقق حالياً من دقة الحركات (التشكيل) أو أحكام التجويد والمدود — هذا الجزء قيد البحث والتطوير.</div>
+  <div class="scope-note" data-i18n="recite.scope_note">ℹ️ هذا الاختبار يتحقق من الكلمات وترتيبها في حفظك، ولا يتحقق حالياً من دقة الحركات (التشكيل) أو أحكام التجويد والمدود — هذا الجزء قيد البحث والتطوير.</div>
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#c3e6cb;border:1px solid #155724"></div>صحيحة</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div>خاطئة</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f0f0f0;border:1px solid #ccc"></div>محذوفة</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c3e6cb;border:1px solid #155724"></div><span data-i18n="recite.legend_correct">صحيحة</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div><span data-i18n="recite.legend_wrong">خاطئة</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f0f0f0;border:1px solid #ccc"></div><span data-i18n="recite.legend_missing">محذوفة</span></div>
   </div>
   <div class="ayah-display" id="ayahDisplay"></div>
-  <button class="retry-btn" onclick="retryRec()">🔄 إعادة التسجيل</button>
+  <button class="retry-btn" onclick="retryRec()" data-i18n="recite.retry_btn">🔄 إعادة التسجيل</button>
 </div>
 <script>
 
@@ -1453,17 +1456,17 @@ function onSelectSurah(){
   refWords=expandMuqattaat(refWords);
   ayahBounds=computeAyahBounds(currentKey);
   waqfMarks=computeWaqfMarks(currentKey);
-  document.getElementById('selectedInfo').textContent='✓ '+SURAH_NAMES[currentKey]+' — '+refWords.length+' كلمة';
+  document.getElementById('selectedInfo').textContent=darbiT('recite.selected_info',{name:SURAH_NAMES[currentKey],count:refWords.length});
   document.getElementById('selectedInfo').style.display='block';
   updateReciteNav();
-  document.getElementById('recBtn').textContent='🎤 اضغط وابدأ التلاوة';
+  document.getElementById('recBtn').textContent=darbiT('recite.btn_start');
   document.getElementById('recBtn').disabled=false;
   document.getElementById('recBtn').style.opacity='1';
   document.getElementById('recBtn').style.cursor='pointer';
   document.getElementById('revealBtn').style.display='block';
   document.getElementById('hintBtn').style.display='block';
   document.getElementById('hintBtn').disabled=false;
-  document.getElementById('hintBtn').textContent='💡 مساعدة (أول 3 كلمات)';
+  document.getElementById('hintBtn').textContent=darbiT('hint.btn');
   document.getElementById('hintBox').style.display='none';
   clearAll();
 }
@@ -1480,7 +1483,7 @@ function showHint(){
   box.style.display='block';
   const btn=document.getElementById('hintBtn');
   btn.disabled=true;
-  btn.textContent='💡 اتستخدمت';
+  btn.textContent=darbiT('recite.hint_used');
 }
 
 function toggleReveal(){
@@ -1489,7 +1492,7 @@ function toggleReveal(){
   const showing=box.style.display==='block';
   if(showing){
     box.style.display='none';
-    btn.textContent='📖 اعرض نص السورة';
+    btn.textContent=darbiT('recite.show_text_btn');
   }else{
     if(AYAHS[currentKey]){
       const ar='0123456789';
@@ -1502,7 +1505,7 @@ function toggleReveal(){
       box.textContent=refWords.join(' ');
     }
     box.style.display='block';
-    btn.textContent='🙈 إخفاء النص';
+    btn.textContent=darbiT('recite.hide_text_btn');
   }
 }
 
@@ -2067,7 +2070,7 @@ function renderTranscript(){
   if(selWord!==null&&selWord>=savedWords.length)selWord=null;
   if(!savedWords.length&&!currentText){
     box.style.color='var(--border)';
-    box.textContent='سيظهر النص هنا...';
+    box.textContent=darbiT('recite.placeholder_text');
     selWord=null;
     return;
   }
@@ -2076,13 +2079,13 @@ function renderTranscript(){
     const bar=document.createElement('div');
     bar.style.cssText='width:100%;box-sizing:border-box;background:var(--hint-btn-bg);border:1px solid var(--gold);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:8px;justify-content:space-between;';
     const t=document.createElement('span');
-    t.appendChild(document.createTextNode('المحدَّدة: '));
+    t.appendChild(document.createTextNode(darbiT('order.selected_label')));
     const b=document.createElement('b');b.className='notranslate';b.setAttribute('translate','no');
     const _gsel=(selWord===0)?muqGroupLen():0;
     b.textContent=_gsel?muqRun.raw:savedWords[selWord];t.appendChild(b);
-    t.appendChild(document.createTextNode(' — سجّل البديل'));
+    t.appendChild(document.createTextNode(darbiT('order.selected_suffix')));
     const x=document.createElement('button');
-    x.type='button';x.textContent='✕ حذف';
+    x.type='button';x.textContent=darbiT('order.delete_btn');
     x.style.cssText='background:var(--wrong-border);color:#fff;border:0;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit;flex:0 0 auto;';
     x.onclick=()=>{savedWords.splice(selWord,_gsel||1);selWord=null;renderTranscript();updateBtns();};
     bar.appendChild(t);bar.appendChild(x);box.appendChild(bar);
@@ -2104,9 +2107,9 @@ function renderTranscript(){
       sp.style.outline='2px solid var(--gold)';
       sp.style.background='var(--hint-btn-bg)';
       sp.style.fontWeight='700';
-      sp.title='اضغط لإلغاء التحديد';
+      sp.title=darbiT('order.deselect_title');
     }else{
-      sp.title='اضغط لتحديدها ثم سجّل البديل';
+      sp.title=darbiT('order.select_title');
     }
     sp.onclick=()=>{selWord=(selWord===i)?null:i;renderTranscript();updateBtns();};
     box.appendChild(sp);
@@ -2174,13 +2177,13 @@ function getBrowserIssueMessage(){
   const ua=navigator.userAgent||'';
   const isInApp=/FBAN|FBAV|Instagram|Line\/|WhatsApp|MicroMessenger|Twitter/i.test(ua);
   if(isInApp){
-    return '⚠️ التسجيل الصوتي لا يعمل داخل متصفح التطبيق هذا (ماسنجر / إنستغرام / إلخ).\n\nافتح الموقع من متصفح Chrome مباشرة:\n1) اضغط على النقاط الثلاث (⋮) أعلى الصفحة\n2) اختر "افتح في المتصفح" أو "Open in Browser"\n\nأو انسخ رابط الموقع والصقه في تطبيق Chrome.';
+    return darbiT('recite.err_inapp_browser');
   }
-  return '⚠️ التسجيل الصوتي يحتاج إلى متصفح Chrome ليعمل.\n\nإذا كنت على آيفون: حمّل تطبيق Chrome من App Store وافتح الموقع منه (وليس من Safari).\nوإذا كنت على أندرويد: افتح الموقع من تطبيق Chrome.';
+  return darbiT('recite.err_needs_chrome');
 }
 
 function toggleRec(){
-  if(!currentKey){alert('اختر سورة أولاً');return;}
+  if(!currentKey){alert(darbiT('recite.choose_surah_first'));return;}
   if(!SpeechAPI||!isSecure){alert(getBrowserIssueMessage());return;}
   if(recognizing){
     recognizing=false;
@@ -2192,9 +2195,9 @@ function toggleRec(){
 
 function setBtn(state){
   const btn=document.getElementById('recBtn');
-  if(state==='rec'){btn.textContent='⏸ إيقاف مؤقت';btn.className='rec-btn recording';}
-  else if(state==='paused'){btn.textContent='▶️ استمر في التلاوة';btn.className='rec-btn paused';}
-  else{btn.textContent='🎤 اضغط وابدأ التلاوة';btn.className='rec-btn';}
+  if(state==='rec'){btn.textContent=darbiT('recite.btn_pause');btn.className='rec-btn recording';}
+  else if(state==='paused'){btn.textContent=darbiT('recite.btn_resume');btn.className='rec-btn paused';}
+  else{btn.textContent=darbiT('recite.btn_start');btn.className='rec-btn';}
 }
 
 function clearAll(){
@@ -2243,17 +2246,17 @@ function checkRecitation(){
   const total=results.length;
   const pct=Math.round(ok/total*100);
   saveDarbiProgress('recitation',ok,total);
-  let where=startIdx===0?'بدأت من أول السورة':'📍 بدأت من الكلمة '+(startIdx+1)+' تقريباً';
+  let where=startIdx===0?darbiT('recite.where_start'):darbiT('recite.where_approx',{n:startIdx+1});
   document.getElementById('resultCard').style.display='block';
   document.getElementById('whereMsg').textContent=where;
   document.getElementById('statOk').textContent='✓ '+ok;
   document.getElementById('statErr').textContent='✗ '+bad;
-  document.getElementById('statPct').textContent='٪ '+pct;
+  document.getElementById('statPct').textContent=darbiT('recite.pct_label',{pct:pct});
   const fill=document.getElementById('scoreFill');
   fill.style.width=pct+'%';
   fill.style.background=pct>=80?'#4a7c4a':pct>=60?'#e67e22':'#c0392b';
   document.getElementById('resultTitle').textContent=
-    pct===100?'🌟 ممتاز! حفظك مطابق للنص':pct>=80?'✨ أحسنت! حفظك قوي':pct>=60?'📖 جيد — راجع الكلمات الحمراء':'💪 تحتاج مراجعة';
+    pct===100?darbiT('recite.result_perfect'):pct>=80?darbiT('recite.result_great'):pct>=60?darbiT('recite.result_good'):darbiT('recite.result_weak');
   if(pct===100){
     launchConfetti();
   }
@@ -2270,7 +2273,7 @@ function checkRecitation(){
       const sp0=document.createElement('span');
       sp0.className=(st==='ok')?'w-ok':(st==='err'?'w-err':'w-missing');
       sp0.textContent=muqRun.raw;
-      if(st==='err')sp0.title='قلت: '+all.map(x=>x.user||'').join(' ').trim();
+      if(st==='err')sp0.title=darbiT('recite.said_prefix')+all.map(x=>x.user||'').join(' ').trim();
       display.appendChild(sp0);display.appendChild(document.createTextNode(' '));
       const wm0=waqfMarkerAfter(startIdx+i);
       if(wm0){const w0=document.createElement('span');w0.innerHTML=wm0;display.appendChild(w0);}
@@ -2280,7 +2283,7 @@ function checkRecitation(){
     }
     const sp=document.createElement('span');
     if(r.status==='ok'){sp.className='w-ok';sp.textContent=r.ref;}
-    else if(r.status==='err'){sp.className='w-err';sp.textContent=r.ref;sp.title='قلت: '+(r.user||'');}
+    else if(r.status==='err'){sp.className='w-err';sp.textContent=r.ref;sp.title=darbiT('recite.said_prefix')+(r.user||'');}
     else{sp.className='w-missing';sp.textContent=r.ref;}
     display.appendChild(sp);display.appendChild(document.createTextNode(' '));
     const wm=waqfMarkerAfter(startIdx+i);
@@ -2301,7 +2304,7 @@ function checkRecitation(){
 
 function shareApp(){
   const url=location.href;
-  const title=(typeof SURAH_NAMES!=='undefined'&&currentKey&&SURAH_NAMES[currentKey])?('دربي لحفظ القرآن — '+SURAH_NAMES[currentKey]):'دربي لحفظ القرآن';
+  const title=(typeof SURAH_NAMES!=='undefined'&&currentKey&&SURAH_NAMES[currentKey])?(darbiT('home.title')+' — '+SURAH_NAMES[currentKey]):darbiT('home.title');
   if(navigator.share){
     navigator.share({title,url}).catch(()=>{});
   } else {
@@ -2373,10 +2376,6 @@ if('serviceWorker' in navigator){
 .tools-lang-list button.lang-active{font-weight:700;}
 .tools-lang-list button .lang-check{margin-inline-start:auto;color:var(--green,#2E6B3E);font-weight:700;visibility:hidden;}
 .tools-lang-list button.lang-active .lang-check{visibility:visible;}
-#google_translate_element{display:none !important;}
-.goog-te-banner-frame.skiptranslate{display:none !important;}
-.goog-te-gadget{height:0;overflow:hidden;}
-body{top:0 !important;}
 .fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
 .fdbk-overlay.open{display:flex;}
 .fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
@@ -2409,43 +2408,36 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 </style>
 <div class="fdbk-overlay" id="fdbk-overlay">
   <div class="fdbk-modal">
-    <h3>💬 شاركنا رأيك</h3>
-    <label>نوع الملاحظة</label>
+    <h3 data-i18n="fdbk.title">💬 شاركنا رأيك</h3>
+    <label data-i18n="fdbk.type_label">نوع الملاحظة</label>
     <select id="fdbk-type">
-      <option>خطأ في النص القرآني</option>
-      <option>خطأ في السؤال أو الإجابة</option>
-      <option>مشكلة في التسجيل الصوتي</option>
-      <option>مشكلة تصميم أو عرض</option>
-      <option>اقتراح تحسين</option>
-      <option>أخرى</option>
+      <option data-i18n="fdbk.type_quran">خطأ في النص القرآني</option>
+      <option data-i18n="fdbk.type_question">خطأ في السؤال أو الإجابة</option>
+      <option data-i18n="fdbk.type_voice">مشكلة في التسجيل الصوتي</option>
+      <option data-i18n="fdbk.type_design">مشكلة تصميم أو عرض</option>
+      <option data-i18n="fdbk.type_suggestion">اقتراح تحسين</option>
+      <option data-i18n="fdbk.type_other">أخرى</option>
     </select>
-    <label>تفاصيل الملاحظة (اختياري)</label>
-    <textarea id="fdbk-note" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <label data-i18n="fdbk.note_label">تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" data-i18n-placeholder="fdbk.note_placeholder" placeholder="اكتب ملاحظتك هنا..."></textarea>
     <div class="fdbk-actions">
-      <button class="fdbk-send" onclick="fdbkSend()">إرسال عبر واتساب</button>
-      <button class="fdbk-cancel" onclick="fdbkClose()">إلغاء</button>
+      <button class="fdbk-send" onclick="fdbkSend()" data-i18n="fdbk.send">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()" data-i18n="fdbk.cancel">إلغاء</button>
     </div>
   </div>
 </div>
 <div class="qr-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
   <div class="qr-modal">
-    <div class="qr-title">🔲 امسح الكود لفتح الصفحة</div>
-    <img class="qr-img" id="qr-img" src="" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
-    <div class="qr-caption">امسح الكود لفتح الموقع على موبايلك<br><span class="qr-caption-en">Scan to open Quran Darbi</span></div>
+    <div class="qr-title" data-i18n="qr.title">🔲 امسح الكود لفتح الصفحة</div>
+    <img class="qr-img" id="qr-img" src="" data-i18n-alt="qr.img_alt" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
+    <div class="qr-caption" data-i18n="qr.caption">امسح الكود لفتح الموقع على موبايلك</div>
     <div class="qr-url notranslate" translate="no" id="qr-url-text"></div>
     <div class="qr-actions">
-      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn">📋 نسخ الرابط</button>
-      <button class="qr-close-btn" onclick="closeQR()">إغلاق</button>
+      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn" data-i18n="qr.copy_btn">📋 نسخ الرابط</button>
+      <button class="qr-close-btn" onclick="closeQR()" data-i18n="qr.close_btn">إغلاق</button>
     </div>
   </div>
 </div>
-<div id="google_translate_element"></div>
-<script>
-function googleTranslateElementInit(){
-  new google.translate.TranslateElement({pageLanguage:'ar',includedLanguages:'en,fr,tr,fa,de,es',autoDisplay:false},'google_translate_element');
-}
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 <script>
 function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-fab').classList.toggle('open');}
 function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
@@ -2473,28 +2465,47 @@ function closeQR(){document.getElementById('qr-overlay').classList.remove('open'
 function copyQRLink(){
   var url=location.href;
   var b=document.getElementById('qr-copy-btn');
-  navigator.clipboard.writeText(url).then(function(){b.textContent='✅ تم النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);}).catch(function(){b.textContent='تعذر النسخ';setTimeout(function(){b.textContent='📋 نسخ الرابط';},2000);});
+  navigator.clipboard.writeText(url).then(function(){b.textContent=darbiT('qr.copied');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);}).catch(function(){b.textContent=darbiT('qr.copy_failed');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);});
 }
 
-function langCookie(){var m=document.cookie.match(/googtrans=([^;]+)/);return m?decodeURIComponent(m[1]):'';}
-function langApplyLabel(){
-  var map={ar:'العربية',en:'English',fr:'Français',tr:'Türkçe',fa:'فارسی',de:'Deutsch',es:'Español'};
-  var c=langCookie();var code='ar';
-  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
-  var cur=document.getElementById('tools-lang-cur');
-  if(cur)cur.textContent=map[code]||map.ar;
-  document.querySelectorAll('#tools-lang-list button').forEach(function(b){b.classList.toggle('lang-active',b.dataset.code===code);});
-}
-function langSelect(code){
-  if(code==='ar'){
-    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie='googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.'+location.hostname+';';
-  }else{
-    document.cookie='googtrans=/ar/'+code+'; path=/;';
+// إعادة رسم أي نص ديناميكي (النتيجة، حالة زر التسجيل، معلومات السورة المختارة) عند تبديل اللغة
+window.onDarbiLangChange = function(){
+  if(currentKey){
+    var infoEl=document.getElementById('selectedInfo');
+    if(infoEl && infoEl.style.display==='block'){
+      infoEl.textContent=darbiT('recite.selected_info',{name:SURAH_NAMES[currentKey],count:refWords.length});
+    }
   }
-  location.reload();
-}
-langApplyLabel();
+  var recBtn=document.getElementById('recBtn');
+  if(recBtn && !recBtn.disabled && currentKey){
+    if(recognizing)recBtn.textContent=darbiT('recite.btn_pause');
+    else if(recBtn.className.indexOf('paused')>-1)recBtn.textContent=darbiT('recite.btn_resume');
+    else recBtn.textContent=darbiT('recite.btn_start');
+  }
+  var revealBtn=document.getElementById('revealBtn');
+  if(revealBtn && revealBtn.style.display!=='none'){
+    var box=document.getElementById('revealBox');
+    revealBtn.textContent=(box && box.style.display==='block')?darbiT('recite.hide_text_btn'):darbiT('recite.show_text_btn');
+  }
+  var hintBtn=document.getElementById('hintBtn');
+  if(hintBtn && hintBtn.style.display!=='none' && !hintBtn.disabled){
+    hintBtn.textContent=darbiT('hint.btn');
+  }
+  var transcriptBox=document.getElementById('transcriptBox');
+  if(transcriptBox && !savedWords.length && !currentText){
+    transcriptBox.textContent=darbiT('recite.placeholder_text');
+  }
+  var resultCard=document.getElementById('resultCard');
+  if(resultCard && resultCard.style.display==='block'){
+    var pctEl=document.getElementById('statPct');
+    if(pctEl){
+      var pctVal=parseInt((pctEl.textContent||'').replace(/[^0-9]/g,''),10)||0;
+      pctEl.textContent=darbiT('recite.pct_label',{pct:pctVal});
+      document.getElementById('resultTitle').textContent=
+        pctVal===100?darbiT('recite.result_perfect'):pctVal>=80?darbiT('recite.result_great'):pctVal>=60?darbiT('recite.result_good'):darbiT('recite.result_weak');
+    }
+  }
+};
 </script>
 </body>
 </html>
