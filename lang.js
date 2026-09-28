@@ -314,7 +314,7 @@ en: {
   // ===== Home page =====
   'home.title':'Quran Darbi',
   'home.subtitle':'Test your memorization page by page — interactive quizzes to review and reinforce it',
-  'home.recite_btn':'🎤 Test your recitation',
+  'home.recite_btn':'🎤 Recitation Test',
   'home.progress_btn':'📊 My Progress',
   'home.progress_btn_sub':'Full progress details ◀',
   'home.stat_tests':'quizzes available',
@@ -589,7 +589,7 @@ fr: {
   // ===== Page d’accueil =====
   'home.title':'Quran Darbi',
   'home.subtitle':'Testez votre mémorisation page par page — des quiz interactifs pour réviser et consolider',
-  'home.recite_btn':'🎤 Testez votre récitation',
+  'home.recite_btn':'🎤 Test de récitation',
   'home.progress_btn':'📊 Mes progrès',
   'home.progress_btn_sub':'Voir le détail de mes progrès ◀',
   'home.stat_tests':'quiz disponibles',
@@ -864,7 +864,7 @@ tr: {
   // ===== Ana sayfa =====
   'home.title':'Quran Darbi',
   'home.subtitle':'Ezberini sayfa sayfa test et — tekrar etmek ve pekiştirmek için etkileşimli testler',
-  'home.recite_btn':'🎤 Ezberini test et',
+  'home.recite_btn':'🎤 Ezber Testi',
   'home.progress_btn':'📊 İlerlemem',
   'home.progress_btn_sub':'İlerleme ayrıntılarım ◀',
   'home.stat_tests':'test mevcut',
@@ -1140,7 +1140,7 @@ de: {
   // ===== Startseite =====
   'home.title':'Quran Darbi',
   'home.subtitle':'Teste dein Auswendiglernen Seite für Seite — interaktive Quizze zur Wiederholung und Festigung',
-  'home.recite_btn':'🎤 Teste deine Rezitation',
+  'home.recite_btn':'🎤 Rezitationstest',
   'home.progress_btn':'📊 Mein Fortschritt',
   'home.progress_btn_sub':'Alle Fortschrittsdetails ◀',
   'home.stat_tests':'verfügbare Quizze',
@@ -1415,7 +1415,7 @@ es: {
   // ===== Página de inicio =====
   'home.title':'Quran Darbi',
   'home.subtitle':'Pon a prueba tu memorización página por página — cuestionarios interactivos para repasar y reforzar',
-  'home.recite_btn':'🎤 Pon a prueba tu recitación',
+  'home.recite_btn':'🎤 Prueba de recitación',
   'home.progress_btn':'📊 Mi progreso',
   'home.progress_btn_sub':'Ver todos los detalles del progreso ◀',
   'home.stat_tests':'cuestionarios disponibles',
@@ -1690,7 +1690,7 @@ fa: {
   // ===== صفحه اصلی =====
   'home.title':'قرآن دربی',
   'home.subtitle':'حفظ خود را صفحه به صفحه بیازمایید — آزمون‌های تعاملی برای مرور و تثبیت',
-  'home.recite_btn':'🎤 تلاوت خود را بیازمایید',
+  'home.recite_btn':'🎤 آزمون تلاوت',
   'home.progress_btn':'📊 پیشرفت من',
   'home.progress_btn_sub':'جزئیات کامل پیشرفت ◀',
   'home.stat_tests':'آزمون موجود',
