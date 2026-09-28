@@ -312,7 +312,7 @@ en: {
   'nav.back':'← Back',
 
   // ===== Home page =====
-  'home.title':'Quran Darbi — Memorization',
+  'home.title':'Quran Darbi',
   'home.subtitle':'Test your memorization page by page — interactive quizzes to review and reinforce it',
   'home.recite_btn':'🎤 Test your recitation',
   'home.progress_btn':'📊 My Progress',
@@ -587,7 +587,7 @@ fr: {
   'nav.back':'← Retour',
 
   // ===== Page d’accueil =====
-  'home.title':'Darbi — Mémorisation du Coran',
+  'home.title':'Quran Darbi',
   'home.subtitle':'Testez votre mémorisation page par page — des quiz interactifs pour réviser et consolider',
   'home.recite_btn':'🎤 Testez votre récitation',
   'home.progress_btn':'📊 Mes progrès',
@@ -862,7 +862,7 @@ tr: {
   'nav.back':'← Geri',
 
   // ===== Ana sayfa =====
-  'home.title':'Darbi — Kur’an Ezberleme',
+  'home.title':'Quran Darbi',
   'home.subtitle':'Ezberini sayfa sayfa test et — tekrar etmek ve pekiştirmek için etkileşimli testler',
   'home.recite_btn':'🎤 Ezberini test et',
   'home.progress_btn':'📊 İlerlemem',
@@ -1138,7 +1138,7 @@ de: {
   'nav.back':'← Zurück',
 
   // ===== Startseite =====
-  'home.title':'Quran Darbi — Auswendiglernen',
+  'home.title':'Quran Darbi',
   'home.subtitle':'Teste dein Auswendiglernen Seite für Seite — interaktive Quizze zur Wiederholung und Festigung',
   'home.recite_btn':'🎤 Teste deine Rezitation',
   'home.progress_btn':'📊 Mein Fortschritt',
@@ -1413,7 +1413,7 @@ es: {
   'nav.back':'← Volver',
 
   // ===== Página de inicio =====
-  'home.title':'Quran Darbi — Memorización',
+  'home.title':'Quran Darbi',
   'home.subtitle':'Pon a prueba tu memorización página por página — cuestionarios interactivos para repasar y reforzar',
   'home.recite_btn':'🎤 Pon a prueba tu recitación',
   'home.progress_btn':'📊 Mi progreso',
@@ -1688,7 +1688,7 @@ fa: {
   'nav.back':'← بازگشت',
 
   // ===== صفحه اصلی =====
-  'home.title':'قرآن دربی — حفظ قرآن',
+  'home.title':'قرآن دربی',
   'home.subtitle':'حفظ خود را صفحه به صفحه بیازمایید — آزمون‌های تعاملی برای مرور و تثبیت',
   'home.recite_btn':'🎤 تلاوت خود را بیازمایید',
   'home.progress_btn':'📊 پیشرفت من',
