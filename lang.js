@@ -29,6 +29,8 @@ ar: {
   'nav.qr':'كود QR',
   'nav.about':'📖 عن المشروع',
   'nav.progress':'📊 تقدّمي',
+  'nav.sync_signin':'☁️ تسجيل الدخول والمزامنة',
+  'nav.sync_on':'☁️ المزامنة مفعّلة ✅',
   'nav.back':'← الرجوع',
 
   // ===== الصفحة الرئيسية =====
@@ -320,6 +322,8 @@ en: {
   'nav.qr':'QR code',
   'nav.about':'📖 About',
   'nav.progress':'📊 My Progress',
+  'nav.sync_signin':'☁️ Sign in & sync',
+  'nav.sync_on':'☁️ Sync on ✅',
   'nav.back':'← Back',
 
   // ===== Home page =====
@@ -606,6 +610,8 @@ fr: {
   'nav.qr':'Code QR',
   'nav.about':'📖 À propos',
   'nav.progress':'📊 Mes progrès',
+  'nav.sync_signin':'☁️ Connexion et synchronisation',
+  'nav.sync_on':'☁️ Synchronisation activée ✅',
   'nav.back':'← Retour',
 
   // ===== Page d’accueil =====
@@ -892,6 +898,8 @@ tr: {
   'nav.qr':'QR kodu',
   'nav.about':'📖 Proje hakkında',
   'nav.progress':'📊 İlerlemem',
+  'nav.sync_signin':'☁️ Giriş yap ve senkronize et',
+  'nav.sync_on':'☁️ Senkronizasyon açık ✅',
   'nav.back':'← Geri',
 
   // ===== Ana sayfa =====
@@ -1179,6 +1187,8 @@ de: {
   'nav.qr':'QR-Code',
   'nav.about':'📖 Über das Projekt',
   'nav.progress':'📊 Mein Fortschritt',
+  'nav.sync_signin':'☁️ Anmelden & synchronisieren',
+  'nav.sync_on':'☁️ Synchronisierung aktiv ✅',
   'nav.back':'← Zurück',
 
   // ===== Startseite =====
@@ -1465,6 +1475,8 @@ es: {
   'nav.qr':'Código QR',
   'nav.about':'📖 Acerca del proyecto',
   'nav.progress':'📊 Mi progreso',
+  'nav.sync_signin':'☁️ Iniciar sesión y sincronizar',
+  'nav.sync_on':'☁️ Sincronización activa ✅',
   'nav.back':'← Volver',
 
   // ===== Página de inicio =====
@@ -1751,6 +1763,8 @@ fa: {
   'nav.qr':'کد QR',
   'nav.about':'📖 درباره‌ی پروژه',
   'nav.progress':'📊 پیشرفت من',
+  'nav.sync_signin':'☁️ ورود و همگام‌سازی',
+  'nav.sync_on':'☁️ همگام‌سازی فعال ✅',
   'nav.back':'← بازگشت',
 
   // ===== صفحه اصلی =====
@@ -2109,11 +2123,37 @@ function applyProgressSignedBadge(){
   }catch(e){}
 }
 
+// سطر "تسجيل الدخول والمزامنة" في قائمة الأدوات (☰) في كل الصفحات — يفتح
+// كارت المزامنة في "تقدّمي". لو الزائر مسجّل دخول من قبل يظهر "المزامنة مفعّلة ✅".
+function ensureSyncMenuItem(){
+  try{
+    var signedIn = !!localStorage.getItem('darbi_auth_last_uid_v1');
+    document.querySelectorAll('.tools-menu').forEach(function(menu){
+      var item = menu.querySelector('.tools-sync-item');
+      if(!item){
+        var anchor = null;
+        menu.querySelectorAll('.tools-item').forEach(function(b){
+          if((b.getAttribute('onclick')||'').indexOf('progress.html')!==-1) anchor=b;
+        });
+        item = document.createElement('button');
+        item.className = 'tools-item tools-sync-item';
+        item.setAttribute('onclick', "toolsClose();location.href='progress.html#sync-card';");
+        var span = document.createElement('span');
+        item.appendChild(span);
+        if(anchor) anchor.after(item); else menu.insertBefore(item, menu.firstChild);
+      }
+      var sp = item.querySelector('span');
+      sp.setAttribute('data-i18n', signedIn ? 'nav.sync_on' : 'nav.sync_signin');
+    });
+  }catch(e){}
+}
+
 function applyLang(code){
   if(SUPPORTED.indexOf(code)===-1) code='ar';
   setLangPref(code);
   document.documentElement.setAttribute('lang', code);
   document.documentElement.setAttribute('dir', (code==='ar'||code==='fa') ? 'rtl' : 'ltr');
+  ensureSyncMenuItem();
   applyStaticText();
   applyProgressSignedBadge();
   updateLangMenuUI(code);
