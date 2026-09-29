@@ -162,6 +162,12 @@
     safeSetJSON(MISSED_KEY, all);
   }
 
+  function removeMiss(pageKey, level, qIndex) {
+    var all = safeGetJSON(MISSED_KEY, {});
+    var k = pageKey + '|' + level + '|' + qIndex;
+    if (all[k]) { delete all[k]; safeSetJSON(MISSED_KEY, all); }
+  }
+
   function getReviewQueue(limit) {
     var all = safeGetJSON(MISSED_KEY, {});
     var list = Object.keys(all).map(function (k) { return all[k]; });
@@ -334,6 +340,7 @@
 
   window.DarbiExtra = {
     recordMiss: recordMiss,
+    removeMiss: removeMiss,
     getReviewQueue: getReviewQueue,
     getStreak: getStreak,
     getWeekTracker: getWeekTracker,

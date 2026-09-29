@@ -149,6 +149,8 @@ html[data-theme="dark"] .rev-chip{color:var(--gold);}
 .rev-meta{font-size:0.68rem;color:var(--soft);margin-top:2px;}
 .rev-count{flex-shrink:0;font-size:0.72rem;color:var(--soft);}
 .rev-retry-icon{flex-shrink:0;font-size:1rem;color:var(--green);}
+.rev-del{flex-shrink:0;border:1px solid var(--border);background:transparent;color:var(--soft);border-radius:8px;width:30px;height:30px;font-size:.95rem;cursor:pointer;font-family:inherit;}
+.rev-del:hover{color:#c0392b;border-color:#c0392b;}
 
 /* تذكير الإشعارات */
 .rem-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
@@ -801,6 +803,15 @@ function render(){
           '</span>'+
           '<span class="rev-count">×'+item.missCount+'</span>'+
           (canJump?'<span class="rev-retry-icon">↻</span>':'');
+        const del=document.createElement('button');
+        del.type='button';del.className='rev-del';del.textContent='🗑';
+        const dl=darbiT('progress.review_remove');del.title=dl;del.setAttribute('aria-label',dl);
+        del.addEventListener('click',function(ev){
+          ev.preventDefault();ev.stopPropagation();
+          if(window.DarbiExtra&&DarbiExtra.removeMiss)DarbiExtra.removeMiss(item.pageKey,item.level,item.qIndex);
+          render();
+        });
+        a.appendChild(del);
         revList.appendChild(a);
         if(canJump) chain.push(a.getAttribute('href'));
       });
