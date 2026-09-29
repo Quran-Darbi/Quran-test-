@@ -138,8 +138,7 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .surah-name:first-child{margin-top:2px;}
 .surah-card{font-family:inherit;cursor:pointer;text-align:start;width:100%;}
 .quiz-card.surah-card.sel{border-color:var(--green);background:var(--bg);box-shadow:0 0 0 2px var(--green) inset;}
-.surah-panels{margin-top:8px;}
-.surah-panel{display:none;margin-top:6px;padding:8px;border:1px dashed var(--border);border-radius:11px;}
+.surah-panel{display:none;grid-column:1/-1;margin:2px 0 4px;padding:8px;border:1px dashed var(--border);border-radius:11px;}
 .surah-panel.open{display:block;}
 .surah-panel-title{font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--green);font-weight:700;margin:0 0 6px;}
 
@@ -610,7 +609,7 @@ function buildAccBody(meta){
   const multi = meta.groups.length>1;
   let out='', cards='', panels='';
   const flush=()=>{
-    if(cards){ out+=`<div class="cards-grid surah-cards">${cards}</div><div class="surah-panels">${panels}</div>`; cards=''; panels=''; }
+    if(cards){ out+=`<div class="cards-grid surah-cards">${cards}${panels}</div>`; cards=''; panels=''; }
   };
   meta.groups.forEach((g,gi)=>{
     const noteBtn = g.note ? `<button class="note-btn" onclick="goJuz(${g.noteTarget})">${g.note}</button>` : '';
@@ -620,8 +619,7 @@ function buildAccBody(meta){
       if(pages.length>1){
         const id='sp'+gi+'_'+Math.random().toString(36).slice(2,7);
         cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${g.name}</div><div class="card-meta">${pages[0][1]}</div></button>`;
-        panels+=`<div class="surah-panel" id="${id}"><div class="surah-panel-title notranslate" translate="no">${g.name}</div><div class="cards-grid">${groupCardsHtml(g)}</div></div>`;
-        if(noteBtn) panels+=noteBtn;
+        panels+=`<div class="surah-panel" id="${id}"><div class="surah-panel-title notranslate" translate="no">${g.name}</div><div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}</div>`;
         return;
       }
     }
@@ -634,13 +632,23 @@ function buildAccBody(meta){
 }
 
 function juzRange(t){const p=t.split('،').map(x=>x.trim()).filter(Boolean);return p.length>1?p[0]+' — '+p[p.length-1]:t;}
+function placeSurahPanel(btn){
+  const p=document.getElementById(btn.dataset.panel); if(!p) return;
+  const grid=btn.parentElement;
+  const cards=[...grid.querySelectorAll(':scope > .surah-card')];
+  const cols=Math.max(1,getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length);
+  const i=cards.indexOf(btn);
+  const last=cards[Math.min((Math.floor(i/cols)+1)*cols-1,cards.length-1)];
+  last.after(p);
+}
 function toggleSurah(btn){
   const body=btn.closest('.acc-body'); const p=document.getElementById(btn.dataset.panel);
   const o=!p.classList.contains('open');
   body.querySelectorAll('.surah-panel.open').forEach(x=>x.classList.remove('open'));
   body.querySelectorAll('.surah-card.sel').forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-expanded','false');});
-  if(o){p.classList.add('open');btn.classList.add('sel');btn.setAttribute('aria-expanded','true');p.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  if(o){placeSurahPanel(btn);p.classList.add('open');btn.classList.add('sel');btn.setAttribute('aria-expanded','true');p.scrollIntoView({behavior:'smooth',block:'nearest'});}
 }
+window.addEventListener('resize',()=>{document.querySelectorAll('.surah-card.sel').forEach(placeSurahPanel);});
 
 function buildJuzRow(n){
   const id='acc-juz'+n;
@@ -846,7 +854,7 @@ function applyJuzFilters(){
       const has=[...p.querySelectorAll('.quiz-card')].some(c=>c.style.display!=='none');
       const btn=acc.querySelector('.surah-card[data-panel="'+p.id+'"]');
       if(btn) btn.style.display=(q&&!has)?'none':'';
-      if(q){p.classList.toggle('open',has);if(btn){btn.classList.toggle('sel',has);btn.setAttribute('aria-expanded',has?'true':'false');}}
+      if(q){p.classList.toggle('open',has);if(btn){btn.classList.toggle('sel',has);btn.setAttribute('aria-expanded',has?'true':'false');if(has)placeSurahPanel(btn);}}
     });
     if(q && any){acc.querySelector('.acc-body').classList.add('open');acc.querySelector('.acc-arrow').classList.add('open');}
   });
