@@ -136,6 +136,16 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .acc-body.open{display:block;}
 .surah-name{font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--green);font-weight:700;margin:10px 0 6px;}
 .surah-name:first-child{margin-top:2px;}
+.surah-wrap{margin:0 0 8px;}
+.surah-card{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--green);border-radius:11px;padding:10px 12px;color:var(--text);font-family:inherit;cursor:pointer;text-align:start;}
+.surah-card .sc-text{display:flex;flex-direction:column;gap:2px;}
+.surah-card .sc-name{font-family:'Scheherazade New',serif;font-size:1.05rem;font-weight:700;color:var(--green);}
+.surah-card .sc-meta{font-size:0.78rem;color:var(--text-faint,#6B8067);}
+.surah-card .sc-arrow{transition:transform .2s;color:var(--green);}
+.surah-wrap.open .sc-arrow{transform:rotate(180deg);}
+.surah-wrap .surah-pages{display:none;margin-top:8px;}
+.surah-wrap.open .surah-pages{display:grid;}
+
 .note-btn{margin-top:9px;width:100%;background:var(--green3);border:1px dashed var(--green2);color:var(--green);font-size:0.78rem;padding:8px;border-radius:10px;cursor:pointer;text-align:center;font-family:inherit;}
 .note-btn:hover{opacity:.85;}
 
@@ -415,6 +425,12 @@ const almunafiqunPages=[
 const attaghabunPages=[
   ['attaghabun_p556.html','ص 556','1–9'],['attaghabun_p557.html','ص 557','10–18'],
 ];
+const attalaqPages=[
+  ['attalaq_p558.html','ص 558','1–5'],['attalaq_p559.html','ص 559','6–12'],
+];
+const attahrimPages=[
+  ['attahrim_p560.html','ص 560','1–7'],['attahrim_p561.html','ص 561','8–12'],
+];
 
 const almaarijPages=[
   ['almaarij_p568.html','ص 568','1–10'],['almaarij_p569.html','ص 569','11–39'],['almaarij_p570.html','ص 570','40–44'],
@@ -536,14 +552,16 @@ const JUZ_GROUPS = {
         { kind:'full', arr:alqiyamaPages, name:'القيامة', surah:'القيامة' },
         { kind:'full', arr:alinsanPages, name:'الإنسان', surah:'الإنسان' }
       ] },
-  28:{ title:'المجادلة، الحشر، الممتحنة، الصف، الجمعة، المنافقون، التغابن', groups:[
+  28:{ title:'المجادلة، الحشر، الممتحنة، الصف، الجمعة، المنافقون، التغابن، الطلاق، التحريم', groups:[
         { kind:'full', arr:almujadilaPages, name:'المجادلة', surah:'المجادلة' },
         { kind:'full', arr:alhashrPages, name:'الحشر', surah:'الحشر' },
         { kind:'full', arr:almumtahanaPages, name:'الممتحنة', surah:'الممتحنة' },
         { kind:'full', arr:alsaffPages, name:'الصف', surah:'الصف' },
         { kind:'full', arr:aljumuaPages, name:'الجمعة', surah:'الجمعة' },
         { kind:'full', arr:almunafiqunPages, name:'المنافقون', surah:'المنافقون' },
-        { kind:'full', arr:attaghabunPages, name:'التغابن', surah:'التغابن' }
+        { kind:'full', arr:attaghabunPages, name:'التغابن', surah:'التغابن' },
+        { kind:'full', arr:attalaqPages, name:'الطلاق', surah:'الطلاق' },
+        { kind:'full', arr:attahrimPages, name:'التحريم', surah:'التحريم' }
       ] },
   30:{ title:'جزء عمّ', amma:true, groups:[ { kind:'amma' } ] }
 };
@@ -592,8 +610,21 @@ function buildAccBody(meta){
   return meta.groups.map(g=>{
     const heading = (multi && g.name) ? `<div class="surah-name notranslate" translate="no">${g.name}</div>` : '';
     const noteBtn = g.note ? `<button class="note-btn" onclick="goJuz(${g.noteTarget})">${g.note}</button>` : '';
+    if(multi && g.kind==='full' && g.name){
+      const arr=g.arr, from=('from' in g)?g.from:0, to=('to' in g)?g.to:arr.length;
+      const pages=arr.slice(from,to);
+      if(pages.length>1){
+        return `<div class="surah-wrap"><button type="button" class="surah-card" aria-expanded="false" onclick="toggleSurah(this)"><span class="sc-text"><span class="sc-name notranslate" translate="no">${g.name}</span><span class="sc-meta">${pages[0][1]}</span></span><span class="sc-arrow">▾</span></button><div class="cards-grid surah-pages">${groupCardsHtml(g)}</div></div>${noteBtn}`;
+      }
+    }
     return `${heading}<div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}`;
   }).join('');
+}
+
+function juzRange(t){const p=t.split('،').map(x=>x.trim()).filter(Boolean);return p.length>1?p[0]+' — '+p[p.length-1]:t;}
+function toggleSurah(btn){
+  const w=btn.closest('.surah-wrap'); const o=!w.classList.contains('open');
+  w.classList.toggle('open',o); btn.setAttribute('aria-expanded',o?'true':'false');
 }
 
 function buildJuzRow(n){
@@ -623,7 +654,7 @@ function buildJuzRow(n){
   return `<div class="acc" id="${id}" data-state="built">
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
-      <div class="acc-left-top"><div class="${badgeClass}">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${meta.title}</div>${countBadge}</div>
+      <div class="acc-left-top"><div class="${badgeClass}">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${juzRange(meta.title)}</div>${countBadge}</div>
       <div class="juz-bar-track"><div class="juz-bar-fill" id="juz${n}-bar" style="width:0%"></div></div>
     </div>
     <div class="acc-right"><div class="juz-prog" id="juz${n}-prog">${darbiT('home.juz_available_count',{n:total})}</div><span class="acc-arrow">▾</span></div>
@@ -673,6 +704,8 @@ function renderDarbiProgress(){
   aljumuaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الجمعة '+p[1];});
   almunafiqunPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المنافقون '+p[1];});
   attaghabunPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة التغابن '+p[1];});
+  attalaqPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الطلاق '+p[1];});
+  attahrimPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة التحريم '+p[1];});
   almaarijPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المعارج '+p[1];});
   aljinnPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الجن '+p[1];});
   almuzzammilPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المزمل '+p[1];});
@@ -711,7 +744,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
@@ -793,6 +826,11 @@ function applyJuzFilters(){
     const show = matchesSearch && matchesFilter;
     acc.style.display = show ? '' : 'none';
     if(show) visibleCount++;
+    acc.querySelectorAll('.surah-wrap').forEach(w=>{
+      const has=[...w.querySelectorAll('.quiz-card')].some(c=>c.style.display!=='none');
+      w.style.display=(q&&!has)?'none':'';
+      if(q&&has){w.classList.add('open');w.querySelector('.surah-card').setAttribute('aria-expanded','true');}
+    });
     if(q && any){acc.querySelector('.acc-body').classList.add('open');acc.querySelector('.acc-arrow').classList.add('open');}
   });
   const emptyEl=document.getElementById('juz-filter-empty');
