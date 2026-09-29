@@ -337,6 +337,18 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
     <a href="index.html" data-i18n="progress.empty_cta">ابدأ الآن</a>
   </div>
 
+  <div class="card" id="sync-card">
+    <h2 data-i18n="progress.sync_title">☁️ مزامنة عبر جوجل</h2>
+    <div class="sync-desc" data-i18n="progress.sync_desc">سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويُزامَن تلقائيًا بين أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.</div>
+    <div class="sync-status hidden" id="sync-status"></div>
+    <div class="sync-actions">
+      <button class="sync-btn sync-signin" id="sync-signin-btn" onclick="onSyncSignIn()" data-i18n="progress.sync_signin_btn">🔵 تسجيل الدخول بجوجل</button>
+      <button class="sync-btn sync-now hidden" id="sync-now-btn" onclick="onSyncNow()" data-i18n="progress.sync_now_btn">🔄 مزامنة الآن</button>
+      <button class="sync-btn sync-signout hidden" id="sync-signout-btn" onclick="onSyncSignOut()" data-i18n="progress.sync_signout_btn">تسجيل الخروج</button>
+    </div>
+    <div class="sync-msg hidden" id="sync-msg"></div>
+  </div>
+
   <div id="data-sections">
 
     <div class="card">
@@ -394,18 +406,6 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
         <div class="rem-msg hidden" id="rem-msg"></div>
       </div>
       <div id="reminder-info" class="rem-info hidden"></div>
-    </div>
-
-    <div class="card" id="sync-card">
-      <h2 data-i18n="progress.sync_title">☁️ مزامنة عبر جوجل</h2>
-      <div class="sync-desc" data-i18n="progress.sync_desc">سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويُزامَن تلقائيًا بين أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.</div>
-      <div class="sync-status hidden" id="sync-status"></div>
-      <div class="sync-actions">
-        <button class="sync-btn sync-signin" id="sync-signin-btn" onclick="onSyncSignIn()" data-i18n="progress.sync_signin_btn">🔵 تسجيل الدخول بجوجل</button>
-        <button class="sync-btn sync-now hidden" id="sync-now-btn" onclick="onSyncNow()" data-i18n="progress.sync_now_btn">🔄 مزامنة الآن</button>
-        <button class="sync-btn sync-signout hidden" id="sync-signout-btn" onclick="onSyncSignOut()" data-i18n="progress.sync_signout_btn">تسجيل الخروج</button>
-      </div>
-      <div class="sync-msg hidden" id="sync-msg"></div>
     </div>
 
     <div class="card">

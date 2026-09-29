@@ -2075,12 +2075,39 @@ function updateLangMenuUI(code){
   });
 }
 
+// علامة صغيرة (✅) جنب "تقدّمي" في قائمة الأدوات لو الزائر مسجّل دخول
+// بجوجل من قبل على هذا الجهاز — مجرد مؤشّر بصري خفيف مبني على قراءة
+// localStorage (المفتاح اللي بيحفظه darbi-auth-sync.js عند تسجيل
+// الدخول/الخروج في progress.html)، من غير ما نحمّل Firebase في أي
+// صفحة تانية. بيتنفّذ على كل الصفحات (لأن lang.js محمّل في كلها)،
+// وبيتعاد تطبيقه بعد كل applyStaticText() عشان تبديل اللغة ميمسحوش.
+function applyProgressSignedBadge(){
+  try{
+    var signedIn = !!localStorage.getItem('darbi_auth_last_uid_v1');
+    document.querySelectorAll('[data-i18n="nav.progress"]').forEach(function(el){
+      var mark = el.querySelector('.progress-signed-mark');
+      if(signedIn){
+        if(!mark){
+          mark = document.createElement('span');
+          mark.className = 'progress-signed-mark';
+          mark.textContent = ' ✅';
+          mark.style.cssText = 'font-size:0.75em;';
+          el.appendChild(mark);
+        }
+      } else if(mark){
+        mark.remove();
+      }
+    });
+  }catch(e){}
+}
+
 function applyLang(code){
   if(SUPPORTED.indexOf(code)===-1) code='ar';
   setLangPref(code);
   document.documentElement.setAttribute('lang', code);
   document.documentElement.setAttribute('dir', (code==='ar'||code==='fa') ? 'rtl' : 'ltr');
   applyStaticText();
+  applyProgressSignedBadge();
   updateLangMenuUI(code);
   if(typeof window.onDarbiLangChange === 'function'){
     try{ window.onDarbiLangChange(code); }catch(e){}
