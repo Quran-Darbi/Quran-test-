@@ -297,7 +297,17 @@ ar: {
   'progress.backup_export_ok':'تم تنزيل النسخة الاحتياطية ✅',
   'progress.backup_import_ok':'تم استيراد النسخة الاحتياطية بنجاح ✅',
   'progress.backup_import_fail':'تعذّر الاستيراد: ',
-  'progress.unknown_error':'خطأ غير معروف'
+  'progress.unknown_error':'خطأ غير معروف',
+  'progress.sync_title':'☁️ مزامنة عبر جوجل',
+  'progress.sync_desc':'سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويُزامَن تلقائيًا بين أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.',
+  'progress.sync_signin_btn':'🔵 تسجيل الدخول بجوجل',
+  'progress.sync_signout_btn':'تسجيل الخروج',
+  'progress.sync_now_btn':'🔄 مزامنة الآن',
+  'progress.sync_signed_in_as':'تم تسجيل الدخول: ',
+  'progress.sync_syncing':'جارٍ المزامنة…',
+  'progress.sync_ok':'تمت المزامنة بنجاح ✅',
+  'progress.sync_fail':'تعذّرت المزامنة: ',
+  'progress.sync_unsupported':'ميزة المزامنة غير متاحة على هذا المتصفح'
 },
 
 en: {
@@ -572,7 +582,17 @@ en: {
   'progress.backup_export_ok':'Backup downloaded ✅',
   'progress.backup_import_ok':'Backup imported successfully ✅',
   'progress.backup_import_fail':'Could not import: ',
-  'progress.unknown_error':'Unknown error'
+  'progress.unknown_error':'Unknown error',
+  'progress.sync_title':'☁️ Sync with Google',
+  'progress.sync_desc':'Sign in with Google so your progress is saved and automatically synced across your devices, even if you switch phones or clear your browser data.',
+  'progress.sync_signin_btn':'🔵 Sign in with Google',
+  'progress.sync_signout_btn':'Sign out',
+  'progress.sync_now_btn':'🔄 Sync now',
+  'progress.sync_signed_in_as':'Signed in as: ',
+  'progress.sync_syncing':'Syncing…',
+  'progress.sync_ok':'Synced successfully ✅',
+  'progress.sync_fail':'Sync failed: ',
+  'progress.sync_unsupported':'Sync is not available on this browser'
 },
 
 fr: {
@@ -847,7 +867,17 @@ fr: {
   'progress.backup_export_ok':'Sauvegarde téléchargée ✅',
   'progress.backup_import_ok':'Sauvegarde importée avec succès ✅',
   'progress.backup_import_fail':'Impossible d’importer : ',
-  'progress.unknown_error':'Erreur inconnue'
+  'progress.unknown_error':'Erreur inconnue',
+  'progress.sync_title':'☁️ Synchronisation Google',
+  'progress.sync_desc':"Connectez-vous avec Google pour que votre progression soit enregistrée et synchronisée automatiquement entre vos appareils, même en cas de changement de téléphone ou d'effacement des données du navigateur.",
+  'progress.sync_signin_btn':'🔵 Se connecter avec Google',
+  'progress.sync_signout_btn':'Se déconnecter',
+  'progress.sync_now_btn':'🔄 Synchroniser maintenant',
+  'progress.sync_signed_in_as':'Connecté en tant que : ',
+  'progress.sync_syncing':'Synchronisation…',
+  'progress.sync_ok':'Synchronisation réussie ✅',
+  'progress.sync_fail':'Échec de la synchronisation : ',
+  'progress.sync_unsupported':"La synchronisation n'est pas disponible sur ce navigateur"
 },
 
 tr: {
@@ -1122,7 +1152,17 @@ tr: {
   'progress.backup_export_ok':'Yedek indirildi ✅',
   'progress.backup_import_ok':'Yedek başarıyla içe aktarıldı ✅',
   'progress.backup_import_fail':'İçe aktarılamadı: ',
-  'progress.unknown_error':'Bilinmeyen hata'
+  'progress.unknown_error':'Bilinmeyen hata',
+  'progress.sync_title':'☁️ Google ile senkronizasyon',
+  'progress.sync_desc':'İlerlemenizin kaydedilmesi ve telefon değiştirseniz veya tarayıcı verilerini silseniz bile cihazlarınız arasında otomatik olarak senkronize edilmesi için Google ile giriş yapın.',
+  'progress.sync_signin_btn':'🔵 Google ile giriş yap',
+  'progress.sync_signout_btn':'Çıkış yap',
+  'progress.sync_now_btn':'🔄 Şimdi senkronize et',
+  'progress.sync_signed_in_as':'Giriş yapıldı: ',
+  'progress.sync_syncing':'Senkronize ediliyor…',
+  'progress.sync_ok':'Senkronizasyon başarılı ✅',
+  'progress.sync_fail':'Senkronizasyon başarısız: ',
+  'progress.sync_unsupported':'Senkronizasyon bu tarayıcıda kullanılamıyor'
 }
 ,
 
@@ -1398,7 +1438,17 @@ de: {
   'progress.backup_export_ok':'Sicherung heruntergeladen ✅',
   'progress.backup_import_ok':'Sicherung erfolgreich importiert ✅',
   'progress.backup_import_fail':'Import fehlgeschlagen: ',
-  'progress.unknown_error':'Unbekannter Fehler'
+  'progress.unknown_error':'Unbekannter Fehler',
+  'progress.sync_title':'☁️ Synchronisierung mit Google',
+  'progress.sync_desc':'Melde dich mit Google an, damit dein Fortschritt gespeichert und automatisch zwischen deinen Geräten synchronisiert wird, selbst wenn du das Telefon wechselst oder die Browserdaten löschst.',
+  'progress.sync_signin_btn':'🔵 Mit Google anmelden',
+  'progress.sync_signout_btn':'Abmelden',
+  'progress.sync_now_btn':'🔄 Jetzt synchronisieren',
+  'progress.sync_signed_in_as':'Angemeldet als: ',
+  'progress.sync_syncing':'Synchronisiere…',
+  'progress.sync_ok':'Erfolgreich synchronisiert ✅',
+  'progress.sync_fail':'Synchronisierung fehlgeschlagen: ',
+  'progress.sync_unsupported':'Synchronisierung ist in diesem Browser nicht verfügbar'
 },
 
 es: {
@@ -1673,7 +1723,17 @@ es: {
   'progress.backup_export_ok':'Copia de seguridad descargada ✅',
   'progress.backup_import_ok':'Copia de seguridad importada correctamente ✅',
   'progress.backup_import_fail':'No se pudo importar: ',
-  'progress.unknown_error':'Error desconocido'
+  'progress.unknown_error':'Error desconocido',
+  'progress.sync_title':'☁️ Sincronización con Google',
+  'progress.sync_desc':'Inicia sesión con Google para que tu progreso se guarde y se sincronice automáticamente entre tus dispositivos, aunque cambies de teléfono o borres los datos del navegador.',
+  'progress.sync_signin_btn':'🔵 Iniciar sesión con Google',
+  'progress.sync_signout_btn':'Cerrar sesión',
+  'progress.sync_now_btn':'🔄 Sincronizar ahora',
+  'progress.sync_signed_in_as':'Sesión iniciada como: ',
+  'progress.sync_syncing':'Sincronizando…',
+  'progress.sync_ok':'Sincronización exitosa ✅',
+  'progress.sync_fail':'Error de sincronización: ',
+  'progress.sync_unsupported':'La sincronización no está disponible en este navegador'
 },
 
 fa: {
@@ -1948,7 +2008,17 @@ fa: {
   'progress.backup_export_ok':'نسخه پشتیبان دانلود شد ✅',
   'progress.backup_import_ok':'نسخه پشتیبان با موفقیت وارد شد ✅',
   'progress.backup_import_fail':'وارد کردن ممکن نشد: ',
-  'progress.unknown_error':'خطای ناشناخته'
+  'progress.unknown_error':'خطای ناشناخته',
+  'progress.sync_title':'☁️ همگام‌سازی با گوگل',
+  'progress.sync_desc':'برای اینکه پیشرفت شما ذخیره و به‌طور خودکار بین دستگاه‌هایتان همگام‌سازی شود، حتی اگر گوشی را عوض کنید یا داده‌های مرورگر را پاک کنید، با گوگل وارد شوید.',
+  'progress.sync_signin_btn':'🔵 ورود با گوگل',
+  'progress.sync_signout_btn':'خروج',
+  'progress.sync_now_btn':'🔄 همگام‌سازی اکنون',
+  'progress.sync_signed_in_as':'وارد شده به‌عنوان: ',
+  'progress.sync_syncing':'در حال همگام‌سازی…',
+  'progress.sync_ok':'همگام‌سازی با موفقیت انجام شد ✅',
+  'progress.sync_fail':'همگام‌سازی ناموفق بود: ',
+  'progress.sync_unsupported':'همگام‌سازی در این مرورگر در دسترس نیست'
 }
 
 };

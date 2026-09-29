@@ -179,6 +179,18 @@ html[data-theme="dark"] .backup-suggest{color:var(--gold);}
 .bk-msg.ok{color:var(--green);}
 .bk-msg.err{color:#B23A3A;}
 
+/* مزامنة جوجل */
+.sync-desc{font-size:0.82rem;color:var(--soft);line-height:1.7;margin-bottom:12px;}
+.sync-status{font-size:0.82rem;color:var(--text);margin-bottom:12px;}
+.sync-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.sync-btn{flex:1;min-width:160px;padding:10px;border-radius:10px;border:none;font-size:0.85rem;font-family:'Amiri',serif;cursor:pointer;}
+.sync-signin{background:#4285F4;color:#fff;}
+.sync-signout{background:var(--green3);color:var(--green);border:1px solid var(--border);}
+.sync-now{background:var(--green);color:#fff;}
+.sync-msg{font-size:0.78rem;margin-top:10px;}
+.sync-msg.ok{color:var(--green);}
+.sync-msg.err{color:#B23A3A;}
+
 /* empty state */
 .empty{text-align:center;padding:30px 16px;}
 .empty-emoji{font-size:2.4rem;margin-bottom:10px;}
@@ -382,6 +394,18 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
         <div class="rem-msg hidden" id="rem-msg"></div>
       </div>
       <div id="reminder-info" class="rem-info hidden"></div>
+    </div>
+
+    <div class="card" id="sync-card">
+      <h2 data-i18n="progress.sync_title">☁️ مزامنة عبر جوجل</h2>
+      <div class="sync-desc" data-i18n="progress.sync_desc">سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويُزامَن تلقائيًا بين أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.</div>
+      <div class="sync-status hidden" id="sync-status"></div>
+      <div class="sync-actions">
+        <button class="sync-btn sync-signin" id="sync-signin-btn" onclick="onSyncSignIn()" data-i18n="progress.sync_signin_btn">🔵 تسجيل الدخول بجوجل</button>
+        <button class="sync-btn sync-now hidden" id="sync-now-btn" onclick="onSyncNow()" data-i18n="progress.sync_now_btn">🔄 مزامنة الآن</button>
+        <button class="sync-btn sync-signout hidden" id="sync-signout-btn" onclick="onSyncSignOut()" data-i18n="progress.sync_signout_btn">تسجيل الخروج</button>
+      </div>
+      <div class="sync-msg hidden" id="sync-msg"></div>
     </div>
 
     <div class="card">
@@ -855,6 +879,81 @@ function onReminderTimeChange(){
   });
 }
 
+/* ================= مزامنة التقدّم عبر جوجل (Firebase) ================= */
+function renderSyncCard(state){
+  const signinBtn=document.getElementById('sync-signin-btn');
+  const nowBtn=document.getElementById('sync-now-btn');
+  const signoutBtn=document.getElementById('sync-signout-btn');
+  const status=document.getElementById('sync-status');
+
+  if(!state || state.status==='unsupported'){
+    signinBtn.disabled=true;
+    signinBtn.textContent=darbiT('progress.sync_unsupported');
+    nowBtn.classList.add('hidden');
+    signoutBtn.classList.add('hidden');
+    return;
+  }
+
+  if(state.status==='signed-out'){
+    signinBtn.classList.remove('hidden');
+    nowBtn.classList.add('hidden');
+    signoutBtn.classList.add('hidden');
+    status.classList.add('hidden');
+    return;
+  }
+
+  // syncing / signed-in / sync-error: مسجَّل دخول في الحالات الثلاث
+  signinBtn.classList.add('hidden');
+  nowBtn.classList.remove('hidden');
+  signoutBtn.classList.remove('hidden');
+  status.classList.remove('hidden');
+  const name=(state.user && (state.user.displayName||state.user.email))||'';
+  status.textContent=darbiT('progress.sync_signed_in_as')+name;
+
+  if(state.status==='syncing'){
+    showSyncMsg(darbiT('progress.sync_syncing'),'ok');
+  }else if(state.status==='signed-in'){
+    showSyncMsg(darbiT('progress.sync_ok'),'ok');
+    render(); // إعادة رسم بيانات التقدّم بعد الدمج مع السحابة
+  }else if(state.status==='sync-error'){
+    showSyncMsg(darbiT('progress.sync_fail')+(state.error||darbiT('progress.unknown_error')),'err');
+  }
+}
+
+function showSyncMsg(text,cls){
+  const el=document.getElementById('sync-msg');
+  el.textContent=text;
+  el.classList.remove('hidden');
+  el.className='sync-msg '+cls;
+}
+
+function onSyncSignIn(){
+  if(!window.DarbiAuth)return;
+  DarbiAuth.signIn(function(ok,err){
+    if(!ok) showSyncMsg(darbiT('progress.sync_fail')+(err||darbiT('progress.unknown_error')),'err');
+  });
+}
+
+function onSyncSignOut(){
+  if(!window.DarbiAuth)return;
+  DarbiAuth.signOut(function(){
+    renderSyncCard({status:'signed-out'});
+  });
+}
+
+function onSyncNow(){
+  if(!window.DarbiAuth)return;
+  showSyncMsg(darbiT('progress.sync_syncing'),'ok');
+  DarbiAuth.syncNow(function(ok,err){
+    if(ok){
+      showSyncMsg(darbiT('progress.sync_ok'),'ok');
+      render();
+    }else{
+      showSyncMsg(darbiT('progress.sync_fail')+(err||darbiT('progress.unknown_error')),'err');
+    }
+  });
+}
+
 function applyTheme(m){document.documentElement.setAttribute('data-theme',m);document.getElementById('theme-btn').textContent=m==='dark'?'☀️':'🌙';}
 function toggleTheme(){const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';applyTheme(n);try{localStorage.setItem('quranTheme',n);}catch(e){}}
 (function(){let s;try{s=localStorage.getItem('quranTheme');}catch(e){}if(!s)s=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';applyTheme(s);})();
@@ -943,13 +1042,22 @@ window.onDarbiLangChange = function(){
 };
 </script>
 
-<!-- إشعارات حقيقية (Firebase Cloud Messaging) — ملفات إضافية، لا تمسّ أي نظام موجود -->
+<!-- إشعارات حقيقية (Firebase Cloud Messaging) + مزامنة جوجل — ملفات إضافية، لا تمسّ أي نظام موجود -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="darbi-push.js"></script>
-<script>renderReminderCard();</script>
+<script src="darbi-auth-sync.js"></script>
+<script>
+renderReminderCard();
+if(window.DarbiAuth){
+  DarbiAuth.init(function(state){ renderSyncCard(state); });
+}else{
+  renderSyncCard({status:'unsupported'});
+}
+</script>
 
 <script>
 if('serviceWorker' in navigator){
