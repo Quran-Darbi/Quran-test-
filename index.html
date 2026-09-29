@@ -136,15 +136,12 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .acc-body.open{display:block;}
 .surah-name{font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--green);font-weight:700;margin:10px 0 6px;}
 .surah-name:first-child{margin-top:2px;}
-.surah-wrap{margin:0 0 8px;}
-.surah-card{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--border);border-inline-start:4px solid var(--green);border-radius:11px;padding:10px 12px;color:var(--text);font-family:inherit;cursor:pointer;text-align:start;}
-.surah-card .sc-text{display:flex;flex-direction:column;gap:2px;}
-.surah-card .sc-name{font-family:'Scheherazade New',serif;font-size:1.05rem;font-weight:700;color:var(--green);}
-.surah-card .sc-meta{font-size:0.78rem;color:var(--text-faint,#6B8067);}
-.surah-card .sc-arrow{transition:transform .2s;color:var(--green);}
-.surah-wrap.open .sc-arrow{transform:rotate(180deg);}
-.surah-wrap .surah-pages{display:none;margin-top:8px;}
-.surah-wrap.open .surah-pages{display:grid;}
+.surah-card{font-family:inherit;cursor:pointer;text-align:start;width:100%;}
+.quiz-card.surah-card.sel{border-color:var(--green);background:var(--bg);box-shadow:0 0 0 2px var(--green) inset;}
+.surah-panels{margin-top:8px;}
+.surah-panel{display:none;margin-top:6px;padding:8px;border:1px dashed var(--border);border-radius:11px;}
+.surah-panel.open{display:block;}
+.surah-panel-title{font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--green);font-weight:700;margin:0 0 6px;}
 
 .note-btn{margin-top:9px;width:100%;background:var(--green3);border:1px dashed var(--green2);color:var(--green);font-size:0.78rem;padding:8px;border-radius:10px;cursor:pointer;text-align:center;font-family:inherit;}
 .note-btn:hover{opacity:.85;}
@@ -611,24 +608,38 @@ function groupCardsHtml(g){
 
 function buildAccBody(meta){
   const multi = meta.groups.length>1;
-  return meta.groups.map(g=>{
-    const heading = (multi && g.name) ? `<div class="surah-name notranslate" translate="no">${g.name}</div>` : '';
+  let out='', cards='', panels='';
+  const flush=()=>{
+    if(cards){ out+=`<div class="cards-grid surah-cards">${cards}</div><div class="surah-panels">${panels}</div>`; cards=''; panels=''; }
+  };
+  meta.groups.forEach((g,gi)=>{
     const noteBtn = g.note ? `<button class="note-btn" onclick="goJuz(${g.noteTarget})">${g.note}</button>` : '';
     if(multi && g.kind==='full' && g.name){
       const arr=g.arr, from=('from' in g)?g.from:0, to=('to' in g)?g.to:arr.length;
       const pages=arr.slice(from,to);
       if(pages.length>1){
-        return `<div class="surah-wrap"><button type="button" class="surah-card" aria-expanded="false" onclick="toggleSurah(this)"><span class="sc-text"><span class="sc-name notranslate" translate="no">${g.name}</span><span class="sc-meta">${pages[0][1]}</span></span><span class="sc-arrow">▾</span></button><div class="cards-grid surah-pages">${groupCardsHtml(g)}</div></div>${noteBtn}`;
+        const id='sp'+gi+'_'+Math.random().toString(36).slice(2,7);
+        cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${g.name}</div><div class="card-meta">${pages[0][1]}</div></button>`;
+        panels+=`<div class="surah-panel" id="${id}"><div class="surah-panel-title notranslate" translate="no">${g.name}</div><div class="cards-grid">${groupCardsHtml(g)}</div></div>`;
+        if(noteBtn) panels+=noteBtn;
+        return;
       }
     }
-    return `${heading}<div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}`;
-  }).join('');
+    flush();
+    const heading = (multi && g.name) ? `<div class="surah-name notranslate" translate="no">${g.name}</div>` : '';
+    out+=`${heading}<div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}`;
+  });
+  flush();
+  return out;
 }
 
 function juzRange(t){const p=t.split('،').map(x=>x.trim()).filter(Boolean);return p.length>1?p[0]+' — '+p[p.length-1]:t;}
 function toggleSurah(btn){
-  const w=btn.closest('.surah-wrap'); const o=!w.classList.contains('open');
-  w.classList.toggle('open',o); btn.setAttribute('aria-expanded',o?'true':'false');
+  const body=btn.closest('.acc-body'); const p=document.getElementById(btn.dataset.panel);
+  const o=!p.classList.contains('open');
+  body.querySelectorAll('.surah-panel.open').forEach(x=>x.classList.remove('open'));
+  body.querySelectorAll('.surah-card.sel').forEach(x=>{x.classList.remove('sel');x.setAttribute('aria-expanded','false');});
+  if(o){p.classList.add('open');btn.classList.add('sel');btn.setAttribute('aria-expanded','true');p.scrollIntoView({behavior:'smooth',block:'nearest'});}
 }
 
 function buildJuzRow(n){
@@ -658,7 +669,7 @@ function buildJuzRow(n){
   return `<div class="acc" id="${id}" data-state="built">
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
-      <div class="acc-left-top"><div class="${badgeClass}">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${juzRange(meta.title)}</div>${countBadge}</div>
+      <div class="acc-left-top"><div class="${badgeClass}">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${meta.amma?"جزء عمّ — ":""}${juzRange(meta.title)}</div>${countBadge}</div>
       <div class="juz-bar-track"><div class="juz-bar-fill" id="juz${n}-bar" style="width:0%"></div></div>
     </div>
     <div class="acc-right"><div class="juz-prog" id="juz${n}-prog">${darbiT('home.juz_available_count',{n:total})}</div><span class="acc-arrow">▾</span></div>
@@ -831,10 +842,11 @@ function applyJuzFilters(){
     const show = matchesSearch && matchesFilter;
     acc.style.display = show ? '' : 'none';
     if(show) visibleCount++;
-    acc.querySelectorAll('.surah-wrap').forEach(w=>{
-      const has=[...w.querySelectorAll('.quiz-card')].some(c=>c.style.display!=='none');
-      w.style.display=(q&&!has)?'none':'';
-      if(q&&has){w.classList.add('open');w.querySelector('.surah-card').setAttribute('aria-expanded','true');}
+    acc.querySelectorAll('.surah-panel').forEach(p=>{
+      const has=[...p.querySelectorAll('.quiz-card')].some(c=>c.style.display!=='none');
+      const btn=acc.querySelector('.surah-card[data-panel="'+p.id+'"]');
+      if(btn) btn.style.display=(q&&!has)?'none':'';
+      if(q){p.classList.toggle('open',has);if(btn){btn.classList.toggle('sel',has);btn.setAttribute('aria-expanded',has?'true':'false');}}
     });
     if(q && any){acc.querySelector('.acc-body').classList.add('open');acc.querySelector('.acc-arrow').classList.add('open');}
   });
