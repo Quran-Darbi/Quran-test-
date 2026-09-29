@@ -2051,7 +2051,8 @@ function t(key, vars){
 function applyStaticText(root){
   var scope = root || document;
   scope.querySelectorAll('[data-i18n]').forEach(function(el){
-    el.textContent = t(el.getAttribute('data-i18n'));
+    // متغيرات العدّاد ({cur} / {total}) لسه ما اتحدّدتش قبل بدء الاختبار — نعرض "-" بدل النص الخام
+    el.textContent = t(el.getAttribute('data-i18n')).replace(/\{(?:cur|total)\}/g, '-');
   });
   scope.querySelectorAll('[data-i18n-html]').forEach(function(el){
     el.innerHTML = t(el.getAttribute('data-i18n-html'));
