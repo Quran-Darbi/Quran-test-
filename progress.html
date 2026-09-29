@@ -524,14 +524,47 @@ const almuzzammilPages=[
   ['almuzzammil_p574.html','ص 574','1–19'],['almuzzammil_p575.html','ص 575','20 + المدثر 1–17'],
 ];
 const almudaththirPages=[
-  ['almuzzammil_p575.html','ص 575','1–17 (مع المزمل)'],['almudaththir_p576.html','ص 576','18–47'],['almudaththir_p577.html','ص 577','48–56 + القيامة 1–19'],
+  ['almudaththir_p575.html','ص 575','1–17 (مع المزمل)'],['almudaththir_p576.html','ص 576','18–47'],['almudaththir_p577.html','ص 577','48–56 + القيامة 1–19'],
 ];
 const alqiyamaPages=[
-  ['almudaththir_p577.html','ص 577','1–19 (مع المدثر)'],['alqiyama_p578.html','ص 578','20–40'],
+  ['alqiyama_p577.html','ص 577','1–19 (مع المدثر)'],['alqiyama_p578.html','ص 578','20–40'],
 ];
 const alinsanPages=[
   ['alinsan_p578.html','ص 578','1–5'],['alinsan_p579.html','ص 579','6–25'],
   ['alinsan_p580.html','ص 580','26–31'],
+];
+const almujadilaPages=[
+  ['almujadila_p542.html','ص 542','1–6'],['almujadila_p543.html','ص 543','7–11'],
+  ['almujadila_p544.html','ص 544','12–21'],['almujadila_p545.html','ص 545','22'],
+];
+const alhashrPages=[
+  ['alhashr_p545.html','ص 545','1–3'],['alhashr_p546.html','ص 546','4–9'],
+  ['alhashr_p547.html','ص 547','10–16'],['alhashr_p548.html','ص 548','17–24'],
+];
+const almumtahanaPages=[
+  ['almumtahana_p549.html','ص 549','1–5'],['almumtahana_p550.html','ص 550','6–11'],
+  ['almumtahana_p551.html','ص 551','12–13'],
+];
+const alsaffPages=[
+  ['alsaff_p551.html','ص 551','1–5'],['alsaff_p552.html','ص 552','6–14'],
+];
+const aljumuaPages=[
+  ['aljumua_p553.html','ص 553','1–8'],['aljumua_p554.html','ص 554','9–11'],
+];
+const almunafiqunPages=[
+  ['almunafiqun_p554.html','ص 554','1–4'],['almunafiqun_p555.html','ص 555','5–11'],
+];
+const attaghabunPages=[
+  ['attaghabun_p556.html','ص 556','1–9'],['attaghabun_p557.html','ص 557','10–18'],
+];
+const attalaqPages=[
+  ['attalaq_p558.html','ص 558','1–5'],['attalaq_p559.html','ص 559','6–12'],
+];
+const attahrimPages=[
+  ['attahrim_p560.html','ص 560','1–7'],['attahrim_p561.html','ص 561','8–12'],
+];
+const almursalatPages=[
+  ['almursalat_p580.html','ص 580','1–19'],['almursalat_p581.html','ص 581','20–50'],
 ];
 const ammaData=[
   ['annaba.html','النبأ'],['annaziat.html','النازعات'],
@@ -585,6 +618,15 @@ const GROUPS=[
   {label:'سورة يس',pages:yaseenPages.map(p=>[p[0].replace('.html',''),'يس '+p[1]])},
   {label:'سورة الرحمن',pages:arrahmanPages.map(p=>[p[0].replace('.html',''),'الرحمن '+p[1]])},
   {label:'سورة الواقعة',pages:alwaqiahPages.map(p=>[p[0].replace('.html',''),'الواقعة '+p[1]])},
+  {label:'سورة المجادلة',pages:almujadilaPages.map(p=>[p[0].replace('.html',''),'المجادلة '+p[1]])},
+  {label:'سورة الحشر',pages:alhashrPages.map(p=>[p[0].replace('.html',''),'الحشر '+p[1]])},
+  {label:'سورة الممتحنة',pages:almumtahanaPages.map(p=>[p[0].replace('.html',''),'الممتحنة '+p[1]])},
+  {label:'سورة الصف',pages:alsaffPages.map(p=>[p[0].replace('.html',''),'الصف '+p[1]])},
+  {label:'سورة الجمعة',pages:aljumuaPages.map(p=>[p[0].replace('.html',''),'الجمعة '+p[1]])},
+  {label:'سورة المنافقون',pages:almunafiqunPages.map(p=>[p[0].replace('.html',''),'المنافقون '+p[1]])},
+  {label:'سورة التغابن',pages:attaghabunPages.map(p=>[p[0].replace('.html',''),'التغابن '+p[1]])},
+  {label:'سورة الطلاق',pages:attalaqPages.map(p=>[p[0].replace('.html',''),'الطلاق '+p[1]])},
+  {label:'سورة التحريم',pages:attahrimPages.map(p=>[p[0].replace('.html',''),'التحريم '+p[1]])},
   {label:'سورة الملك',pages:almulkPages.map(p=>[p[0].replace('.html',''),'الملك '+p[1]])},
   {label:'سورة القلم',pages:alqalamPages.map(p=>[p[0].replace('.html',''),'القلم '+p[1]])},
   {label:'سورة الحاقة',pages:alhaqqaPages.map(p=>[p[0].replace('.html',''),'الحاقة '+p[1]])},
@@ -595,6 +637,7 @@ const GROUPS=[
   {label:'سورة المدثر',pages:almudaththirPages.map(p=>[p[0].replace('.html',''),'المدثر '+p[1]])},
   {label:'سورة القيامة',pages:alqiyamaPages.map(p=>[p[0].replace('.html',''),'القيامة '+p[1]])},
   {label:'سورة الإنسان',pages:alinsanPages.map(p=>[p[0].replace('.html',''),'الإنسان '+p[1]])},
+  {label:'سورة المرسلات',pages:almursalatPages.map(p=>[p[0].replace('.html',''),'المرسلات '+p[1]])},
   {label:'جزء عمّ',pages:ammaData.map(p=>[p[0].replace('.html',''),p[1]])},
 ];
 const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
@@ -740,6 +783,7 @@ function render(){
       revEmpty.classList.remove('hidden');
     }else{
       revEmpty.classList.add('hidden');
+      const chain=[];
       q.forEach(item=>{
         const a=document.createElement('a');
         a.className='rev-item';
@@ -758,7 +802,9 @@ function render(){
           '<span class="rev-count">×'+item.missCount+'</span>'+
           (canJump?'<span class="rev-retry-icon">↻</span>':'');
         revList.appendChild(a);
+        if(canJump) chain.push(a.getAttribute('href'));
       });
+      try{sessionStorage.setItem('darbi_review_chain',JSON.stringify(chain));}catch(e){}
     }
   }
 

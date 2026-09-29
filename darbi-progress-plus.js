@@ -285,6 +285,31 @@
   // currentPageKey() فوق (سكوب مشترك بين وسوم <script> في نفس الصفحة).
   // أي خطأ هنا (صفحة قديمة شكلها مختلف مثلًا) بيرجع بصمت لشاشة اختيار
   // المستوى العادية، من غير ما يكسر تحميل الصفحة.
+  // في وضع المراجعة الذكية: زر "التالي" ينقل لسؤال الخطأ التالي في قائمة
+  // المراجعة (حتى لو في صفحة تانية) بدل السؤال التالي في نفس الصفحة،
+  // وبعد آخر سؤال في القائمة يرجع لصفحة "تقدّمي". القائمة تتحفظ لحظة
+  // الضغط على أي عنصر منها (sessionStorage) فمتتغيّرش أثناء الجولة.
+  function hookReviewChain(level, idx) {
+    try {
+      var chain = JSON.parse(window.sessionStorage.getItem('darbi_review_chain') || '[]');
+      if (!chain.length) return;
+      var here = level + ':' + idx;
+      var pk = currentPageKey();
+      var pos = -1;
+      for (var i = 0; i < chain.length; i++) {
+        var h = String(chain[i]);
+        var q = h.indexOf('?review=');
+        if (q < 0) continue;
+        if (h.slice(0, q).replace(/\.html$/, '') === pk && h.slice(q + 8) === here) { pos = i; break; }
+      }
+      if (pos < 0) return;
+      window.nextQuestion = function () {
+        if (pos + 1 < chain.length) window.location.href = chain[pos + 1];
+        else window.location.href = 'progress.html';
+      };
+    } catch (e) {}
+  }
+
   function jumpToReviewQuestion() {
     try {
       var params = new URLSearchParams(window.location.search);
@@ -295,6 +320,7 @@
       var idx = parseInt(parts[1], 10);
       if (['easy', 'medium', 'hard'].indexOf(level) === -1 || isNaN(idx) || idx < 0) return;
       if (typeof selectLevel !== 'function' || typeof startQuiz !== 'function' || typeof showQuestion !== 'function') return;
+      hookReviewChain(level, idx);
       selectLevel(level);
       startQuiz();
       if (typeof questions !== 'undefined' && questions && idx < questions.length) {
