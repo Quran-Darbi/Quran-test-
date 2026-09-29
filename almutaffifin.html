@@ -139,6 +139,7 @@ body{font-family:'Amiri','Scheherazade New','Traditional Arabic',serif;backgroun
   <button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;">🌙</button><div class="tools-fab" id="tools-fab">
   <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" data-i18n-title="nav.tools_title" title="الأدوات">☰</button>
   <div class="tools-menu" id="tools-menu">
+    <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';"><span data-i18n="nav.progress">📊 تقدّمي</span></button>
     <button class="tools-item" onclick="toolsLangToggle(event)">🌍 <span data-i18n="nav.lang_label">اللغة</span> <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
     <div class="tools-lang-list" id="tools-lang-list">
       <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
