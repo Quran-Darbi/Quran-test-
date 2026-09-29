@@ -399,6 +399,13 @@ const alhashrPages=[
   ['alhashr_p545.html','ص 545','1–3'],['alhashr_p546.html','ص 546','4–9'],
   ['alhashr_p547.html','ص 547','10–16'],['alhashr_p548.html','ص 548','17–24'],
 ];
+const almumtahanaPages=[
+  ['almumtahana_p549.html','ص 549','1–5'],['almumtahana_p550.html','ص 550','6–11'],
+  ['almumtahana_p551.html','ص 551','12–13'],
+];
+const alsaffPages=[
+  ['alsaff_p551.html','ص 551','1–5'],['alsaff_p552.html','ص 552','6–14'],
+];
 
 const almaarijPages=[
   ['almaarij_p568.html','ص 568','1–10'],['almaarij_p569.html','ص 569','11–39'],['almaarij_p570.html','ص 570','40–44'],
@@ -520,9 +527,11 @@ const JUZ_GROUPS = {
         { kind:'full', arr:alqiyamaPages, name:'القيامة', surah:'القيامة' },
         { kind:'full', arr:alinsanPages, name:'الإنسان', surah:'الإنسان' }
       ] },
-  28:{ title:'المجادلة، الحشر', groups:[
+  28:{ title:'المجادلة، الحشر، الممتحنة، الصف', groups:[
         { kind:'full', arr:almujadilaPages, name:'المجادلة', surah:'المجادلة' },
-        { kind:'full', arr:alhashrPages, name:'الحشر', surah:'الحشر' }
+        { kind:'full', arr:alhashrPages, name:'الحشر', surah:'الحشر' },
+        { kind:'full', arr:almumtahanaPages, name:'الممتحنة', surah:'الممتحنة' },
+        { kind:'full', arr:alsaffPages, name:'الصف', surah:'الصف' }
       ] },
   30:{ title:'جزء عمّ', amma:true, groups:[ { kind:'amma' } ] }
 };
@@ -647,6 +656,8 @@ function renderDarbiProgress(){
   almulkPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الملك '+p[1];});
   almujadilaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المجادلة '+p[1];});
   alhashrPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الحشر '+p[1];});
+  almumtahanaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الممتحنة '+p[1];});
+  alsaffPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الصف '+p[1];});
   almaarijPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المعارج '+p[1];});
   aljinnPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الجن '+p[1];});
   almuzzammilPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المزمل '+p[1];});
@@ -685,7 +696,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almujadilaPages.length+alhashrPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
