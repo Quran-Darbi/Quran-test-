@@ -115,6 +115,14 @@
   }
 
   // بيرجّع آخر ٧ أيام (من ٦ أيام فاتوا لحد النهاردة) لعرضها كنقاط أسبوع
+  // اسم اليوم كاملًا بلغة الواجهة (العربية: الأحد…السبت)؛ وعند تعذّر Intl يُستعمل الحرف المختصر
+  function dayName(d, fallback) {
+    try {
+      var lg = (window.darbiLang && window.darbiLang()) || document.documentElement.lang || 'ar';
+      return new Intl.DateTimeFormat(lg, { weekday: lg === 'ar' || lg === 'fa' ? 'long' : 'short' }).format(d);
+    } catch (e) { return fallback; }
+  }
+
   function getWeekTracker() {
     var hist = safeGetJSON(HISTORY_KEY, []);
     var shortLabels = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; // فهرسها Date.getDay(): 0=أحد .. 6=سبت
@@ -126,7 +134,7 @@
       days.push({
         date: ds,
         done: hist.indexOf(ds) !== -1,
-        label: shortLabels[d.getDay()],
+        label: dayName(d, shortLabels[d.getDay()]),
         isToday: i === 0
       });
     }
