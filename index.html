@@ -462,6 +462,12 @@ const azzariyatPages=[
   ['azzariyat_p522.html','ص 522','31–51'],['azzariyat_p523.html','ص 523','52–60'],
 ];
 
+const atturPages=[
+  ['attur_p523.html','ص 523','1–14'],['attur_p524.html','ص 524','15–31'],['attur_p525.html','ص 525','32–49'],
+];
+const annajmPages=[
+  ['annajm_p526.html','ص 526','1–26'],['annajm_p527.html','ص 527','27–44'],['annajm_p528.html','ص 528','45–62'],
+];
 const alqalamPages=[
   ['alqalam_p564.html','ص 564','1–15'],
   ['alqalam_p565.html','ص 565','16–42'],
@@ -553,6 +559,9 @@ const JUZ_GROUPS = {
       ] },
   27:{ title:'الذاريات، الحديد', groups:[
         { kind:'range', arr:azzariyatPages, from:2, to:4, name:'سورة الذاريات (31–60)', surah:'الذاريات', note:'◄ سورة الذاريات بدأت في الجزء 26', noteTarget:26 },
+        { kind:'full', arr:atturPages, name:'الطور', surah:'الطور' },
+        { kind:'full', arr:annajmPages, name:'النجم', surah:'النجم' },
+        { kind:'soon', name:'القمر' },
         { kind:'full', arr:arrahmanPages, name:'الرحمن', surah:'الرحمن' },
         { kind:'full', arr:alwaqiahPages, name:'الواقعة', surah:'الواقعة' }
       ] },
@@ -754,6 +763,8 @@ function renderDarbiProgress(){
   almursalatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المرسلات '+p[1];});
   qafPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة ق '+p[1];});
   azzariyatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الذاريات '+p[1];});
+  atturPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الطور '+p[1];});
+  annajmPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة النجم '+p[1];});
   alqalamPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القلم '+p[1];});
   alhaqqaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الحاقة '+p[1];});
   nuhPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة نوح '+p[1];});
@@ -786,7 +797,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+qafPages.length+azzariyatPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
