@@ -468,6 +468,12 @@ const atturPages=[
 const annajmPages=[
   ['annajm_p526.html','ص 526','1–26'],['annajm_p527.html','ص 527','27–44'],['annajm_p528.html','ص 528','45–62'],
 ];
+const alqamarPages=[
+  ['alqamar_p528.html','ص 528','1–6'],['alqamar_p529.html','ص 529','7–27'],['alqamar_p530.html','ص 530','28–49'],['alqamar_p531.html','ص 531','50–55'],
+];
+const alhadidPages=[
+  ['alhadid_p537.html','ص 537','1–3'],['alhadid_p538.html','ص 538','4–11'],['alhadid_p539.html','ص 539','12–18'],['alhadid_p540.html','ص 540','19–24'],['alhadid_p541.html','ص 541','25–29'],
+];
 const alqalamPages=[
   ['alqalam_p564.html','ص 564','1–15'],
   ['alqalam_p565.html','ص 565','16–42'],
@@ -561,9 +567,10 @@ const JUZ_GROUPS = {
         { kind:'range', arr:azzariyatPages, from:2, to:4, name:'سورة الذاريات (31–60)', surah:'الذاريات', note:'◄ سورة الذاريات بدأت في الجزء 26', noteTarget:26 },
         { kind:'full', arr:atturPages, name:'الطور', surah:'الطور' },
         { kind:'full', arr:annajmPages, name:'النجم', surah:'النجم' },
-        { kind:'soon', name:'القمر' },
+        { kind:'full', arr:alqamarPages, name:'القمر', surah:'القمر' },
         { kind:'full', arr:arrahmanPages, name:'الرحمن', surah:'الرحمن' },
-        { kind:'full', arr:alwaqiahPages, name:'الواقعة', surah:'الواقعة' }
+        { kind:'full', arr:alwaqiahPages, name:'الواقعة', surah:'الواقعة' },
+        { kind:'full', arr:alhadidPages, name:'الحديد', surah:'الحديد' }
       ] },
   29:{ title:'الملك، المرسلات', groups:[
         { kind:'full', arr:almulkPages, name:'الملك', surah:'الملك' },
@@ -765,6 +772,8 @@ function renderDarbiProgress(){
   azzariyatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الذاريات '+p[1];});
   atturPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الطور '+p[1];});
   annajmPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة النجم '+p[1];});
+  alqamarPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القمر '+p[1];});
+  alhadidPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الحديد '+p[1];});
   alqalamPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القلم '+p[1];});
   alhaqqaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الحاقة '+p[1];});
   nuhPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة نوح '+p[1];});
@@ -797,7 +806,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
