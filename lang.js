@@ -65,6 +65,9 @@ ar: {
   'home.about_title':'عن المشروع',
   'home.about_p1':'«دربي لحفظ القرآن» منصة تفاعلية تهدف إلى مساعدة الجميع على حفظ كتاب الله ومراجعته، من خلال اختبارات متنوعة.',
   'home.about_p2':'مصممة بعناية لتثبيت الحفظ وتعزيز إتقانه، مع التركيز على متشابهات القرآن الكريم.',
+  'about.role_title':'ما دور هذا الموقع؟',
+  'about.role_p1':'هذا الموقع أداة مساعدة لتثبيت حفظ القرآن ومتشابهاته، ولا يُغني عن التلقي من شيخ مُتقِن؛ فالتشكيل وأحكام التجويد تُؤخذ بالسماع والمشافهة.',
+  'about.role_p2':'فليكن مُعِينًا لك على الإتقان، لا بديلًا عن القراءة على أهل الإتقان.',
   'home.footer_copy':'دربي لحفظ القرآن — جميع الحقوق محفوظة',
 
   // ===== نافذة الملاحظات =====
@@ -358,6 +361,9 @@ en: {
   'home.about_title':'About the project',
   'home.about_p1':'"Darbi" is an interactive platform that helps everyone memorize and review the Book of God through a variety of quizzes.',
   'home.about_p2':'Carefully designed to consolidate memorization and sharpen mastery, with a focus on the Quran’s similar/recurring verses (mutashabihat).',
+  'about.role_title':'What is the role of this site?',
+  'about.role_p1':'This site is a helping tool for consolidating your memorization of the Quran and its similar verses (mutashabihat). It is not a substitute for learning from a qualified teacher (shaykh): vocalization and the rules of tajweed are taken through listening and direct oral transmission.',
+  'about.role_p2':'Let it be an aid toward mastery, not a replacement for reciting to those who have mastered it.',
   'home.footer_copy':'Darbi — Quran Memorization. All rights reserved',
 
   // ===== Feedback modal =====
@@ -646,6 +652,9 @@ fr: {
   'home.about_title':'À propos du projet',
   'home.about_p1':'« Darbi » est une plateforme interactive qui aide chacun à mémoriser et à réviser le Livre de Dieu à travers des quiz variés.',
   'home.about_p2':'Conçue avec soin pour consolider la mémorisation et affiner sa maîtrise, en mettant l’accent sur les versets similaires du Coran (mutashabihat).',
+  'about.role_title':'Quel est le rôle de ce site ?',
+  'about.role_p1':'Ce site est un outil d’aide pour consolider la mémorisation du Coran et de ses versets similaires (mutashabihat). Il ne remplace pas l’apprentissage auprès d’un maître qualifié (cheikh) : la vocalisation et les règles du tajwid s’acquièrent par l’écoute et la transmission orale.',
+  'about.role_p2':'Qu’il soit pour vous un soutien vers la maîtrise, et non un substitut à la récitation auprès de ceux qui la maîtrisent.',
   'home.footer_copy':'Darbi — Mémorisation du Coran. Tous droits réservés',
 
   // ===== Fenêtre de suggestions =====
@@ -934,6 +943,9 @@ tr: {
   'home.about_title':'Proje hakkında',
   'home.about_p1':'"Darbi", çeşitli testler aracılığıyla herkesin Allah’ın Kitabı’nı ezberlemesine ve tekrar etmesine yardımcı olan etkileşimli bir platformdur.',
   'home.about_p2':'Ezberi pekiştirmek ve ustalığı güçlendirmek için Kur’an’daki benzer/tekrar eden ayetlere (müteşabihat) odaklanılarak dikkatle tasarlanmıştır.',
+  'about.role_title':'Bu sitenin rolü nedir?',
+  'about.role_p1':'Bu site, Kur’an’ın ve müteşabih ayetlerinin ezberini pekiştirmeye yardımcı bir araçtır. Ehil bir hocanın (şeyhin) yanında öğrenmenin yerini tutmaz; harekeler ve tecvid kuralları dinleyerek ve yüz yüze aktarımla öğrenilir.',
+  'about.role_p2':'Bu site ustalığa ulaşmanızda size yardımcı olsun; ehil kişilere okumanın yerine geçmesin.',
   'home.footer_copy':'Darbi — Kur’an Ezberleme. Tüm hakları saklıdır',
 
   // ===== Geri bildirim penceresi =====
@@ -1223,6 +1235,9 @@ de: {
   'home.about_title':'Über das Projekt',
   'home.about_p1':'"Darbi" ist eine interaktive Plattform, die jedem hilft, das Buch Gottes auswendig zu lernen und durch vielfältige Quizze zu wiederholen.',
   'home.about_p2':'Sorgfältig gestaltet, um das Auswendiglernen zu festigen und die Beherrschung zu schärfen, mit besonderem Fokus auf die einander ähnlichen/wiederkehrenden Verse des Korans (mutaschabihat).',
+  'about.role_title':'Welche Rolle hat diese Website?',
+  'about.role_p1':'Diese Website ist ein Hilfsmittel, um das Auswendiglernen des Korans und seiner ähnlichen Verse (Mutaschabihat) zu festigen. Sie ersetzt nicht das Lernen bei einem qualifizierten Lehrer (Scheich): Vokalisierung und Tadschwid-Regeln werden durch Zuhören und mündliche Überlieferung erlernt.',
+  'about.role_p2':'Sie soll eine Hilfe auf dem Weg zur Meisterschaft sein, kein Ersatz für das Rezitieren bei Kundigen.',
   'home.footer_copy':'Darbi — Koran-Auswendiglernen. Alle Rechte vorbehalten',
 
   // ===== Feedback-Modal =====
@@ -1511,6 +1526,9 @@ es: {
   'home.about_title':'Acerca del proyecto',
   'home.about_p1':'"Darbi" es una plataforma interactiva que ayuda a todos a memorizar y repasar el Libro de Dios mediante una variedad de cuestionarios.',
   'home.about_p2':'Diseñada cuidadosamente para consolidar la memorización y afinar el dominio, con especial atención a los versículos similares/recurrentes del Corán (mutashabihat).',
+  'about.role_title':'¿Cuál es el papel de este sitio?',
+  'about.role_p1':'Este sitio es una herramienta de apoyo para consolidar la memorización del Corán y de sus versículos similares (mutashabihat). No sustituye el aprendizaje con un maestro cualificado (sheij): la vocalización y las reglas del tayuid se adquieren escuchando y por transmisión oral.',
+  'about.role_p2':'Que sea una ayuda hacia la maestría, y no un sustituto de recitar ante quienes la dominan.',
   'home.footer_copy':'Darbi — Memorización del Corán. Todos los derechos reservados',
 
   // ===== Modal de comentarios =====
@@ -1799,6 +1817,9 @@ fa: {
   'home.about_title':'درباره‌ی پروژه',
   'home.about_p1':'"دربی" یک پلتفرم تعاملی است که به همه کمک می‌کند کتاب خدا را از طریق آزمون‌های گوناگون حفظ و مرور کنند.',
   'home.about_p2':'با دقت طراحی‌شده برای تثبیت حفظ و تقویت تسلط، با تمرکز بر آیات متشابه/تکرارشونده‌ی قرآن.',
+  'about.role_title':'نقش این سایت چیست؟',
+  'about.role_p1':'این سایت ابزاری کمکی برای تثبیت حفظ قرآن و آیات متشابه آن است و جای آموختن از استاد ماهر (شیخ) را نمی‌گیرد؛ حرکات و احکام تجوید با شنیدن و مشافهه آموخته می‌شود.',
+  'about.role_p2':'باشد که یاری‌رسان شما در اتقان باشد، نه جایگزین قرائت نزد اهل اتقان.',
   'home.footer_copy':'دربی — حفظ قرآن. تمامی حقوق محفوظ است',
 
   // ===== پنجره بازخورد =====
