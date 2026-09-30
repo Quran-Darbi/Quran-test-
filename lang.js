@@ -29,7 +29,7 @@ ar: {
   'nav.qr':'كود QR',
   'nav.about':'📖 عن المشروع',
   'nav.progress':'📊 تقدّمي',
-  'nav.sync_signin':'☁️ تسجيل الدخول والمزامنة',
+  'nav.sync_signin':'☁️ تسجيل الدخول',
   'nav.sync_on':'☁️ المزامنة مفعّلة ✅',
   'nav.back':'← الرجوع',
 
@@ -325,7 +325,7 @@ en: {
   'nav.qr':'QR code',
   'nav.about':'📖 About',
   'nav.progress':'📊 My Progress',
-  'nav.sync_signin':'☁️ Sign in & sync',
+  'nav.sync_signin':'☁️ Sign in',
   'nav.sync_on':'☁️ Sync on ✅',
   'nav.back':'← Back',
 
@@ -616,7 +616,7 @@ fr: {
   'nav.qr':'Code QR',
   'nav.about':'📖 À propos',
   'nav.progress':'📊 Mes progrès',
-  'nav.sync_signin':'☁️ Connexion et synchronisation',
+  'nav.sync_signin':'☁️ Connexion',
   'nav.sync_on':'☁️ Synchronisation activée ✅',
   'nav.back':'← Retour',
 
@@ -907,7 +907,7 @@ tr: {
   'nav.qr':'QR kodu',
   'nav.about':'📖 Proje hakkında',
   'nav.progress':'📊 İlerlemem',
-  'nav.sync_signin':'☁️ Giriş yap ve senkronize et',
+  'nav.sync_signin':'☁️ Giriş yap',
   'nav.sync_on':'☁️ Senkronizasyon açık ✅',
   'nav.back':'← Geri',
 
@@ -1199,7 +1199,7 @@ de: {
   'nav.qr':'QR-Code',
   'nav.about':'📖 Über das Projekt',
   'nav.progress':'📊 Mein Fortschritt',
-  'nav.sync_signin':'☁️ Anmelden & synchronisieren',
+  'nav.sync_signin':'☁️ Anmelden',
   'nav.sync_on':'☁️ Synchronisierung aktiv ✅',
   'nav.back':'← Zurück',
 
@@ -1490,7 +1490,7 @@ es: {
   'nav.qr':'Código QR',
   'nav.about':'📖 Acerca del proyecto',
   'nav.progress':'📊 Mi progreso',
-  'nav.sync_signin':'☁️ Iniciar sesión y sincronizar',
+  'nav.sync_signin':'☁️ Iniciar sesión',
   'nav.sync_on':'☁️ Sincronización activa ✅',
   'nav.back':'← Volver',
 
@@ -1781,7 +1781,7 @@ fa: {
   'nav.qr':'کد QR',
   'nav.about':'📖 درباره‌ی پروژه',
   'nav.progress':'📊 پیشرفت من',
-  'nav.sync_signin':'☁️ ورود و همگام‌سازی',
+  'nav.sync_signin':'☁️ ورود',
   'nav.sync_on':'☁️ همگام‌سازی فعال ✅',
   'nav.back':'← بازگشت',
 
