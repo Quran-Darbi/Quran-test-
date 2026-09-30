@@ -1167,9 +1167,44 @@ function saveDarbiProgress(level,correct,total){
     var key=darbiProgressKey(currentKey);
     var pct=total>0?Math.round((correct/total)*100):0;
     if(!all[key])all[key]={};
-    var prev=(all[key][level]&&all[key][level].score)||0;
-    all[key][level]={done:pct>=70,score:Math.max(pct,prev)};
+    var prevObj=all[key][level]||{};
+    var prev=prevObj.score||0;
+    // نحتفظ بحقول التفاصيل (n/cov/fs/last) التي تضيفها saveRecitationDetail،
+    // و«done» لا يُلغى بمحاولة أضعف لأن score هو أفضل نسبة أصلًا
+    var next={};for(var f in prevObj)next[f]=prevObj[f];
+    next.done=pct>=70||!!prevObj.done;
+    next.score=Math.max(pct,prev);
+    all[key][level]=next;
     all[key].lastVisited=new Date().toISOString();
+    localStorage.setItem(pk,JSON.stringify(all));
+  }catch(e){}
+}
+
+// ===== تفاصيل اختبار الحفظ بالصوت (سبتمبر 2026) =====
+// تُضاف إلى الكائن نفسه darbi_progress[الصفحة].recitation بعد saveDarbiProgress:
+//   n    = عدد المحاولات            cov = أعلى نسبة من الصفحة قُرئت (٪)
+//   fs   = أفضل نسبة بين المحاولات التي بلغت cov ≥ 90 (صفحة كاملة تقريبًا)
+//   last = آخر محاولة {p: النسبة، a: آخر آية وصل إليها، c: نسبة ما قُرئ، t: الوقت}
+// تُقرأ في صفحة «تقدّمي». done وscore كما هما دون تغيير.
+function saveRecitationDetail(pct,startIdx,results){
+  try{
+    // آخر كلمة نُطقت فعلًا (ok أو err) — الكلمات الناقصة في الذيل لم يصل إليها القارئ
+    var covered=0;
+    for(var j=0;j<results.length;j++){if(results[j].status!=='missing')covered=j+1;}
+    var pk='darbi_progress';
+    var all=JSON.parse(localStorage.getItem(pk)||'{}');
+    var key=darbiProgressKey(currentKey);
+    if(!all[key]||!all[key].recitation)return;
+    var rec=all[key].recitation;
+    var totalWords=refWords.length;
+    var cov=totalWords>0?Math.min(100,Math.round(covered/totalWords*100)):0;
+    var endIdx=startIdx+covered;
+    var ayahNo=0;
+    for(var i=0;i<ayahBounds.length;i++){if(ayahBounds[i].start<=endIdx-1)ayahNo=ayahBounds[i].num;}
+    rec.n=(rec.n||0)+1;
+    rec.cov=Math.max(rec.cov||0,cov);
+    if(cov>=90)rec.fs=Math.max(rec.fs||0,pct);
+    rec.last={p:pct,a:ayahNo,c:cov,t:new Date().toISOString()};
     localStorage.setItem(pk,JSON.stringify(all));
   }catch(e){}
 }
@@ -2604,6 +2639,7 @@ function checkRecitation(){
   const total=results.length;
   const pct=Math.round(ok/total*100);
   saveDarbiProgress('recitation',ok,total);
+  saveRecitationDetail(pct,startIdx,results);
   let where=startIdx===0?darbiT('recite.where_start'):darbiT('recite.where_approx',{n:startIdx+1});
   document.getElementById('resultCard').style.display='block';
   document.getElementById('whereMsg').textContent=where;

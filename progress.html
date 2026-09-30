@@ -199,6 +199,23 @@ html[data-theme="dark"] .backup-suggest{color:var(--gold);}
 .empty p{color:var(--soft);font-size:0.9rem;margin-bottom:16px;line-height:1.8;}
 .empty a{display:inline-block;background:var(--green);color:#fff;text-decoration:none;padding:10px 26px;border-radius:20px;font-size:0.9rem;}
 
+/* اختبر حفظك (التسميع بالصوت) */
+.rec-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.rec-stat{background:var(--green3);border-radius:12px;padding:10px 6px;text-align:center;}
+.rec-stat b{display:block;font-size:1.15rem;color:var(--green);line-height:1.4;}
+.rec-stat span{font-size:0.68rem;color:var(--soft);line-height:1.3;}
+.rec-sub{font-size:0.78rem;color:var(--soft);margin:2px 0 4px;}
+.rec-item{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid var(--border);text-decoration:none;color:inherit;}
+.rec-item:first-of-type{border-top:none;}
+.rec-mid{flex:1;min-width:0;}
+.rec-name{display:block;font-family:'Scheherazade New',serif;font-size:0.95rem;color:var(--text);font-weight:700;}
+.rec-meta{display:block;font-size:0.72rem;color:var(--soft);line-height:1.6;}
+.rec-score{flex-shrink:0;min-width:54px;text-align:center;padding:4px 8px;border-radius:10px;font-size:0.8rem;font-weight:700;color:#fff;}
+.rec-score.hi{background:#4a7c4a;}.rec-score.mid{background:#e67e22;}.rec-score.lo{background:#c0392b;}
+.rec-note{font-size:0.7rem;color:var(--soft);margin-top:10px;line-height:1.8;}
+.rec-empty-text{color:var(--soft);font-size:0.85rem;line-height:1.9;}
+.rec-go{display:inline-block;margin-top:10px;padding:8px 18px;border-radius:18px;background:var(--green3);color:var(--green);border:1px solid var(--border);font-family:'Amiri',serif;font-size:0.88rem;text-decoration:none;}
+.grp-rec{margin-inline-start:8px;color:var(--green);}
 .hidden{display:none !important;}
 
 footer{text-align:center;margin-top:30px;padding:24px 16px;border-top:1px solid var(--border);}
@@ -374,6 +391,18 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       </div>
       <div class="grp-list" id="grp-list"></div>
       <div class="grp-filter-empty" id="grp-filter-empty" data-i18n="progress.filter_empty">لا توجد سور مطابقة لهذا الفلتر حاليًا.</div>
+    </div>
+
+    <div class="card" id="rec-card">
+      <h2 data-i18n="home.recite_btn">🎤 اختبر حفظك</h2>
+      <div class="rec-stats" id="rec-stats"></div>
+      <div class="rec-sub" id="rec-last-title" data-i18n="progress.rec_last_title">آخر المحاولات</div>
+      <div id="rec-list"></div>
+      <div id="rec-empty" class="hidden">
+        <div class="rec-empty-text" data-i18n="progress.rec_empty">لم تجرِ هذا الاختبار بعد. ابدأ الآن ليُسجَّل تقدمك هنا.</div>
+        <a class="rec-go" href="recitation.html" data-i18n="progress.rec_go">ابدأ الاختبار</a>
+      </div>
+      <div class="rec-note" id="rec-note" data-i18n="progress.rec_note">النسبة تخص الكلمات وترتيبها، ولا تشمل الحركات وأحكام التجويد.</div>
     </div>
 
     <div class="card" id="review-card">
@@ -689,7 +718,8 @@ function safeAll(){
 }
 
 /* أوسمة محسوبة من بيانات التقدّم الحقيقية — لا بيانات وهمية */
-function computeBadges(doneCount, streak, completedSurahCount, ammaComplete){
+function computeBadges(doneCount, streak, completedSurahCount, ammaComplete, rec){
+  rec = rec || {};
   const best = (streak && streak.longestStreak) || 0;
   return [
     {icon:'✨', name:darbiT('progress.badge_week'), earned: best>=7},
@@ -700,7 +730,72 @@ function computeBadges(doneCount, streak, completedSurahCount, ammaComplete){
     {icon:'📿', name:darbiT('progress.badge_60days'), earned: best>=60},
     {icon:'🌿', name:darbiT('progress.badge_3surahs'), earned: completedSurahCount>=3},
     {icon:'🏆', name:darbiT('progress.badge_300pages'), earned: doneCount>=300},
+    {icon:'🎤', name:darbiT('progress.badge_rec_first'), earned: !!rec.any},
+    {icon:'🎙️', name:darbiT('progress.badge_rec_90'), earned: !!rec.best90},
+    {icon:'📜', name:darbiT('progress.badge_rec_surah'), earned: !!rec.surahFull},
   ];
+}
+
+/* ===== اختبر حفظك — نتائج التسميع بالصوت (من darbi_progress[الصفحة].recitation) ===== */
+function recFull(e){return !!(e&&e.recitation&&(e.recitation.fs||0)>=70);}
+function recKeyToPage(k){
+  if(k==='alfatiha')return 'fatiha';
+  if(k.indexOf('albaqara_p')===0)return k.slice(2);
+  return k;
+}
+function recDateLabel(iso){
+  if(!iso)return '';
+  try{
+    const d=new Date(iso); if(isNaN(d.getTime()))return '';
+    return d.toLocaleDateString((darbiLang()||'ar')+'-u-nu-latn',{day:'numeric',month:'short'});
+  }catch(e){return '';}
+}
+function renderRecitationCard(all,nameByKey){
+  const keys=Object.keys(all).filter(k=>all[k]&&all[k].recitation);
+  const stats=document.getElementById('rec-stats');
+  const list=document.getElementById('rec-list');
+  const empty=document.getElementById('rec-empty');
+  const note=document.getElementById('rec-note');
+  const subTitle=document.getElementById('rec-last-title');
+  stats.innerHTML='';list.innerHTML='';
+  const has=keys.length>0;
+  stats.classList.toggle('hidden',!has);
+  subTitle.classList.toggle('hidden',!has);
+  note.classList.toggle('hidden',!has);
+  empty.classList.toggle('hidden',has);
+  if(!has)return;
+
+  let best=0,tries=0;
+  keys.forEach(k=>{const r=all[k].recitation;best=Math.max(best,r.score||0);tries+=(r.n||1);});
+  [[keys.length,'progress.rec_stat_pages'],[darbiT('recite.pct_label',{pct:best}),'progress.rec_stat_best'],[tries,'progress.rec_stat_tries']].forEach(t=>{
+    const d=document.createElement('div');
+    d.className='rec-stat';
+    d.innerHTML='<b>'+t[0]+'</b><span>'+darbiT(t[1])+'</span>';
+    stats.appendChild(d);
+  });
+
+  const items=keys.map(k=>{
+    const r=all[k].recitation, L=r.last;
+    return {key:k,pct:L?L.p:(r.score||0),ayah:L?L.a:0,cov:L?L.c:null,t:L?L.t:all[k].lastVisited};
+  }).sort((a,b)=>String(b.t||'').localeCompare(String(a.t||''))).slice(0,5);
+
+  items.forEach(it=>{
+    const a=document.createElement('a');
+    a.className='rec-item';
+    a.href='recitation.html?surah='+encodeURIComponent(recKeyToPage(it.key));
+    let reach='';
+    if(it.cov!==null){
+      reach=it.ayah>0?darbiT('progress.rec_reached',{a:it.ayah,c:it.cov}):darbiT('progress.rec_reached_noayah',{c:it.cov});
+    }
+    const when=recDateLabel(it.t);
+    const meta=[reach,when].filter(Boolean).join(' · ');
+    const cls=it.pct>=80?'hi':(it.pct>=60?'mid':'lo');
+    a.innerHTML=
+      '<span class="rec-mid"><span class="rec-name">'+(nameByKey[it.key]||it.key)+'</span>'+
+      (meta?'<span class="rec-meta">'+meta+'</span>':'')+'</span>'+
+      '<span class="rec-score '+cls+'">'+darbiT('recite.pct_label',{pct:it.pct})+'</span>';
+    list.appendChild(a);
+  });
 }
 
 function render(){
@@ -778,7 +873,16 @@ function render(){
   });
   const badgeGrid=document.getElementById('badge-grid');
   badgeGrid.innerHTML='';
-  computeBadges(doneCount, streak, completedSurahCount, ammaComplete).forEach(b=>{
+  const recInfo={any:false,best90:false,surahFull:false};
+  Object.keys(all).forEach(k=>{
+    const r=all[k]&&all[k].recitation;
+    if(r){recInfo.any=true;if((r.fs||0)>=90)recInfo.best90=true;}
+  });
+  GROUPS.forEach(g=>{
+    if(g.label==='جزء عمّ'){ if(g.pages.some(p=>recFull(all[p[0]])))recInfo.surahFull=true; }
+    else if(g.pages.length>0&&g.pages.every(p=>recFull(all[p[0]])))recInfo.surahFull=true;
+  });
+  computeBadges(doneCount, streak, completedSurahCount, ammaComplete, recInfo).forEach(b=>{
     const div=document.createElement('div');
     div.className='badge'+(b.earned?'':' locked');
     div.innerHTML='<div class="badge-icon">'+b.icon+'</div><div class="badge-name">'+b.name+'</div>';
@@ -792,17 +896,23 @@ function render(){
     let done=0;
     g.pages.forEach(p=>{if(darbiPageComplete(all[p[0]]))done++;});
     const gp=Math.round(done/g.pages.length*100);
+    let recTried=0, recDone=0;
+    g.pages.forEach(p=>{const e=all[p[0]];if(e&&e.recitation){recTried++;if(recFull(e))recDone++;}});
+    const recChip=recTried>0?'<span class="grp-rec">🎤 '+recDone+' / '+g.pages.length+'</span>':'';
     const state = (done===g.pages.length && g.pages.length>0) ? 'complete' : (done>0 ? 'partial' : 'none');
     const div=document.createElement('div');
     div.className='grp-item';
     div.dataset.state=state;
     div.innerHTML=
       '<div class="grp-top"><span class="grp-name">'+g.label+'</span>'+
-      '<span class="grp-count">'+done+' / '+g.pages.length+'</span></div>'+
+      '<span class="grp-count">'+done+' / '+g.pages.length+recChip+'</span></div>'+
       '<div class="grp-bar"><div class="grp-bar-fill" style="width:'+gp+'%"></div></div>';
     grpList.appendChild(div);
   });
   applyGrpFilter();
+
+  // ---- اختبر حفظك (التسميع بالصوت) ----
+  renderRecitationCard(all,nameByKey);
 
   // ---- قائمة المراجعة الذكية ----
   const revList=document.getElementById('review-list');

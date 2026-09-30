@@ -79,6 +79,20 @@
     return (new Date(a) > new Date(b)) ? a : b;
   }
 
+  // نتيجة «اختبر حفظك» (التسميع بالصوت): أعلى نسبة وأبعد وصول، وآخر محاولة الأحدث وقتًا
+  function mergeRecitation(a, b) {
+    if (!a && !b) return null;
+    a = a || {}; b = b || {};
+    var out = { done: !!a.done || !!b.done, score: Math.max(a.score || 0, b.score || 0) };
+    var n = Math.max(a.n || 0, b.n || 0); if (n) out.n = n;
+    var cov = Math.max(a.cov || 0, b.cov || 0); if (cov) out.cov = cov;
+    var fs = Math.max(a.fs || 0, b.fs || 0); if (fs) out.fs = fs;
+    var la = a.last, lb = b.last;
+    var last = (la && lb) ? (String(la.t || '') >= String(lb.t || '') ? la : lb) : (la || lb);
+    if (last) out.last = last;
+    return out;
+  }
+
   function mergeProgress(local, cloud) {
     local = local || {}; cloud = cloud || {};
     var keys = {};
@@ -97,6 +111,8 @@
           score: Math.max((ml && ml.score) || 0, (mc && mc.score) || 0)
         };
       });
+      var mr = mergeRecitation(l.recitation, c.recitation);
+      if (mr) merged.recitation = mr;
       merged.lastVisited = laterDate(l.lastVisited, c.lastVisited);
       out[pageKey] = merged;
     });
