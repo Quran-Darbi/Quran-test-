@@ -2152,10 +2152,13 @@ function ensureSyncMenuItem(){
     document.querySelectorAll('.tools-menu').forEach(function(menu){
       var item = menu.querySelector('.tools-sync-item');
       if(!item){
-        var anchor = null;
+        var anchor = null, shareBtn = null, progBtn = null;
         menu.querySelectorAll('.tools-item').forEach(function(b){
-          if((b.getAttribute('onclick')||'').indexOf('progress.html')!==-1) anchor=b;
+          var oc = b.getAttribute('onclick')||'';
+          if(oc.indexOf('shareApp')!==-1) shareBtn=b;
+          else if(oc.indexOf('progress.html')!==-1) progBtn=b;
         });
+        anchor = shareBtn || progBtn;
         item = document.createElement('button');
         item.className = 'tools-item tools-sync-item';
         item.setAttribute('onclick', "toolsClose();location.href='progress.html#sync-card';");
