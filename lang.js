@@ -30,6 +30,7 @@ ar: {
   'nav.about':'📖 عن المشروع',
   'nav.progress':'📊 تقدّمي',
   'nav.sync_signin':'☁️ تسجيل الدخول',
+  'nav.font_size':'🔠 حجم الخط',
   'nav.sync_on':'☁️ المزامنة مفعّلة ✅',
   'nav.back':'← الرجوع',
 
@@ -339,6 +340,7 @@ en: {
   'nav.about':'📖 About',
   'nav.progress':'📊 My Progress',
   'nav.sync_signin':'☁️ Sign in',
+  'nav.font_size':'🔠 Text size',
   'nav.sync_on':'☁️ Sync on ✅',
   'nav.back':'← Back',
 
@@ -643,6 +645,7 @@ fr: {
   'nav.about':'📖 À propos',
   'nav.progress':'📊 Mes progrès',
   'nav.sync_signin':'☁️ Connexion',
+  'nav.font_size':'🔠 Taille du texte',
   'nav.sync_on':'☁️ Synchronisation activée ✅',
   'nav.back':'← Retour',
 
@@ -947,6 +950,7 @@ tr: {
   'nav.about':'📖 Proje hakkında',
   'nav.progress':'📊 İlerlemem',
   'nav.sync_signin':'☁️ Giriş yap',
+  'nav.font_size':'🔠 Yazı boyutu',
   'nav.sync_on':'☁️ Senkronizasyon açık ✅',
   'nav.back':'← Geri',
 
@@ -1252,6 +1256,7 @@ de: {
   'nav.about':'📖 Über das Projekt',
   'nav.progress':'📊 Mein Fortschritt',
   'nav.sync_signin':'☁️ Anmelden',
+  'nav.font_size':'🔠 Schriftgröße',
   'nav.sync_on':'☁️ Synchronisierung aktiv ✅',
   'nav.back':'← Zurück',
 
@@ -1556,6 +1561,7 @@ es: {
   'nav.about':'📖 Acerca del proyecto',
   'nav.progress':'📊 Mi progreso',
   'nav.sync_signin':'☁️ Iniciar sesión',
+  'nav.font_size':'🔠 Tamaño del texto',
   'nav.sync_on':'☁️ Sincronización activa ✅',
   'nav.back':'← Volver',
 
@@ -1860,6 +1866,7 @@ fa: {
   'nav.about':'📖 درباره‌ی پروژه',
   'nav.progress':'📊 پیشرفت من',
   'nav.sync_signin':'☁️ ورود',
+  'nav.font_size':'🔠 اندازه متن',
   'nav.sync_on':'☁️ همگام‌سازی فعال ✅',
   'nav.back':'← بازگشت',
 
@@ -2263,12 +2270,55 @@ function ensureSyncMenuItem(){
   }catch(e){}
 }
 
+
+// ===== حجم الخط لكل الموقع (تكبير الصفحة كلها: ١٠٠٪ / ١١٥٪ / ١٣٠٪) =====
+var FONT_KEY='darbi_fontscale_v1', FONT_STEPS=[1,1.15,1.3];
+function getFontStep(){try{var v=parseInt(localStorage.getItem(FONT_KEY),10);return (v>=0&&v<FONT_STEPS.length)?v:0;}catch(e){return 0;}}
+function applyFontStep(i){
+  try{document.documentElement.style.zoom=(i===0?'':String(FONT_STEPS[i]));}catch(e){}
+  try{document.querySelectorAll('.tools-font-item .fs-btn').forEach(function(b){b.classList.toggle('on',+b.getAttribute('data-step')===i);});}catch(e){}
+}
+function ensureFontItem(){
+  try{
+    if(!document.getElementById('darbi-fs-style')){
+      var st=document.createElement('style');st.id='darbi-fs-style';
+      st.textContent='.tools-font-item{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);}'
+        +'.tools-font-item .fs-btns{margin-inline-start:auto;display:flex;gap:5px;}'
+        +'.tools-font-item .fs-btn{font-family:inherit;border:1.5px solid var(--border,#E4EAE4);background:var(--card,#fff);color:var(--text,#1A1A1A);border-radius:8px;min-width:34px;height:32px;cursor:pointer;line-height:1;}'
+        +'.tools-font-item .fs-btn.on{background:var(--green,#2E6B42);border-color:var(--green,#2E6B42);color:#fff;}';
+      document.head.appendChild(st);
+    }
+    document.querySelectorAll('.tools-menu').forEach(function(menu){
+      if(menu.querySelector('.tools-font-item'))return;
+      var row=document.createElement('div');row.className='tools-font-item';
+      var lab=document.createElement('span');lab.setAttribute('data-i18n','nav.font_size');row.appendChild(lab);
+      var box=document.createElement('span');box.className='fs-btns';
+      [['A\u2212',0,-1],['A',0,0],['A+',0,1]].forEach(function(d,idx){
+        var b=document.createElement('button');b.type='button';b.className='fs-btn';b.textContent=d[0];
+        b.setAttribute('data-step',String(idx));
+        b.setAttribute('aria-label',['-','=','+'][idx]);
+        b.style.fontSize=[0.8,1,1.2][idx]+'rem';
+        b.addEventListener('click',function(ev){ev.stopPropagation();try{localStorage.setItem(FONT_KEY,String(idx));}catch(e){}applyFontStep(idx);});
+        box.appendChild(b);
+      });
+      row.appendChild(box);
+      row.addEventListener('click',function(ev){ev.stopPropagation();});
+      var anchor=null;
+      menu.querySelectorAll('.tools-item').forEach(function(b){if((b.getAttribute('onclick')||'').indexOf('fdbkOpen')!==-1)anchor=b;});
+      if(anchor)anchor.after(row);else menu.appendChild(row);
+    });
+    applyFontStep(getFontStep());
+  }catch(e){}
+}
+applyFontStep(getFontStep());
+
 function applyLang(code){
   if(SUPPORTED.indexOf(code)===-1) code='ar';
   setLangPref(code);
   document.documentElement.setAttribute('lang', code);
   document.documentElement.setAttribute('dir', (code==='ar'||code==='fa') ? 'rtl' : 'ltr');
   ensureSyncMenuItem();
+  ensureFontItem();
   applyStaticText();
   applyProgressSignedBadge();
   updateLangMenuUI(code);
