@@ -277,32 +277,27 @@
   function maybeShowReminderBanner() {
     try {
       if (window.DARBI_NO_REMINDER) return; // صفحات مخصّصة (زي تقدّمي) بتعرض تذكيرها بنفسها
-      if (localStorage.getItem('darbiReminderOff') === '1') return;
+      try { localStorage.removeItem('darbiReminderOff'); } catch (e) {} // لم يعد «إيقاف نهائي» موجودًا؛ نُلغي أي إيقاف سابق
       var today = todayStr();
       if (sessionStorage.getItem('darbiReminderDismissed') === today) return;
       if (hasDoneToday()) return;
 
       var bar = document.createElement('div');
-      bar.setAttribute('dir', 'rtl');
       bar.style.cssText = [
         'display:flex', 'align-items:center', 'justify-content:center', 'gap:10px', 'flex-wrap:wrap',
-        'padding:9px 14px', 'background:var(--green,#2E6B3E)', 'color:#fff',
+        'padding:9px 58px', 'background:var(--green,#2E6B3E)', 'color:#fff',
         'font-family:"Amiri",Tahoma,sans-serif', 'font-size:.82rem', 'position:relative', 'z-index:300'
       ].join(';');
       bar.innerHTML =
-        '<span>🌙 لم تبدأ وردك اليوم بعد — أكمل حفظك الآن</span>' +
-        '<button type="button" data-darbi-dismiss style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:4px 10px;font-size:.76rem;cursor:pointer;">ذكّرني غدًا</button>' +
-        '<button type="button" data-darbi-off style="background:transparent;border:0;color:#e7f0e2;font-size:.72rem;text-decoration:underline;cursor:pointer;">إيقاف نهائي</button>';
+        '<span data-i18n="reminder.banner">🌙 لم تبدأ وردك اليوم بعد — أكمل حفظك الآن</span>' +
+        '<button type="button" data-darbi-dismiss data-i18n="reminder.tomorrow" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:4px 10px;font-size:.76rem;cursor:pointer;">ذكّرني غدًا</button>';
 
       document.body.insertBefore(bar, document.body.firstChild);
       bar.querySelector('[data-darbi-dismiss]').addEventListener('click', function () {
         sessionStorage.setItem('darbiReminderDismissed', today);
         bar.remove();
       });
-      bar.querySelector('[data-darbi-off]').addEventListener('click', function () {
-        try { localStorage.setItem('darbiReminderOff', '1'); } catch (e) {}
-        bar.remove();
-      });
+      try { if (window.darbiApplyLang && window.darbiLang) window.darbiApplyLang(window.darbiLang()); } catch (e) {}
     } catch (e) {
       // أي خطأ هنا مايأثرش على باقي الصفحة
     }
