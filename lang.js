@@ -2449,6 +2449,7 @@ function loc2(src,lg){
   if((m=z.match(/^اكتب الايه رقم (\d+) من سوره (.+?) كامله( \(بجميع اجزائها\))?$/))){n=S(m[2]);return n?fill(L_(lg).wvo(m[1],n),{})+(m[3]?X2.all:''):null;}
   if((m=z.match(/^اكتب الايه (.+?) من سوره (.+?) كامله( \(بجميع اجزائها\))?$/))){var k=ordNum(m[1]);n=S(m[2]);return (k&&n)?L_(lg).wvo(k,n)+(m[3]?X2.all:''):null;}
   if((m=z.match(/^اكتب الايه رقم (\d+) من سوره (.+?) من «Q» حتي اخرها$/))){n=S(m[2]);return n?fill(X2.wvoq,{n:m[1],S:n,q:qq(qs[0])}):null;}
+  if((m=z.match(/^اكتب الايه (\d+) من سوره (.+)$/))){n=S(m[2]);return n?L_(lg).wvo(m[1],n):null;}
   if((m=z.match(/^اكتب الايه (\d+) كامله$/)))return fill(X2.wvf,{n:m[1]});
   if((m=z.match(/^اكتب الايتين (\d+) و(\d+) كاملتين من سوره (.+)$/))){n=S(m[3]);return n?fill(X2.w2,{a:m[1],b:m[2],S:n}):null;}
   if((m=z.match(/^اكتب الايات ([\d و]+) كامله من سوره (.+)$/))){n=S(m[2]);return n?fill(X2.wl,{l:joinL(m[1].match(/\d+/g),X2.and_),S:n}):null;}
