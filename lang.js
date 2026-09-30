@@ -2317,9 +2317,7 @@ function ensureFontItem(){
       });
       row.appendChild(box);
       row.addEventListener('click',function(ev){ev.stopPropagation();});
-      var anchor=null;
-      menu.querySelectorAll('.tools-item').forEach(function(b){if((b.getAttribute('onclick')||'').indexOf('fdbkOpen')!==-1)anchor=b;});
-      if(anchor)anchor.after(row);else menu.appendChild(row);
+      menu.appendChild(row); // في آخر القائمة
     });
     applyFontStep(getFontStep());
   }catch(e){}
