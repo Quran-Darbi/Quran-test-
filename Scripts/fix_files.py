@@ -8109,6 +8109,73 @@ function _ayahSepEl(num){
     return new, True
 
 
+# ============================================================
+#  ترتيب قائمة الأدوات ☰ + إضافة «عن المشروع» في كل الصفحات (سبتمبر ٢٠٢٦)
+#  الترتيب النهائي (من الأعلى):
+#    اللغة ← تقدّمي ← الاقتراحات ← كود QR ← مشاركة الصفحة
+#    ← [تسجيل الدخول والمزامنة: بيضيفه lang.js بعد «مشاركة الصفحة»]
+#    ← عن المشروع (بيفتح about.html)
+#  idempotent: لو القائمة مرتبة أصلًا مبيتغيّرش أي شيء.
+# ============================================================
+_TOOLS_MENU_OPEN = '<div class="tools-menu" id="tools-menu">'
+_TOOLS_ITEM_RE = re.compile(r'(?:<!--[A-Z_]+-->)?<button class="tools-item"[^>]*>.*?</button>', re.S)
+_TOOLS_LANGLIST_RE = re.compile(r'<div class="tools-lang-list" id="tools-lang-list">.*?</div>', re.S)
+TOOLS_ABOUT_ITEM = ('<!--ABOUT_IN_TOOLS--><button class="tools-item" '
+                    'onclick="toolsClose();location.href=\'about.html\';">'
+                    '<span data-i18n="nav.about">\U0001F4D6 عن المشروع</span></button>')
+_TOOLS_ORDER = ['lang', 'langlist', 'progress', 'feedback', 'qr', 'share', 'sync', 'other', 'about']
+
+def _tools_item_kind(tok):
+    if tok.startswith('<div class="tools-lang-list"'):
+        return 'langlist'
+    if 'toolsLangToggle' in tok:
+        return 'lang'
+    if 'tools-sync-item' in tok:
+        return 'sync'
+    if 'fdbkOpen' in tok:
+        return 'feedback'
+    if 'showQR' in tok:
+        return 'qr'
+    if 'shareApp' in tok:
+        return 'share'
+    if 'ABOUT_IN_TOOLS' in tok or 'showAbout' in tok or 'about.html' in tok:
+        return 'about'
+    if 'progress.html' in tok:
+        return 'progress'
+    return 'other'
+
+def reorder_tools_menu(path, out):
+    i = out.find(_TOOLS_MENU_OPEN)
+    if i == -1:
+        return out, False
+    start = i + len(_TOOLS_MENU_OPEN)
+    pos, tokens = start, []
+    while True:
+        j = pos
+        while j < len(out) and out[j] in ' \t\r\n':
+            j += 1
+        m = _TOOLS_ITEM_RE.match(out, j) or _TOOLS_LANGLIST_RE.match(out, j)
+        if not m:
+            break
+        tokens.append(m.group(0))
+        pos = m.end()
+    if not tokens:
+        return out, False
+    kinds = [_tools_item_kind(t) for t in tokens]
+    if 'lang' not in kinds or 'langlist' not in kinds:
+        return out, False          # قائمة غير معتادة: لا نلمسها
+    by_kind = {}
+    for k, t in zip(kinds, tokens):
+        by_kind.setdefault(k, []).append(t)
+    by_kind['about'] = [TOOLS_ABOUT_ITEM]
+    ordered = []
+    for k in _TOOLS_ORDER:
+        ordered.extend(by_kind.get(k, []))
+    new_region = '\n    ' + '\n    '.join(ordered)
+    if out[start:pos] == new_region:
+        return out, False
+    return out[:start] + new_region + out[pos:], True
+
 def fix_file(path):
     with open(path, encoding='utf-8') as f:
         src = f.read()
@@ -8932,6 +8999,9 @@ def fix_file(path):
         out = out.replace('}' + _ORPH2, '}')
     # ===== نهاية تحسينات UI v2 =====
 
+    # ترتيب قائمة الأدوات ☰ وإضافة «عن المشروع» (سبتمبر ٢٠٢٦)
+    out, _tools_reordered = reorder_tools_menu(path, out)
+
     if out != src:
         with open(path, 'w', encoding='utf-8') as f:
             f.write(out)
@@ -9600,6 +9670,7 @@ def fix_index_recitation(path):
     # لازم تيجي بعد add_tools_menu لأن دي بتعيد بناء القائمة من قالب
     # مشترك مع صفحات السور، فأي عنصر يتضاف قبلها بيتمسح.
     out, _levels_wording_fixed = fix_levels_wording(path, out)
+    out, _tools_reordered = reorder_tools_menu(path, out)
 
     # إحصائيات الهيرو بأرقام محسوبة من الملفات
     out, _hero_stats_fixed = fix_hero_stats(path, out)
