@@ -28,6 +28,7 @@ ar: {
   'nav.share':'مشاركة الصفحة',
   'nav.qr':'كود QR',
   'nav.about':'📖 عن المشروع',
+  'about.dua':'نسأل الله أن يجعل القرآن ربيع قلوبنا، ونور صدورنا، وأن يرزقنا حفظه وإتقانه والعمل به.',
   'nav.progress':'📊 تقدّمي',
   'nav.sync_signin':'☁️ تسجيل الدخول',
   'nav.font_size':'🔠 حجم الخط',
@@ -340,6 +341,7 @@ en: {
   'nav.share':'Share page',
   'nav.qr':'QR code',
   'nav.about':'📖 About',
+  'about.dua':'We ask Allah to make the Qur’an the spring of our hearts and the light of our chests, and to grant us its memorization, mastery and practice.',
   'nav.progress':'📊 My Progress',
   'nav.sync_signin':'☁️ Sign in',
   'nav.font_size':'🔠 Text size',
@@ -647,6 +649,7 @@ fr: {
   'nav.share':'Partager la page',
   'nav.qr':'Code QR',
   'nav.about':'📖 À propos',
+  'about.dua':'Nous demandons à Allah de faire du Coran le printemps de nos cœurs et la lumière de nos poitrines, et de nous accorder de le mémoriser, de le maîtriser et de le mettre en pratique.',
   'nav.progress':'📊 Mes progrès',
   'nav.sync_signin':'☁️ Connexion',
   'nav.font_size':'🔠 Taille du texte',
@@ -954,6 +957,7 @@ tr: {
   'nav.share':'Sayfayı paylaş',
   'nav.qr':'QR kodu',
   'nav.about':'📖 Proje hakkında',
+  'about.dua':'Allah’tan, Kur’ân’ı kalplerimizin baharı ve göğüslerimizin nûru kılmasını; onu ezberlemeyi, iyi öğrenmeyi ve ona göre amel etmeyi bize nasip etmesini niyaz ederiz.',
   'nav.progress':'📊 İlerlemem',
   'nav.sync_signin':'☁️ Giriş yap',
   'nav.font_size':'🔠 Yazı boyutu',
@@ -1262,6 +1266,7 @@ de: {
   'nav.share':'Seite teilen',
   'nav.qr':'QR-Code',
   'nav.about':'📖 Über das Projekt',
+  'about.dua':'Wir bitten Allah, den Koran zum Frühling unserer Herzen und zum Licht unserer Brüste zu machen und uns zu schenken, ihn auswendig zu lernen, zu beherrschen und danach zu handeln.',
   'nav.progress':'📊 Mein Fortschritt',
   'nav.sync_signin':'☁️ Anmelden',
   'nav.font_size':'🔠 Schriftgröße',
@@ -1569,6 +1574,7 @@ es: {
   'nav.share':'Compartir página',
   'nav.qr':'Código QR',
   'nav.about':'📖 Acerca del proyecto',
+  'about.dua':'Pedimos a Allah que haga del Corán la primavera de nuestros corazones y la luz de nuestros pechos, y que nos conceda memorizarlo, dominarlo y ponerlo en práctica.',
   'nav.progress':'📊 Mi progreso',
   'nav.sync_signin':'☁️ Iniciar sesión',
   'nav.font_size':'🔠 Tamaño del texto',
@@ -1876,6 +1882,7 @@ fa: {
   'nav.share':'اشتراک‌گذاری صفحه',
   'nav.qr':'کد QR',
   'nav.about':'📖 درباره‌ی پروژه',
+  'about.dua':'از خداوند می‌خواهیم که قرآن را بهار دل‌هایمان و نور سینه‌هایمان قرار دهد و حفظ، اتقان و عمل به آن را روزی ما کند.',
   'nav.progress':'📊 پیشرفت من',
   'nav.sync_signin':'☁️ ورود',
   'nav.font_size':'🔠 اندازه متن',
@@ -2220,6 +2227,10 @@ function applyStaticText(root){
   scope.querySelectorAll('[data-i18n-alt]').forEach(function(el){
     el.setAttribute('alt', t(el.getAttribute('data-i18n-alt')));
   });
+  scope.querySelectorAll('[data-i18n-aria]').forEach(function(el){
+    // تسمية وصولية (aria-label) بلا رموز تعبيرية في أولها
+    el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')).replace(/^[^A-Za-z\u00C0-\u024F\u0400-\u04FF\u0600-\u06FF\u0750-\u077F]+/, ''));
+  });
 }
 
 function updateLangMenuUI(code){
@@ -2404,7 +2415,9 @@ function loc(src,lg){
   if((m=s.match(/^سورة (.+?) \((\d+) (?:آية|آيات)\)$/))){n=surahName(m[1],lg);return n?L.sur(n)+' ('+L.cnt(+m[2])+')':null;}
   if((m=s.match(/^(?:(سورة) )?(.+?) ص ?(\d+) — (آيات|آية) (\d+)(?:\s*[–-]\s*(\d+))?(?: \((.+)\))?$/))){n=surahName(m[2],lg);if(!n)return null;
     return (m[1]?L.sur(n):n)+' '+L.p+m[3]+' \u2014 '+(m[6]?L.vs(m[5],m[6]):L.v(m[5]))+par(m[7],lg);}
+  if((m=s.match(/^سورة (.+?) — آية (\d+)$/))){n=surahName(m[1],lg);return n?L.sur(n)+' \u2014 '+L.v(m[2]):null;}
   if((m=s.match(/^سورة (.+)$/))){n=surahName(m[1],lg);return n?L.sur(n):null;}
+  if((m=s.match(/^(?:الآيتين|الآيتان) (\d+)\s*[–-]\s*(\d+)$/)))return L.vs(m[1],m[2]);
   if((m=s.match(/^من الآية (\d+) إلى الآية (\d+)$/)))return L.ft(m[1],m[2]);
   if((m=s.match(/^الآيات (\d+) إلى (\d+)$/)))return L.vto(m[1],m[2]);
   if((m=s.match(/^الآيات (\d+)\s*[–-]\s*(\d+)( كاملة)?$/)))return L.vs(m[1],m[2])+(m[3]?L.cmp:'');
@@ -2420,7 +2433,7 @@ function loc(src,lg){
       else if((x=r.match(/^وجه (\d+) — صفحة (\d+)$/)))outp.push(L.face+' '+x[1]+' \u2014 '+L.pg+' '+x[2]);
       else return null;}
     return L.test+' | '+outp.join(' | ');}
-  if((m=s.match(/^صفحة (\d+) من المصحف(?: — (.+))?$/)))return L.mp(m[1])+(m[2]?' — '+m[2]:'');
+  if((m=s.match(/^صفحة (\d+) من المصحف(?: — (.+))?$/)))return L.mp(m[1]);
   if((m=s.match(/^ص ?(\d+) — (آيات|آية) (\d+)(?:\s*[–-]\s*(\d+))?(?: \((.+)\))?$/)))
     return L.p+m[1]+' — '+(m[4]?L.vs(m[3],m[4]):L.v(m[3]))+par(m[5],lg);
   return null;
@@ -2468,19 +2481,83 @@ function loc2(src,lg){
   return null;
 }
 function L_(lg){return T[lg];}
-var PRE=/^(سورة|الآية|الآيات|من الآية|اكتب|اختبار الحفظ|صفحة|ص ?\d|[^\d]{2,25} ص ?\d+ — )/;
+
+/* ===== الصفحة الرئيسية: أسماء السور والملاحظات (بطاقات، عناوين الأجزاء، الأزرار) ===== */
+var NOTE={
+ 'البدايه':{en:'beginning',fr:'début',de:'Anfang',es:'inicio',tr:'başlangıç'},
+ 'ختام الجزء':{en:'end of the juz’',fr:'fin du juz’',de:'Ende des Juz’',es:'final del juz’',tr:'cüzün sonu'},
+ 'يتبع':{en:'continued below',fr:'suite',de:'wird fortgesetzt',es:'continúa',tr:'devam ediyor'},
+ 'تابع':{en:'cont.',fr:'suite',de:'Forts.',es:'cont.',tr:'devamı'},
+ 'تتمه':{en:'continued',fr:'suite',de:'Fortsetzung',es:'continuación',tr:'devamı'}
+};
+var NOTEBTN={
+ en:{c:function(S,j){return S+' continues in Juz’ '+j+' →';},b:function(S,j){return '← '+S+' began in Juz’ '+j;}},
+ fr:{c:function(S,j){return S+' continue dans le Juz’ '+j+' →';},b:function(S,j){return '← '+S+' a commencé dans le Juz’ '+j;}},
+ de:{c:function(S,j){return S+' wird in Juz’ '+j+' fortgesetzt →';},b:function(S,j){return '← '+S+' begann in Juz’ '+j;}},
+ es:{c:function(S,j){return S+' continúa en el Juz’ '+j+' →';},b:function(S,j){return '← '+S+' comenzó en el Juz’ '+j;}},
+ tr:{c:function(S,j){return S+', '+j+'. cüzde devam ediyor →';},b:function(S,j){return '← '+S+' '+j+'. cüzde başlamıştı';}}
+};
+function idxName(x,lg){x=String(x).trim();if(nrm(x)==='جزء عم')return T[lg].juz;
+  var o=surahName(x,lg);if(o)return o;
+  var m=x.match(/^(.+?) \((.+)\)$/);
+  if(m){var a=surahName(m[1],lg);if(!a)return null;var inner=m[2].trim(),nt;
+    if(/^[\d\s–-]+$/.test(inner))return a+' ('+dg(inner)+')';
+    if((nt=inner.match(/^(تتمة)\s+([\d\s–-]+)$/)))return a+' ('+(NOTE[nrm(nt[1])][lg])+' '+dg(nt[2])+')';
+    var r=NOTE[nrm(inner)];return r&&r[lg]?a+' ('+r[lg]+')':null;}
+  return null;}
+function idxLoc(src,lg){
+  var L=T[lg];if(!L)return null;var s=dg(src).replace(/\s+/g,' ').trim(),m,n;
+  if((m=s.match(/^ص ?(\d+)$/)))return L.p+' '+m[1];
+  if((m=s.match(/^(\d+) (?:آية|آيات)$/)))return L.cnt(+m[1]);
+  if((m=s.match(/^(\d+) \+ (.+?) (\d+)\s*[–-]\s*(\d+)$/))){n=surahName(m[2],lg);return n?m[1]+' + '+n+' '+m[3]+'–'+m[4]:null;}
+  if(nrm(s)==='قريبا'||s==='قريباً'){return window.darbiT?window.darbiT('home.card_soon_badge'):null;}
+  if(nrm(s)==='ايه الكرسي'){var pk=PAR[nrm(s)];return pk&&pk[lg]?pk[lg]:null;}
+  var nb=NOTEBTN[lg];
+  if(nb){ if((m=s.match(/^سورة (.+?) تكمل في الجزء (\d+) ←$/))){n=surahName(m[1],lg);return n?nb.c(L.sur(n),m[2]):null;}
+          if((m=s.match(/^◄ سورة (.+?) بدأت في الجزء (\d+)$/))){n=surahName(m[1],lg);return n?nb.b(L.sur(n),m[2]):null;} }
+  if((m=s.match(/^سورة (.+?) \((.+)\)$/))){var q=idxName(m[1]+' ('+m[2]+')',lg);return q?L.sur(q):null;}
+  var parts=s.split(/\s*(?: — |،)\s*/),out=[],seps=s.match(/ — |،/g)||[],i;
+  for(i=0;i<parts.length;i++){var pn=idxName(parts[i],lg);if(pn===null)return null;out.push(pn);}
+  var res=out[0];for(i=1;i<out.length;i++)res+=(seps[i-1]==='،'?', ':' — ')+out[i];
+  return res;}
+var IDXSEL='.card-name,.surah-name,.surah-panel-title,.juz-title,.card-meta,.note-btn';
+var PRE=/^(سورة|الآية|الآيات|الآيتين|الآيتان|من الآية|اكتب|اختبار الحفظ|صفحة|الصفحة|ص ?\d|[^\d]{2,25} ص ?\d+ — )/;
+
+/* عنوان التبويب (document.title): يُترجم بنفس القواعد، والأصل العربي محفوظ للعودة */
+function stripLead(x){return String(x).replace(/^[^A-Za-zÀ-ɏ؀-ۿ]+/,'');}
+function titleLoc(ar,lg){
+  var L=T[lg];if(!L)return null;var s=dg(ar).replace(/\s+/g,' ').trim(),m,T_=window.darbiT;
+  var brand=T_?T_('home.title'):null;
+  if(s==='دربي لحفظ القرآن')return brand;
+  if((m=s.match(/^عن المشروع — دربي لحفظ القرآن$/)))return stripLead(T_('nav.about'))+' — '+brand;
+  if((m=s.match(/^تقدّمي — دربي لحفظ القرآن$/)))return stripLead(T_('nav.progress'))+' — '+brand;
+  if((m=s.match(/^اختبر حفظك — دربي لحفظ القرآن$/)))return stripLead(T_('home.recite_btn'))+' — '+brand;
+  if((m=s.match(/^اختبار حفظ (?:القرآن - )?سورة (.+?)(?:\s*[—-]\s*الآيات [\d–-]+)?(?:\s*[—-]\s*(?:الصفحة|صفحة) (\d+))?(?:\s*\|\s*(.+))?$/))){
+    var n=surahName(m[1].trim(),lg);if(!n)return null;
+    var out=L.test+' — '+L.sur(n);if(m[2])out+=' — '+L.pg+' '+m[2];
+    if(m[3]){var tv=null,tx;if(nrm(m[3])==='جزء عم')tv=L.juz;else if((tx=m[3].match(/^الآيات (\d+)\s*[–-]\s*(\d+)( كاملة)?$/)))tv=L.vs(tx[1],tx[2])+(tx[3]?L.cmp:'');if(tv)out+=' | '+tv;}
+    return out;}
+  return null;}
+var titleAr=null;
+function fixTitle(lg){
+  try{if(titleAr===null)titleAr=document.title;
+    var o=T[lg]?titleLoc(titleAr,lg):null;var want=o===null?titleAr:o;if(document.title!==want)document.title=want;}catch(e){}}
 var tracked=[];
 function curLang(){return (window.darbiLang&&window.darbiLang())||document.documentElement.lang||'ar';}
 function setTxt(el,v){if(el.__dOut===undefined)tracked.push(el);el.textContent=v;el.__dOut=v;}
 function doEl(el,lg){
   var t=el.textContent;
   if(el.__dAr!==undefined&&t===el.__dOut){ // أنا من كتب هذا النص؛ المصدر محفوظ
-    var o=(T[lg]?loc(el.__dAr,lg):null);var want=o===null?el.__dAr:o;
+    var o=(T[lg]?loc(el.__dAr,lg):null);
+    if(o===null&&T[lg]&&el.matches&&el.matches(IDXSEL))o=idxLoc(el.__dAr,lg);
+    var want=o===null?el.__dAr:o;
     if(want!==t){el.__dOut=want;el.textContent=want;}
     return;}
   if(el.closest&&el.closest('[data-no-loc]'))return;
-  if(!PRE.test(t.trim())||t.length>140)return;
+  var isIdx=!!(el.matches&&el.matches(IDXSEL));
+  if(!isIdx&&(!PRE.test(t.trim())||t.length>140))return;
   var o2=T[lg]?loc(t,lg):null;
+  if(o2===null&&isIdx&&T[lg])o2=idxLoc(t,lg);
   if(o2===null)return;
   el.__dAr=t;if(tracked.indexOf(el)===-1)tracked.push(el);
   el.__dOut=o2;el.textContent=o2;
@@ -2498,12 +2575,13 @@ function scan(root){
     for(var i=0;i<list.length;i++){var e=list[i];if(e.children.length===0)doEl(e,lg);}
     if(base.nodeType===1&&base.children.length===0)doEl(base,lg);
     (base.querySelectorAll?base.querySelectorAll('optgroup[label]'):[]).forEach(function(g){doLabel(g,lg);});
-    if(!root){ // مرور كامل: أعد ضبط العناصر المتتبَّعة (تغيّر اللغة)
+    if(!root){ fixTitle(lg); // مرور كامل: أعد ضبط العناصر المتتبَّعة (تغيّر اللغة)
       tracked.forEach(function(el){if(el.isConnected)doEl(el,lg);});
     }
   }catch(e){}
   busy=false;
 }
+window.darbiIdxLoc=function(ar){try{var lg=curLang();return T[lg]?idxLoc(ar,lg):null;}catch(e){return null;}};
 window.darbiLocText=function(s){try{var o=loc(s,curLang());return o===null?s:o;}catch(e){return s;}};
 window.darbiDisplayName=function(ar){ // اسم منقول بحروف لاتينية (أو null إن كانت اللغة عربية/فارسية أو الاسم غير معروف)
   try{var lg=curLang();if(!T[lg])return null;var o=loc(ar,lg);if(o!==null)return o;

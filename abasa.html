@@ -202,7 +202,7 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   <div class="ayat-range">الآيات 1–42 كاملة</div>
   <div class="page-info">اختبار الحفظ | ص 584–585 | جزء عمّ</div>
   <div class="stats-row">
-    <div class="stat-badge badge-neutral" id="qnum-badge">السؤال 1 /<br><span id="total-q">15</span></div>
+    <div class="stat-badge badge-neutral" id="qnum-badge"><span data-i18n="quiz.q_number_short">السؤال 1 /</span><br><span id="total-q">15</span></div>
     <div class="stat-badge badge-neutral" id="wrong-badge">0 ✗<br><span data-i18n="quiz.stat_wrong">خطأ</span></div>
     <div class="stat-badge badge-neutral" id="correct-badge">0 ✓<br><span data-i18n="quiz.stat_correct">صحيح</span></div>
   </div>
@@ -226,15 +226,15 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   <div class="levels-grid">
     <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy">
       <span class="level-icon">🌱</span><span class="level-name" data-i18n="level.easy_name">سهل</span>
-      <span class="level-desc">اختيار من متعدد<br>15 سؤال</span>
+      <span class="level-desc" data-i18n="level.easy_desc">اختر الإجابة الصحيحة</span>
     </button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium">
       <span class="level-icon">🌿</span><span class="level-name" data-i18n="level.medium_name">متوسط</span>
-      <span class="level-desc">إكمال فراغ<br>15 سؤال</span>
+      <span class="level-desc" data-i18n="level.medium_desc">أكمل الفراغ</span>
     </button>
     <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard">
       <span class="level-icon">🌳</span><span class="level-name" data-i18n="level.hard_name">صعب</span>
-      <span class="level-desc">آيات كاملة<br>8 أسئلة</span>
+      <span class="level-desc" data-i18n="level.hard_desc">اكتب الآية كاملة</span>
     </button>
     <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name" data-i18n="level.order_name">ترتيب</span><span class="level-desc" data-i18n="level.order_desc">رتّب الآيات</span></button>
   </div>

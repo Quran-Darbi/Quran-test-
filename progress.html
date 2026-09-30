@@ -280,7 +280,7 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo"><img src="icons/darbi_favicon_64.png" alt="دربي لحفظ القرآن" width="24" height="24"> <span data-i18n="home.title">دربي لحفظ القرآن</span></a>
+  <a href="index.html" class="nav-logo"><img src="icons/darbi_favicon_64.png" alt="دربي لحفظ القرآن" data-i18n-alt="home.title" width="24" height="24"> <span data-i18n="home.title">دربي لحفظ القرآن</span></a>
   <div class="nav-right">
     <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button><div class="tools-fab" id="tools-fab">
   <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" data-i18n-title="nav.tools_title" title="الأدوات">☰</button>
@@ -420,7 +420,7 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <div id="reminder-controls" class="hidden">
         <div class="rem-row">
           <div class="rem-label"><span data-i18n="progress.reminder_enable_label">تفعيل إشعارات التذكير</span><small data-i18n="progress.reminder_enable_sub">تصل حتى لو الموقع مغلق</small></div>
-          <button class="switch" id="rem-switch" onclick="onReminderToggle()" aria-label="تفعيل التذكير"></button>
+          <button class="switch" id="rem-switch" onclick="onReminderToggle()" aria-label="تفعيل التذكير" data-i18n-aria="progress.reminder_enable_label"></button>
         </div>
         <div class="time-row hidden" id="rem-time-row">
           <span style="font-size:0.82rem;color:var(--soft);" data-i18n="progress.reminder_time_label">الوقت:</span>
@@ -755,6 +755,15 @@ function recDateLabel(iso){
     return d.toLocaleDateString((darbiLang()||'ar')+'-u-nu-latn',{day:'numeric',month:'short'});
   }catch(e){return '';}
 }
+/* اسم الصفحة بحروف لاتينية في اللغات غير العربية («الكهف ص293» → Al-Kahf p. 293) */
+function pgName(ar){
+  try{
+    var dn=window.darbiDisplayName; if(!dn||!ar) return ar;
+    var m=String(ar).match(/^(.+?) (ص ?\d+)$/);
+    if(m){var n=dn(m[1]); if(!n) return ar; var pl=window.darbiIdxLoc?window.darbiIdxLoc(m[2].replace('ص','ص ').replace(/\s+/g,' ')):null; return n+' '+(pl||m[2]);}
+    return dn(ar)||ar;
+  }catch(e){return ar;}
+}
 function renderRecitationCard(all,nameByKey){
   const keys=Object.keys(all).filter(k=>all[k]&&all[k].recitation);
   const stats=document.getElementById('rec-stats');
@@ -796,7 +805,7 @@ function renderRecitationCard(all,nameByKey){
     const meta=[reach,when].filter(Boolean).join(' · ');
     const cls=it.pct>=80?'hi':(it.pct>=60?'mid':'lo');
     a.innerHTML=
-      '<span class="rec-mid"><span class="rec-name">'+(nameByKey[it.key]||it.key)+'</span>'+
+      '<span class="rec-mid"><span class="rec-name">'+pgName(nameByKey[it.key]||it.key)+'</span>'+
       (meta?'<span class="rec-meta">'+meta+'</span>':'')+'</span>'+
       '<span class="rec-score '+cls+'">'+darbiT('recite.pct_label',{pct:it.pct})+'</span>';
     list.appendChild(a);
@@ -937,7 +946,7 @@ function render(){
       q.forEach(item=>{
         const a=document.createElement('a');
         a.className='rev-item';
-        const name=nameByKey[item.pageKey]||item.pageKey||'';
+        const name=pgName(nameByKey[item.pageKey]||item.pageKey||'');
         const lvl=levelLabel(item.level);
         const hasQIndex = (typeof item.qIndex==='number');
         const canJump = hasQIndex && ['easy','medium','hard'].includes(item.level);
