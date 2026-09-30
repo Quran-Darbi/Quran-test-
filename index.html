@@ -454,6 +454,14 @@ const almursalatPages=[
   ['almursalat_p580.html','ص 580','1–19'],['almursalat_p581.html','ص 581','20–50'],
 ];
 
+const qafPages=[
+  ['qaf_p518.html','ص 518','1–15'],['qaf_p519.html','ص 519','16–35'],['qaf_p520.html','ص 520','36–45'],
+];
+const azzariyatPages=[
+  ['azzariyat_p520.html','ص 520','1–6'],['azzariyat_p521.html','ص 521','7–30'],
+  ['azzariyat_p522.html','ص 522','31–51'],['azzariyat_p523.html','ص 523','52–60'],
+];
+
 const alqalamPages=[
   ['alqalam_p564.html','ص 564','1–15'],
   ['alqalam_p565.html','ص 565','16–42'],
@@ -535,7 +543,16 @@ const JUZ_GROUPS = {
         { kind:'range', arr:yaseenPages, from:2, to:6, name:'سورة يس (28–83)', surah:'يس', note:'◄ سورة يس بدأت في الجزء 22', noteTarget:22 },
         { kind:'soon', name:'الزمر' }
       ] },
+  26:{ title:'الأحقاف، الذاريات', groups:[
+        { kind:'soon', name:'الأحقاف' },
+        { kind:'soon', name:'محمد' },
+        { kind:'soon', name:'الفتح' },
+        { kind:'soon', name:'الحجرات' },
+        { kind:'full', arr:qafPages, name:'ق', surah:'ق' },
+        { kind:'range', arr:azzariyatPages, from:0, to:2, name:'سورة الذاريات (1–30)', surah:'الذاريات', note:'سورة الذاريات تكمل في الجزء 27 ←', noteTarget:27 }
+      ] },
   27:{ title:'الذاريات، الحديد', groups:[
+        { kind:'range', arr:azzariyatPages, from:2, to:4, name:'سورة الذاريات (31–60)', surah:'الذاريات', note:'◄ سورة الذاريات بدأت في الجزء 26', noteTarget:26 },
         { kind:'full', arr:arrahmanPages, name:'الرحمن', surah:'الرحمن' },
         { kind:'full', arr:alwaqiahPages, name:'الواقعة', surah:'الواقعة' }
       ] },
@@ -578,7 +595,6 @@ const SOON_JUZ = {
   18:['المؤمنون — الفرقان','ص 342'], 19:['الفرقان — النمل','ص 362'],
   20:['النمل — العنكبوت','ص 382'], 21:['العنكبوت — الأحزاب','ص 402'],
   24:['الزمر — فصلت','ص 462'], 25:['فصلت — الجاثية','ص 482'],
-  26:['الأحقاف — الذاريات','ص 502'],
 };
 
 function card(href,name,meta,ok,surah){
@@ -736,6 +752,8 @@ function renderDarbiProgress(){
   alqiyamaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القيامة '+p[1];});
   alinsanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الإنسان '+p[1];});
   almursalatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المرسلات '+p[1];});
+  qafPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة ق '+p[1];});
+  azzariyatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الذاريات '+p[1];});
   alqalamPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القلم '+p[1];});
   alhaqqaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الحاقة '+p[1];});
   nuhPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة نوح '+p[1];});
@@ -768,7 +786,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+qafPages.length+azzariyatPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
