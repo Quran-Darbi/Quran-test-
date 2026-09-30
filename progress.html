@@ -703,7 +703,7 @@ const GROUPS=[
   {label:'سورة المرسلات',pages:almursalatPages.map(p=>[p[0].replace('.html',''),'المرسلات '+p[1]])},
   {label:'جزء عمّ',pages:ammaData.map(p=>[p[0].replace('.html',''),p[1]])},
 ];
-const NO_PAGE_FILE=new Set(['attalaq_p558','attalaq_p559','attahrim_p560','attahrim_p561']); // صفحات مدرجة في القائمة ولا ملف لها بعد
+const NO_PAGE_FILE=new Set([]); // صفحات مدرجة في القائمة ولا ملف لها بعد
 const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
 
 function levelLabel(lvl){
