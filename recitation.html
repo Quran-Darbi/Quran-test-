@@ -1849,7 +1849,7 @@ function onSelectSurah(){
   refWords=expandMuqattaat(refWords);
   ayahBounds=computeAyahBounds(currentKey);
   waqfMarks=computeWaqfMarks(currentKey);
-  document.getElementById('selectedInfo').textContent=darbiT('recite.selected_info',{name:SURAH_NAMES[currentKey],count:refWords.length});
+  document.getElementById('selectedInfo').textContent=darbiT('recite.selected_info',{name:(window.darbiLocText?darbiLocText(SURAH_NAMES[currentKey]):SURAH_NAMES[currentKey]),count:refWords.length});
   document.getElementById('selectedInfo').style.display='block';
   updateReciteNav();
   document.getElementById('recBtn').textContent=darbiT('recite.btn_start');
@@ -2557,7 +2557,7 @@ function makeRec(){
     currentText=mergeYaAyyuha(interim.trim().split(/\s+/).filter(w=>w)).join(' ');
     renderTranscript();updateBtns();
   };
-  r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){recognizing=false;setBtn(savedWords.length?'paused':'idle');}};
+  r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){recognizing=false;setBtn(savedWords.length?'paused':'idle');if(['not-allowed','service-not-allowed','audio-capture','language-not-supported'].indexOf(e.error)!==-1){try{alert(darbiT('recite.err_speech_blocked'));}catch(_){}}}};
   r.onend=()=>{
     recognizing=false;
     if(currentText){addWords(currentText.trim().split(/\s+/).filter(w=>w));currentText='';}
@@ -2698,7 +2698,7 @@ function checkRecitation(){
 
 function shareApp(){
   const url=location.href;
-  const title=(typeof SURAH_NAMES!=='undefined'&&currentKey&&SURAH_NAMES[currentKey])?(darbiT('home.title')+' — '+SURAH_NAMES[currentKey]):darbiT('home.title');
+  const title=(typeof SURAH_NAMES!=='undefined'&&currentKey&&SURAH_NAMES[currentKey])?(darbiT('home.title')+' — '+(window.darbiLocText?darbiLocText(SURAH_NAMES[currentKey]):SURAH_NAMES[currentKey])):darbiT('home.title');
   if(navigator.share){
     navigator.share({title,url}).catch(()=>{});
   } else {
@@ -2985,7 +2985,7 @@ window.onDarbiLangChange = function(){
   if(currentKey){
     var infoEl=document.getElementById('selectedInfo');
     if(infoEl && infoEl.style.display==='block'){
-      infoEl.textContent=darbiT('recite.selected_info',{name:SURAH_NAMES[currentKey],count:refWords.length});
+      infoEl.textContent=darbiT('recite.selected_info',{name:(window.darbiLocText?darbiLocText(SURAH_NAMES[currentKey]):SURAH_NAMES[currentKey]),count:refWords.length});
     }
   }
   var recBtn=document.getElementById('recBtn');

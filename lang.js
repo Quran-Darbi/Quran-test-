@@ -248,6 +248,7 @@ ar: {
   'recite.result_weak':'💪 تحتاج مراجعة',
   'recite.err_inapp_browser':'⚠️ التسجيل الصوتي لا يعمل داخل متصفح التطبيق هذا (ماسنجر / إنستغرام / إلخ).\n\nافتح الموقع من متصفح Chrome مباشرة:\n1) اضغط على النقاط الثلاث (⋮) أعلى الصفحة\n2) اختر "افتح في المتصفح" أو "Open in Browser"\n\nأو انسخ رابط الموقع والصقه في تطبيق Chrome.',
   'recite.err_needs_chrome':'⚠️ التسجيل الصوتي يحتاج إلى متصفح Chrome ليعمل.\n\nإذا كنت على آيفون: حمّل تطبيق Chrome من App Store وافتح الموقع منه (وليس من Safari).\nوإذا كنت على أندرويد: افتح الموقع من تطبيق Chrome.',
+  'recite.err_speech_blocked':'⚠️ تعذّر بدء التسجيل الصوتي.\n\nعلى آيباد أو آيفون: فعّل «الإملاء» من الإعدادات ← عام ← لوحة المفاتيح، واسمح للموقع باستخدام الميكروفون. وإن استمر العطل فافتح الموقع من تطبيق Chrome.',
 
   // ===== تقدّمي (progress.html) =====
   'progress.home_btn':'🏠 الرئيسية',
@@ -553,6 +554,7 @@ en: {
   'recite.result_weak':'💪 Needs more review',
   'recite.err_inapp_browser':'⚠️ Voice recording does not work inside this app’s browser (Messenger / Instagram / etc.).\n\nOpen the site directly in Chrome:\n1) Tap the three dots (⋮) at the top of the page\n2) Choose "Open in Browser"\n\nOr copy the site link and paste it into the Chrome app.',
   'recite.err_needs_chrome':'⚠️ Voice recording needs the Chrome browser to work.\n\nIf you’re on iPhone: download the Chrome app from the App Store and open the site from it (not from Safari).\nIf you’re on Android: open the site from the Chrome app.',
+  'recite.err_speech_blocked':'⚠️ Voice recording could not start.\n\nOn iPad or iPhone: turn on Dictation in Settings → General → Keyboard, and allow this site to use the microphone. If it still fails, open the site from the Chrome app.',
   'progress.home_btn':'🏠 Home',
   'progress.subtitle':'Track your Qur’an memorization journey',
   'progress.subtitle_empty':'This is your beginning — start your first test',
@@ -856,6 +858,7 @@ fr: {
   'recite.result_weak':'💪 Nécessite une révision',
   'recite.err_inapp_browser':'⚠️ L’enregistrement vocal ne fonctionne pas dans le navigateur de cette application (Messenger / Instagram / etc.).\n\nOuvrez le site directement dans Chrome :\n1) Appuyez sur les trois points (⋮) en haut de la page\n2) Choisissez « Ouvrir dans le navigateur »\n\nOu copiez le lien du site et collez-le dans l’application Chrome.',
   'recite.err_needs_chrome':'⚠️ L’enregistrement vocal nécessite le navigateur Chrome pour fonctionner.\n\nSi vous êtes sur iPhone : téléchargez l’application Chrome depuis l’App Store et ouvrez le site depuis celle-ci (pas depuis Safari).\nSi vous êtes sur Android : ouvrez le site depuis l’application Chrome.',
+  'recite.err_speech_blocked':'⚠️ L’enregistrement vocal n’a pas pu démarrer.\n\nSur iPad ou iPhone : activez la dictée dans Réglages → Général → Clavier, et autorisez le site à utiliser le microphone. Si cela ne fonctionne toujours pas, ouvrez le site depuis l’application Chrome.',
   'progress.home_btn':'🏠 Accueil',
   'progress.subtitle':'Suivez votre parcours de mémorisation du Coran',
   'progress.subtitle_empty':'C’est votre début — commencez votre premier test',
@@ -1159,6 +1162,7 @@ tr: {
   'recite.result_weak':'💪 Daha fazla tekrar gerekiyor',
   'recite.err_inapp_browser':'⚠️ Sesli kayıt bu uygulama tarayıcısında (Messenger / Instagram vb.) çalışmaz.\n\nSiteyi doğrudan Chrome’da açın:\n1) Sayfanın üstündeki üç noktaya (⋮) dokunun\n2) "Tarayıcıda Aç" seçeneğini seçin\n\nYa da site bağlantısını kopyalayıp Chrome uygulamasına yapıştırın.',
   'recite.err_needs_chrome':'⚠️ Sesli kaydın çalışması için Chrome tarayıcısı gerekir.\n\niPhone kullanıyorsanız: App Store’dan Chrome uygulamasını indirip siteyi ondan açın (Safari’den değil).\nAndroid kullanıyorsanız: siteyi Chrome uygulamasından açın.',
+  'recite.err_speech_blocked':'⚠️ Sesli kayıt başlatılamadı.\n\niPad veya iPhone’da: Ayarlar → Genel → Klavye bölümünden Dikte’yi açın ve siteye mikrofon izni verin. Yine olmazsa siteyi Chrome uygulamasından açın.',
   'progress.home_btn':'🏠 Ana Sayfa',
   'progress.subtitle':'Kur’an ezberleme yolculuğunuzu takip edin',
   'progress.subtitle_empty':'Bu sizin başlangıcınız — ilk testinize başlayın',
@@ -1463,6 +1467,7 @@ de: {
   'recite.result_weak':'💪 Braucht mehr Wiederholung',
   'recite.err_inapp_browser':'⚠️ Die Sprachaufnahme funktioniert nicht im Browser dieser App (Messenger / Instagram usw.).\n\nÖffne die Website direkt in Chrome:\n1) Tippe oben auf die drei Punkte (⋮)\n2) Wähle „Im Browser öffnen“\n\nOder kopiere den Link der Website und füge ihn in die Chrome-App ein.',
   'recite.err_needs_chrome':'⚠️ Die Sprachaufnahme benötigt den Chrome-Browser, um zu funktionieren.\n\nWenn du ein iPhone hast: Lade die Chrome-App aus dem App Store herunter und öffne die Website darüber (nicht über Safari).\nWenn du Android hast: Öffne die Website über die Chrome-App.',
+  'recite.err_speech_blocked':'⚠️ Die Sprachaufnahme konnte nicht gestartet werden.\n\nAuf iPad oder iPhone: Aktiviere das Diktieren unter Einstellungen → Allgemein → Tastatur und erlaube der Website den Zugriff auf das Mikrofon. Falls es weiterhin nicht klappt, öffne die Website in der Chrome-App.',
   'progress.home_btn':'🏠 Startseite',
   'progress.subtitle':'Verfolge deine Reise beim Auswendiglernen des Korans',
   'progress.subtitle_empty':'Das ist dein Anfang — starte deinen ersten Test',
@@ -1766,6 +1771,7 @@ es: {
   'recite.result_weak':'💪 Necesita más repaso',
   'recite.err_inapp_browser':'⚠️ La grabación de voz no funciona dentro del navegador de esta app (Messenger / Instagram / etc.).\n\nAbre el sitio directamente en Chrome:\n1) Toca los tres puntos (⋮) en la parte superior de la página\n2) Elige "Abrir en el navegador"\n\nO copia el enlace del sitio y pégalo en la app de Chrome.',
   'recite.err_needs_chrome':'⚠️ La grabación de voz necesita el navegador Chrome para funcionar.\n\nSi usas iPhone: descarga la app de Chrome desde App Store y abre el sitio desde ella (no desde Safari).\nSi usas Android: abre el sitio desde la app de Chrome.',
+  'recite.err_speech_blocked':'⚠️ No se pudo iniciar la grabación de voz.\n\nEn iPad o iPhone: activa el dictado en Ajustes → General → Teclado y permite que el sitio use el micrófono. Si sigue sin funcionar, abre el sitio desde la app de Chrome.',
   'progress.home_btn':'🏠 Inicio',
   'progress.subtitle':'Sigue tu recorrido de memorización del Corán',
   'progress.subtitle_empty':'Este es tu comienzo — empieza tu primera prueba',
@@ -2069,6 +2075,7 @@ fa: {
   'recite.result_weak':'💪 نیاز به مرور بیشتر دارد',
   'recite.err_inapp_browser':'⚠️ ضبط صدا در مرورگر داخل این برنامه (مسنجر / اینستاگرام و غیره) کار نمی‌کند.\n\nسایت را مستقیماً در Chrome باز کنید:\n۱) روی سه نقطه (⋮) بالای صفحه بزنید\n۲) گزینه «باز کردن در مرورگر» را انتخاب کنید\n\nیا پیوند سایت را کپی کرده و در برنامه Chrome جای‌گذاری کنید.',
   'recite.err_needs_chrome':'⚠️ ضبط صدا برای کار کردن به مرورگر Chrome نیاز دارد.\n\nاگر آیفون دارید: برنامه Chrome را از App Store دانلود کرده و سایت را از آن باز کنید (نه از Safari).\nاگر اندروید دارید: سایت را از برنامه Chrome باز کنید.',
+  'recite.err_speech_blocked':'⚠️ شروع ضبط صدا ممکن نشد.\n\nدر آیپد یا آیفون: «دیکته» را در تنظیمات ← عمومی ← صفحه‌کلید فعال کنید و به سایت اجازهٔ استفاده از میکروفون بدهید. اگر باز هم کار نکرد، سایت را از برنامهٔ Chrome باز کنید.',
   'progress.home_btn':'🏠 خانه',
   'progress.subtitle':'سفر حفظ قرآن خود را دنبال کنید',
   'progress.subtitle_empty':'این آغاز شماست — اولین آزمون خود را شروع کنید',
@@ -2282,4 +2289,174 @@ if(document.readyState === 'loading'){
 }else{
   applyLang(getLang());
 }
+})();
+
+/* ===== ترجمة عناوين السور وصيغ الآيات (النص القرآني نفسه لا يُترجم أبدًا) =====
+   تعمل على نصوص بصيغ محددة فقط (سورة X، الآيات N–N، اكتب الآية… إلخ)، فلا تمسّ أي آية.
+   العربية والفارسية تبقيان كما هما. */
+(function(){
+'use strict';
+var SN = [ // [عربي, إنجليزي (يُستعمل للألمانية والإسبانية، والفرنسية بتحويل بسيط), تركي]
+['الفاتحة','Al-Fatihah','Fâtiha'],['البقرة','Al-Baqarah','Bakara'],['آل عمران','Ali ‘Imran','Âl-i İmrân'],['النساء','An-Nisa','Nisâ'],['المائدة','Al-Ma’idah','Mâide'],['الأنعام','Al-An’am','En’âm'],['الأعراف','Al-A’raf','A’râf'],['الأنفال','Al-Anfal','Enfâl'],['التوبة','At-Tawbah','Tevbe'],['يونس','Yunus','Yûnus'],
+['هود','Hud','Hûd'],['يوسف','Yusuf','Yûsuf'],['الرعد','Ar-Ra’d','Ra’d'],['إبراهيم','Ibrahim','İbrâhîm'],['الحجر','Al-Hijr','Hicr'],['النحل','An-Nahl','Nahl'],['الإسراء','Al-Isra','İsrâ'],['الكهف','Al-Kahf','Kehf'],['مريم','Maryam','Meryem'],['طه','Ta-Ha','Tâhâ'],
+['الأنبياء','Al-Anbiya','Enbiyâ'],['الحج','Al-Hajj','Hac'],['المؤمنون','Al-Mu’minun','Mü’minûn'],['النور','An-Nur','Nûr'],['الفرقان','Al-Furqan','Furkân'],['الشعراء','Ash-Shu’ara','Şuarâ'],['النمل','An-Naml','Neml'],['القصص','Al-Qasas','Kasas'],['العنكبوت','Al-‘Ankabut','Ankebût'],['الروم','Ar-Rum','Rûm'],
+['لقمان','Luqman','Lokmân'],['السجدة','As-Sajdah','Secde'],['الأحزاب','Al-Ahzab','Ahzâb'],['سبأ','Saba','Sebe’'],['فاطر','Fatir','Fâtır'],['يس','Ya-Sin','Yâsîn'],['الصافات','As-Saffat','Sâffât'],['ص','Sad','Sâd'],['الزمر','Az-Zumar','Zümer'],['غافر','Ghafir','Mü’min'],
+['فصلت','Fussilat','Fussilet'],['الشورى','Ash-Shura','Şûrâ'],['الزخرف','Az-Zukhruf','Zuhruf'],['الدخان','Ad-Dukhan','Duhân'],['الجاثية','Al-Jathiyah','Câsiye'],['الأحقاف','Al-Ahqaf','Ahkâf'],['محمد','Muhammad','Muhammed'],['الفتح','Al-Fath','Fetih'],['الحجرات','Al-Hujurat','Hucurât'],['ق','Qaf','Kâf'],
+['الذاريات','Adh-Dhariyat','Zâriyât'],['الطور','At-Tur','Tûr'],['النجم','An-Najm','Necm'],['القمر','Al-Qamar','Kamer'],['الرحمن','Ar-Rahman','Rahmân'],['الواقعة','Al-Waqi’ah','Vâkıa'],['الحديد','Al-Hadid','Hadîd'],['المجادلة','Al-Mujadilah','Mücâdele'],['الحشر','Al-Hashr','Haşr'],['الممتحنة','Al-Mumtahanah','Mümtehine'],
+['الصف','As-Saff','Saf'],['الجمعة','Al-Jumu’ah','Cuma'],['المنافقون','Al-Munafiqun','Münâfikûn'],['التغابن','At-Taghabun','Teğâbün'],['الطلاق','At-Talaq','Talâk'],['التحريم','At-Tahrim','Tahrîm'],['الملك','Al-Mulk','Mülk'],['القلم','Al-Qalam','Kalem'],['الحاقة','Al-Haqqah','Hâkka'],['المعارج','Al-Ma’arij','Meâric'],
+['نوح','Nuh','Nûh'],['الجن','Al-Jinn','Cin'],['المزمل','Al-Muzzammil','Müzzemmil'],['المدثر','Al-Muddaththir','Müddessir'],['القيامة','Al-Qiyamah','Kıyâme'],['الإنسان','Al-Insan','İnsân'],['المرسلات','Al-Mursalat','Mürselât'],['النبأ','An-Naba','Nebe’'],['النازعات','An-Nazi’at','Nâziât'],['عبس','‘Abasa','Abese'],
+['التكوير','At-Takwir','Tekvîr'],['الانفطار','Al-Infitar','İnfitâr'],['المطففين','Al-Mutaffifin','Mutaffifîn'],['الانشقاق','Al-Inshiqaq','İnşikâk'],['البروج','Al-Buruj','Bürûc'],['الطارق','At-Tariq','Târık'],['الأعلى','Al-A’la','A’lâ'],['الغاشية','Al-Ghashiyah','Gâşiye'],['الفجر','Al-Fajr','Fecr'],['البلد','Al-Balad','Beled'],
+['الشمس','Ash-Shams','Şems'],['الليل','Al-Layl','Leyl'],['الضحى','Ad-Duha','Duhâ'],['الشرح','Ash-Sharh','İnşirâh'],['التين','At-Tin','Tîn'],['العلق','Al-‘Alaq','Alak'],['القدر','Al-Qadr','Kadir'],['البينة','Al-Bayyinah','Beyyine'],['الزلزلة','Az-Zalzalah','Zilzâl'],['العاديات','Al-‘Adiyat','Âdiyât'],
+['القارعة','Al-Qari’ah','Kâria'],['التكاثر','At-Takathur','Tekâsür'],['العصر','Al-‘Asr','Asr'],['الهمزة','Al-Humazah','Hümeze'],['الفيل','Al-Fil','Fîl'],['قريش','Quraysh','Kureyş'],['الماعون','Al-Ma’un','Mâûn'],['الكوثر','Al-Kawthar','Kevser'],['الكافرون','Al-Kafirun','Kâfirûn'],['النصر','An-Nasr','Nasr'],
+['المسد','Al-Masad','Mesed'],['الإخلاص','Al-Ikhlas','İhlâs'],['الفلق','Al-Falaq','Felâk'],['الناس','An-Nas','Nâs']];
+function nrm(s){return String(s).replace(/[ً-ٰٟـۖ-ۭ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim();}
+var IDX={};SN.forEach(function(r){IDX[nrm(r[0])]=r;});
+IDX[nrm('المنافقين')]=IDX[nrm('المنافقون')];
+function surahName(ar,lg){var r=IDX[nrm(ar)];if(!r)return null;if(lg==='tr')return r[2];
+  var en=r[1];return lg==='fr'?en.replace(/ah$/,'a'):en;}
+
+var PAR={ // ملاحظات بين قوسين
+ 'خاتمه السوره':{en:'end of the surah',fr:'fin de la sourate',de:'Ende der Sure',es:'final de la sura',tr:'sûrenin sonu'},
+ 'ايه الدين':{en:'the verse of debt',fr:'le verset de la dette',de:'der Schuldvers',es:'el versículo de la deuda',tr:'borç ayeti'},
+ 'ايه الكرسي':{en:'Ayat al-Kursi',fr:'Ayat al-Kursi',de:'Ayat al-Kursi',es:'Ayat al-Kursi',tr:'Âyetü’l-Kürsî'},
+ 'ختام البقره':{en:'end of Al-Baqarah',fr:'fin d’Al-Baqara',de:'Ende von Al-Baqara',es:'final de Al-Baqara',tr:'Bakara’nın sonu'}
+};
+var T={
+ en:{cnt:function(n){return n+(n==1?' verse':' verses');},sur:function(n){return 'Surah '+n;},vs:function(a,b){return 'Verses '+a+'–'+b;},v:function(a){return 'Verse '+a;},vto:function(a,b){return 'Verses '+a+' to '+b;},ft:function(a,b){return 'From verse '+a+' to verse '+b;},cmp:' (complete)',wvs:function(a,b){return 'Write verses '+a+'–'+b;},wv:function(a){return 'Write verse '+a;},wvo:function(n,s){return 'Write verse '+n+' of Surah '+s+' in full';},test:'Memorization test',juz:'Juz’ Amma',pg:'Page',face:'Side',mp:function(n){return 'Page '+n+' of the Mushaf';},full:function(s,n){return 'Surah '+s+' — complete ('+n+(n==1?' verse)':' verses)');},p:'p.'},
+ fr:{cnt:function(n){return n+(n==1?' verset':' versets');},sur:function(n){return 'Sourate '+n;},vs:function(a,b){return 'Versets '+a+'–'+b;},v:function(a){return 'Verset '+a;},vto:function(a,b){return 'Versets '+a+' à '+b;},ft:function(a,b){return 'Du verset '+a+' au verset '+b;},cmp:' (complet)',wvs:function(a,b){return 'Écrivez les versets '+a+'–'+b;},wv:function(a){return 'Écrivez le verset '+a;},wvo:function(n,s){return 'Écrivez le verset '+n+' de la sourate '+s+' en entier';},test:'Test de mémorisation',juz:'Juz’ Amma',pg:'Page',face:'Face',mp:function(n){return 'Page '+n+' du Mushaf';},full:function(s,n){return 'Sourate '+s+' — complète ('+n+(n==1?' verset)':' versets)');},p:'p.'},
+ de:{cnt:function(n){return n+(n==1?' Vers':' Verse');},sur:function(n){return 'Sure '+n;},vs:function(a,b){return 'Verse '+a+'–'+b;},v:function(a){return 'Vers '+a;},vto:function(a,b){return 'Verse '+a+' bis '+b;},ft:function(a,b){return 'Von Vers '+a+' bis Vers '+b;},cmp:' (vollständig)',wvs:function(a,b){return 'Schreibe die Verse '+a+'–'+b;},wv:function(a){return 'Schreibe Vers '+a;},wvo:function(n,s){return 'Schreibe Vers '+n+' der Sure '+s+' vollständig';},test:'Auswendig-Test',juz:'Dschuz’ Amma',pg:'Seite',face:'Hälfte',mp:function(n){return 'Seite '+n+' des Mushaf';},full:function(s,n){return 'Sure '+s+' — vollständig ('+n+(n==1?' Vers)':' Verse)');},p:'S.'},
+ es:{cnt:function(n){return n+(n==1?' versículo':' versículos');},sur:function(n){return 'Sura '+n;},vs:function(a,b){return 'Versículos '+a+'–'+b;},v:function(a){return 'Versículo '+a;},vto:function(a,b){return 'Versículos '+a+' a '+b;},ft:function(a,b){return 'Del versículo '+a+' al versículo '+b;},cmp:' (completo)',wvs:function(a,b){return 'Escribe los versículos '+a+'–'+b;},wv:function(a){return 'Escribe el versículo '+a;},wvo:function(n,s){return 'Escribe el versículo '+n+' de la sura '+s+' completo';},test:'Prueba de memorización',juz:'Yuz’ Amma',pg:'Página',face:'Cara',mp:function(n){return 'Página '+n+' del Mushaf';},full:function(s,n){return 'Sura '+s+' — completa ('+n+(n==1?' versículo)':' versículos)');},p:'p.'},
+ tr:{cnt:function(n){return n+' ayet';},sur:function(n){return n+' Suresi';},vs:function(a,b){return a+'–'+b+'. ayetler';},v:function(a){return a+'. ayet';},vto:function(a,b){return a+'. ayetten '+b+'. ayete kadar';},ft:function(a,b){return a+'. ayetten '+b+'. ayete kadar';},cmp:' (tamamı)',wvs:function(a,b){return a+'–'+b+'. ayetleri yazın';},wv:function(a){return a+'. ayeti yazın';},wvo:function(n,s){return s+' Suresi’nin '+n+'. ayetini eksiksiz yazın';},test:'Ezber testi',juz:'Amme Cüzü',pg:'Sayfa',face:'Yüz',mp:function(n){return 'Mushaf’ın '+n+'. sayfası';},full:function(s,n){return s+' Suresi — tamamı ('+n+' ayet)';},p:'s.'}
+};
+function dg(s){return String(s).replace(/[٠-٩]/g,function(c){return String(c.charCodeAt(0)-1632);}).replace(/[۰-۹]/g,function(c){return String(c.charCodeAt(0)-1776);});}
+var DASH='\\s*[\\u2013\\u2014-]\\s*';
+function par(p,lg){if(!p)return '';var r=PAR[nrm(p)];return ' ('+(r&&r[lg]?r[lg]:p)+')';}
+function loc(src,lg){
+  var L=T[lg];if(!L)return null;
+  var s=dg(src).replace(/\s+/g,' ').trim(),m,n;
+  var o2=loc2(src,lg);if(o2!==null)return o2;
+  if((m=s.match(/^اكتب الآية رقم (\d+) من سورة (.+?) كاملة$/))){n=surahName(m[2],lg);return n?L.wvo(m[1],n):null;}
+  if((m=s.match(/^اكتب (?:الآيات|الآيتين) (\d+)\s*[–-]\s*(\d+)$/)))return L.wvs(m[1],m[2]);
+  if((m=s.match(/^اكتب الآية (?:رقم )?(\d+)$/)))return L.wv(m[1]);
+  if((m=s.match(/^سورة (.+?) كاملة \((\d+) (?:آية|آيات)\)$/))){n=surahName(m[1],lg);return n?L.full(n,+m[2]):null;}
+  if((m=s.match(/^سورة (.+?) \((\d+) (?:آية|آيات)\)$/))){n=surahName(m[1],lg);return n?L.sur(n)+' ('+L.cnt(+m[2])+')':null;}
+  if((m=s.match(/^(?:(سورة) )?(.+?) ص ?(\d+) — (آيات|آية) (\d+)(?:\s*[–-]\s*(\d+))?(?: \((.+)\))?$/))){n=surahName(m[2],lg);if(!n)return null;
+    return (m[1]?L.sur(n):n)+' '+L.p+m[3]+' \u2014 '+(m[6]?L.vs(m[5],m[6]):L.v(m[5]))+par(m[7],lg);}
+  if((m=s.match(/^سورة (.+)$/))){n=surahName(m[1],lg);return n?L.sur(n):null;}
+  if((m=s.match(/^من الآية (\d+) إلى الآية (\d+)$/)))return L.ft(m[1],m[2]);
+  if((m=s.match(/^الآيات (\d+) إلى (\d+)$/)))return L.vto(m[1],m[2]);
+  if((m=s.match(/^الآيات (\d+)\s*[–-]\s*(\d+)( كاملة)?$/)))return L.vs(m[1],m[2])+(m[3]?L.cmp:'');
+  if((m=s.match(/^الآية (\d+)(?: \((.+)\))?$/)))return L.v(m[1])+par(m[2],lg);
+  if((m=s.match(/^الصفحة (\d+)$/)))return L.pg+' '+m[1];
+  if((m=s.match(/^اختبار الحفظ \| (.+)$/))){var parts=m[1].split(' | '),outp=[],x;
+    for(var pi=0;pi<parts.length;pi++){var r=parts[pi];
+      if(nrm(r)==='جزء عم')outp.push(L.juz);
+      else if(nrm(r)==='ام الكتاب')outp.push(lg==='tr'?'Ümmü\u2019l-Kitâb':'Umm al-Kitab');
+      else if((x=r.match(/^صفحة (\d+)$/)))outp.push(L.pg+' '+x[1]);
+      else if((x=r.match(/^ص ?(\d+)\s*[–-]\s*(\d+)$/)))outp.push(L.p+' '+x[1]+'\u2013'+x[2]);
+      else if((x=r.match(/^وجه (\d+) — صفحة (\d+)$/)))outp.push(L.face+' '+x[1]+' \u2014 '+L.pg+' '+x[2]);
+      else return null;}
+    return L.test+' | '+outp.join(' | ');}
+  if((m=s.match(/^صفحة (\d+) من المصحف(?: — (.+))?$/)))return L.mp(m[1])+(m[2]?' — '+m[2]:'');
+  if((m=s.match(/^ص ?(\d+) — (آيات|آية) (\d+)(?:\s*[–-]\s*(\d+))?(?: \((.+)\))?$/)))
+    return L.p+m[1]+' — '+(m[4]?L.vs(m[3],m[4]):L.v(m[3]))+par(m[5],lg);
+  return null;
+}
+var X={"en": {"wvf": "Write verse {n} in full", "w2": "Write verses {a} and {b} of Surah {S} in full", "wl": "Write verses {l} of Surah {S} in full", "wr": "Write verses {a}–{b} of Surah {S}", "wrf": "Write verses {a}–{b} of Surah {S} in full", "wsur": "Write the whole surah ({n} verses)", "wk": "Write Ayat al-Kursi (verse {n}) in full", "first": "Write the first part of verse {n}, up to {q}", "last": "Write the last part of verse {n}, from {q} to its end", "begin": "Write the beginning of verse {n}, from {q} to {r}", "end": "Write the end of verse {n}, from {q} to its end", "mid": "Write the middle part of verse {n}, from {q} to {r}", "rg": "Write from {q} to {r}", "rgn": "Write from {q} to {r} (verse {n})", "rge": "Write from {q} to the end of verse {n}", "dayn": "Write the beginning of the verse of debt ({n}), from {q} to {r}", "wvoq": "Write verse {n} of Surah {S}, from {q} to its end", "two1": "Write verses {a} and {b} of Surah {S} (the first sentence of each)", "ident": "Write verses {a}–{b} (two identical verses)", "all": " (with all its parts)", "and_": "and"}, "fr": {"wvf": "Écrivez le verset {n} en entier", "w2": "Écrivez en entier les versets {a} et {b} de la sourate {S}", "wl": "Écrivez en entier les versets {l} de la sourate {S}", "wr": "Écrivez les versets {a}–{b} de la sourate {S}", "wrf": "Écrivez en entier les versets {a}–{b} de la sourate {S}", "wsur": "Écrivez la sourate entière ({n} versets)", "wk": "Écrivez Ayat al-Kursi (verset {n}) en entier", "first": "Écrivez le début du verset {n}, jusqu’à {q}", "last": "Écrivez la fin du verset {n}, à partir de {q}", "begin": "Écrivez le début du verset {n}, de {q} à {r}", "end": "Écrivez la fin du verset {n}, à partir de {q}", "mid": "Écrivez la partie centrale du verset {n}, de {q} à {r}", "rg": "Écrivez de {q} à {r}", "rgn": "Écrivez de {q} à {r} (verset {n})", "rge": "Écrivez de {q} jusqu’à la fin du verset {n}", "dayn": "Écrivez le début du verset de la dette ({n}), de {q} à {r}", "wvoq": "Écrivez le verset {n} de la sourate {S}, à partir de {q} jusqu’à la fin", "two1": "Écrivez les versets {a} et {b} de la sourate {S} (la première phrase de chacun)", "ident": "Écrivez les versets {a}–{b} (deux versets au texte identique)", "all": " (avec toutes ses parties)", "and_": "et"}, "de": {"wvf": "Schreibe Vers {n} vollständig", "w2": "Schreibe die Verse {a} und {b} der Sure {S} vollständig", "wl": "Schreibe die Verse {l} der Sure {S} vollständig", "wr": "Schreibe die Verse {a}–{b} der Sure {S}", "wrf": "Schreibe die Verse {a}–{b} der Sure {S} vollständig", "wsur": "Schreibe die ganze Sure ({n} Verse)", "wk": "Schreibe Ayat al-Kursi (Vers {n}) vollständig", "first": "Schreibe den Anfang von Vers {n} bis {q}", "last": "Schreibe das Ende von Vers {n}, ab {q}", "begin": "Schreibe den Anfang von Vers {n}, von {q} bis {r}", "end": "Schreibe das Ende von Vers {n}, ab {q}", "mid": "Schreibe den mittleren Teil von Vers {n}, von {q} bis {r}", "rg": "Schreibe von {q} bis {r}", "rgn": "Schreibe von {q} bis {r} (Vers {n})", "rge": "Schreibe von {q} bis zum Ende von Vers {n}", "dayn": "Schreibe den Anfang des Schuldverses ({n}), von {q} bis {r}", "wvoq": "Schreibe Vers {n} der Sure {S}, ab {q} bis zum Ende", "two1": "Schreibe die Verse {a} und {b} der Sure {S} (jeweils den ersten Satz)", "ident": "Schreibe die Verse {a}–{b} (zwei Verse mit identischem Text)", "all": " (mit allen Teilen)", "and_": "und"}, "es": {"wvf": "Escribe el versículo {n} completo", "w2": "Escribe completos los versículos {a} y {b} de la sura {S}", "wl": "Escribe completos los versículos {l} de la sura {S}", "wr": "Escribe los versículos {a}–{b} de la sura {S}", "wrf": "Escribe completos los versículos {a}–{b} de la sura {S}", "wsur": "Escribe la sura completa ({n} versículos)", "wk": "Escribe Ayat al-Kursi (versículo {n}) completo", "first": "Escribe el comienzo del versículo {n}, hasta {q}", "last": "Escribe el final del versículo {n}, desde {q}", "begin": "Escribe el comienzo del versículo {n}, de {q} a {r}", "end": "Escribe el final del versículo {n}, desde {q}", "mid": "Escribe la parte central del versículo {n}, de {q} a {r}", "rg": "Escribe de {q} a {r}", "rgn": "Escribe de {q} a {r} (versículo {n})", "rge": "Escribe desde {q} hasta el final del versículo {n}", "dayn": "Escribe el comienzo del versículo de la deuda ({n}), de {q} a {r}", "wvoq": "Escribe el versículo {n} de la sura {S}, desde {q} hasta el final", "two1": "Escribe los versículos {a} y {b} de la sura {S} (la primera frase de cada uno)", "ident": "Escribe los versículos {a}–{b} (dos versículos de texto idéntico)", "all": " (con todas sus partes)", "and_": "y"}, "tr": {"wvf": "{n}. ayeti eksiksiz yazın", "w2": "{S} Suresi’nin {a}. ve {b}. ayetlerini eksiksiz yazın", "wl": "{S} Suresi’nin {l}. ayetlerini eksiksiz yazın", "wr": "{S} Suresi’nin {a}–{b}. ayetlerini yazın", "wrf": "{S} Suresi’nin {a}–{b}. ayetlerini eksiksiz yazın", "wsur": "Sûrenin tamamını yazın ({n} ayet)", "wk": "Âyetü’l-Kürsî’yi ({n}. ayet) eksiksiz yazın", "first": "{n}. ayetin başından {q} ifadesine kadar yazın", "last": "{n}. ayetin {q} ifadesinden sonuna kadar olan kısmını yazın", "begin": "{n}. ayetin başlangıcını, {q} ifadesinden {r} ifadesine kadar yazın", "end": "{n}. ayetin sonunu, {q} ifadesinden itibaren yazın", "mid": "{n}. ayetin orta kısmını, {q} ifadesinden {r} ifadesine kadar yazın", "rg": "{q} ifadesinden {r} ifadesine kadar yazın", "rgn": "{q} ifadesinden {r} ifadesine kadar yazın ({n}. ayet)", "rge": "{q} ifadesinden {n}. ayetin sonuna kadar yazın", "dayn": "Borç ayetinin ({n}) başlangıcını, {q} ifadesinden {r} ifadesine kadar yazın", "wvoq": "{S} Suresi’nin {n}. ayetini {q} ifadesinden sonuna kadar yazın", "two1": "{S} Suresi’nin {a}. ve {b}. ayetlerini yazın (her birinin ilk cümlesi)", "ident": "{a}–{b}. ayetleri yazın (metni aynı olan iki ayet)", "all": " (tüm kısımlarıyla)", "and_": "ve"}};
+
+var ORD1={'الاولي':1,'الثانيه':2,'الثالثه':3,'الرابعه':4,'الخامسه':5,'السادسه':6,'السابعه':7,'الثامنه':8,'التاسعه':9};
+var ORDT={'العشرين':20,'الثلاثين':30,'الاربعين':40,'الخمسين':50,'الستين':60,'السبعين':70,'الثمانين':80,'التسعين':90};
+function ordNum(w){w=nrm(w);var m,a,b;
+  if(ORD1[w])return ORD1[w];if(w==='العاشره')return 10;if(ORDT[w])return ORDT[w];
+  if((m=w.match(/^(\S+) عشره$/))){a=m[1]==='الحاديه'?1:ORD1[m[1]];return a&&a>0?10+a:null;}
+  if((m=w.match(/^(\S+) و(ال\S+)$/))){a=m[1]==='الحاديه'?1:ORD1[m[1]];b=ORDT[m[2]];return a&&b?a+b:null;}
+  return null;}
+function fill(t,o){return t.replace(/\{(\w)\}/g,function(_,k){return o[k]===undefined?'':o[k];});}
+function qq(x){return '⁧«'+x+'»⁩';}
+function joinL(arr,and){return arr.length<2?arr.join(''):arr.slice(0,-1).join(', ')+' '+and+' '+arr[arr.length-1];}
+function loc2(src,lg){
+  var X2=X[lg];if(!X2)return null;
+  var qs=[];var z=dg(src).replace(/«([^»]*)»/g,function(_,x){qs.push(x);return '«Q»';});
+  z=nrm(z.replace(/[ً-ٰٟࣔ-ࣿۖ-ۭـ]/g,''));
+  var m,n,o;
+  function S(x){return surahName(x,lg);}
+  if(z.indexOf('اكتب')!==0)return null;
+  if((m=z.match(/^اكتب الايه رقم (\d+) من سوره (.+?) كامله( \(بجميع اجزائها\))?$/))){n=S(m[2]);return n?fill(L_(lg).wvo(m[1],n),{})+(m[3]?X2.all:''):null;}
+  if((m=z.match(/^اكتب الايه (.+?) من سوره (.+?) كامله( \(بجميع اجزائها\))?$/))){var k=ordNum(m[1]);n=S(m[2]);return (k&&n)?L_(lg).wvo(k,n)+(m[3]?X2.all:''):null;}
+  if((m=z.match(/^اكتب الايه رقم (\d+) من سوره (.+?) من «Q» حتي اخرها$/))){n=S(m[2]);return n?fill(X2.wvoq,{n:m[1],S:n,q:qq(qs[0])}):null;}
+  if((m=z.match(/^اكتب الايه (\d+) كامله$/)))return fill(X2.wvf,{n:m[1]});
+  if((m=z.match(/^اكتب الايتين (\d+) و(\d+) كاملتين من سوره (.+)$/))){n=S(m[3]);return n?fill(X2.w2,{a:m[1],b:m[2],S:n}):null;}
+  if((m=z.match(/^اكتب الايات ([\d و]+) كامله من سوره (.+)$/))){n=S(m[2]);return n?fill(X2.wl,{l:joinL(m[1].match(/\d+/g),X2.and_),S:n}):null;}
+  if((m=z.match(/^اكتب الايات (\d+)\s*(?:الي|[–-])\s*(\d+) (كامله )?من سوره (.+)$/))){n=S(m[4]);return n?fill(m[3]?X2.wrf:X2.wr,{a:m[1],b:m[2],S:n}):null;}
+  if((m=z.match(/^اكتب السوره كامله \((\d+) ايات\)$/)))return fill(X2.wsur,{n:m[1]});
+  if((m=z.match(/^اكتب ايه الكرسي \(الايه (\d+)\) كامله$/)))return fill(X2.wk,{n:m[1]});
+  if((m=z.match(/^اكتب الايتين (\d+) و(\d+) من سوره (.+?) \(اول جمله من كل منهما\)$/))){n=S(m[3]);return n?fill(X2.two1,{a:m[1],b:m[2],S:n}):null;}
+  if((m=z.match(/^اكتب الايات (\d+)\s*[–-]\s*(\d+) \(ايتان متطابقتان نصا\)$/)))return fill(X2.ident,{a:m[1],b:m[2]});
+  if((m=z.match(/^اكتب اول جزء من الايه (\d+) حتي «Q»$/)))return fill(X2.first,{n:m[1],q:qq(qs[0])});
+  if((m=z.match(/^اكتب اخر جزء من الايه (\d+) من «Q» حتي اخرها$/)))return fill(X2.last,{n:m[1],q:qq(qs[0])});
+  if((m=z.match(/^اكتب بدايه الايه (\d+) من «Q» حتي «Q»$/)))return fill(X2.begin,{n:m[1],q:qq(qs[0]),r:qq(qs[1])});
+  if((m=z.match(/^اكتب نهايه الايه (\d+) من «Q» حتي اخرها$/)))return fill(X2.end,{n:m[1],q:qq(qs[0])});
+  if((m=z.match(/^اكتب الجزء الاوسط من الايه (\d+) من «Q» حتي «Q»$/)))return fill(X2.mid,{n:m[1],q:qq(qs[0]),r:qq(qs[1])});
+  if((m=z.match(/^اكتب من «Q» حتي «Q» من الايه (\d+)$/)))return fill(X2.rgn,{n:m[1],q:qq(qs[0]),r:qq(qs[1])});
+  if((m=z.match(/^اكتب من «Q» حتي نهايه الايه (\d+)$/)))return fill(X2.rge,{n:m[1],q:qq(qs[0])});
+  if((m=z.match(/^اكتب من «Q» حتي «Q»$/)))return fill(X2.rg,{q:qq(qs[0]),r:qq(qs[1])});
+  if((m=z.match(/^اكتب بدايه ايه الدين \((\d+)\) من «Q» حتي «Q»$/)))return fill(X2.dayn,{n:m[1],q:qq(qs[0]),r:qq(qs[1])});
+  return null;
+}
+function L_(lg){return T[lg];}
+var PRE=/^(سورة|الآية|الآيات|من الآية|اكتب|اختبار الحفظ|صفحة|ص ?\d|[^\d]{2,25} ص ?\d+ — )/;
+var tracked=[];
+function curLang(){return (window.darbiLang&&window.darbiLang())||document.documentElement.lang||'ar';}
+function setTxt(el,v){if(el.__dOut===undefined)tracked.push(el);el.textContent=v;el.__dOut=v;}
+function doEl(el,lg){
+  var t=el.textContent;
+  if(el.__dAr!==undefined&&t===el.__dOut){ // أنا من كتب هذا النص؛ المصدر محفوظ
+    var o=(T[lg]?loc(el.__dAr,lg):null);var want=o===null?el.__dAr:o;
+    if(want!==t){el.__dOut=want;el.textContent=want;}
+    return;}
+  if(!PRE.test(t.trim())||t.length>140)return;
+  var o2=T[lg]?loc(t,lg):null;
+  if(o2===null)return;
+  el.__dAr=t;if(tracked.indexOf(el)===-1)tracked.push(el);
+  el.__dOut=o2;el.textContent=o2;
+}
+function doLabel(g,lg){
+  var t=g.getAttribute('label');if(g.__dArL===undefined){if(!t||!PRE.test(t))return;g.__dArL=t;}
+  var o=T[lg]?loc(g.__dArL,lg):null;g.setAttribute('label',o===null?g.__dArL:o);
+}
+var busy=false,pending=false;
+function scan(root){
+  var lg=curLang();busy=true;
+  try{
+    var base=root||document;
+    var list=base.querySelectorAll?base.querySelectorAll('div,span,button,option,p,h1,h2,h3,a,label,li'):[];
+    for(var i=0;i<list.length;i++){var e=list[i];if(e.children.length===0)doEl(e,lg);}
+    if(base.nodeType===1&&base.children.length===0)doEl(base,lg);
+    (base.querySelectorAll?base.querySelectorAll('optgroup[label]'):[]).forEach(function(g){doLabel(g,lg);});
+    if(!root){ // مرور كامل: أعد ضبط العناصر المتتبَّعة (تغيّر اللغة)
+      tracked.forEach(function(el){if(el.isConnected)doEl(el,lg);});
+    }
+  }catch(e){}
+  busy=false;
+}
+window.darbiLocText=function(s){try{var o=loc(s,curLang());return o===null?s:o;}catch(e){return s;}};
+window.darbiSurahName=function(ar){try{var lg=curLang();return surahName(ar,lg)||ar;}catch(e){return ar;}};
+var q=[],sched=false;
+function flush(){sched=false;var nodes=q;q=[];nodes.forEach(function(n){if(n.isConnected)scan(n.nodeType===1?n:n.parentElement);});}
+function start(){
+  scan();
+  var mo=new MutationObserver(function(ms){
+    if(busy)return;
+    var lgChanged=false;
+    ms.forEach(function(m){
+      if(m.type==='attributes'&&m.target===document.documentElement){lgChanged=true;return;}
+      if(m.type==='characterData'){if(m.target.parentElement)q.push(m.target.parentElement);}
+      else m.addedNodes.forEach(function(n){if(n.nodeType===1)q.push(n);else if(n.nodeType===3&&n.parentElement)q.push(n.parentElement);});
+    });
+    if(lgChanged){scan();}
+    if(q.length&&!sched){sched=true;(window.requestAnimationFrame||setTimeout)(flush);}
+  });
+  mo.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['lang']});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
