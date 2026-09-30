@@ -2347,6 +2347,7 @@ function loc(src,lg){
   if((m=s.match(/^الآيات (\d+) إلى (\d+)$/)))return L.vto(m[1],m[2]);
   if((m=s.match(/^الآيات (\d+)\s*[–-]\s*(\d+)( كاملة)?$/)))return L.vs(m[1],m[2])+(m[3]?L.cmp:'');
   if((m=s.match(/^الآية (\d+)(?: \((.+)\))?$/)))return L.v(m[1])+par(m[2],lg);
+  if(nrm(s)==='جزء عم')return L.juz;
   if((m=s.match(/^الصفحة (\d+)$/)))return L.pg+' '+m[1];
   if((m=s.match(/^اختبار الحفظ \| (.+)$/))){var parts=m[1].split(' | '),outp=[],x;
     for(var pi=0;pi<parts.length;pi++){var r=parts[pi];
@@ -2414,6 +2415,7 @@ function doEl(el,lg){
     var o=(T[lg]?loc(el.__dAr,lg):null);var want=o===null?el.__dAr:o;
     if(want!==t){el.__dOut=want;el.textContent=want;}
     return;}
+  if(el.closest&&el.closest('[data-no-loc]'))return;
   if(!PRE.test(t.trim())||t.length>140)return;
   var o2=T[lg]?loc(t,lg):null;
   if(o2===null)return;
@@ -2440,6 +2442,9 @@ function scan(root){
   busy=false;
 }
 window.darbiLocText=function(s){try{var o=loc(s,curLang());return o===null?s:o;}catch(e){return s;}};
+window.darbiDisplayName=function(ar){ // اسم منقول بحروف لاتينية (أو null إن كانت اللغة عربية/فارسية أو الاسم غير معروف)
+  try{var lg=curLang();if(!T[lg])return null;var o=loc(ar,lg);if(o!==null)return o;
+    var n=surahName(String(ar).replace(/^سورة /,''),lg);return n||null;}catch(e){return null;}};
 window.darbiSurahName=function(ar){try{var lg=curLang();return surahName(ar,lg)||ar;}catch(e){return ar;}};
 var q=[],sched=false;
 function flush(){sched=false;var nodes=q;q=[];nodes.forEach(function(n){if(n.isConnected)scan(n.nodeType===1?n:n.parentElement);});}

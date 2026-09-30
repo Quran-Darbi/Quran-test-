@@ -134,6 +134,7 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .grp-item{padding:4px 0;}
 a.grp-link{display:block;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;border-radius:10px;}
 a.grp-link:hover .grp-name,a.grp-link:focus-visible .grp-name{color:var(--green);}
+.grp-ar{font-size:0.72rem;color:var(--soft);font-weight:400;margin-inline-start:4px;}
 .grp-go{color:var(--green);font-weight:700;margin-inline-start:4px;}
 .grp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px;}
 .grp-name{font-family:'Scheherazade New',serif;font-size:0.95rem;color:var(--text);font-weight:700;}
@@ -912,7 +913,7 @@ function render(){
     div.className='grp-item'+(target?' grp-link':'');
     div.dataset.state=state;
     div.innerHTML=
-      '<div class="grp-top"><span class="grp-name">'+g.label+(target?' <span class="grp-go" aria-hidden="true">'+(document.documentElement.dir==='rtl'?'‹':'›')+'</span>':'')+'</span>'+
+      '<div class="grp-top"><span class="grp-name">'+(function(){const d=window.darbiDisplayName&&darbiDisplayName(g.label);return d?d+' <small class="grp-ar" data-no-loc>'+g.label+'</small>':g.label;})()+(target?' <span class="grp-go" aria-hidden="true">'+(document.documentElement.dir==='rtl'?'‹':'›')+'</span>':'')+'</span>'+
       '<span class="grp-count">'+done+' / '+g.pages.length+recChip+'</span></div>'+
       '<div class="grp-bar"><div class="grp-bar-fill" style="width:'+gp+'%"></div></div>';
     grpList.appendChild(div);
