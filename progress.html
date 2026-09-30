@@ -132,6 +132,9 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .grp-filter-chip.active{background:var(--green);border-color:var(--green);color:#fff;}
 .grp-filter-empty{display:none;color:var(--soft);font-size:0.85rem;padding:8px 0;}
 .grp-item{padding:4px 0;}
+a.grp-link{display:block;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;border-radius:10px;}
+a.grp-link:hover .grp-name,a.grp-link:focus-visible .grp-name{color:var(--green);}
+.grp-go{color:var(--green);font-weight:700;margin-inline-start:4px;}
 .grp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px;}
 .grp-name{font-family:'Scheherazade New',serif;font-size:0.95rem;color:var(--text);font-weight:700;}
 .grp-count{font-size:0.72rem;color:var(--soft);white-space:nowrap;}
@@ -699,6 +702,7 @@ const GROUPS=[
   {label:'سورة المرسلات',pages:almursalatPages.map(p=>[p[0].replace('.html',''),'المرسلات '+p[1]])},
   {label:'جزء عمّ',pages:ammaData.map(p=>[p[0].replace('.html',''),p[1]])},
 ];
+const NO_PAGE_FILE=new Set(['attalaq_p558','attalaq_p559','attahrim_p560','attahrim_p561']); // صفحات مدرجة في القائمة ولا ملف لها بعد
 const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
 
 function levelLabel(lvl){
@@ -900,11 +904,15 @@ function render(){
     g.pages.forEach(p=>{const e=all[p[0]];if(e&&e.recitation){recTried++;if(recFull(e))recDone++;}});
     const recChip=recTried>0?'<span class="grp-rec">🎤 '+recDone+' / '+g.pages.length+'</span>':'';
     const state = (done===g.pages.length && g.pages.length>0) ? 'complete' : (done>0 ? 'partial' : 'none');
-    const div=document.createElement('div');
-    div.className='grp-item';
+    // الرابط: أول صفحة لم تكتمل في السورة (للمتابعة)، وإن اكتملت كلها فأول صفحة فيها
+    const linkable=g.pages.filter(p=>!NO_PAGE_FILE.has(p[0]));
+    const target=linkable.find(p=>!darbiPageComplete(all[p[0]]))||linkable[0];
+    const div=document.createElement(target?'a':'div');
+    if(target)div.href=target[0]+'.html';
+    div.className='grp-item'+(target?' grp-link':'');
     div.dataset.state=state;
     div.innerHTML=
-      '<div class="grp-top"><span class="grp-name">'+g.label+'</span>'+
+      '<div class="grp-top"><span class="grp-name">'+g.label+(target?' <span class="grp-go" aria-hidden="true">'+(document.documentElement.dir==='rtl'?'‹':'›')+'</span>':'')+'</span>'+
       '<span class="grp-count">'+done+' / '+g.pages.length+recChip+'</span></div>'+
       '<div class="grp-bar"><div class="grp-bar-fill" style="width:'+gp+'%"></div></div>';
     grpList.appendChild(div);

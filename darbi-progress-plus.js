@@ -125,6 +125,24 @@
 
   function getWeekTracker() {
     var hist = safeGetJSON(HISTORY_KEY, []);
+    var lg0 = (window.darbiLang && window.darbiLang()) || document.documentElement.lang || 'ar';
+    if (['en', 'fr', 'de', 'es', 'tr'].indexOf(lg0) !== -1) {
+      // أسبوع يبدأ بالاثنين (المعتاد في هذه اللغات): من الاثنين إلى الأحد، والأيام المقبلة فارغة
+      var now = new Date();
+      var mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
+      var wk = [];
+      for (var k = 0; k < 7; k++) {
+        var dd = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + k);
+        var dstr = dd.getFullYear() + '-' + String(dd.getMonth() + 1).padStart(2, '0') + '-' + String(dd.getDate()).padStart(2, '0');
+        wk.push({
+          date: dstr,
+          done: hist.indexOf(dstr) !== -1,
+          label: dayName(dd, ''),
+          isToday: dd.getDate() === now.getDate() && dd.getMonth() === now.getMonth() && dd.getFullYear() === now.getFullYear()
+        });
+      }
+      return wk;
+    }
     var shortLabels = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; // فهرسها Date.getDay(): 0=أحد .. 6=سبت
     var days = [];
     var base = new Date();
