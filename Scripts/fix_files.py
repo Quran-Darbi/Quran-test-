@@ -711,7 +711,7 @@ def fix_levels_wording(path, out):
         about_item = (
             '<!--ABOUT_IN_TOOLS-->'
             '<button class="tools-item" '
-            'onclick="toolsClose();showAbout();">'
+            'onclick="toolsClose();location.href=\'about.html\';">'
             '\U0001F4D6 عن المشروع</button>\n    ')
         out = out.replace(lang_btn, about_item + lang_btn, 1)
         changed = True
@@ -888,7 +888,7 @@ def build_hero_stats(root):
     files = [f for f in os.listdir(root)
              if f.endswith('.html') and f not in ('index.html',
                                                   'recitation.html',
-                                                  'progress.html')]
+                                                  'progress.html', 'about.html')]
     quizzes = len(files)
     baqara = len([f for f in files if f.startswith('albaqara_p')])
     amma = len([f for f in files
@@ -947,7 +947,7 @@ def compute_site_stats(root):
     juz_surahs = 0
     baqara = 0
     for fn in sorted(os.listdir(root)):
-        if not fn.endswith('.html') or fn in ('index.html', 'recitation.html', 'progress.html'):
+        if not fn.endswith('.html') or fn in ('index.html', 'recitation.html', 'progress.html', 'about.html'):
             continue
         quizzes += 1
         if fn.startswith('albaqara_'):
@@ -6958,7 +6958,7 @@ def _qa_medium_answers(body):
 
 def audit_question_quality(root):
     files = sorted(f for f in os.listdir(root)
-                   if f.endswith('.html') and f not in ('index.html', 'recitation.html', 'progress.html'))
+                   if f.endswith('.html') and f not in ('index.html', 'recitation.html', 'progress.html', 'about.html'))
     dup_files, over_files, long_files, punct_files = [], [], [], []
     for fn in files:
         try:
@@ -9809,7 +9809,7 @@ def audit_engine_integrity(root):
 
 def run_audit(root):
     """يفحص كل الملفات ويكتب audit_report.txt. لا يعدّل شيئًا."""
-    skip = {'index.html', 'recitation.html', 'progress.html'}
+    skip = {'index.html', 'recitation.html', 'progress.html', 'about.html'}
     files = [f for f in sorted(os.listdir(root))
              if f.endswith('.html') and f not in skip
              and os.path.isfile(os.path.join(root, f))]
@@ -9827,7 +9827,7 @@ def run_audit(root):
         with open(idx_path, encoding='utf-8') as f:
             idx = f.read()
         refs = set(re.findall(r"['\"]([A-Za-z0-9_]+\.html)['\"]", idx))
-        present = set(files) | {'index.html', 'recitation.html'}
+        present = set(files) | {'index.html', 'recitation.html', 'progress.html', 'about.html'}
         broken = sorted(refs - present)
         orphan = sorted(present - refs - {'index.html'})
 
@@ -10642,7 +10642,7 @@ def generate_pages(root, spec_path, dry_run=False):
 
 
 def main():
-    skip = {'index.html', 'recitation.html', 'progress.html'}
+    skip = {'index.html', 'recitation.html', 'progress.html', 'about.html'}
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     fixed = 0
 
@@ -10864,7 +10864,7 @@ def main():
 # الاستخدام: python Scripts/fix_files.py --patch-ui
 # ============================================================================
 def patch_ui_v2(root):
-    SKIP = {'alfatiha.html', 'index.html', 'progress.html', 'recitation.html'}
+    SKIP = {'alfatiha.html', 'index.html', 'progress.html', 'about.html', 'recitation.html'}
 
     CSS_NEW = (
         '\n/* ===== شارات الإحصاء بألوان ===== */\n'
