@@ -507,6 +507,15 @@ const alahqafPages=[
   ['alahqaf_p502.html','ص 502','1–5'],['alahqaf_p503.html','ص 503','6–14'],['alahqaf_p504.html','ص 504','15–20'],
   ['alahqaf_p505.html','ص 505','21–28'],['alahqaf_p506.html','ص 506','29–35'],
 ];
+const muhammadPages=[
+  ['muhammad_p507.html','ص 507','1–11'],['muhammad_p508.html','ص 508','12–19'],['muhammad_p509.html','ص 509','20–29'],['muhammad_p510.html','ص 510','30–38'],
+];
+const alfathPages=[
+  ['alfath_p511.html','ص 511','1–9'],['alfath_p512.html','ص 512','10–15'],['alfath_p513.html','ص 513','16–23'],['alfath_p514.html','ص 514','24–28'],['alfath_p515.html','ص 515','29'],
+];
+const alhujuratPages=[
+  ['alhujurat_p515.html','ص 515','1–4'],
+];
 const qafPages=[
   ['qaf_p518.html','ص 518','1–15'],['qaf_p519.html','ص 519','16–35'],['qaf_p520.html','ص 520','36–45'],
 ];
@@ -610,9 +619,9 @@ const JUZ_GROUPS = {
       ] },
   26:{ title:'الأحقاف، الذاريات', groups:[
         { kind:'full', arr:alahqafPages, name:'الأحقاف', surah:'الأحقاف' },
-        { kind:'soon', name:'محمد' },
-        { kind:'soon', name:'الفتح' },
-        { kind:'soon', name:'الحجرات' },
+        { kind:'full', arr:muhammadPages, name:'محمد', surah:'محمد' },
+        { kind:'full', arr:alfathPages, name:'الفتح', surah:'الفتح' },
+        { kind:'full', arr:alhujuratPages, name:'الحجرات', surah:'الحجرات' },
         { kind:'full', arr:qafPages, name:'ق', surah:'ق' },
         { kind:'range', arr:azzariyatPages, from:0, to:2, name:'سورة الذاريات (البداية)', surah:'الذاريات' }
       ] },
@@ -823,6 +832,9 @@ function renderDarbiProgress(){
   alinsanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الإنسان '+p[1];});
   almursalatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة المرسلات '+p[1];});
   alahqafPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الأحقاف '+p[1];});
+  muhammadPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة محمد '+p[1];});
+  alfathPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الفتح '+p[1];});
+  alhujuratPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الحجرات '+p[1];});
   qafPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة ق '+p[1];});
   azzariyatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الذاريات '+p[1];});
   atturPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الطور '+p[1];});
@@ -861,7 +873,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
