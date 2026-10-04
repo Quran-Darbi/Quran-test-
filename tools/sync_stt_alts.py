@@ -6,8 +6,13 @@
        python3 tools/sync_stt_alts.py --check  # يتحقق فقط (exit 1 لو الملفات مش متطابقة)
 """
 import re, sys, pathlib
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-BLOCK = (ROOT / 'tools' / 'stt_alts_block.js').read_text(encoding='utf8').rstrip('\n')
+HERE = pathlib.Path(__file__).resolve().parent
+# يعمل من مجلد tools أو لو الملفات كلها في الجذر
+ROOT = HERE if (HERE / 'recitation.html').exists() else HERE.parent
+_bp = ROOT / 'stt_alts_block.js'
+if not _bp.exists():
+    _bp = ROOT / 'tools' / 'stt_alts_block.js'
+BLOCK = _bp.read_text(encoding='utf8').rstrip('\n')
 PAT = re.compile(r'// ===== STT_ALTS_BEGIN =====.*?// ===== STT_ALTS_END =====', re.S)
 check = '--check' in sys.argv
 bad = 0
