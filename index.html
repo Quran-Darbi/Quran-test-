@@ -300,9 +300,9 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       </a>
     </div>
     <div class="hero-stats">
-      <div class="hstat"><b>156</b><small data-i18n="home.stat_tests">اختباراً متاحاً</small></div>
+      <div class="hstat"><b id="hstat-tests-count">156</b><small data-i18n="home.stat_tests">اختباراً متاحاً</small></div>
       <div class="hstat"><b id="hstat-parts-count">4</b><small data-i18n="home.stat_parts">أجزاء</small></div>
-      <div class="hstat"><b>109</b><small data-i18n="home.stat_surahs">سورة</small></div>
+      <div class="hstat"><b id="hstat-surahs-count">109</b><small data-i18n="home.stat_surahs">سورة</small></div>
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
       <div style="background:rgba(255,255,255,0.2);border-radius:8px;height:8px;overflow:hidden;max-width:300px;margin:0 auto 6px;">
@@ -904,6 +904,20 @@ renderDarbiProgress();
 (function updateHstatPartsCount(){
   const el=document.getElementById('hstat-parts-count');
   if(el) el.textContent=Object.keys(JUZ_GROUPS).length;
+})();
+
+// عدد "الاختبارات" و"السور" بيتحسبوا تلقائيًا من JUZ_GROUPS (الصفحات المتاحة فعليًا، بدون المقاطع "قريبًا")
+(function updateHstatCounts(){
+  const pages=new Set(), surahs=new Set();
+  Object.values(JUZ_GROUPS).forEach(meta=>meta.groups.forEach(g=>{
+    if(g.kind==='soon') return;
+    groupPageKeys(g).forEach(k=>pages.add(k));
+    if(g.kind==='amma') ammaData.filter(p=>p[3]).forEach(p=>surahs.add(p[1]));
+    else surahs.add(g.surah||g.name);
+  }));
+  const t=document.getElementById('hstat-tests-count'), u=document.getElementById('hstat-surahs-count');
+  if(t) t.textContent=pages.size;
+  if(u) u.textContent=surahs.size;
 })();
 
 window.onDarbiLangChange = function(){
