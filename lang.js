@@ -21,7 +21,7 @@
 var DICT = {
 
 ar: {
-  'progress.goal_type_label':"نوع الهدف:",
+  'progress.goal_type_label':"نوع الهدف (يمكنك اختيار أكثر من نوع):",
   'progress.goal_type_any':"أي نشاط",
   'progress.goal_type_full':"صفحة مكتملة",
   'progress.goal_type_recite':"تلاوة",
@@ -348,7 +348,7 @@ ar: {
 },
 
 en: {
-  'progress.goal_type_label':"Goal type:",
+  'progress.goal_type_label':"Goal type (you can pick more than one):",
   'progress.goal_type_any':"Any activity",
   'progress.goal_type_full':"Full page",
   'progress.goal_type_recite':"Recitation",
@@ -670,7 +670,7 @@ en: {
 },
 
 fr: {
-  'progress.goal_type_label':"Type d’objectif :",
+  'progress.goal_type_label':"Type d’objectif (vous pouvez en choisir plusieurs) :",
   'progress.goal_type_any':"Toute activité",
   'progress.goal_type_full':"Page complète",
   'progress.goal_type_recite':"Récitation",
@@ -992,7 +992,7 @@ fr: {
 },
 
 tr: {
-  'progress.goal_type_label':"Hedef türü:",
+  'progress.goal_type_label':"Hedef türü (birden fazla seçebilirsin):",
   'progress.goal_type_any':"Herhangi bir etkinlik",
   'progress.goal_type_full':"Tamamlanmış sayfa",
   'progress.goal_type_recite':"Tilavet",
@@ -1315,7 +1315,7 @@ tr: {
 ,
 
 de: {
-  'progress.goal_type_label':"Zieltyp:",
+  'progress.goal_type_label':"Zieltyp (du kannst mehrere wählen):",
   'progress.goal_type_any':"Beliebige Aktivität",
   'progress.goal_type_full':"Ganze Seite",
   'progress.goal_type_recite':"Rezitation",
@@ -1637,7 +1637,7 @@ de: {
 },
 
 es: {
-  'progress.goal_type_label':"Tipo de meta:",
+  'progress.goal_type_label':"Tipo de meta (puedes elegir varios):",
   'progress.goal_type_any':"Cualquier actividad",
   'progress.goal_type_full':"Página completa",
   'progress.goal_type_recite':"Recitación",
@@ -1959,7 +1959,7 @@ es: {
 },
 
 fa: {
-  'progress.goal_type_label':"نوع هدف:",
+  'progress.goal_type_label':"نوع هدف (می‌توانی چند مورد انتخاب کنی):",
   'progress.goal_type_any':"هر فعالیتی",
   'progress.goal_type_full':"صفحه کامل",
   'progress.goal_type_recite':"تلاوت",

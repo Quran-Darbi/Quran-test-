@@ -595,8 +595,23 @@ function getGoal(){
   return 1;
 }
 function setGoal(n){try{localStorage.setItem(GOAL_KEY,String(n));}catch(e){}render();}
-function getGoalType(){try{const v=localStorage.getItem(GOAL_TYPE_KEY);if(GOAL_TYPES.indexOf(v)>=0)return v;}catch(e){}return 'any';}
-function setGoalType(t){try{localStorage.setItem(GOAL_TYPE_KEY,t);}catch(e){}render();}
+/* أنواع الهدف: اختيار متعدّد (محفوظ كقائمة مفصولة بفواصل؛ القيمة المفردة القديمة تبقى صالحة) */
+function getGoalTypes(){
+  try{const v=(localStorage.getItem(GOAL_TYPE_KEY)||'').split(',').filter(x=>GOAL_TYPES.indexOf(x)>=0);if(v.length)return v;}catch(e){}
+  return ['any'];
+}
+function setGoalType(t){
+  let cur=getGoalTypes();
+  if(t==='any')cur=['any'];
+  else{
+    cur=cur.filter(x=>x!=='any');
+    const i=cur.indexOf(t);if(i>=0)cur.splice(i,1);else cur.push(t);
+    if(!cur.length)cur=['any'];
+  }
+  cur=GOAL_TYPES.filter(x=>cur.indexOf(x)>=0); // ترتيب ثابت
+  try{localStorage.setItem(GOAL_TYPE_KEY,cur.join(','));}catch(e){}
+  render();
+}
 function goalTypeLabel(t){
   if(t==='any')return darbiT('progress.goal_type_any');
   if(t==='full')return darbiT('progress.goal_type_full');
@@ -781,15 +796,18 @@ function render(){
   renderContinue(all);
 
   // ---- هدف اليوم (قابل للضبط) ----
-  const goalN=getGoal(), goalT=getGoalType(), todayN=pagesToday(all,goalT), goalDone=todayN>=goalN;
+  const goalN=getGoal(), goalTs=getGoalTypes();
+  const counts=goalTs.map(t=>pagesToday(all,t));
+  const goalDone=counts.every(c=>c>=goalN);
+  const todayN=counts[0];
   const CIRC_GOAL = 2*Math.PI*32;
   const goalFill=document.getElementById('goal-fill');
-  const goalPct = Math.min(100,Math.round(todayN/goalN*100));
+  const goalPct = Math.min(100,Math.round(counts.reduce((s,c)=>s+Math.min(c,goalN),0)/(goalN*goalTs.length)*100));
   goalFill.setAttribute('stroke-dasharray',CIRC_GOAL.toFixed(1));
   goalFill.setAttribute('stroke-dashoffset',(CIRC_GOAL*(1-goalPct/100)).toFixed(1));
   document.getElementById('goal-emoji').textContent = goalDone ? '🎉' : '📖';
   document.getElementById('goal-headline').textContent = goalDone ? darbiT('progress.goal_done_headline') : darbiT('progress.goal_not_done');
-  document.getElementById('goal-desc').textContent = darbiT('progress.goal_progress',{c:Math.min(todayN,99),n:goalN});
+  document.getElementById('goal-desc').textContent = goalTs.length===1 ? darbiT('progress.goal_progress',{c:Math.min(todayN,99),n:goalN}) : goalTs.map((t,i)=>goalTypeLabel(t)+' '+Math.min(counts[i],goalN)+'/'+goalN).join(' · ');
   document.getElementById('goal-celebrate').classList.toggle('hidden', !goalDone);
   const chips=document.getElementById('goal-chips');chips.innerHTML='';
   [1,2,3,5].forEach(n=>{
@@ -800,7 +818,7 @@ function render(){
   const tchips=document.getElementById('goal-type-chips');tchips.innerHTML='';
   GOAL_TYPES.forEach(t=>{
     const b=document.createElement('button');b.type='button';
-    b.className='goal-chip goal-chip-t'+(t===goalT?' active':'');b.textContent=goalTypeLabel(t);
+    b.className='goal-chip goal-chip-t'+(goalTs.indexOf(t)>=0?' active':'');b.textContent=goalTypeLabel(t);
     b.addEventListener('click',()=>setGoalType(t));tchips.appendChild(b);
   });
 
