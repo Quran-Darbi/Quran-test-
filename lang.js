@@ -21,6 +21,16 @@
 var DICT = {
 
 ar: {
+  // ===== تحسينات صفحة تقدّمي (أكتوبر 2026) =====
+  'progress.continue_title':'▶️ تابع من حيث توقفت',
+  'progress.continue_btn':'تابع',
+  'progress.goal_set_label':'اختر هدفك اليومي (عدد الصفحات):',
+  'progress.goal_progress':'صفحات اليوم: {c} من {n}',
+  'progress.review_today_title':'🔁 راجع اليوم',
+  'progress.show_all':'عرض الكل ({n})',
+  'progress.show_less':'عرض أقل',
+  'progress.not_started':'سور لم تبدأ بعد ({n})',
+  'progress.juz_label':'الجزء {n}',
   // ===== عام / التنقل =====
   'nav.tools_title':'الأدوات',
   'nav.lang_label':'اللغة',
@@ -32,7 +42,7 @@ ar: {
   'nav.progress':'📊 تقدّمي',
   'nav.sync_signin':'☁️ تسجيل الدخول',
   'nav.font_size':'🔠 حجم الخط',
-  'nav.sync_on':'☁️ المزامنة مفعّلة ✅',
+  'nav.sync_on':"☁️ تقدّمك محفوظ ✅",
   'nav.back':'← الرجوع',
 
   // ===== الصفحة الرئيسية =====
@@ -321,19 +331,29 @@ ar: {
   'progress.backup_import_ok':'تم استيراد النسخة الاحتياطية بنجاح ✅',
   'progress.backup_import_fail':'تعذّر الاستيراد: ',
   'progress.unknown_error':'خطأ غير معروف',
-  'progress.sync_title':'☁️ مزامنة عبر جوجل',
-  'progress.sync_desc':'سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويُزامَن تلقائيًا بين أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.',
-  'progress.sync_signin_btn':'🔵 تسجيل الدخول بجوجل',
+  'progress.sync_title':"☁️ احفظ تقدّمك على حسابك",
+  'progress.sync_desc':"سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويظهر تلقائيًا على كل أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.",
+  'progress.sync_signin_btn':"🔵 المتابعة بحساب جوجل",
   'progress.sync_signout_btn':'تسجيل الخروج',
-  'progress.sync_now_btn':'🔄 مزامنة الآن',
+  'progress.sync_now_btn':"🔄 تحديث تقدّمي الآن",
   'progress.sync_signed_in_as':'تم تسجيل الدخول: ',
-  'progress.sync_syncing':'جارٍ المزامنة…',
-  'progress.sync_ok':'تمت المزامنة بنجاح ✅',
-  'progress.sync_fail':'تعذّرت المزامنة: ',
-  'progress.sync_unsupported':'ميزة المزامنة غير متاحة على هذا المتصفح'
+  'progress.sync_syncing':"جارٍ حفظ تقدّمك…",
+  'progress.sync_ok':"تم حفظ تقدّمك ✅",
+  'progress.sync_fail':"تعذّر حفظ تقدّمك: ",
+  'progress.sync_unsupported':"ميزة حفظ التقدّم على الحساب غير متاحة على هذا المتصفح"
 },
 
 en: {
+  // ===== تحسينات صفحة تقدّمي (أكتوبر 2026) =====
+  'progress.continue_title':'▶️ Continue where you left off',
+  'progress.continue_btn':'Continue',
+  'progress.goal_set_label':'Choose your daily goal (pages):',
+  'progress.goal_progress':'Today: {c} of {n} pages',
+  'progress.review_today_title':'🔁 Review today',
+  'progress.show_all':'Show all ({n})',
+  'progress.show_less':'Show less',
+  'progress.not_started':'Surahs not started yet ({n})',
+  'progress.juz_label':'Juz’ {n}',
   // ===== General / navigation =====
   'nav.tools_title':'Tools',
   'nav.lang_label':'Language',
@@ -345,7 +365,7 @@ en: {
   'nav.progress':'📊 My Progress',
   'nav.sync_signin':'☁️ Sign in',
   'nav.font_size':'🔠 Text size',
-  'nav.sync_on':'☁️ Sync on ✅',
+  'nav.sync_on':"☁️ Progress saved ✅",
   'nav.back':'← Back',
 
   // ===== Home page =====
@@ -629,19 +649,29 @@ en: {
   'progress.backup_import_ok':'Backup imported successfully ✅',
   'progress.backup_import_fail':'Could not import: ',
   'progress.unknown_error':'Unknown error',
-  'progress.sync_title':'☁️ Sync with Google',
-  'progress.sync_desc':'Sign in with Google so your progress is saved and automatically synced across your devices, even if you switch phones or clear your browser data.',
-  'progress.sync_signin_btn':'🔵 Sign in with Google',
+  'progress.sync_title':"☁️ Save your progress to your account",
+  'progress.sync_desc':"Continue with your Google account so your progress is saved and appears automatically on all your devices, even if you switch phones or clear your browser data.",
+  'progress.sync_signin_btn':"🔵 Continue with Google",
   'progress.sync_signout_btn':'Sign out',
-  'progress.sync_now_btn':'🔄 Sync now',
+  'progress.sync_now_btn':"🔄 Update my progress now",
   'progress.sync_signed_in_as':'Signed in as: ',
-  'progress.sync_syncing':'Syncing…',
-  'progress.sync_ok':'Synced successfully ✅',
-  'progress.sync_fail':'Sync failed: ',
-  'progress.sync_unsupported':'Sync is not available on this browser'
+  'progress.sync_syncing':"Saving your progress…",
+  'progress.sync_ok':"Your progress is saved ✅",
+  'progress.sync_fail':"Couldn’t save your progress: ",
+  'progress.sync_unsupported':"Saving progress to an account isn’t available on this browser"
 },
 
 fr: {
+  // ===== تحسينات صفحة تقدّمي (أكتوبر 2026) =====
+  'progress.continue_title':'▶️ Reprenez où vous vous êtes arrêté',
+  'progress.continue_btn':'Continuer',
+  'progress.goal_set_label':'Choisissez votre objectif quotidien (pages) :',
+  'progress.goal_progress':'Aujourd’hui : {c} sur {n} pages',
+  'progress.review_today_title':'🔁 À réviser aujourd’hui',
+  'progress.show_all':'Tout afficher ({n})',
+  'progress.show_less':'Afficher moins',
+  'progress.not_started':'Sourates pas encore commencées ({n})',
+  'progress.juz_label':'Juz’ {n}',
   // ===== Général / navigation =====
   'nav.tools_title':'Outils',
   'nav.lang_label':'Langue',
@@ -653,7 +683,7 @@ fr: {
   'nav.progress':'📊 Mes progrès',
   'nav.sync_signin':'☁️ Connexion',
   'nav.font_size':'🔠 Taille du texte',
-  'nav.sync_on':'☁️ Synchronisation activée ✅',
+  'nav.sync_on':"☁️ Progression enregistrée ✅",
   'nav.back':'← Retour',
 
   // ===== Page d’accueil =====
@@ -937,19 +967,29 @@ fr: {
   'progress.backup_import_ok':'Sauvegarde importée avec succès ✅',
   'progress.backup_import_fail':'Impossible d’importer : ',
   'progress.unknown_error':'Erreur inconnue',
-  'progress.sync_title':'☁️ Synchronisation Google',
-  'progress.sync_desc':"Connectez-vous avec Google pour que votre progression soit enregistrée et synchronisée automatiquement entre vos appareils, même en cas de changement de téléphone ou d'effacement des données du navigateur.",
-  'progress.sync_signin_btn':'🔵 Se connecter avec Google',
+  'progress.sync_title':"☁️ Enregistrez votre progression sur votre compte",
+  'progress.sync_desc':"Continuez avec votre compte Google pour que votre progression soit enregistrée et apparaisse automatiquement sur tous vos appareils, même en cas de changement de téléphone ou d’effacement des données du navigateur.",
+  'progress.sync_signin_btn':"🔵 Continuer avec Google",
   'progress.sync_signout_btn':'Se déconnecter',
-  'progress.sync_now_btn':'🔄 Synchroniser maintenant',
+  'progress.sync_now_btn':"🔄 Mettre à jour ma progression",
   'progress.sync_signed_in_as':'Connecté en tant que : ',
-  'progress.sync_syncing':'Synchronisation…',
-  'progress.sync_ok':'Synchronisation réussie ✅',
-  'progress.sync_fail':'Échec de la synchronisation : ',
-  'progress.sync_unsupported':"La synchronisation n'est pas disponible sur ce navigateur"
+  'progress.sync_syncing':"Enregistrement de votre progression…",
+  'progress.sync_ok':"Votre progression est enregistrée ✅",
+  'progress.sync_fail':"Échec de l’enregistrement de votre progression : ",
+  'progress.sync_unsupported':"L’enregistrement sur un compte n’est pas disponible sur ce navigateur"
 },
 
 tr: {
+  // ===== تحسينات صفحة تقدّمي (أكتوبر 2026) =====
+  'progress.continue_title':'▶️ Kaldığın yerden devam et',
+  'progress.continue_btn':'Devam et',
+  'progress.goal_set_label':'Günlük hedefini seç (sayfa):',
+  'progress.goal_progress':'Bugün: {n} sayfadan {c}',
+  'progress.review_today_title':'🔁 Bugün tekrar et',
+  'progress.show_all':'Tümünü göster ({n})',
+  'progress.show_less':'Daha az göster',
+  'progress.not_started':'Henüz başlanmamış sureler ({n})',
+  'progress.juz_label':'Cüz {n}',
   // ===== Genel / gezinme =====
   'nav.tools_title':'Araçlar',
   'nav.lang_label':'Dil',
@@ -961,7 +1001,7 @@ tr: {
   'nav.progress':'📊 İlerlemem',
   'nav.sync_signin':'☁️ Giriş yap',
   'nav.font_size':'🔠 Yazı boyutu',
-  'nav.sync_on':'☁️ Senkronizasyon açık ✅',
+  'nav.sync_on':"☁️ İlerleme kaydedildi ✅",
   'nav.back':'← Geri',
 
   // ===== Ana sayfa =====
@@ -1245,20 +1285,30 @@ tr: {
   'progress.backup_import_ok':'Yedek başarıyla içe aktarıldı ✅',
   'progress.backup_import_fail':'İçe aktarılamadı: ',
   'progress.unknown_error':'Bilinmeyen hata',
-  'progress.sync_title':'☁️ Google ile senkronizasyon',
-  'progress.sync_desc':'İlerlemenizin kaydedilmesi ve telefon değiştirseniz veya tarayıcı verilerini silseniz bile cihazlarınız arasında otomatik olarak senkronize edilmesi için Google ile giriş yapın.',
-  'progress.sync_signin_btn':'🔵 Google ile giriş yap',
+  'progress.sync_title':"☁️ İlerlemeni hesabına kaydet",
+  'progress.sync_desc':"Google hesabınla devam et; ilerlemen kaydedilsin ve telefonunu değiştirsen ya da tarayıcı verilerini silsen bile tüm cihazlarında otomatik olarak görünsün.",
+  'progress.sync_signin_btn':"🔵 Google ile devam et",
   'progress.sync_signout_btn':'Çıkış yap',
-  'progress.sync_now_btn':'🔄 Şimdi senkronize et',
+  'progress.sync_now_btn':"🔄 İlerlemeni şimdi güncelle",
   'progress.sync_signed_in_as':'Giriş yapıldı: ',
-  'progress.sync_syncing':'Senkronize ediliyor…',
-  'progress.sync_ok':'Senkronizasyon başarılı ✅',
-  'progress.sync_fail':'Senkronizasyon başarısız: ',
-  'progress.sync_unsupported':'Senkronizasyon bu tarayıcıda kullanılamıyor'
+  'progress.sync_syncing':"İlerlemen kaydediliyor…",
+  'progress.sync_ok':"İlerlemen kaydedildi ✅",
+  'progress.sync_fail':"İlerlemen kaydedilemedi: ",
+  'progress.sync_unsupported':"İlerlemeyi hesaba kaydetme bu tarayıcıda kullanılamıyor"
 }
 ,
 
 de: {
+  // ===== تحسينات صفحة تقدّمي (أكتوبر 2026) =====
+  'progress.continue_title':'▶️ Mach dort weiter, wo du aufgehört hast',
+  'progress.continue_btn':'Weiter',
+  'progress.goal_set_label':'Wähle dein Tagesziel (Seiten):',
+  'progress.goal_progress':'Heute: {c} von {n} Seiten',
+  'progress.review_today_title':'🔁 Heute wiederholen',
+  'progress.show_all':'Alle anzeigen ({n})',
+  'progress.show_less':'Weniger anzeigen',
+  'progress.not_started':'Noch nicht begonnene Suren ({n})',
+  'progress.juz_label':'Dschuz’ {n}',
   // ===== Allgemein / Navigation =====
   'nav.tools_title':'Werkzeuge',
   'nav.lang_label':'Sprache',
@@ -1270,7 +1320,7 @@ de: {
   'nav.progress':'📊 Mein Fortschritt',
   'nav.sync_signin':'☁️ Anmelden',
   'nav.font_size':'🔠 Schriftgröße',
-  'nav.sync_on':'☁️ Synchronisierung aktiv ✅',
+  'nav.sync_on':"☁️ Fortschritt gespeichert ✅",
   'nav.back':'← Zurück',
 
   // ===== Startseite =====
@@ -1554,19 +1604,29 @@ de: {
   'progress.backup_import_ok':'Sicherung erfolgreich importiert ✅',
   'progress.backup_import_fail':'Import fehlgeschlagen: ',
   'progress.unknown_error':'Unbekannter Fehler',
-  'progress.sync_title':'☁️ Synchronisierung mit Google',
-  'progress.sync_desc':'Melde dich mit Google an, damit dein Fortschritt gespeichert und automatisch zwischen deinen Geräten synchronisiert wird, selbst wenn du das Telefon wechselst oder die Browserdaten löschst.',
-  'progress.sync_signin_btn':'🔵 Mit Google anmelden',
+  'progress.sync_title':"☁️ Speichere deinen Fortschritt in deinem Konto",
+  'progress.sync_desc':"Fahre mit deinem Google-Konto fort, damit dein Fortschritt gespeichert wird und automatisch auf all deinen Geräten erscheint – auch wenn du das Handy wechselst oder die Browserdaten löschst.",
+  'progress.sync_signin_btn':"🔵 Weiter mit Google",
   'progress.sync_signout_btn':'Abmelden',
-  'progress.sync_now_btn':'🔄 Jetzt synchronisieren',
+  'progress.sync_now_btn':"🔄 Meinen Fortschritt jetzt aktualisieren",
   'progress.sync_signed_in_as':'Angemeldet als: ',
-  'progress.sync_syncing':'Synchronisiere…',
-  'progress.sync_ok':'Erfolgreich synchronisiert ✅',
-  'progress.sync_fail':'Synchronisierung fehlgeschlagen: ',
-  'progress.sync_unsupported':'Synchronisierung ist in diesem Browser nicht verfügbar'
+  'progress.sync_syncing':"Dein Fortschritt wird gespeichert…",
+  'progress.sync_ok':"Dein Fortschritt wurde gespeichert ✅",
+  'progress.sync_fail':"Fortschritt konnte nicht gespeichert werden: ",
+  'progress.sync_unsupported':"Das Speichern des Fortschritts im Konto ist in diesem Browser nicht verfügbar"
 },
 
 es: {
+  // ===== تحسينات صفحة تقدّمي (أكتوبر 2026) =====
+  'progress.continue_title':'▶️ Continúa donde lo dejaste',
+  'progress.continue_btn':'Continuar',
+  'progress.goal_set_label':'Elige tu meta diaria (páginas):',
+  'progress.goal_progress':'Hoy: {c} de {n} páginas',
+  'progress.review_today_title':'🔁 Repasa hoy',
+  'progress.show_all':'Ver todo ({n})',
+  'progress.show_less':'Ver menos',
+  'progress.not_started':'Suras aún sin empezar ({n})',
+  'progress.juz_label':'Yuz’ {n}',
   // ===== General / navegación =====
   'nav.tools_title':'Herramientas',
   'nav.lang_label':'Idioma',
@@ -1578,7 +1638,7 @@ es: {
   'nav.progress':'📊 Mi progreso',
   'nav.sync_signin':'☁️ Iniciar sesión',
   'nav.font_size':'🔠 Tamaño del texto',
-  'nav.sync_on':'☁️ Sincronización activa ✅',
+  'nav.sync_on':"☁️ Progreso guardado ✅",
   'nav.back':'← Volver',
 
   // ===== Página de inicio =====
@@ -1862,19 +1922,29 @@ es: {
   'progress.backup_import_ok':'Copia de seguridad importada correctamente ✅',
   'progress.backup_import_fail':'No se pudo importar: ',
   'progress.unknown_error':'Error desconocido',
-  'progress.sync_title':'☁️ Sincronización con Google',
-  'progress.sync_desc':'Inicia sesión con Google para que tu progreso se guarde y se sincronice automáticamente entre tus dispositivos, aunque cambies de teléfono o borres los datos del navegador.',
-  'progress.sync_signin_btn':'🔵 Iniciar sesión con Google',
+  'progress.sync_title':"☁️ Guarda tu progreso en tu cuenta",
+  'progress.sync_desc':"Continúa con tu cuenta de Google para que tu progreso se guarde y aparezca automáticamente en todos tus dispositivos, incluso si cambias de teléfono o borras los datos del navegador.",
+  'progress.sync_signin_btn':"🔵 Continuar con Google",
   'progress.sync_signout_btn':'Cerrar sesión',
-  'progress.sync_now_btn':'🔄 Sincronizar ahora',
+  'progress.sync_now_btn':"🔄 Actualizar mi progreso ahora",
   'progress.sync_signed_in_as':'Sesión iniciada como: ',
-  'progress.sync_syncing':'Sincronizando…',
-  'progress.sync_ok':'Sincronización exitosa ✅',
-  'progress.sync_fail':'Error de sincronización: ',
-  'progress.sync_unsupported':'La sincronización no está disponible en este navegador'
+  'progress.sync_syncing':"Guardando tu progreso…",
+  'progress.sync_ok':"Tu progreso se ha guardado ✅",
+  'progress.sync_fail':"No se pudo guardar tu progreso: ",
+  'progress.sync_unsupported':"Guardar el progreso en una cuenta no está disponible en este navegador"
 },
 
 fa: {
+  // ===== تحسينات صفحة تقدّمي (أكتوبر 2026) =====
+  'progress.continue_title':'▶️ از همان‌جا که ماندی ادامه بده',
+  'progress.continue_btn':'ادامه',
+  'progress.goal_set_label':'هدف روزانه‌ات را انتخاب کن (تعداد صفحه):',
+  'progress.goal_progress':'امروز: {c} از {n} صفحه',
+  'progress.review_today_title':'🔁 مرور امروز',
+  'progress.show_all':'نمایش همه ({n})',
+  'progress.show_less':'نمایش کمتر',
+  'progress.not_started':'سوره‌های شروع‌نشده ({n})',
+  'progress.juz_label':'جزء {n}',
   // ===== عمومی / پیمایش =====
   'nav.tools_title':'ابزارها',
   'nav.lang_label':'زبان',
@@ -1886,7 +1956,7 @@ fa: {
   'nav.progress':'📊 پیشرفت من',
   'nav.sync_signin':'☁️ ورود',
   'nav.font_size':'🔠 اندازه متن',
-  'nav.sync_on':'☁️ همگام‌سازی فعال ✅',
+  'nav.sync_on':"☁️ پیشرفت ذخیره شد ✅",
   'nav.back':'← بازگشت',
 
   // ===== صفحه اصلی =====
@@ -2170,16 +2240,16 @@ fa: {
   'progress.backup_import_ok':'نسخه پشتیبان با موفقیت وارد شد ✅',
   'progress.backup_import_fail':'وارد کردن ممکن نشد: ',
   'progress.unknown_error':'خطای ناشناخته',
-  'progress.sync_title':'☁️ همگام‌سازی با گوگل',
-  'progress.sync_desc':'برای اینکه پیشرفت شما ذخیره و به‌طور خودکار بین دستگاه‌هایتان همگام‌سازی شود، حتی اگر گوشی را عوض کنید یا داده‌های مرورگر را پاک کنید، با گوگل وارد شوید.',
-  'progress.sync_signin_btn':'🔵 ورود با گوگل',
+  'progress.sync_title':"☁️ پیشرفتت را در حسابت ذخیره کن",
+  'progress.sync_desc':"با حساب گوگل ادامه بده تا پیشرفتت ذخیره شود و به‌طور خودکار روی همه دستگاه‌هایت نمایش داده شود، حتی اگر گوشی‌ات را عوض کنی یا داده‌های مرورگر را پاک کنی.",
+  'progress.sync_signin_btn':"🔵 ادامه با گوگل",
   'progress.sync_signout_btn':'خروج',
-  'progress.sync_now_btn':'🔄 همگام‌سازی اکنون',
+  'progress.sync_now_btn':"🔄 به‌روزرسانی پیشرفتم",
   'progress.sync_signed_in_as':'وارد شده به‌عنوان: ',
-  'progress.sync_syncing':'در حال همگام‌سازی…',
-  'progress.sync_ok':'همگام‌سازی با موفقیت انجام شد ✅',
-  'progress.sync_fail':'همگام‌سازی ناموفق بود: ',
-  'progress.sync_unsupported':'همگام‌سازی در این مرورگر در دسترس نیست'
+  'progress.sync_syncing':"در حال ذخیره پیشرفتت…",
+  'progress.sync_ok':"پیشرفتت ذخیره شد ✅",
+  'progress.sync_fail':"ذخیره پیشرفتت ناموفق بود: ",
+  'progress.sync_unsupported':"ذخیره پیشرفت در حساب در این مرورگر در دسترس نیست"
 }
 
 };

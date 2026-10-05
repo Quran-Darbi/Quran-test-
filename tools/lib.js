@@ -21,3 +21,13 @@ function render(stem,j){
   return s.replace('«MAIN»',()=>dataScript(j)+'\n<script src="engine/'+j.engine+'.js"></script>');}
 function pages(){return fs.readdirSync(path.join(SRC,'data')).filter(f=>f.endsWith('.json')).sort().map(f=>({stem:f.slice(0,-5),file:path.join(SRC,'data',f)}));}
 module.exports={ROOT,SRC,NAMES,jsLit,readJSON,render,pages};
+// قائمة صفحات «تقدّمي»: مصدرها src/progress_groups.json، ومفتاح التخزين يُشتقّ من RESUME_KEY في بيانات كل صفحة
+function progressGroups(){
+  const g=readJSON(path.join(SRC,'progress_groups.json'));
+  const keyOf={};for(const {stem,file} of pages()){keyOf[stem]=String(readJSON(file).data.RESUME_KEY||'').replace('quranResume_','');}
+  return {groups:g,keyOf};}
+function progressGroupsJS(){
+  const {groups,keyOf}=progressGroups();
+  const out=groups.map(g=>({label:g.label,juz:g.juz,pages:g.pages.map(p=>[p.stem,keyOf[p.stem]||p.stem,p.name,p.range||''])}));
+  return '/* مولَّد تلقائياً من src/progress_groups.json — لا تعدّله يدوياً */\nwindow.DARBI_GROUPS='+JSON.stringify(out)+';\n';}
+module.exports.progressGroups=progressGroups;module.exports.progressGroupsJS=progressGroupsJS;

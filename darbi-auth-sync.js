@@ -208,7 +208,7 @@
 
   // ---------- تسجيل الدخول / الخروج ----------
   function signIn(cb) {
-    if (!supported()) { cb && cb(false, 'المزامنة غير متاحة على هذا المتصفح'); return; }
+    if (!supported()) { cb && cb(false, 'حفظ التقدّم على الحساب غير متاح على هذا المتصفح'); return; }
     ensureApp();
     auth.signInWithPopup(provider).then(function () {
       cb && cb(true);

@@ -17,6 +17,7 @@
 <title>دربي لحفظ القرآن</title>
 <meta name="description" content="اختبر حفظك للقرآن الكريم">
 <script src="lang.js"></script>
+<script src="darbi-keys.js"></script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -805,6 +806,7 @@ function darbiPageComplete(entry){
 function renderDarbiProgress(){
   let all={};
   try{all=JSON.parse(localStorage.getItem('darbi_progress')||'{}');}catch(e){}
+  if(window.darbiNormProgress)all=darbiNormProgress(all);
 
   const nameByKey={alfatiha:'الفاتحة'};
   baqaraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة البقرة '+p[1];});

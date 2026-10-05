@@ -32,6 +32,12 @@ for(const {stem,file} of pages()){
     if(!q.q||typeof q.answer!=='string'||!q.answer.trim())return E(stem,t+' هيكل غير صالح');
     if(!C.text.includes(norm(q.answer))&&!(KI.answers||[]).includes(stem+':'+k+':'+i))W(stem,t+' الإجابة ليست متصلة في النص المرجعي (قد تكون جمعاً مقصوداً لأجزاء)');});
 }
+// 3) كل صفحة اختبار يجب أن تظهر مرة واحدة في src/progress_groups.json (صفحة «تقدّمي»)
+try{const pg=readJSON(path.join(SRC,'progress_groups.json'));const inG=new Map();
+  pg.forEach(g=>g.pages.forEach(p=>{if(!all.has(p.stem))E('progress_groups',p.stem+' غير موجودة في src/data');inG.set(p.stem,(inG.get(p.stem)||0)+1);}));
+  inG.forEach((n,k)=>{if(n>1)E('progress_groups',k+' مكررة');});
+  for(const st of all)if(!inG.has(st))E('progress_groups',st+' ليست في progress_groups.json (لن تظهر في «تقدّمي»)');
+}catch(e){E('progress_groups','تعذّرت القراءة: '+e.message);}
 console.log('صفحات:',pages().length,'| أسطر الآيات:',nAyat,'| أسئلة:',nQ);
 console.log('أخطاء:',errors.length,'| تنبيهات:',warns.length,'| مشكلات معروفة مؤجّلة:',known.length);
 errors.slice(0,40).forEach(x=>console.log('  ✗',x));

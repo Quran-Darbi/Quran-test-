@@ -15,6 +15,12 @@ const j={meta:{title,description:'اختبر حفظك لسورة '+surah+' (من
   data:{RESUME_KEY:'quranResume_'+stem,AYAT:[],AYAT_NUMS:[],EASY_Q:[],MEDIUM_Q:[],HARD_Q:[],BAD_SPELL:sample.data.BAD_SPELL}};
 if(opt('prev'))j.meta.prev=opt('prev')+'.html';if(opt('next'))j.meta.next=opt('next')+'.html';if(opt('rec'))j.meta.recId=opt('rec');
 fs.writeFileSync(out,JSON.stringify(j,null,1)+'\n');
+
+// تسجيل الصفحة في قائمة «تقدّمي» (src/progress_groups.json) — تظهر تلقائياً بعد البناء
+{const gp=path.join(SRC,'progress_groups.json');const G=readJSON(gp);const label='سورة '+surah;let g=G.find(x=>x.label===label);
+  const pg=parseInt(page,10);if(!g){g={label,juz:Math.min(30,Math.max(1,Math.floor((pg-2)/20)+1)),pages:[]};G.push(g);}
+  if(!g.pages.some(x=>x.stem===stem))g.pages.push({stem,name:surah+' ص '+page,range:from===to?String(from):from+'–'+to});
+  fs.writeFileSync(gp,JSON.stringify(G,null,1)+'\n');console.log('أُضيفت إلى src/progress_groups.json (مجموعة: '+label+' — الجزء '+g.juz+')');}
 console.log('أُنشئ: '+path.relative(process.cwd(),out));
 console.log('التالي: املئي AYAT وAYAT_NUMS والأسئلة، ثم: node tools/validate.js && node tools/build.js');
 console.log('وتذكّري: ربط الصفحة في index.html وsitemap.xml، وتحديث meta.next في الصفحة السابقة.');

@@ -274,6 +274,21 @@ html[data-theme="dark"] .qr-title{color:#6BBF5A;}
 .qr-copy-btn{background:#2E6B3E;color:#fff;border:none;}
 html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 .qr-close-btn{background:none;border:1px solid var(--border,#E4EAE4);color:var(--text,#1A1A1A);}
+/* ===== تحسينات «تقدّمي» (أكتوبر 2026) ===== */
+.cont-link{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);background:var(--green3);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;}
+.cont-mid{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;}
+.cont-name{font-weight:700;font-size:1rem;}
+.cont-meta{font-size:0.74rem;color:var(--soft);white-space:normal;}
+.cont-btn{background:var(--green);color:#fff;border-radius:18px;padding:7px 18px;font-size:0.88rem;white-space:nowrap;}
+.goal-pick{margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.goal-pick-lbl{font-size:0.78rem;color:var(--soft);}
+.goal-chips{display:flex;gap:6px;}
+.goal-chip{font-family:inherit;font-size:0.85rem;min-width:36px;padding:5px 0;border-radius:18px;border:1.5px solid var(--border);background:var(--card);color:var(--soft);cursor:pointer;}
+.goal-chip.active{background:var(--green);border-color:var(--green);color:#fff;}
+.more-btn{font-family:inherit;margin-top:8px;background:none;border:1.5px solid var(--border);color:var(--green);border-radius:18px;padding:6px 16px;font-size:0.8rem;cursor:pointer;}
+.grp-more{margin-top:12px;border-top:1px dashed var(--border);padding-top:10px;}
+.grp-more>summary{cursor:pointer;color:var(--green);font-size:0.85rem;padding:4px 0;}
+.juz-head{font-size:0.72rem;color:var(--soft);margin:10px 0 2px;border-bottom:1px solid var(--border);padding-bottom:2px;}
 </style>
 <script src="lang.js"></script>
 </head>
@@ -361,7 +376,14 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
     <a href="index.html" data-i18n="progress.empty_cta">ابدأ الآن</a>
   </div>
 
-  <div id="data-sections">
+  <div id="data-top">
+    <div class="card hidden" id="continue-card">
+      <h2 data-i18n="progress.continue_title">▶️ تابع من حيث توقفت</h2>
+      <a class="cont-link" id="continue-link" href="#">
+        <span class="cont-mid"><span class="cont-name" id="continue-name"></span><span class="cont-meta" id="continue-meta"></span></span>
+        <span class="cont-btn" data-i18n="progress.continue_btn">تابع</span>
+      </a>
+    </div>
 
     <div class="card">
       <h2 data-i18n="progress.goal_title">🎯 هدفي اليومي</h2>
@@ -375,17 +397,56 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
         </div>
         <div class="goal-text">
           <b id="goal-headline" data-i18n="progress.goal_not_done">لم تنجز هدف اليوم بعد</b>
-          <span data-i18n="progress.goal_desc">الهدف: نشاط حفظ واحد يوميًا على الأقل</span>
+          <span id="goal-desc"></span>
         </div>
+      </div>
+      <div class="goal-pick">
+        <span class="goal-pick-lbl" data-i18n="progress.goal_set_label">اختر هدفك اليومي (عدد الصفحات):</span>
+        <div class="goal-chips" id="goal-chips"></div>
       </div>
       <div class="celebrate hidden" id="goal-celebrate"><span class="emoji">🎉</span><b data-i18n="progress.goal_done_msg">أنجزت هدف اليوم — أحسنت!</b></div>
     </div>
 
-    <div class="card">
-      <h2 data-i18n="progress.badges_title">🏅 الأوسمة</h2>
-      <div class="badge-grid" id="badge-grid"></div>
+    <div class="card" id="review-card">
+      <h2 data-i18n="progress.review_today_title">🔁 راجع اليوم</h2>
+      <div id="review-list"></div>
+      <button type="button" class="more-btn hidden" id="review-more" onclick="toggleReviewMore()"></button>
+      <div id="review-empty" class="hidden" style="color:var(--soft);font-size:0.85rem;" data-i18n="progress.review_empty">لا توجد أسئلة بحاجة إلى مراجعة حاليًا — واصل هكذا 👏</div>
     </div>
 
+  </div>
+
+  <div class="card" id="sync-card">
+    <h2 data-i18n="progress.sync_title">☁️ مزامنة عبر جوجل</h2>
+    <div class="sync-desc" data-i18n="progress.sync_desc">سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويُزامَن تلقائيًا بين أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.</div>
+    <div class="sync-status hidden" id="sync-status"></div>
+    <div class="sync-actions">
+      <button class="sync-btn sync-signin" id="sync-signin-btn" onclick="onSyncSignIn()" data-i18n="progress.sync_signin_btn">🔵 تسجيل الدخول بجوجل</button>
+      <button class="sync-btn sync-now hidden" id="sync-now-btn" onclick="onSyncNow()" data-i18n="progress.sync_now_btn">🔄 مزامنة الآن</button>
+      <button class="sync-btn sync-signout hidden" id="sync-signout-btn" onclick="onSyncSignOut()" data-i18n="progress.sync_signout_btn">تسجيل الخروج</button>
+    </div>
+    <div class="sync-msg hidden" id="sync-msg"></div>
+  </div>
+
+
+  <div id="backup-wrap">
+    <div class="card">
+      <h2 data-i18n="progress.backup_title">💾 نسخة احتياطية</h2>
+      <div class="backup-status" id="backup-status" data-i18n="progress.backup_none">لم تُؤخذ أي نسخة احتياطية بعد</div>
+      <div class="backup-suggest hidden" id="backup-suggest" data-i18n="progress.backup_suggest">⏰ مرّت فترة طويلة — يُستحسن أخذ نسخة احتياطية جديدة، لأن بياناتك محفوظة في هذا المتصفح فقط</div>
+      <div class="backup-actions">
+        <button class="bk-btn bk-export" onclick="doExport()" data-i18n="progress.backup_export_btn">⬇️ تنزيل نسخة احتياطية</button>
+        <label class="bk-btn bk-import" style="display:flex;align-items:center;justify-content:center;">
+          <span data-i18n="progress.backup_import_btn">⬆️ استيراد نسخة</span>
+          <input type="file" id="import-file" accept="application/json" style="display:none" onchange="doImport(this.files[0])">
+        </label>
+      </div>
+      <div class="bk-msg hidden" id="bk-msg"></div>
+    </div>
+  </div>
+
+
+  <div id="data-bottom">
     <div class="card">
       <h2 data-i18n="progress.surah_progress_title">📚 تقدّمك في كل سورة</h2>
       <div class="grp-filter-row">
@@ -394,7 +455,16 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
         <button type="button" class="grp-filter-chip" data-mode="none" onclick="setGrpFilter('none',this)" data-i18n="progress.filter_incomplete">لم يكتمل بعد</button>
       </div>
       <div class="grp-list" id="grp-list"></div>
+      <details class="grp-more" id="grp-more">
+        <summary id="grp-more-sum"></summary>
+        <div class="grp-list" id="grp-list-more"></div>
+      </details>
       <div class="grp-filter-empty" id="grp-filter-empty" data-i18n="progress.filter_empty">لا توجد سور مطابقة لهذا الفلتر حاليًا.</div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="progress.badges_title">🏅 الأوسمة</h2>
+      <div class="badge-grid" id="badge-grid"></div>
     </div>
 
     <div class="card" id="rec-card">
@@ -407,12 +477,6 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
         <a class="rec-go" href="recitation.html" data-i18n="progress.rec_go">ابدأ الاختبار</a>
       </div>
       <div class="rec-note" id="rec-note" data-i18n="progress.rec_note">النسبة تخص الكلمات وترتيبها، ولا تشمل الحركات وأحكام التجويد.</div>
-    </div>
-
-    <div class="card" id="review-card">
-      <h2 data-i18n="progress.review_title">🔁 قائمة المراجعة الذكية</h2>
-      <div id="review-list"></div>
-      <div id="review-empty" class="hidden" style="color:var(--soft);font-size:0.85rem;" data-i18n="progress.review_empty">لا توجد أسئلة بحاجة إلى مراجعة حاليًا — واصل هكذا 👏</div>
     </div>
 
     <div class="card" id="reminder-card">
@@ -434,34 +498,6 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 
   </div>
 
-  <div class="card" id="sync-card">
-    <h2 data-i18n="progress.sync_title">☁️ مزامنة عبر جوجل</h2>
-    <div class="sync-desc" data-i18n="progress.sync_desc">سجّل الدخول بحساب جوجل ليُحفظ تقدّمك ويُزامَن تلقائيًا بين أجهزتك، حتى لو غيّرت الهاتف أو مسحت بيانات المتصفح.</div>
-    <div class="sync-status hidden" id="sync-status"></div>
-    <div class="sync-actions">
-      <button class="sync-btn sync-signin" id="sync-signin-btn" onclick="onSyncSignIn()" data-i18n="progress.sync_signin_btn">🔵 تسجيل الدخول بجوجل</button>
-      <button class="sync-btn sync-now hidden" id="sync-now-btn" onclick="onSyncNow()" data-i18n="progress.sync_now_btn">🔄 مزامنة الآن</button>
-      <button class="sync-btn sync-signout hidden" id="sync-signout-btn" onclick="onSyncSignOut()" data-i18n="progress.sync_signout_btn">تسجيل الخروج</button>
-    </div>
-    <div class="sync-msg hidden" id="sync-msg"></div>
-  </div>
-
-  <div id="backup-wrap">
-    <div class="card">
-      <h2 data-i18n="progress.backup_title">💾 نسخة احتياطية</h2>
-      <div class="backup-status" id="backup-status" data-i18n="progress.backup_none">لم تُؤخذ أي نسخة احتياطية بعد</div>
-      <div class="backup-suggest hidden" id="backup-suggest" data-i18n="progress.backup_suggest">⏰ مرّت فترة طويلة — يُستحسن أخذ نسخة احتياطية جديدة، لأن بياناتك محفوظة في هذا المتصفح فقط</div>
-      <div class="backup-actions">
-        <button class="bk-btn bk-export" onclick="doExport()" data-i18n="progress.backup_export_btn">⬇️ تنزيل نسخة احتياطية</button>
-        <label class="bk-btn bk-import" style="display:flex;align-items:center;justify-content:center;">
-          <span data-i18n="progress.backup_import_btn">⬆️ استيراد نسخة</span>
-          <input type="file" id="import-file" accept="application/json" style="display:none" onchange="doImport(this.files[0])">
-        </label>
-      </div>
-      <div class="bk-msg hidden" id="bk-msg"></div>
-    </div>
-  </div>
-
 </div>
 
 <footer>
@@ -471,257 +507,15 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 </footer>
 
 <script>window.DARBI_NO_REMINDER = true;</script>
+<script src="darbi-keys.js"></script>
+<script src="progress-groups.js"></script>
 <script src="darbi-progress-plus.js"></script>
 <script>
-const alfatihaPage=[['alfatiha.html','الفاتحة']];
-const baqaraPages=[
-  ['albaqara_p2.html','ص 2','1–5'],['albaqara_p3.html','ص 3','6–16'],
-  ['albaqara_p4.html','ص 4','17–24'],['albaqara_p5.html','ص 5','25–29'],
-  ['albaqara_p6.html','ص 6','30–37'],['albaqara_p7.html','ص 7','38–48'],
-  ['albaqara_p8.html','ص 8','49–57'],['albaqara_p9.html','ص 9','58–61'],
-  ['albaqara_p10.html','ص 10','62–69'],['albaqara_p11.html','ص 11','70–76'],
-  ['albaqara_p12.html','ص 12','77–83'],['albaqara_p13.html','ص 13','84–88'],
-  ['albaqara_p14.html','ص 14','89–93'],['albaqara_p15.html','ص 15','94–101'],
-  ['albaqara_p16.html','ص 16','102–105'],['albaqara_p17.html','ص 17','106–112'],
-  ['albaqara_p18.html','ص 18','113–119'],['albaqara_p19.html','ص 19','120–126'],
-  ['albaqara_p20.html','ص 20','127–134'],['albaqara_p21.html','ص 21','135–141'],
-  ['albaqara_p22.html','ص 22','142–145'],['albaqara_p23.html','ص 23','146–153'],
-  ['albaqara_p24.html','ص 24','154–163'],['albaqara_p25.html','ص 25','164–169'],
-  ['albaqara_p26.html','ص 26','170–176'],['albaqara_p27.html','ص 27','177–181'],
-  ['albaqara_p28.html','ص 28','182–186'],['albaqara_p29.html','ص 29','187–190'],
-  ['albaqara_p30.html','ص 30','191–196'],['albaqara_p31.html','ص 31','197–202'],
-  ['albaqara_p32.html','ص 32','203–210'],['albaqara_p33.html','ص 33','211–215'],
-  ['albaqara_p34.html','ص 34','216–219'],['albaqara_p35.html','ص 35','220–224'],
-  ['albaqara_p36.html','ص 36','225–230'],['albaqara_p37.html','ص 37','231–233'],
-  ['albaqara_p38.html','ص 38','234–237'],['albaqara_p39.html','ص 39','238–245'],
-  ['albaqara_p40.html','ص 40','246–248'],['albaqara_p41.html','ص 41','249–252'],
-  ['albaqara_p42.html','ص 42','آية الكرسي'],['albaqara_p43.html','ص 43','257–259'],
-  ['albaqara_p44.html','ص 44','260–264'],['albaqara_p45.html','ص 45','265–269'],
-  ['albaqara_p46.html','ص 46','270–274'],['albaqara_p47.html','ص 47','275–281'],
-  ['albaqara_p48.html','ص 48','آية الدَّين'],['albaqara_p49.html','ص 49','283–286'],
-];
-const kahfPages=[
-  ['alkahf_p293.html','ص 293','1–4'],['alkahf_p294.html','ص 294','5–15'],
-  ['alkahf_p295.html','ص 295','16–20'],['alkahf_p296.html','ص 296','21–27'],
-  ['alkahf_p297.html','ص 297','28–34'],['alkahf_p298.html','ص 298','35–45'],
-  ['alkahf_p299.html','ص 299','46–53'],['alkahf_p300.html','ص 300','54–61'],
-  ['alkahf_p301.html','ص 301','62–74'],['alkahf_p302.html','ص 302','75–83'],
-  ['alkahf_p303.html','ص 303','84–97'],['alkahf_p304.html','ص 304','98–110'],
-];
-const maryamPages=[
-  ['maryam_p305.html','ص 305','1–11'],['maryam_p306.html','ص 306','12–25'],
-  ['maryam_p307.html','ص 307','26–38'],['maryam_p308.html','ص 308','39–51'],
-  ['maryam_p309.html','ص 309','52–64'],['maryam_p310.html','ص 310','65–76'],
-  ['maryam_p311.html','ص 311','77–95'],['maryam_p312.html','ص 312','96–98'],
-];
-const yaseenPages=[
-  ['yaseen_p440.html','ص 440','1–12'],['yaseen_p441.html','ص 441','13–27'],
-  ['yaseen_p442.html','ص 442','28–40'],['yaseen_p443.html','ص 443','41–54'],
-  ['yaseen_p444.html','ص 444','55–70'],['yaseen_p445.html','ص 445','71–83'],
-];
-const arrahmanPages=[
-  ['arrahman_p531.html','ص 531','1–16'],['arrahman_p532.html','ص 532','17–40'],
-  ['arrahman_p533.html','ص 533','41–67'],['arrahman_p534.html','ص 534','68–78'],
-];
-const alwaqiahPages=[
-  ['alwaqiah_p534.html','ص 534','1–16'],['alwaqiah_p535.html','ص 535','17–50'],
-  ['alwaqiah_p536.html','ص 536','51–76'],['alwaqiah_p537.html','ص 537','77–96'],
-];
-const almulkPages=[
-  ['almulk_p562.html','ص 562','1–12'],['almulk_p563.html','ص 563','13–26'],
-  ['almulk_p564.html','ص 564','27–30'],
-];
-const tahaPages=[
-  ['taha_p312.html','ص 312','1–12'],['taha_p313.html','ص 313','13–37'],
-  ['taha_p314.html','ص 314','38–51'],['taha_p315.html','ص 315','52–64'],
-  ['taha_p316.html','ص 316','65–76'],['taha_p317.html','ص 317','77–87'],
-  ['taha_p318.html','ص 318','88–98'],['taha_p319.html','ص 319','99–113'],
-  ['taha_p320.html','ص 320','114–125'],['taha_p321.html','ص 321','126–135'],
-];
-const alahqafPages=[
-  ['alahqaf_p502.html','ص 502','1–5'],['alahqaf_p503.html','ص 503','6–14'],['alahqaf_p504.html','ص 504','15–20'],
-  ['alahqaf_p505.html','ص 505','21–28'],['alahqaf_p506.html','ص 506','29–35'],
-];
-const muhammadPages=[
-  ['muhammad_p507.html','ص 507','1–11'],['muhammad_p508.html','ص 508','12–19'],['muhammad_p509.html','ص 509','20–29'],['muhammad_p510.html','ص 510','30–38'],
-];
-const alfathPages=[
-  ['alfath_p511.html','ص 511','1–9'],['alfath_p512.html','ص 512','10–15'],['alfath_p513.html','ص 513','16–23'],['alfath_p514.html','ص 514','24–28'],['alfath_p515.html','ص 515','29'],
-];
-const alhujuratPages=[
-  ['alhujurat_p515.html','ص 515','1–4'],['alhujurat_p516.html','ص 516','5–11'],['alhujurat_p517.html','ص 517','12–18'],
-];
-const qafPages=[
-  ['qaf_p518.html','ص 518','1–15'],['qaf_p519.html','ص 519','16–35'],['qaf_p520.html','ص 520','36–45'],
-];
-const azzariyatPages=[
-  ['azzariyat_p520.html','ص 520','1–6'],['azzariyat_p521.html','ص 521','7–30'],
-  ['azzariyat_p522.html','ص 522','31–51'],['azzariyat_p523.html','ص 523','52–60'],
-];
-const atturPages=[
-  ['attur_p523.html','ص 523','1–14'],['attur_p524.html','ص 524','15–31'],['attur_p525.html','ص 525','32–49'],
-];
-const annajmPages=[
-  ['annajm_p526.html','ص 526','1–26'],['annajm_p527.html','ص 527','27–44'],['annajm_p528.html','ص 528','45–62'],
-];
-const alqamarPages=[
-  ['alqamar_p528.html','ص 528','1–6'],['alqamar_p529.html','ص 529','7–27'],['alqamar_p530.html','ص 530','28–49'],['alqamar_p531.html','ص 531','50–55'],
-];
-const alhadidPages=[
-  ['alhadid_p537.html','ص 537','1–3'],['alhadid_p538.html','ص 538','4–11'],['alhadid_p539.html','ص 539','12–18'],['alhadid_p540.html','ص 540','19–24'],['alhadid_p541.html','ص 541','25–29'],
-];
-const alqalamPages=[
-  ['alqalam_p564.html','ص 564','1–15'],
-  ['alqalam_p565.html','ص 565','16–42'],
-  ['alqalam_p566.html','ص 566','43–52'],
-];
-const alhaqqaPages=[
-  ['alhaqqa_p566.html','ص 566','1–8'],
-  ['alhaqqa_p567.html','ص 567','9–34'],
-  ['alhaqqa_p568.html','ص 568','35–52'],
-];
-const almaarijPages=[
-  ['almaarij_p568.html','ص 568','1–10'],['almaarij_p569.html','ص 569','11–39'],['almaarij_p570.html','ص 570','40–44'],
-];
-const nuhPages=[
-  ['nuh_p570.html','ص 570','1–10'],
-  ['nuh_p571.html','ص 571','11–28'],
-];
-const aljinnPages=[
-  ['aljinn_p572.html','ص 572','1–13'],['aljinn_p573.html','ص 573','14–28'],
-];
-const almuzzammilPages=[
-  ['almuzzammil_p574.html','ص 574','1–19'],['almuzzammil_p575.html','ص 575','20 + المدثر 1–17'],
-];
-const almudaththirPages=[
-  ['almudaththir_p575.html','ص 575','1–17 (مع المزمل)'],['almudaththir_p576.html','ص 576','18–47'],['almudaththir_p577.html','ص 577','48–56 + القيامة 1–19'],
-];
-const alqiyamaPages=[
-  ['alqiyama_p577.html','ص 577','1–19 (مع المدثر)'],['alqiyama_p578.html','ص 578','20–40'],
-];
-const alinsanPages=[
-  ['alinsan_p578.html','ص 578','1–5'],['alinsan_p579.html','ص 579','6–25'],
-  ['alinsan_p580.html','ص 580','26–31'],
-];
-const almujadilaPages=[
-  ['almujadila_p542.html','ص 542','1–6'],['almujadila_p543.html','ص 543','7–11'],
-  ['almujadila_p544.html','ص 544','12–21'],['almujadila_p545.html','ص 545','22'],
-];
-const alhashrPages=[
-  ['alhashr_p545.html','ص 545','1–3'],['alhashr_p546.html','ص 546','4–9'],
-  ['alhashr_p547.html','ص 547','10–16'],['alhashr_p548.html','ص 548','17–24'],
-];
-const almumtahanaPages=[
-  ['almumtahana_p549.html','ص 549','1–5'],['almumtahana_p550.html','ص 550','6–11'],
-  ['almumtahana_p551.html','ص 551','12–13'],
-];
-const alsaffPages=[
-  ['alsaff_p551.html','ص 551','1–5'],['alsaff_p552.html','ص 552','6–14'],
-];
-const aljumuaPages=[
-  ['aljumua_p553.html','ص 553','1–8'],['aljumua_p554.html','ص 554','9–11'],
-];
-const almunafiqunPages=[
-  ['almunafiqun_p554.html','ص 554','1–4'],['almunafiqun_p555.html','ص 555','5–11'],
-];
-const attaghabunPages=[
-  ['attaghabun_p556.html','ص 556','1–9'],['attaghabun_p557.html','ص 557','10–18'],
-];
-const attalaqPages=[
-  ['attalaq_p558.html','ص 558','1–5'],['attalaq_p559.html','ص 559','6–12'],
-];
-const attahrimPages=[
-  ['attahrim_p560.html','ص 560','1–7'],['attahrim_p561.html','ص 561','8–12'],
-];
-const almursalatPages=[
-  ['almursalat_p580.html','ص 580','1–19'],['almursalat_p581.html','ص 581','20–50'],
-];
-const ammaData=[
-  ['annaba.html','النبأ'],['annaziat.html','النازعات'],
-  ['abasa.html','عبس'],['attakwir.html','التكوير'],
-  ['alinfitar.html','الانفطار'],['almutaffifin.html','المطففين'],
-  ['alinshiqaq.html','الانشقاق'],['alburuj.html','البروج'],
-  ['altariq.html','الطارق'],['alaala.html','الأعلى'],
-  ['alghasiya.html','الغاشية'],['alfajr.html','الفجر'],
-  ['albalad.html','البلد'],['alshams.html','الشمس'],
-  ['allayl.html','الليل'],['alduha.html','الضحى'],
-  ['alsharh.html','الشرح'],['atteen.html','التين'],
-  ['alalaq.html','العلق'],['alqadr.html','القدر'],
-  ['albayyina.html','البيِّنة'],['alzalzala.html','الزلزلة'],
-  ['alaadiyat.html','العاديات'],['alqaria.html','القارعة'],
-  ['altakathur.html','التكاثر'],['alasr.html','العصر'],
-  ['alhumaza.html','الهمزة'],['alfiyl.html','الفيل'],
-  ['aquraysh.html','قريش'],['almaoon.html','الماعون'],
-  ['alkawthur.html','الكوثر'],['alkafirun.html','الكافرون'],
-  ['alnnasr.html','النصر'],['almasad.html','المسد'],
-  ['alikhlas.html','الإخلاص'],['alfalaq.html','الفلق'],
-  ['alnnas.html','الناس'],
-];
-
-let currentGrpFilter='all';
-function setGrpFilter(mode,btn){
-  currentGrpFilter=mode;
-  document.querySelectorAll('.grp-filter-chip').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  applyGrpFilter();
-}
-function applyGrpFilter(){
-  let visible=0;
-  document.querySelectorAll('.grp-item').forEach(el=>{
-    const state=el.dataset.state||'none';
-    let show=true;
-    if(currentGrpFilter==='complete') show=(state==='complete');
-    else if(currentGrpFilter==='none') show=(state!=='complete');
-    el.style.display=show?'':'none';
-    if(show) visible++;
-  });
-  const emptyEl=document.getElementById('grp-filter-empty');
-  if(emptyEl) emptyEl.style.display = visible===0 ? 'block' : 'none';
-}
-
-const GROUPS=[
-  {label:'الفاتحة',pages:alfatihaPage.map(p=>[p[0].replace('.html',''),p[1]])},
-  {label:'سورة البقرة',pages:baqaraPages.map(p=>[p[0].replace('.html',''),'البقرة '+p[1]])},
-  {label:'سورة الكهف',pages:kahfPages.map(p=>[p[0].replace('.html',''),'الكهف '+p[1]])},
-  {label:'سورة مريم',pages:maryamPages.map(p=>[p[0].replace('.html',''),'مريم '+p[1]])},
-  {label:'سورة طه',pages:tahaPages.map(p=>[p[0].replace('.html',''),'طه '+p[1]])},
-  {label:'سورة يس',pages:yaseenPages.map(p=>[p[0].replace('.html',''),'يس '+p[1]])},
-  {label:'سورة الأحقاف',pages:alahqafPages.map(p=>[p[0].replace('.html',''),'الأحقاف '+p[1]])},
-  {label:'سورة محمد',pages:muhammadPages.map(p=>[p[0].replace('.html',''),'محمد '+p[1]])},
-  {label:'سورة الفتح',pages:alfathPages.map(p=>[p[0].replace('.html',''),'الفتح '+p[1]])},
-  {label:'سورة الحجرات',pages:alhujuratPages.map(p=>[p[0].replace('.html',''),'الحجرات '+p[1]])},
-  {label:'سورة ق',pages:qafPages.map(p=>[p[0].replace('.html',''),'ق '+p[1]])},
-  {label:'سورة الذاريات',pages:azzariyatPages.map(p=>[p[0].replace('.html',''),'الذاريات '+p[1]])},
-  {label:'سورة الطور',pages:atturPages.map(p=>[p[0].replace('.html',''),'الطور '+p[1]])},
-  {label:'سورة النجم',pages:annajmPages.map(p=>[p[0].replace('.html',''),'النجم '+p[1]])},
-  {label:'سورة القمر',pages:alqamarPages.map(p=>[p[0].replace('.html',''),'القمر '+p[1]])},
-  {label:'سورة الرحمن',pages:arrahmanPages.map(p=>[p[0].replace('.html',''),'الرحمن '+p[1]])},
-  {label:'سورة الواقعة',pages:alwaqiahPages.map(p=>[p[0].replace('.html',''),'الواقعة '+p[1]])},
-  {label:'سورة الحديد',pages:alhadidPages.map(p=>[p[0].replace('.html',''),'الحديد '+p[1]])},
-  {label:'سورة المجادلة',pages:almujadilaPages.map(p=>[p[0].replace('.html',''),'المجادلة '+p[1]])},
-  {label:'سورة الحشر',pages:alhashrPages.map(p=>[p[0].replace('.html',''),'الحشر '+p[1]])},
-  {label:'سورة الممتحنة',pages:almumtahanaPages.map(p=>[p[0].replace('.html',''),'الممتحنة '+p[1]])},
-  {label:'سورة الصف',pages:alsaffPages.map(p=>[p[0].replace('.html',''),'الصف '+p[1]])},
-  {label:'سورة الجمعة',pages:aljumuaPages.map(p=>[p[0].replace('.html',''),'الجمعة '+p[1]])},
-  {label:'سورة المنافقون',pages:almunafiqunPages.map(p=>[p[0].replace('.html',''),'المنافقون '+p[1]])},
-  {label:'سورة التغابن',pages:attaghabunPages.map(p=>[p[0].replace('.html',''),'التغابن '+p[1]])},
-  {label:'سورة الطلاق',pages:attalaqPages.map(p=>[p[0].replace('.html',''),'الطلاق '+p[1]])},
-  {label:'سورة التحريم',pages:attahrimPages.map(p=>[p[0].replace('.html',''),'التحريم '+p[1]])},
-  {label:'سورة الملك',pages:almulkPages.map(p=>[p[0].replace('.html',''),'الملك '+p[1]])},
-  {label:'سورة القلم',pages:alqalamPages.map(p=>[p[0].replace('.html',''),'القلم '+p[1]])},
-  {label:'سورة الحاقة',pages:alhaqqaPages.map(p=>[p[0].replace('.html',''),'الحاقة '+p[1]])},
-  {label:'سورة المعارج',pages:almaarijPages.map(p=>[p[0].replace('.html',''),'المعارج '+p[1]])},
-  {label:'سورة نوح',pages:nuhPages.map(p=>[p[0].replace('.html',''),'نوح '+p[1]])},
-  {label:'سورة الجن',pages:aljinnPages.map(p=>[p[0].replace('.html',''),'الجن '+p[1]])},
-  {label:'سورة المزمل',pages:almuzzammilPages.map(p=>[p[0].replace('.html',''),'المزمل '+p[1]])},
-  {label:'سورة المدثر',pages:almudaththirPages.map(p=>[p[0].replace('.html',''),'المدثر '+p[1]])},
-  {label:'سورة القيامة',pages:alqiyamaPages.map(p=>[p[0].replace('.html',''),'القيامة '+p[1]])},
-  {label:'سورة الإنسان',pages:alinsanPages.map(p=>[p[0].replace('.html',''),'الإنسان '+p[1]])},
-  {label:'سورة المرسلات',pages:almursalatPages.map(p=>[p[0].replace('.html',''),'المرسلات '+p[1]])},
-  {label:'جزء عمّ',pages:ammaData.map(p=>[p[0].replace('.html',''),p[1]])},
-];
+/* قائمة الصفحات تأتي من progress-groups.js (مولَّد من src/progress_groups.json أثناء البناء) */
+const GROUPS=(window.DARBI_GROUPS||[]).map(g=>({label:g.label,juz:g.juz,pages:g.pages.map(p=>[p[0],p[2],p[3]])}));
 const NO_PAGE_FILE=new Set([]); // صفحات مدرجة في القائمة ولا ملف لها بعد
 const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
+const GOAL_KEY='darbi_daily_goal_v1';
 
 function levelLabel(lvl){
   const map={easy:'level.easy_name',medium:'level.medium_name',hard:'level.hard_name',order:'level.order_name'};
@@ -736,7 +530,7 @@ function darbiPageStarted(entry){
 }
 
 function safeAll(){
-  try{return JSON.parse(localStorage.getItem('darbi_progress')||'{}');}catch(e){return {};}
+  try{return darbiNormProgress(JSON.parse(localStorage.getItem('darbi_progress')||'{}'));}catch(e){return {};}
 }
 
 /* أوسمة محسوبة من بيانات التقدّم الحقيقية — لا بيانات وهمية */
@@ -757,6 +551,87 @@ function computeBadges(doneCount, streak, completedSurahCount, ammaComplete, rec
     {icon:'📜', name:darbiT('progress.badge_rec_surah'), earned: !!rec.surahFull},
   ];
 }
+
+
+/* ===== تصفية السور ===== */
+let currentGrpFilter='all';
+function setGrpFilter(mode,btn){
+  currentGrpFilter=mode;
+  document.querySelectorAll('.grp-filter-chip').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  applyGrpFilter();
+}
+function applyGrpFilter(){
+  let visible=0;
+  document.querySelectorAll('.grp-item').forEach(el=>{
+    const state=el.dataset.state||'none';
+    let show=true;
+    if(currentGrpFilter==='complete') show=(state==='complete');
+    else if(currentGrpFilter==='none') show=(state!=='complete');
+    el.style.display=show?'':'none';
+    if(show) visible++;
+  });
+  document.querySelectorAll('.juz-head').forEach(h=>{
+    let n=h.nextElementSibling,any=false;
+    while(n&&!n.classList.contains('juz-head')){if(n.style.display!=='none')any=true;n=n.nextElementSibling;}
+    h.style.display=any?'':'none';
+  });
+  const more=document.getElementById('grp-more');
+  if(more){const vis=[...more.querySelectorAll('.grp-item')].some(e=>e.style.display!=='none');more.style.display=vis?'':'none';}
+  const emptyEl=document.getElementById('grp-filter-empty');
+  if(emptyEl) emptyEl.style.display = visible===0 ? 'block' : 'none';
+}
+
+/* ===== هدف اليوم (قابل للضبط) ===== */
+function getGoal(){
+  try{const v=parseInt(localStorage.getItem(GOAL_KEY),10);if([1,2,3,5].indexOf(v)>=0)return v;}catch(e){}
+  return 1;
+}
+function setGoal(n){try{localStorage.setItem(GOAL_KEY,String(n));}catch(e){}render();}
+function localDay(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+/* عدد الصفحات التي نُشِّط فيها اختبار اليوم (بالتوقيت المحلي) */
+function pagesToday(all){
+  const today=localDay(new Date());let n=0;
+  Object.keys(all).forEach(k=>{
+    const e=all[k];if(!e||!e.lastVisited)return;
+    const d=new Date(e.lastVisited);if(!isNaN(d.getTime())&&localDay(d)===today)n++;
+  });
+  return n;
+}
+
+/* ===== تابع من حيث توقفت ===== */
+function findContinue(all){
+  // آخر صفحة زُرتها: إن لم تكتمل فهي، وإلا أول صفحة غير مكتملة بعدها في السورة ثم في السور التالية
+  let last=null,lastT='';
+  const pos={};
+  GROUPS.forEach((g,gi)=>g.pages.forEach((p,pi)=>{
+    pos[p[0]]=[gi,pi];
+    const e=all[p[0]];
+    if(e&&e.lastVisited&&String(e.lastVisited)>lastT&&!NO_PAGE_FILE.has(p[0])){lastT=String(e.lastVisited);last=p[0];}
+  }));
+  if(!last)return null;
+  const flat=[];GROUPS.forEach(g=>g.pages.forEach(p=>{if(!NO_PAGE_FILE.has(p[0]))flat.push(p);}));
+  const i0=flat.findIndex(p=>p[0]===last);
+  if(!darbiPageComplete(all[last]))return flat[i0];
+  for(let i=i0+1;i<flat.length;i++)if(!darbiPageComplete(all[flat[i][0]]))return flat[i];
+  for(let i=0;i<i0;i++)if(!darbiPageComplete(all[flat[i][0]]))return flat[i];
+  return null;
+}
+function renderContinue(all){
+  const card=document.getElementById('continue-card');
+  const t=findContinue(all);
+  card.classList.toggle('hidden',!t);
+  if(!t)return;
+  const e=all[t[0]]||{};
+  document.getElementById('continue-link').href=t[0]+'.html';
+  document.getElementById('continue-name').textContent=pgName(t[1]);
+  const lv=['easy','medium','hard'].map(l=>(e[l]&&e[l].done?'✅ ':'⬜ ')+levelLabel(l));
+  document.getElementById('continue-meta').textContent=lv.join('  ');
+}
+
+/* ===== راجع اليوم ===== */
+let reviewExpanded=false;
+function toggleReviewMore(){reviewExpanded=!reviewExpanded;render();}
 
 /* ===== اختبر حفظك — نتائج التسميع بالصوت (من darbi_progress[الصفحة].recitation) ===== */
 function recFull(e){return !!(e&&e.recitation&&(e.recitation.fs||0)>=70);}
@@ -833,7 +708,8 @@ function render(){
   const all=safeAll();
   const hasAny=Object.keys(all).length>0;
   document.getElementById('empty-state').classList.toggle('hidden',hasAny);
-  document.getElementById('data-sections').classList.toggle('hidden',!hasAny);
+  document.getElementById('data-top').classList.toggle('hidden',!hasAny);
+  document.getElementById('data-bottom').classList.toggle('hidden',!hasAny);
   document.getElementById('backup-wrap').classList.toggle('hidden',!hasAny);
   document.getElementById('ring-wrap').classList.toggle('hidden',!hasAny);
   document.getElementById('streak-row').classList.toggle('hidden',!hasAny);
@@ -880,16 +756,26 @@ function render(){
     });
   }
 
-  // ---- هدف اليوم ----
-  const goalDone = window.DarbiExtra ? DarbiExtra.hasDoneToday() : false;
+  // ---- تابع من حيث توقفت ----
+  renderContinue(all);
+
+  // ---- هدف اليوم (قابل للضبط) ----
+  const goalN=getGoal(), todayN=pagesToday(all), goalDone=todayN>=goalN;
   const CIRC_GOAL = 2*Math.PI*32;
   const goalFill=document.getElementById('goal-fill');
-  const goalPct = goalDone ? 100 : 0;
+  const goalPct = Math.min(100,Math.round(todayN/goalN*100));
   goalFill.setAttribute('stroke-dasharray',CIRC_GOAL.toFixed(1));
   goalFill.setAttribute('stroke-dashoffset',(CIRC_GOAL*(1-goalPct/100)).toFixed(1));
   document.getElementById('goal-emoji').textContent = goalDone ? '🎉' : '📖';
   document.getElementById('goal-headline').textContent = goalDone ? darbiT('progress.goal_done_headline') : darbiT('progress.goal_not_done');
+  document.getElementById('goal-desc').textContent = darbiT('progress.goal_progress',{c:Math.min(todayN,99),n:goalN});
   document.getElementById('goal-celebrate').classList.toggle('hidden', !goalDone);
+  const chips=document.getElementById('goal-chips');chips.innerHTML='';
+  [1,2,3,5].forEach(n=>{
+    const b=document.createElement('button');b.type='button';
+    b.className='goal-chip'+(n===goalN?' active':'');b.textContent=n;
+    b.addEventListener('click',()=>setGoal(n));chips.appendChild(b);
+  });
 
   // ---- الأوسمة ----
   let completedSurahCount=0, ammaComplete=false;
@@ -920,18 +806,19 @@ function render(){
     badgeGrid.appendChild(div);
   });
 
-  // ---- تقدّم كل سورة ----
+  // ---- تقدّم كل سورة: ما بدأتِه أولًا، وغير المبدوء مطويّ ومرتّب بالأجزاء ----
   const grpList=document.getElementById('grp-list');
-  grpList.innerHTML='';
+  const grpMore=document.getElementById('grp-list-more');
+  grpList.innerHTML='';grpMore.innerHTML='';
+  let notStarted=0,lastJuz=null;
   GROUPS.forEach(g=>{
-    let done=0;
-    g.pages.forEach(p=>{if(darbiPageComplete(all[p[0]]))done++;});
+    let done=0,started=false;
+    g.pages.forEach(p=>{const e=all[p[0]];if(darbiPageComplete(e))done++;if(darbiPageStarted(e)||(e&&e.recitation))started=true;});
     const gp=Math.round(done/g.pages.length*100);
     let recTried=0, recDone=0;
     g.pages.forEach(p=>{const e=all[p[0]];if(e&&e.recitation){recTried++;if(recFull(e))recDone++;}});
     const recChip=recTried>0?'<span class="grp-rec">🎤 '+recDone+' / '+g.pages.length+'</span>':'';
-    const state = (done===g.pages.length && g.pages.length>0) ? 'complete' : (done>0 ? 'partial' : 'none');
-    // الرابط: أول صفحة لم تكتمل في السورة (للمتابعة)، وإن اكتملت كلها فأول صفحة فيها
+    const state = (done===g.pages.length && g.pages.length>0) ? 'complete' : ((done>0||started) ? 'partial' : 'none');
     const linkable=g.pages.filter(p=>!NO_PAGE_FILE.has(p[0]));
     const target=linkable.find(p=>!darbiPageComplete(all[p[0]]))||linkable[0];
     const div=document.createElement(target?'a':'div');
@@ -942,8 +829,18 @@ function render(){
       '<div class="grp-top"><span class="grp-name">'+(function(){const d=window.darbiDisplayName&&darbiDisplayName(g.label);return d?d+' <small class="grp-ar" data-no-loc>'+g.label+'</small>':g.label;})()+(target?' <span class="grp-go" aria-hidden="true">'+(document.documentElement.dir==='rtl'?'‹':'›')+'</span>':'')+'</span>'+
       '<span class="grp-count">'+done+' / '+g.pages.length+recChip+'</span></div>'+
       '<div class="grp-bar"><div class="grp-bar-fill" style="width:'+gp+'%"></div></div>';
-    grpList.appendChild(div);
+    if(state==='none'){
+      notStarted++;
+      if(g.juz!==lastJuz){
+        const h=document.createElement('div');h.className='juz-head';h.textContent=darbiT('progress.juz_label',{n:g.juz});
+        grpMore.appendChild(h);lastJuz=g.juz;
+      }
+      grpMore.appendChild(div);
+    }else grpList.appendChild(div);
   });
+  const moreEl=document.getElementById('grp-more');
+  moreEl.classList.toggle('hidden',notStarted===0);
+  document.getElementById('grp-more-sum').textContent=darbiT('progress.not_started',{n:notStarted});
   applyGrpFilter();
 
   // ---- اختبر حفظك (التسميع بالصوت) ----
@@ -954,7 +851,11 @@ function render(){
   const revEmpty=document.getElementById('review-empty');
   revList.innerHTML='';
   if(window.DarbiExtra){
-    const q=DarbiExtra.getReviewQueue(8);
+    const qAll=DarbiExtra.getReviewQueue(8);
+    const q=reviewExpanded?qAll:qAll.slice(0,3);
+    const moreBtn=document.getElementById('review-more');
+    moreBtn.classList.toggle('hidden',qAll.length<=3);
+    moreBtn.textContent=reviewExpanded?darbiT('progress.show_less'):darbiT('progress.show_all',{n:qAll.length});
     if(!q.length){
       revEmpty.classList.remove('hidden');
     }else{
@@ -963,11 +864,12 @@ function render(){
       q.forEach(item=>{
         const a=document.createElement('a');
         a.className='rev-item';
-        const name=pgName(nameByKey[item.pageKey]||item.pageKey||'');
+        const stem=darbiKeyToStem(item.pageKey);
+        const name=pgName(nameByKey[stem]||stem||'');
         const lvl=levelLabel(item.level);
         const hasQIndex = (typeof item.qIndex==='number');
         const canJump = hasQIndex && ['easy','medium','hard'].includes(item.level);
-        a.href=(item.pageKey||'')+'.html'+(canJump?('?review='+item.level+':'+item.qIndex):'');
+        a.href=(stem||'')+'.html'+(canJump?('?review='+item.level+':'+item.qIndex):'');
         const qLabel = hasQIndex ? darbiT('progress.question_label',{n:item.qIndex+1}) : '';
         a.innerHTML=
           '<span class="rev-chip">'+lvl+'</span>'+
