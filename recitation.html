@@ -1265,6 +1265,7 @@ function saveDarbiProgress(level,correct,total){
     var next={};for(var f in prevObj)next[f]=prevObj[f];
     next.done=pct>=70||!!prevObj.done;
     next.score=Math.max(pct,prev);
+    next.at=new Date().toISOString();
     all[key][level]=next;
     all[key].lastVisited=new Date().toISOString();
     localStorage.setItem(pk,JSON.stringify(all));

@@ -284,6 +284,8 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 .goal-pick-lbl{font-size:0.78rem;color:var(--soft);}
 .goal-chips{display:flex;gap:6px;}
 .goal-chip{font-family:inherit;font-size:0.85rem;min-width:36px;padding:5px 0;border-radius:18px;border:1.5px solid var(--border);background:var(--card);color:var(--soft);cursor:pointer;}
+.goal-chips-wrap{flex-wrap:wrap;}
+.goal-chip-t{padding:5px 12px;}
 .goal-chip.active{background:var(--green);border-color:var(--green);color:#fff;}
 .more-btn{font-family:inherit;margin-top:8px;background:none;border:1.5px solid var(--border);color:var(--green);border-radius:18px;padding:6px 16px;font-size:0.8rem;cursor:pointer;}
 .grp-more{margin-top:12px;border-top:1px dashed var(--border);padding-top:10px;}
@@ -404,6 +406,10 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
         <span class="goal-pick-lbl" data-i18n="progress.goal_set_label">اختر هدفك اليومي (عدد الصفحات):</span>
         <div class="goal-chips" id="goal-chips"></div>
       </div>
+      <div class="goal-pick">
+        <span class="goal-pick-lbl" data-i18n="progress.goal_type_label">نوع الهدف:</span>
+        <div class="goal-chips goal-chips-wrap" id="goal-type-chips"></div>
+      </div>
       <div class="celebrate hidden" id="goal-celebrate"><span class="emoji">🎉</span><b data-i18n="progress.goal_done_msg">أنجزت هدف اليوم — أحسنت!</b></div>
     </div>
 
@@ -515,7 +521,8 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 const GROUPS=(window.DARBI_GROUPS||[]).map(g=>({label:g.label,juz:g.juz,pages:g.pages.map(p=>[p[0],p[2],p[3]])}));
 const NO_PAGE_FILE=new Set([]); // صفحات مدرجة في القائمة ولا ملف لها بعد
 const TOTAL_PAGES=GROUPS.reduce((s,g)=>s+g.pages.length,0);
-const GOAL_KEY='darbi_daily_goal_v1';
+const GOAL_KEY='darbi_daily_goal_v1', GOAL_TYPE_KEY='darbi_daily_goal_type_v1';
+const GOAL_TYPES=['any','full','easy','medium','hard','order','recite'];
 
 function levelLabel(lvl){
   const map={easy:'level.easy_name',medium:'level.medium_name',hard:'level.hard_name',order:'level.order_name'};
@@ -588,13 +595,27 @@ function getGoal(){
   return 1;
 }
 function setGoal(n){try{localStorage.setItem(GOAL_KEY,String(n));}catch(e){}render();}
+function getGoalType(){try{const v=localStorage.getItem(GOAL_TYPE_KEY);if(GOAL_TYPES.indexOf(v)>=0)return v;}catch(e){}return 'any';}
+function setGoalType(t){try{localStorage.setItem(GOAL_TYPE_KEY,t);}catch(e){}render();}
+function goalTypeLabel(t){
+  if(t==='any')return darbiT('progress.goal_type_any');
+  if(t==='full')return darbiT('progress.goal_type_full');
+  if(t==='recite')return darbiT('progress.goal_type_recite');
+  return levelLabel(t);
+}
 function localDay(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 /* عدد الصفحات التي نُشِّط فيها اختبار اليوم (بالتوقيت المحلي) */
-function pagesToday(all){
-  const today=localDay(new Date());let n=0;
+function isToday(iso){if(!iso)return false;const d=new Date(iso);return !isNaN(d.getTime())&&localDay(d)===localDay(new Date());}
+function pagesToday(all,type){
+  type=type||'any';let n=0;
   Object.keys(all).forEach(k=>{
-    const e=all[k];if(!e||!e.lastVisited)return;
-    const d=new Date(e.lastVisited);if(!isNaN(d.getTime())&&localDay(d)===today)n++;
+    const e=all[k];if(!e)return;
+    if(type==='any'){if(isToday(e.lastVisited))n++;return;}
+    if(type==='full'){ // الثلاثة مكتملة، وأحدها أُنجز اليوم
+      const L=['easy','medium','hard'].map(l=>e[l]);
+      if(L.every(x=>x&&x.done)&&L.some(x=>isToday(x.at)))n++;return;}
+    if(type==='recite'){const r=e.recitation;if(r&&(isToday(r.at)||isToday(r.last&&r.last.t)))n++;return;}
+    if(e[type]&&isToday(e[type].at))n++;
   });
   return n;
 }
@@ -760,7 +781,7 @@ function render(){
   renderContinue(all);
 
   // ---- هدف اليوم (قابل للضبط) ----
-  const goalN=getGoal(), todayN=pagesToday(all), goalDone=todayN>=goalN;
+  const goalN=getGoal(), goalT=getGoalType(), todayN=pagesToday(all,goalT), goalDone=todayN>=goalN;
   const CIRC_GOAL = 2*Math.PI*32;
   const goalFill=document.getElementById('goal-fill');
   const goalPct = Math.min(100,Math.round(todayN/goalN*100));
@@ -775,6 +796,12 @@ function render(){
     const b=document.createElement('button');b.type='button';
     b.className='goal-chip'+(n===goalN?' active':'');b.textContent=n;
     b.addEventListener('click',()=>setGoal(n));chips.appendChild(b);
+  });
+  const tchips=document.getElementById('goal-type-chips');tchips.innerHTML='';
+  GOAL_TYPES.forEach(t=>{
+    const b=document.createElement('button');b.type='button';
+    b.className='goal-chip goal-chip-t'+(t===goalT?' active':'');b.textContent=goalTypeLabel(t);
+    b.addEventListener('click',()=>setGoalType(t));tchips.appendChild(b);
   });
 
   // ---- الأوسمة ----

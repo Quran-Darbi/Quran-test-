@@ -88,6 +88,7 @@
     var cov = Math.max(a.cov || 0, b.cov || 0); if (cov) out.cov = cov;
     var fs = Math.max(a.fs || 0, b.fs || 0); if (fs) out.fs = fs;
     var la = a.last, lb = b.last;
+    var at = laterDate(a.at, b.at); if (at) out.at = at;
     var last = (la && lb) ? (String(la.t || '') >= String(lb.t || '') ? la : lb) : (la || lb);
     if (last) out.last = last;
     return out;
@@ -103,13 +104,14 @@
       var l = local[pageKey] || {};
       var c = cloud[pageKey] || {};
       var merged = {};
-      ['easy', 'medium', 'hard'].forEach(function (level) {
+      ['easy', 'medium', 'hard', 'order'].forEach(function (level) {
         var ml = l[level], mc = c[level];
         if (!ml && !mc) return;
         merged[level] = {
           done: !!(ml && ml.done) || !!(mc && mc.done),
           score: Math.max((ml && ml.score) || 0, (mc && mc.score) || 0)
         };
+        var at = laterDate(ml && ml.at, mc && mc.at); if (at) merged[level].at = at;
       });
       var mr = mergeRecitation(l.recitation, c.recitation);
       if (mr) merged.recitation = mr;

@@ -16,7 +16,9 @@
     for(k in b){
       if(k==='lastVisited'){if(!o.lastVisited||String(b.lastVisited)>String(o.lastVisited))o.lastVisited=b.lastVisited;}
       else if(o[k]&&typeof o[k]==='object'&&b[k]&&typeof b[k]==='object'){
+        var at=(String(o[k].at||'')>String(b[k].at||''))?o[k].at:b[k].at;
         o[k]={done:!!(o[k].done||b[k].done),score:Math.max(o[k].score||0,b[k].score||0)};
+        if(at)o[k].at=at;
         for(var f in b[k])if(!(f in o[k]))o[k][f]=b[k][f];
       }else if(!(k in o))o[k]=b[k];
     }
