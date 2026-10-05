@@ -23,4 +23,4 @@ fs.writeFileSync(out,JSON.stringify(j,null,1)+'\n');
   fs.writeFileSync(gp,JSON.stringify(G,null,1)+'\n');console.log('أُضيفت إلى src/progress_groups.json (مجموعة: '+label+' — الجزء '+g.juz+')');}
 console.log('أُنشئ: '+path.relative(process.cwd(),out));
 console.log('التالي: املئي AYAT وAYAT_NUMS والأسئلة، ثم: node tools/validate.js && node tools/build.js');
-console.log('وتذكّري: ربط الصفحة في index.html وsitemap.xml، وتحديث meta.next في الصفحة السابقة.');
+console.log('وتذكّري: ربط الصفحة في index.html (يفحصه validate.js)، وإضافتها إلى recitation.html إن لزم، وتحديث meta.next في الصفحة السابقة. أما sitemap.xml وقائمة «تقدّمي» فيتحدّثان تلقائياً.');
