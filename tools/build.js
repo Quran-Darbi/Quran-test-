@@ -10,6 +10,25 @@ for(const [d,e] of [['engine','.js'],['assets','.css']]){fs.mkdirSync(path.join(
     if(!fs.existsSync(b)||!fs.readFileSync(b).equals(a)){fs.writeFileSync(b,a);changed++;}}}
 {const o=path.join(ROOT,'progress-groups.js'),c=progressGroupsJS();if(!fs.existsSync(o)||fs.readFileSync(o,'utf8')!==c){fs.writeFileSync(o,c);changed++;}}
 
+// نص صفحة التلاوة: src/recitation/<مفتاح>.json → recitation-data/<مفتاح>.js (يُحمَّل عند اختيار السورة فقط)
+{const dir=path.join(SRC,'recitation'),out=path.join(ROOT,'recitation-data');
+  if(fs.existsSync(dir)){fs.mkdirSync(out,{recursive:true});const want=new Set();
+    for(const f of fs.readdirSync(dir).filter(f=>f.endsWith('.json')).sort()){const k=f.slice(0,-5);const j=readJSON(path.join(dir,f));
+      const js='AYAHS['+JSON.stringify(k)+']='+JSON.stringify(j.ayahs)+';TEXTS['+JSON.stringify(k)+']='+JSON.stringify(j.text)+';\n';
+      const o=path.join(out,k+'.js');want.add(k+'.js');
+      if(!fs.existsSync(o)||fs.readFileSync(o,'utf8')!==js){fs.writeFileSync(o,js);changed++;}}
+    for(const f of fs.readdirSync(out))if(f.endsWith('.js')&&!want.has(f)){fs.unlinkSync(path.join(out,f));changed++;}
+    const man=JSON.stringify([...want].sort())+'\n',mo=path.join(out,'manifest.json');
+    if(!fs.existsSync(mo)||fs.readFileSync(mo,'utf8')!==man){fs.writeFileSync(mo,man);changed++;}}}
+
+// حذف الملفات القديمة المدرجة في tools/obsolete_files.txt (مع حماية الملفات الأساسية)
+{const lst=path.join(__dirname,'obsolete_files.txt');
+  if(fs.existsSync(lst)){const PROTECT=[/^\.github\//,/^src\//,/^tools\//,/^Scripts\/quran-uthmani\.txt$/,/^Scripts\/send_reminders\.py$/,/^CNAME$/,/^index\.html$/,/^\.git\//];
+    for(const raw of fs.readFileSync(lst,'utf8').split('\n')){const rel=raw.trim();if(!rel||rel.startsWith('#'))continue;
+      const abs=path.resolve(ROOT,rel);if(!abs.startsWith(ROOT+path.sep)||PROTECT.some(r=>r.test(rel))){console.log('تجاهل مسار محمي:',rel);continue;}
+      if(fs.existsSync(abs)&&fs.statSync(abs).isFile()){fs.unlinkSync(abs);changed++;console.log('حُذف:',rel);
+        let d=path.dirname(abs);while(d!==ROOT&&fs.existsSync(d)&&fs.readdirSync(d).length===0){fs.rmdirSync(d);d=path.dirname(d);}}}}}
+
 // sitemap.xml: الإدخالات الموجودة تبقى حرفياً؛ تُضاف صفحات src/data الجديدة بتاريخ اليوم، وتُحذف صفحات اختبار لم يعد لها ملف
 {const o=path.join(ROOT,'sitemap.xml');if(fs.existsSync(o)){const old=fs.readFileSync(o,'utf8');
   const stems=new Set(pages().map(p=>p.stem));const base=(old.match(/<loc>(https?:\/\/[^/<]+\/)/)||[0,'https://quran-darbi.com/'])[1];

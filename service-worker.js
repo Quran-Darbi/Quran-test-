@@ -64,3 +64,24 @@ self.addEventListener('fetch', event => {
     }
   })());
 });
+
+/* ---------- نص التلاوة بلا إنترنت: عند فتح صفحة التلاوة تطلب الصفحة تخزين كل سور التلاوة (مرة واحدة، دون إعاقة الصفحة) ---------- */
+async function cacheRecitationData() {
+  const cache = await caches.open(CACHE);
+  const man = await fetch(BASE + 'recitation-data/manifest.json', { cache: 'no-cache' });
+  if (!man.ok) return;
+  const files = await man.json();
+  const missing = [];
+  for (const f of files) {
+    const url = BASE + 'recitation-data/' + f;
+    if (!(await cache.match(url))) missing.push(url);
+  }
+  for (let i = 0; i < missing.length; i += 10) {
+    await Promise.all(missing.slice(i, i + 10).map(u => cache.add(u).catch(() => null)));
+  }
+}
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'cache-recitation') {
+    event.waitUntil(cacheRecitationData().catch(() => null));
+  }
+});

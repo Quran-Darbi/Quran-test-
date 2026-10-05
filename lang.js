@@ -21,6 +21,7 @@
 var DICT = {
 
 ar: {
+  'recite.load_error':"تعذّر تحميل نص هذه الصفحة. تحقق من الاتصال ثم أعد اختيارها.",
   'progress.goal_type_label':"نوع الهدف (يمكنك اختيار أكثر من نوع):",
   'progress.goal_type_any':"أي نشاط",
   'progress.goal_type_full':"صفحة مكتملة",
@@ -348,6 +349,7 @@ ar: {
 },
 
 en: {
+  'recite.load_error':"Couldn’t load this page’s text. Check your connection and select it again.",
   'progress.goal_type_label':"Goal type (you can pick more than one):",
   'progress.goal_type_any':"Any activity",
   'progress.goal_type_full':"Full page",
@@ -670,6 +672,7 @@ en: {
 },
 
 fr: {
+  'recite.load_error':"Impossible de charger le texte de cette page. Vérifiez votre connexion puis sélectionnez-la à nouveau.",
   'progress.goal_type_label':"Type d’objectif (vous pouvez en choisir plusieurs) :",
   'progress.goal_type_any':"Toute activité",
   'progress.goal_type_full':"Page complète",
@@ -992,6 +995,7 @@ fr: {
 },
 
 tr: {
+  'recite.load_error':"Bu sayfanın metni yüklenemedi. Bağlantını kontrol edip yeniden seç.",
   'progress.goal_type_label':"Hedef türü (birden fazla seçebilirsin):",
   'progress.goal_type_any':"Herhangi bir etkinlik",
   'progress.goal_type_full':"Tamamlanmış sayfa",
@@ -1315,6 +1319,7 @@ tr: {
 ,
 
 de: {
+  'recite.load_error':"Der Text dieser Seite konnte nicht geladen werden. Prüfe deine Verbindung und wähle sie erneut aus.",
   'progress.goal_type_label':"Zieltyp (du kannst mehrere wählen):",
   'progress.goal_type_any':"Beliebige Aktivität",
   'progress.goal_type_full':"Ganze Seite",
@@ -1637,6 +1642,7 @@ de: {
 },
 
 es: {
+  'recite.load_error':"No se pudo cargar el texto de esta página. Comprueba tu conexión y vuelve a seleccionarla.",
   'progress.goal_type_label':"Tipo de meta (puedes elegir varios):",
   'progress.goal_type_any':"Cualquier actividad",
   'progress.goal_type_full':"Página completa",
@@ -1959,6 +1965,7 @@ es: {
 },
 
 fa: {
+  'recite.load_error':"متن این صفحه بارگذاری نشد. اتصالت را بررسی کن و دوباره انتخابش کن.",
   'progress.goal_type_label':"نوع هدف (می‌توانی چند مورد انتخاب کنی):",
   'progress.goal_type_any':"هر فعالیتی",
   'progress.goal_type_full':"صفحه کامل",

@@ -1,0 +1,8 @@
+# ملفات قديمة لم يعد الموقع يستعملها. يحذفها tools/build.js عند تشغيله (وهي محفوظة في تاريخ git إن احتجتِها).
+# سطر لكل ملف، والمسار نسبي إلى جذر المستودع. الأسطر التي تبدأ بـ # تُتجاهل.
+legacy/Scripts_fix_files.py
+legacy/audit_report.txt
+legacy/fix_files.py
+legacy/patch_all.py
+NOTES_juz27.txt
+Scripts/pages_kahf.json
