@@ -1332,5 +1332,36 @@
     "range": ""
    }
   ]
+ },
+ {
+  "label": "سورة آل عمران",
+  "juz": 3,
+  "pages": [
+   {
+    "stem": "alimran_p50",
+    "name": "آل عمران ص 50",
+    "range": "1–9"
+   },
+   {
+    "stem": "alimran_p51",
+    "name": "آل عمران ص 51",
+    "range": "10–15"
+   },
+   {
+    "stem": "alimran_p52",
+    "name": "آل عمران ص 52",
+    "range": "16–22"
+   },
+   {
+    "stem": "alimran_p53",
+    "name": "آل عمران ص 53",
+    "range": "23–29"
+   },
+   {
+    "stem": "alimran_p54",
+    "name": "آل عمران ص 54",
+    "range": "30–37"
+   }
+  ]
  }
 ]
