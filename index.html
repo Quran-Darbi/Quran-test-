@@ -399,6 +399,14 @@ const alimranPages=[
   ['alimran_p52.html','ص 52','16–22'],
   ['alimran_p53.html','ص 53','23–29'],
   ['alimran_p54.html','ص 54','30–37'],
+  ['alimran_p55.html','ص 55','38–45'],
+  ['alimran_p56.html','ص 56','46–52'],
+  ['alimran_p57.html','ص 57','53–61'],
+  ['alimran_p58.html','ص 58','62–70'],
+  ['alimran_p59.html','ص 59','71–77'],
+  ['alimran_p60.html','ص 60','78–83'],
+  ['alimran_p61.html','ص 61','84–91'],
+  ['alimran_p62.html','ص 62','92–100'],
 ];
 
 const kahfPages=[
@@ -607,7 +615,10 @@ const JUZ_GROUPS = {
       ] },
   3: { title:'البقرة، آل عمران', groups:[
         { kind:'range', arr:baqaraPages, from:40, to:48, name:'سورة البقرة (ختام الجزء)', surah:'البقرة' },
-        { kind:'range', arr:alimranPages, from:0, to:5, name:'سورة آل عمران (1–37)', surah:'آل عمران' }
+        { kind:'range', arr:alimranPages, from:0, to:12, name:'سورة آل عمران (1–91)', surah:'آل عمران', note:'سورة آل عمران تكمل في الجزء 4 ←', noteTarget:4 }
+      ] },
+  4: { title:'آل عمران', groups:[
+        { kind:'range', arr:alimranPages, from:12, to:13, name:'سورة آل عمران (92–100)', surah:'آل عمران', note:'◄ سورة آل عمران بدأت في الجزء 3', noteTarget:3 }
       ] },
   15:{ title:'الإسراء، الكهف', groups:[
         { kind:'soon', name:'الإسراء' },
