@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // فحص جودة بيانات الصفحات قبل البناء: الهيكل، الأسئلة، والمطابقة مع النص المرجعي
-const fs=require('fs'),path=require('path');const {ROOT,SRC,readJSON,pages}=require('./lib.js');const {norm,loadCorpus}=require('./quran_ref.js');const {checkRecitation}=require('./check_recitation.js');
+const fs=require('fs'),path=require('path');const {ROOT,SRC,readJSON,pages}=require('./lib.js');const {norm,loadCorpus}=require('./quran_ref.js');const {checkRecitation}=require('./check_recitation.js');const {checkAmbiguity}=require('./check_ambiguity.js');
 const REF=path.join(ROOT,'Scripts','quran-uthmani.txt');const C=loadCorpus(REF);
 const KI=fs.existsSync(path.join(__dirname,'known_issues.json'))?readJSON(path.join(__dirname,'known_issues.json')):{};
 const errors=[],warns=[],known=[];
@@ -42,6 +42,8 @@ try{const pg=readJSON(path.join(SRC,'progress_groups.json'));const inG=new Map()
 try{const ix=fs.readFileSync(path.join(ROOT,'index.html'),'utf8');for(const st of all)if(!ix.includes(st+'.html'))E(st,'غير مربوطة في index.html (لن تظهر بطاقتها في الرئيسية)');}catch(e){E('index.html','تعذّرت القراءة: '+e.message);}
 // 4) نص صفحة التلاوة (recitation.html) يطابق src/data
 checkRecitation(E);
+// 5) تنبيه فقط: أسئلة متوسطة لها أكثر من تكملة صحيحة في المصحف (تفاصيلها: node tools/check_ambiguity.js --report ملف.txt)
+checkAmbiguity(W);
 console.log('صفحات:',pages().length,'| أسطر الآيات:',nAyat,'| أسئلة:',nQ);
 console.log('أخطاء:',errors.length,'| تنبيهات:',warns.length,'| مشكلات معروفة مؤجّلة:',known.length);
 errors.slice(0,40).forEach(x=>console.log('  ✗',x));
