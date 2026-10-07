@@ -461,6 +461,42 @@
   ]
  },
  {
+  "label": "سورة فصلت",
+  "juz": 24,
+  "pages": [
+   {
+    "stem": "fussilat_p477",
+    "name": "فصلت ص 477",
+    "range": "1–11"
+   },
+   {
+    "stem": "fussilat_p478",
+    "name": "فصلت ص 478",
+    "range": "12–20"
+   },
+   {
+    "stem": "fussilat_p479",
+    "name": "فصلت ص 479",
+    "range": "21–29"
+   },
+   {
+    "stem": "fussilat_p480",
+    "name": "فصلت ص 480",
+    "range": "30–38"
+   },
+   {
+    "stem": "fussilat_p481",
+    "name": "فصلت ص 481",
+    "range": "39–46"
+   },
+   {
+    "stem": "fussilat_p482",
+    "name": "فصلت ص 482",
+    "range": "47–54"
+   }
+  ]
+ },
+ {
   "label": "سورة الأحقاف",
   "juz": 26,
   "pages": [
