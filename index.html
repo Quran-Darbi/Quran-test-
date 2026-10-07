@@ -138,10 +138,23 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .surah-name{font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--green);font-weight:700;margin:10px 0 6px;}
 .surah-name:first-child{margin-top:2px;}
 .surah-card{font-family:inherit;cursor:pointer;text-align:start;width:100%;}
-.quiz-card.surah-card.sel{border-color:var(--green);background:var(--bg);box-shadow:0 0 0 2px var(--green) inset;}
-.surah-panel{display:none;grid-column:1/-1;margin:2px 0 4px;padding:8px;border:1px dashed var(--border);border-radius:11px;}
+.quiz-card.surah-card.sel{background:linear-gradient(135deg,#2E6B3E,#3A8C50);border-color:#2E6B3E;box-shadow:0 4px 12px rgba(46,107,62,.35);}
+.quiz-card.surah-card.sel .card-name{color:#fff;}
+.quiz-card.surah-card.sel .card-meta{color:rgba(255,255,255,.82);}
+.quiz-card.surah-card.sel .card-bar{background:rgba(255,255,255,.4);}
+.quiz-card.surah-card.sel::after{content:'';position:absolute;bottom:3px;left:50%;margin-left:-6px;border:6px solid transparent;border-top-color:rgba(255,255,255,.75);border-bottom-width:0;}
+.surah-panel{display:none;grid-column:1/-1;margin:4px 0 6px;padding:10px 9px 9px;background:var(--green3);border:1px solid var(--green2);border-top:3px solid #2E6B3E;border-radius:12px;}
+.surah-panel.open{animation:spIn .22s ease;}
+@keyframes spIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+.surah-panel .cards-grid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:6px;}
+.surah-panel .quiz-card{padding:6px 6px 6px;border-radius:9px;gap:2px;}
+.surah-panel .card-name{font-size:0.8rem;}
+.surah-panel .card-meta{font-size:0.62rem;}
+.surah-panel .card-bar{width:2px;}
+.surah-panel .lvl-dot{width:15px;height:15px;font-size:0.55rem;}
 .surah-panel.open{display:block;}
-.surah-panel-title{font-family:'Scheherazade New',serif;font-size:0.88rem;color:var(--green);font-weight:700;margin:0 0 6px;}
+.surah-panel-title{display:inline-block;font-family:'Scheherazade New',serif;font-size:0.8rem;color:#fff;background:#2E6B3E;font-weight:700;margin:0 0 8px;padding:2px 12px;border-radius:20px;}
+@media(max-width:560px){.surah-panel .cards-grid{grid-template-columns:repeat(4,1fr);}.surah-panel{padding:9px 7px 8px;}}
 
 .note-btn{margin-top:9px;width:100%;background:var(--green3);border:1px dashed var(--green2);color:var(--green);font-size:0.78rem;padding:8px;border-radius:10px;cursor:pointer;text-align:center;font-family:inherit;}
 .note-btn:hover{opacity:.85;}
@@ -625,10 +638,10 @@ const JUZ_GROUPS = {
         { kind:'range', arr:baqaraPages, from:0, to:20, name:'سورة البقرة (البداية)', surah:'البقرة' }
       ] },
   2: { title:'البقرة', groups:[
-        { kind:'range', arr:baqaraPages, from:20, to:40, name:'سورة البقرة (يتبع)', surah:'البقرة' }
+        { kind:'range', arr:baqaraPages, from:20, to:40, name:'سورة البقرة (تابع)', surah:'البقرة' }
       ] },
   3: { title:'البقرة، آل عمران', groups:[
-        { kind:'range', arr:baqaraPages, from:40, to:48, name:'سورة البقرة (ختام الجزء)', surah:'البقرة' },
+        { kind:'range', arr:baqaraPages, from:40, to:48, name:'سورة البقرة (تابع)', surah:'البقرة' },
         { kind:'range', arr:alimranPages, from:0, to:12, name:'سورة آل عمران (1–91)', surah:'آل عمران', note:'سورة آل عمران تكمل في الجزء 4 ←', noteTarget:4 }
       ] },
   4: { title:'آل عمران، النساء', groups:[
@@ -636,39 +649,39 @@ const JUZ_GROUPS = {
         { kind:'soon', name:'النساء', page:77 }
       ] },
   5:{ title:'النساء', groups:[
-        { kind:'soon', name:'النساء (تتمة)', page:82 }
+        { kind:'soon', name:'النساء (تابع)', page:82 }
       ] },
   6:{ title:'النساء، المائدة', groups:[
-        { kind:'soon', name:'النساء (تتمة)', page:102 },
+        { kind:'soon', name:'النساء (تابع)', page:102 },
         { kind:'soon', name:'المائدة', page:106 }
       ] },
   7:{ title:'المائدة، الأنعام', groups:[
-        { kind:'soon', name:'المائدة (تتمة)', page:121 },
+        { kind:'soon', name:'المائدة (تابع)', page:121 },
         { kind:'soon', name:'الأنعام', page:128 }
       ] },
   8:{ title:'الأنعام، الأعراف', groups:[
-        { kind:'soon', name:'الأنعام (تتمة)', page:142 },
+        { kind:'soon', name:'الأنعام (تابع)', page:142 },
         { kind:'soon', name:'الأعراف', page:151 }
       ] },
   9:{ title:'الأعراف، الأنفال', groups:[
-        { kind:'soon', name:'الأعراف (تتمة)', page:162 },
+        { kind:'soon', name:'الأعراف (تابع)', page:162 },
         { kind:'soon', name:'الأنفال', page:177 }
       ] },
   10:{ title:'الأنفال، التوبة', groups:[
-        { kind:'soon', name:'الأنفال (تتمة)', page:182 },
+        { kind:'soon', name:'الأنفال (تابع)', page:182 },
         { kind:'soon', name:'التوبة', page:187 }
       ] },
   11:{ title:'التوبة، يونس، هود', groups:[
-        { kind:'soon', name:'التوبة (تتمة)', page:201 },
+        { kind:'soon', name:'التوبة (تابع)', page:201 },
         { kind:'soon', name:'يونس', page:208 },
         { kind:'soon', name:'هود', page:221 }
       ] },
   12:{ title:'هود، يوسف', groups:[
-        { kind:'soon', name:'هود (تتمة)', page:221 },
+        { kind:'soon', name:'هود (تابع)', page:221 },
         { kind:'soon', name:'يوسف', page:235 }
       ] },
   13:{ title:'يوسف، الرعد، إبراهيم', groups:[
-        { kind:'soon', name:'يوسف (تتمة)', page:242 },
+        { kind:'soon', name:'يوسف (تابع)', page:242 },
         { kind:'soon', name:'الرعد', page:249 },
         { kind:'soon', name:'إبراهيم', page:255 }
       ] },
@@ -681,7 +694,7 @@ const JUZ_GROUPS = {
         { kind:'range', arr:kahfPages, from:0, to:9, name:'سورة الكهف (1–74)', surah:'الكهف', note:'سورة الكهف تكمل في الجزء 16 ←', noteTarget:16 }
       ] },
   16:{ title:'الكهف، مريم، طه', groups:[
-        { kind:'range', arr:kahfPages, from:9, to:12, name:'سورة الكهف (تتمة 75–110)', surah:'الكهف', note:'◄ سورة الكهف بدأت في الجزء 15', noteTarget:15 },
+        { kind:'range', arr:kahfPages, from:9, to:12, name:'سورة الكهف (تابع 75–110)', surah:'الكهف', note:'◄ سورة الكهف بدأت في الجزء 15', noteTarget:15 },
         { kind:'full', arr:maryamPages, name:'مريم', surah:'مريم' },
         { kind:'full', arr:tahaPages, name:'طه', surah:'طه' }
       ] },
@@ -695,24 +708,24 @@ const JUZ_GROUPS = {
         { kind:'soon', name:'الفرقان', page:359 }
       ] },
   19:{ title:'الفرقان، الشعراء، النمل', groups:[
-        { kind:'soon', name:'الفرقان (تتمة)', page:362 },
+        { kind:'soon', name:'الفرقان (تابع)', page:362 },
         { kind:'soon', name:'الشعراء', page:367 },
         { kind:'soon', name:'النمل', page:377 }
       ] },
   20:{ title:'النمل، القصص، العنكبوت', groups:[
-        { kind:'soon', name:'النمل (تتمة)', page:382 },
+        { kind:'soon', name:'النمل (تابع)', page:382 },
         { kind:'soon', name:'القصص', page:385 },
         { kind:'soon', name:'العنكبوت', page:396 }
       ] },
   21:{ title:'العنكبوت، الروم، لقمان، السجدة، الأحزاب', groups:[
-        { kind:'soon', name:'العنكبوت (تتمة)', page:402 },
+        { kind:'soon', name:'العنكبوت (تابع)', page:402 },
         { kind:'soon', name:'الروم', page:404 },
         { kind:'soon', name:'لقمان', page:411 },
         { kind:'soon', name:'السجدة', page:415 },
         { kind:'soon', name:'الأحزاب', page:418 }
       ] },
   22:{ title:'الأحزاب، سبأ، فاطر، يس', groups:[
-        { kind:'soon', name:'الأحزاب (تتمة)', page:422 },
+        { kind:'soon', name:'الأحزاب (تابع)', page:422 },
         { kind:'soon', name:'سبأ', page:428 },
         { kind:'soon', name:'فاطر', page:434 },
         { kind:'range', arr:yaseenPages, from:0, to:2, name:'سورة يس (1–27)', surah:'يس', note:'سورة يس تكمل في الجزء 23 ←', noteTarget:23 }
@@ -724,12 +737,12 @@ const JUZ_GROUPS = {
         { kind:'soon', name:'الزمر', page:458 }
       ] },
   24:{ title:'الزمر، غافر، فصلت', groups:[
-        { kind:'soon', name:'الزمر (تتمة)', page:462 },
+        { kind:'soon', name:'الزمر (تابع)', page:462 },
         { kind:'soon', name:'غافر', page:467 },
         { kind:'soon', name:'فصلت', page:477 }
       ] },
   25:{ title:'فصلت، الشورى، الزخرف، الدخان، الجاثية', groups:[
-        { kind:'soon', name:'فصلت (تتمة)', page:482 },
+        { kind:'soon', name:'فصلت (تابع)', page:482 },
         { kind:'soon', name:'الشورى', page:483 },
         { kind:'soon', name:'الزخرف', page:489 },
         { kind:'soon', name:'الدخان', page:496 },
@@ -744,7 +757,7 @@ const JUZ_GROUPS = {
         { kind:'range', arr:azzariyatPages, from:0, to:2, name:'سورة الذاريات (البداية)', surah:'الذاريات' }
       ] },
   27:{ title:'الذاريات، الحديد', groups:[
-        { kind:'range', arr:azzariyatPages, from:2, to:4, name:'سورة الذاريات (يتبع)', surah:'الذاريات' },
+        { kind:'range', arr:azzariyatPages, from:2, to:4, name:'سورة الذاريات (تابع)', surah:'الذاريات' },
         { kind:'full', arr:atturPages, name:'الطور', surah:'الطور' },
         { kind:'full', arr:annajmPages, name:'النجم', surah:'النجم' },
         { kind:'full', arr:alqamarPages, name:'القمر', surah:'القمر' },
