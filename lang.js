@@ -186,7 +186,7 @@ ar: {
   'review.end':'إنهاء المراجعة',
 
   // ===== المساعدة (صعب) =====
-  'hint.btn':'💡 مساعدة (أول 3 كلمات)',
+  'hint.btn':'💡 مساعدة',
   'voice.record_btn':'🎤 تسجيل صوتي',
   'voice.text_btn':'⌨️ كتابة',
   'reminder.banner':'🌙 لم تبدأ وردك اليوم بعد — أكمل حفظك الآن',
@@ -240,7 +240,7 @@ ar: {
   'recite.placeholder_text':'سيظهر النص هنا...',
   'recite.prev_btn':'⏮️ السابق',
   'recite.next_btn':'التالي ⏭️',
-  'recite.rec_desc_html':'اضغط 🎤 وابدأ التلاوة من أي آية<br>توقف متى شئت — سنحدد موضعك تلقائياً<br>🟢 صح &nbsp;|&nbsp; 🔴 غلط &nbsp;|&nbsp; ➖ محذوف',
+  'recite.rec_desc_html':'🎤 اضغط وابدأ من <b>أي آية</b> في الصفحة<br>لا يلزم البدء من أولها — توقف متى شئت وسنعرف موضعك تلقائيًا<br>🟢 صح &nbsp;|&nbsp; 🔴 غلط &nbsp;|&nbsp; ➖ محذوف',
   'recite.choose_surah_first':'اختر سورة أولاً',
   'recite.show_text_btn':'📖 اعرض نص السورة',
   'recite.hide_text_btn':'🙈 إخفاء النص',
@@ -514,7 +514,7 @@ en: {
   'review.end':'End review',
 
   // ===== Hint (hard level) =====
-  'hint.btn':'💡 Hint (first 3 words)',
+  'hint.btn':'💡 Help',
   'voice.record_btn':'🎤 Voice recording',
   'voice.text_btn':'⌨️ Typing',
   'reminder.banner':'🌙 You haven’t started today’s portion yet — continue your memorization now',

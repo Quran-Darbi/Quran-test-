@@ -130,6 +130,31 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .ayah-display{font-family:'Scheherazade New',serif;font-size:19px;line-height:3;direction:rtl;text-align:right;}
 .w-ok{color:#155724;background:#c3e6cb;border-radius:4px;padding:1px 4px;margin:1px;}
 .w-err{color:#fff;background:#c0392b;border-radius:4px;padding:1px 4px;margin:1px;}
+.w-help{color:#7a5a10;background:#fbefc8;border-radius:4px;padding:1px 4px;margin:1px;}
+html[data-theme="dark"] .w-help{color:#f0d88a;background:#3a3114;}
+.w-start{box-shadow:0 0 0 2px var(--gold);}
+.edit-tip{display:none;font-size:13px;color:var(--text);opacity:.75;margin:0 0 6px;text-align:center;}
+.help-result{display:none;margin-top:12px;}
+.help-result-title{font-size:15px;font-weight:700;margin-bottom:6px;}
+.help-chips{display:flex;flex-wrap:wrap;gap:6px;font-size:20px;}
+.help-chips span{background:#fbefc8;color:#7a5a10;border-radius:8px;padding:2px 10px;}
+html[data-theme="dark"] .help-chips span{background:#3a3114;color:#f0d88a;}
+.rec-word{border-bottom:2px dotted var(--gold);}
+.retry-wrong-btn{display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-family:inherit;font-size:15px;cursor:pointer;}
+.tail-note{display:none;margin-bottom:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-size:13px;text-align:center;line-height:1.7;}
+.tail-note button{margin-top:8px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--gold);background:transparent;color:var(--text);font-family:inherit;font-size:14px;cursor:pointer;}
+.scope-switch{display:flex;gap:6px;margin-bottom:4px;}
+.scope-switch button{flex:1;padding:9px 6px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center;line-height:1.35;}
+.scope-switch .sc-t{font-size:14px;font-weight:700;}
+.scope-switch .sc-ico{color:var(--accent);vertical-align:-2px;}
+.scope-switch button.on .sc-ico{color:inherit;}
+.scope-switch .sc-s{font-size:11px;opacity:.75;}
+.scope-switch button.on{border-color:var(--accent);background:var(--accent);color:#fff;}
+.scope-switch button.on .sc-s{opacity:.9;}
+html[data-theme="dark"] .scope-switch button.on{color:#10210f;}
+.scope-hint{font-size:12px;opacity:.75;text-align:center;margin-bottom:10px;}
+.help-why{font-size:12px;opacity:.8;margin:4px 0 8px;line-height:1.7;}
+.retry-banner{display:none;margin-bottom:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-size:14px;text-align:center;}
 .w-missing{color:#999;background:#f0f0f0;border-radius:4px;padding:1px 4px;margin:1px;text-decoration:line-through;}
 .retry-btn{width:100%;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);margin-top:10px;}
 .confetti-piece{position:fixed;top:-20px;z-index:9999;pointer-events:none;border-radius:2px;animation:confettiFall linear forwards;}
@@ -586,11 +611,15 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 </div>
 <div class="rec-card" id="recCard">
   <div class="rec-desc" data-i18n-html="recite.rec_desc_html">اضغط 🎤 وابدأ التلاوة من أي آية<br>توقف متى شئت — سنحدد موضعك تلقائياً<br>🟢 صح &nbsp;|&nbsp; 🔴 غلط &nbsp;|&nbsp; ➖ محذوف</div>
+  <div class="retry-banner" id="retryBanner"></div>
+  <div class="scope-switch" id="scopeSwitch"><button type="button" id="scopeFullBtn" onclick="setScope(true)"></button><button type="button" id="scopePartBtn" onclick="setScope(false)"></button></div>
+  <div class="scope-hint" id="scopeHint"></div>
   <button class="rec-btn" id="recBtn" onclick="toggleRec()" data-i18n="recite.choose_surah_first">اختر سورة أولاً</button>
   <button class="reveal-btn" id="revealBtn" onclick="toggleReveal()" style="display:none;" data-i18n="recite.show_text_btn">📖 اعرض نص السورة</button>
   <button class="reveal-btn" id="hintBtn" onclick="showHint()" style="display:none;" data-i18n="hint.btn">💡 مساعدة (أول 3 كلمات)</button>
   <div class="reveal-box" id="hintBox" style="display:none;"></div>
   <div class="reveal-box" id="revealBox" style="display:none;"></div>
+  <div class="edit-tip" id="editTip"></div>
   <div class="transcript-box" id="transcriptBox"></div>
   <button class="clear-btn" id="clearBtn" onclick="clearAll()" data-i18n="recite.clear_btn">🗑️ مسح والبدء من جديد</button>
   <button class="check-btn" id="checkBtn" onclick="checkRecitation()" data-i18n="recite.check_btn">✓ تحقق من التلاوة</button>
@@ -606,13 +635,17 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   </div>
   <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
   <div class="where-msg" id="whereMsg"></div>
+  <div class="tail-note" id="tailNote"><div id="tailNoteTxt"></div><button type="button" id="tailNoteBtn" onclick="checkRecitation(true)"></button></div>
   <div class="scope-note" data-i18n="recite.scope_note">ℹ️ هذا الاختبار يتحقق من الكلمات وترتيبها في حفظك، ولا يتحقق حالياً من دقة الحركات (التشكيل) أو أحكام التجويد والمدود — هذا الجزء قيد البحث والتطوير.</div>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c3e6cb;border:1px solid #155724"></div><span data-i18n="recite.legend_correct">صحيحة</span></div>
     <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div><span data-i18n="recite.legend_wrong">خاطئة</span></div>
     <div class="legend-item"><div class="legend-dot" style="background:#f0f0f0;border:1px solid #ccc"></div><span data-i18n="recite.legend_missing">محذوفة</span></div>
+    <div class="legend-item" id="legendHelp" style="display:none"><div class="legend-dot" style="background:#fbefc8;border:1px solid #7a5a10"></div><span id="legendHelpTxt"></span></div>
   </div>
   <div class="ayah-display" id="ayahDisplay"></div>
+  <div class="help-result" id="helpResult"><div class="help-result-title" id="helpResultTitle"></div><div class="help-why" id="helpWhy"></div><div class="help-chips" id="helpChips"></div></div>
+  <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()"></button>
   <button class="retry-btn" onclick="retryRec()" data-i18n="recite.retry_btn">🔄 إعادة التسجيل</button>
 </div>
 <script>
@@ -895,6 +928,19 @@ const SURAH_NAMES = {
 };
 
 let currentKey='',refWords=[];
+// ===== نصوص الميزات الجديدة (مساعدة تدريجية / توضيحات) — عربي وإنجليزي؛ باقي اللغات تأخذ الإنجليزي =====
+const _XT={
+  ar:{helpTitle:'كلمات احتجت إلى مساعدة فيها ({n})',helpLegend:'بمساعدة',editTip:'👆 اضغط على أي كلمة التقطها الجهاز خطأً لتحذفها أو تعيد تسجيلها',whereAyah:'بدأت من الآية {n}',retryWrong:'🎯 أعد الجزء الذي أخطأت فيه',retryBanner:'🎯 أعد التسميع من الآية {n} — موضع أول خطأ',retryBannerNoAyah:'🎯 أعد التسميع من موضع أول خطأ',retryBannerLeft:'🎯 أعد التسميع من الآية {n} — مواضع الخطأ المتبقية: {r}',retryNext:'➡️ الخطأ التالي: الآية {n} (المتبقي {r})',retryAgain:'🎯 أعد الآية {n} مرة أخرى',retryDone:'✅ أحسنت — صحّحتَ كل مواضع الخطأ',tailNote:'⏹️ توقفتَ عند الآية {a}؛ لم تُقرأ {k} كلمة من آخر الصفحة (الآيات {f}–{t}) ولم تُحسب عليك.',tailNoteNoAyah:'⏹️ توقفتَ قبل آخر الصفحة؛ لم تُقرأ {k} كلمة ولم تُحسب عليك.',tailBtn:'أردتُ الصفحة كاملة — احسب الباقي نسيانًا',helpWhy:'ℹ️ النسبة {p}٪ وليست ١٠٠٪ لأنك استعنتَ بالمساعدة في {n} من الكلمات. الكلمة الملمَّح لها تُحسب قراءةً صحيحة لكنها لا تُحسب حفظًا كاملًا، ولذلك لم يظهر الاحتفال. اقرأ الصفحة بلا مساعدة لتحصل على ١٠٠٪.',scopeFull:'📖 تسميع الصفحة كاملة',scopeFullSub:'من أول الصفحة إلى آخرها',scopePart:'تسميع آيات محددة',scopePartSub:'من أي آية، وتتوقف متى شئت',scopeHintFull:'ما لم تقرأه من آخر الصفحة يُحسب نسيانًا',scopeHintPart:'تُحسب الآيات التي قرأتَها فقط',liveOn:'👁️ عرض فوري: يعمل',liveOff:'👁️ عرض فوري: متوقف',liveHint:'الكلمات التي تقرؤها صحيحة تظهر هنا في مكانها من الصفحة'},
+  en:{helpTitle:'Words you needed help with ({n})',helpLegend:'With help',editTip:'👆 Tap any word the device heard wrongly to delete it or re-record it',whereAyah:'You started from verse {n}',retryWrong:'🎯 Redo the part I got wrong',retryBanner:'🎯 Recite again from verse {n} — where your first mistake was',retryBannerNoAyah:'🎯 Recite again from where your first mistake was',retryBannerLeft:'🎯 Recite again from verse {n} — mistakes left: {r}',retryNext:'➡️ Next mistake: verse {n} ({r} left)',retryAgain:'🎯 Redo verse {n} again',retryDone:'✅ Well done — you fixed every mistake',tailNote:'⏹️ You stopped at verse {a}; {k} words at the end of the page (verses {f}–{t}) were not read and not counted against you.',tailNoteNoAyah:'⏹️ You stopped before the end of the page; {k} words were not read and not counted.',tailBtn:'I meant the whole page — count the rest as forgotten',helpWhy:'ℹ️ Your score is {p}% rather than 100% because you used help on {n} word(s). A helped word counts as read correctly but not as fully memorized, so there is no celebration. Recite the page without help to reach 100%.',scopeFull:'📖 Recite the whole page',scopeFullSub:'From the start of the page to the end',scopePart:'Recite chosen verses',scopePartSub:'From any verse, stop whenever you like',scopeHintFull:'Whatever you do not recite to the end of the page counts as forgotten',scopeHintPart:'Only the verses you recite are counted',liveOn:'👁️ Live view: on',liveOff:'👁️ Live view: off',liveHint:'Words you recite correctly appear here in their place on the page'}
+};
+function _tx(k,v){
+  const lg=(window.darbiLang&&darbiLang())||'ar';
+  let t=(_XT[lg]||_XT.en)[k]||'';
+  if(v)for(const x in v)t=t.replace('{'+x+'}',v[x]);
+  return t;
+}
+// المساعدة التدريجية: فهارس الكلمات (مطلقة في refWords) التي كُشفت، وقائمتها بالترتيب
+let helpIdx=[],helpWords=[],_startCue='';
 
 // ===== نظام تتبع التقدم الدائم (يوليو 2026) — نفس مفتاح localStorage
 // 'darbi_progress' المستخدم في صفحات الاختبار، تحت مستوى 'recitation' =====
@@ -932,7 +978,7 @@ function saveDarbiProgress(level,correct,total){
 //   fs   = أفضل نسبة بين المحاولات التي بلغت cov ≥ 90 (صفحة كاملة تقريبًا)
 //   last = آخر محاولة {p: النسبة، a: آخر آية وصل إليها، c: نسبة ما قُرئ، t: الوقت}
 // تُقرأ في صفحة «تقدّمي». done وscore كما هما دون تغيير.
-function saveRecitationDetail(pct,startIdx,results){
+function saveRecitationDetail(pct,startIdx,results,retryOnly){
   try{
     // آخر كلمة نُطقت فعلًا (ok أو err) — الكلمات الناقصة في الذيل لم يصل إليها القارئ
     var covered=0;
@@ -947,10 +993,38 @@ function saveRecitationDetail(pct,startIdx,results){
     var endIdx=startIdx+covered;
     var ayahNo=0;
     for(var i=0;i<ayahBounds.length;i++){if(ayahBounds[i].start<=endIdx-1)ayahNo=ayahBounds[i].num;}
-    rec.n=(rec.n||0)+1;
-    rec.cov=Math.max(rec.cov||0,cov);
-    if(cov>=90)rec.fs=Math.max(rec.fs||0,pct);
-    rec.last={p:pct,a:ayahNo,c:cov,t:new Date().toISOString()};
+    if(!retryOnly){
+      rec.n=(rec.n||0)+1;
+      rec.cov=Math.max(rec.cov||0,cov);
+      if(cov>=90)rec.fs=Math.max(rec.fs||0,pct);
+      rec.last={p:pct,a:ayahNo,c:cov,t:new Date().toISOString()};
+    }
+    // ===== مواضع المراجعة (أكتوبر 2026): rec.w = { فهرس الكلمة: {w:الكلمة, a:الآية, c:عدد مرات التعثر, h:1 إن كانت بمساعدة} } =====
+    // الكلمة الخاطئة أو الناقصة أو التي احتاجت مساعدة تُضاف أو يزيد عدّادها، والكلمة التي قُرئت صحيحة دون مساعدة تُحذف من القائمة
+    var W=rec.w||{};
+    var _ayOf=function(abs){var n=0;for(var q=0;q<ayahBounds.length;q++){if(ayahBounds[q].start<=abs)n=ayahBounds[q].num;}return n;};
+    var _muqN=(muqRun&&muqRun.n)?muqRun.n:0;
+    var _mark=function(abs,word,isHelp){
+      if(abs<_muqN||!word)return;
+      var o=W[abs]||{w:word,a:_ayOf(abs),c:0};
+      o.w=word;o.a=_ayOf(abs);o.c=(o.c||0)+1;if(isHelp)o.h=1;else delete o.h;
+      W[abs]=o;
+    };
+    for(var j2=0;j2<results.length;j2++){
+      var abs2=startIdx+j2,r2=results[j2],helped=helpIdx.indexOf(abs2)>=0;
+      if(r2.status==='ok'&&!helped){delete W[abs2];}
+      else if(r2.status==='ok'&&helped){_mark(abs2,r2.ref,true);}
+      else{_mark(abs2,r2.ref,false);}
+    }
+    helpIdx.forEach(function(h){
+      if(h<startIdx||h>=startIdx+results.length){_mark(h,refWords[h],true);}
+    });
+    var ks=Object.keys(W);
+    if(ks.length>40){
+      ks.sort(function(x,y){return (W[y].c||0)-(W[x].c||0);});
+      ks.slice(40).forEach(function(k){delete W[k];});
+    }
+    rec.w=W;
     localStorage.setItem(pk,JSON.stringify(all));
   }catch(e){}
 }
@@ -1063,6 +1137,10 @@ function norm(s){
     .replace(/^وجي$/,'وجاي')           // الفجر: وَجِاْيٓءَ يَوْمَئِذٍۭ بِجَهَنَّمَ
     .replace(/^الحرف$/,'الحرث')        // البقرة ص31: نِسَآؤُكُمْ حَرْثٌ.../ٱلْحَرْثَ (ث↔ف)
     .replace(/^ينسخ$/,'ينفخ')          // النبأ: يَوْمَ يُنفَخُ فِى ٱلصُّورِ (ف↔س)
+    // فصلت (ملاحظات هند 2026-10-07): كلمات يكتبها التعرف الصوتي بشكل مختلف رغم النطق الصحيح
+    .replace(/^اضلنا$/,'اضلانا')        // أَضَلَّانَا: يحذف ألف التثنية
+    .replace(/^فقضهن$/,'فقضاهن')        // فَقَضَىٰهُنَّ: يحذف الألف
+    .replace(/^وناي$/,'ونا')            // وَنَـَٔا: يكتبها «ونأى/ونائي»
     .replace(/\s+/g,' ')
     .trim();
 }
@@ -1646,6 +1724,8 @@ function onSelectSurah(){
   });
 }
 function applySurah(){
+  _renderScope();
+  _retryQ=[];_retryTarget=-1;
   refWords=splitRefWords(TEXTS[currentKey]);
   if(currentKey!=='fatiha')refWords=stripLeadingBasmala(refWords);
   muqRun=captureMuqattaat(refWords);
@@ -1667,19 +1747,106 @@ function applySurah(){
   clearAll();
 }
 
+// الكلمة التالية بعد آخر كلمة قرأها المستخدم (أو أول كلمة إن لم يقرأ شيئًا بعد)
+function _nextRefIdx(){
+  const uw=mergeYaAyyuha(savedWords.filter(w=>w.length>0));
+  if(!uw.length)return 0;
+  const s0=findStart(uw);
+  const res=compareWords(uw,refWords.slice(s0,s0+uw.length+10));
+  let last=-1;
+  for(let i=0;i<res.length;i++){if(res[i].status==='ok')last=i;}
+  return s0+last+1;
+}
+// المساعدة تحتاج موضعًا دقيقًا: التعرّف الصوتي يسلّم الكلمات متأخرًا بعد النطق، فلو حُسب الموضع أثناء التسجيل لعدّ كلمة
+// قالها المستخدم فعلًا ولم تصل بعدُ كأنها «التالية». لذلك إن كان التسجيل شغّالًا نوقفه مؤقتًا لتصل الكلمات المعلّقة، ثم نكشف الكلمة.
+// ===== العرض الفوري (أكتوبر 2026): هيكل الصفحة ثابت، والكلمة الصحيحة تظهر خضراء في مكانها =====
+// النتائج المؤقتة (ظهور الكلمات أثناء القراءة) مفعّلة دائمًا
+const liveOn=false;   // الكتابة الفورية أثناء التلاوة معطّلة حاليًا (يعمل العرض كما كان في النسخة الحية). لتفعيلها لاحقًا غيّر false إلى true
+// متصفحات أندرويد مع النتائج المؤقتة قد تعيد النص النهائي تراكميًا («بسم» ثم «بسم الله» ثم «بسم الله الرحمن»…).
+// فإذا بدأ النص الجديد بالنص النهائي السابق نفسه أخذنا الجزء الزائد فقط. يعمل فقط مع «العرض الفوري».
+let _lastFinalN=[];   // كل كلمات الجلسة الحالية للتعرّف (مُطبَّعة) بعد إزالة المكرر
+// يعيد عدد الكلمات التي تبدأ بها القائمة n وهي مكرَّرة من آخر ما كُتب في هذه الجلسة:
+// (1) تراكمي: القائمة تبدأ بكل ما سبق  (2) تداخل: تبدأ بآخر كلمتين فأكثر مما سبق  (3) إعادة تسليم: القائمة كلها (3 كلمات فأكثر) موجودة في ذيل ما سبق
+// هل في نص هذه الصفحة تكرار فعلي متتالٍ لهذه الكلمة أو العبارة (مثل «صفًّا صفًّا» و«دكًّا دكًّا» و«إن مع العسر يسرًا»)؟ إن كان فلا نحذف تكرارها
+function _refRepeats(run){
+  const r=Array.isArray(run)?run:[run];const k=r.length;
+  try{
+    const R=refWords.map(norm);
+    for(let i=0;i+2*k<=R.length;i++){
+      let ok=true;
+      for(let j=0;j<k;j++){if(R[i+j]!==r[j]||R[i+k+j]!==r[j]){ok=false;break;}}
+      if(ok)return true;
+    }
+  }catch(_){}
+  return false;
+}
+// يعيد عدد الكلمات التي تبدأ بها n وهي تكرار لما كُتب قبلها. المرجع (base):
+//  - كلمات الجلسة الحالية إن وُجدت، وإلا ذيل ما كُتب سابقًا في الصفحة (عند التلاوة من جديد دون تحديد كلمة)
+function _ovCount(n){
+  const s=_lastFinalN;
+  if(!n.length)return 0;
+  let base=s,fromSaved=false;
+  if(!s.length){
+    if(selWord!==null||_insertAt!==null||!savedWords.length)return 0;
+    base=savedWords.slice(-12).map(norm);fromSaved=true;
+  }
+  // أول كلمة في الجلسة قد تصل مكرَّرة عدة مرات: ما دام المرجع كلمة واحدة نحذف كل تكرار لها
+  if(base.length===1&&n[0]===base[0]&&!_refRepeats(base[0])){let c=0;while(c<n.length&&n[c]===base[0])c++;return c;}
+  if(!fromSaved&&n.length>base.length&&base.every((x,i)=>x===n[i]))return base.length;
+  const m=Math.min(base.length,n.length);
+  for(let k=m;k>=1;k--){
+    let ok=true;
+    for(let i=0;i<k;i++){if(base[base.length-k+i]!==n[i]){ok=false;break;}}
+    if(ok&&!_refRepeats(n.slice(0,k)))return k;   // k=1: أول كلمة في النص الجديد هي آخر كلمة سابقة (يكررها الهاتف عند بدء مقطع جديد)
+  }
+  return 0;
+}
+function _cumDedup(ws){
+  const n=ws.map(norm);
+  const c=_ovCount(n);
+  const out=ws.slice(c);
+  _lastFinalN=_lastFinalN.concat(n.slice(c));
+  return out;
+}
+let _helpPending=false,_helpTimer=null;
 function showHint(){
   if(!refWords.length)return;
-  const box=document.getElementById('hintBox');
-  // الحروف المقطعة تُعرض برسم المصحف (الٓمٓ) لا بأسماء الحروف
-  let hw=refWords.slice(0,3);
-  if(muqRun&&muqRun.n){
-    hw=[muqRun.raw].concat(refWords.slice(muqRun.n,muqRun.n+3-1));
+  if(recognizing&&recInst){
+    _helpPending=true;
+    try{recInst.stop();}catch(e){_helpPending=false;_doHelp();return;}
+    clearTimeout(_helpTimer);
+    _helpTimer=setTimeout(function(){if(_helpPending){_helpPending=false;_doHelp();}},1800);
+    return;
   }
-  box.textContent=hw.join(' ');
+  _doHelp();
+}
+function _doHelp(){
+  if(!refWords.length)return;
+  const idx=_nextRefIdx();
+  if(idx>=refWords.length)return;
+  // الحروف المقطعة تُعرض برسم المصحف (الٓمٓ) وتُكشف كوحدة واحدة
+  let word,idxs;
+  if(muqRun&&muqRun.n&&idx<muqRun.n){
+    word=muqRun.raw;idxs=[];for(let i=0;i<muqRun.n;i++)idxs.push(i);
+  }else{word=refWords[idx];idxs=[idx];}
+  if(idxs[0]===0){
+    // أول كلمة في الصفحة: تلميح بداية فقط (لا يدل على ضعف الحفظ) فتُعرض ولا تُحسب مساعدة ولا تمنع ١٠٠٪
+    _startCue=word;
+  }else if(helpIdx.indexOf(idxs[0])<0){
+    idxs.forEach(i=>{if(helpIdx.indexOf(i)<0)helpIdx.push(i);});
+    helpWords.push(word);
+  }
+  const box=document.getElementById('hintBox');
+  box.textContent=[_startCue].concat(helpWords).filter(Boolean).join(' ');
   box.style.display='block';
   const btn=document.getElementById('hintBtn');
-  btn.disabled=true;
-  btn.textContent=darbiT('recite.hint_used');
+  btn.textContent=darbiT('hint.btn')+(helpWords.length?' ('+helpWords.length+')':'');
+}
+function _resetHelp(){
+  helpIdx=[];helpWords=[];_startCue='';
+  const box=document.getElementById('hintBox');if(box)box.style.display='none';
+  const btn=document.getElementById('hintBtn');
+  if(btn){btn.disabled=false;btn.textContent=darbiT('hint.btn');}
 }
 
 function toggleReveal(){
@@ -1725,16 +1892,43 @@ function findStart(userWords){
   return 0;
 }
 
+// إدغام النون الساكنة والتنوين في (ي ر م ل و ن) والإقلاب قبل الباء: «وَإِن مَّسَّهُ» تُسمع «وامّسه»
+// فيكتبها التعرف «وام»، و«حَكِيمٌ لَّهُ» تُسمع «حكيملّه». فالكلمة المنتهية بنون ساكنة أو تنوين
+// تُقبل إذا أُبدل حرف النون/التنوين بحرف الكلمة التالية (والباء تُقلب ميمًا)، أو حُذف الحرف الحامل للتنوين
+function _idghamForms(ref,i){
+  const raw=String(ref[i]),r=norm(raw);
+  if(r.length<2||i+1>=ref.length)return null;
+  let c=norm(ref[i+1]).charAt(0);
+  if(c==='ب')c='م';
+  else if('يرملون'.indexOf(c)<0)return null;
+  const t=raw.replace(/[\u0615-\u061A\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED\u08D3-\u08E1\u08E3-\u08FF]+$/,'');
+  const out=[];
+  // نون ساكنة: تنتهي بنون بلا حركة (أو بسكون)
+  if(/ن[\u0652\u06E1]?$/.test(t)&&r.charAt(r.length-1)==='ن')out.push(r.slice(0,-1)+c);
+  // تنوين: الحرف الأخير قبل التنوين يبقى، والتنوين يصير حرف الإدغام (والألف/الياء الحاملة تسقط)
+  if(/[\u064B-\u064D\u08F0-\u08F2]/.test(t.slice(-4))){
+    out.push(r+c);
+    if(/[اي]$/.test(r))out.push(r.slice(0,-1)+c);
+  }
+  return out.length?out:null;
+}
+function _wEq(ref,i,u){
+  const r=norm(ref[i]),w=norm(u);
+  if(r===w)return true;
+  const f=_idghamForms(ref,i);
+  if(f){for(let k=0;k<f.length;k++){if(w===f[k]||w===f[k].replace(/(.)\1+/g,'$1'))return true;}}
+  return false;
+}
 function compareWords(userWords,ref){
   const n=ref.length,m=userWords.length;
   const dp=Array.from({length:n+1},()=>new Array(m+1).fill(0));
   for(let i=1;i<=n;i++)for(let j=1;j<=m;j++){
-    if(norm(ref[i-1])===norm(userWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;
+    if(_wEq(ref,i-1,userWords[j-1]))dp[i][j]=dp[i-1][j-1]+1;
     else dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
   }
   const aligned=[];let i=n,j=m;
   while(i>0||j>0){
-    if(i>0&&j>0&&norm(ref[i-1])===norm(userWords[j-1])){aligned.push({ref:ref[i-1],user:userWords[j-1],status:'ok'});i--;j--;}
+    if(i>0&&j>0&&_wEq(ref,i-1,userWords[j-1])){aligned.push({ref:ref[i-1],user:userWords[j-1],status:'ok'});i--;j--;}
     else if(j>0&&(i===0||dp[i][j-1]>=dp[i-1][j])){j--;}
     else{aligned.push({ref:ref[i-1],user:'',status:'missing'});i--;}
   }
@@ -1840,18 +2034,11 @@ function unmaskWords(words){
     return Math.abs(best-pos)<=15?refWords[best]:w;
   });
 }
-function addWords(newW){
-  if(!newW||!newW.length)return;
-  newW=_cleanSTT(newW);
-  if(!newW.length)return;
-  if(selWord!==null&&selWord<savedWords.length){
-    const _g=(selWord===0)?muqGroupLen():0;   // المقطعة تُستبدل كوحدة
-    savedWords.splice(selWord,_g||1);
-    savedWords.splice(selWord,0,...newW);
-    selWord=null;
-  }else{
-    savedWords=savedWords.concat(newW);
-  }
+// مؤشر الإدراج: عند استبدال كلمة محدَّدة بكلام من أكثر من كلمة قد يصل الكلام على دفعتين (نتيجتين نهائيتين)،
+// فالأولى تحلّ محل الكلمة المحدَّدة. هذا المؤشر يجعل الدفعات التالية في نفس جلسة التسجيل تُدرَج بعدها مباشرة
+// بدل أن تُلحق بآخر النص. يُصفَّر عند بدء جلسة تسجيل جديدة أو انتهائها أو مسح النص.
+let _insertAt=null;
+function _normSaved(){
   savedWords=expandDigits(savedWords);
   savedWords=unmaskWords(savedWords);
   savedWords=splitMergedWords(savedWords);
@@ -1861,6 +2048,30 @@ function addWords(newW){
   savedWords=sttPhrasePass(savedWords,refWords,norm);
   savedWords=fixPronunciation(savedWords);
   savedWords=snapWordsToRasm(savedWords);
+}
+function addWords(newW){
+  if(!newW||!newW.length)return;
+  newW=_cleanSTT(newW);
+  if(!newW.length)return;
+  if(selWord!==null&&selWord<savedWords.length){
+    const at=selWord;
+    const _g=(selWord===0)?muqGroupLen():0;   // المقطعة تُستبدل كوحدة
+    savedWords.splice(selWord,_g||1);
+    savedWords.splice(selWord,0,...newW);
+    selWord=null;
+    const mid=savedWords.length;
+    _normSaved();
+    _insertAt=at+newW.length+(savedWords.length-mid);
+  }else if(_insertAt!==null&&_insertAt<=savedWords.length){
+    const at=_insertAt;
+    savedWords.splice(at,0,...newW);
+    const mid=savedWords.length;
+    _normSaved();
+    _insertAt=at+newW.length+(savedWords.length-mid);
+  }else{
+    savedWords=savedWords.concat(newW);
+    _normSaved();
+  }
 }
 // ===== تصحيح فروق النطق بين STT والرسم العثماني =====
 // القواعد التلاتة دي بتشتغل *بس* لو الكلمة مش مطابقة أصلاً، وكلها
@@ -2453,6 +2664,8 @@ function renderTranscript(){
   const box=document.getElementById('transcriptBox');
   box.innerHTML='';
   if(selWord!==null&&selWord>=savedWords.length)selWord=null;
+  const _tip=document.getElementById('editTip');
+  if(_tip){_tip.textContent=_tx('editTip');_tip.style.display=(savedWords.length&&!recognizing)?'block':'none';}
   if(!savedWords.length&&!currentText){
     box.style.color='var(--border)';
     box.textContent=darbiT('recite.placeholder_text');
@@ -2501,9 +2714,16 @@ function renderTranscript(){
     if(!(_g&&i===0&&_g>1))_marks(i);      // المقطعة: العلامات بعد آخر حرف في المجموعة مش بعد الأول
   });
   if(currentText){
-    const cur=document.createElement('span');
-    cur.style.cssText='color:var(--teal);font-style:italic;margin:2px;';
-    cur.textContent=' '+currentText;box.appendChild(cur);
+    // كلمات لم تستقر بعد (نتيجة مؤقتة): شرائح باهتة غير قابلة للنقر حتى تثبت
+    if(!liveOn){
+      const cur=document.createElement('span');
+      cur.style.cssText='color:var(--teal);font-style:italic;margin:2px;';
+      cur.textContent=' '+currentText;box.appendChild(cur);
+    }else currentText.trim().split(/\s+/).filter(w=>w).forEach(w=>{
+      const t=document.createElement('span');t.className='rec-word';
+      t.style.cssText='opacity:.55;cursor:default;border-bottom-style:dashed;';
+      t.textContent=w;box.appendChild(t);
+    });
   }
 }
 
@@ -2530,8 +2750,8 @@ function _dbgRaw(tr,fin){
   }catch(_){}
 }
 function makeRec(){
-  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=false;let doneUpTo=0;
-  r.onstart=()=>{recognizing=true;currentText='';setBtn('rec');renderTranscript();};
+  const r=new SpeechAPI();r.lang='ar-SA';r.continuous=true;r.interimResults=!!liveOn;let doneUpTo=0;
+  r.onstart=()=>{recognizing=true;currentText='';_lastFinalN=[];_insertAt=null;setBtn('rec');renderTranscript();};
   r.onresult=e=>{
     let interim='';
     for(let i=e.resultIndex;i<e.results.length;i++){
@@ -2540,20 +2760,28 @@ function makeRec(){
       if(e.results[i].isFinal){
         if(i>=doneUpTo){
           doneUpTo=i+1;
-          addWords(tr.replace(/\b300\b|300/g,'ثلاث مائة').trim().split(/\s+/).filter(w=>w));
+          let _fw=tr.replace(/\b300\b|300/g,'ثلاث مائة').trim().split(/\s+/).filter(w=>w);
+          if(liveOn)_fw=_cumDedup(_fw);
+          if(_fw.length)addWords(_fw);
         }
       }else{
-        interim+=tr;
+        if(liveOn)interim=tr;else interim+=tr;   // مع العرض الفوري: آخر نتيجة مؤقتة فقط (هي الأحدث والتراكمية)
       }
     }
-    currentText=mergeYaAyyuha(interim.trim().split(/\s+/).filter(w=>w)).join(' ');
+    let _iw=interim.trim().split(/\s+/).filter(w=>w);
+    if(liveOn&&_iw.length){
+      _iw=_iw.slice(_ovCount(_iw.map(norm)));
+    }
+    currentText=mergeYaAyyuha(_iw).join(' ');
     renderTranscript();updateBtns();
   };
   r.onerror=e=>{if(e.error!=='no-speech'&&e.error!=='aborted'){recognizing=false;setBtn(savedWords.length?'paused':'idle');if(['not-allowed','service-not-allowed','audio-capture','language-not-supported'].indexOf(e.error)!==-1){try{alert(darbiT('recite.err_speech_blocked'));}catch(_){}}}};
   r.onend=()=>{
     recognizing=false;
     if(currentText){addWords(currentText.trim().split(/\s+/).filter(w=>w));currentText='';}
+    _lastFinalN=[];_insertAt=null;
     renderTranscript();setBtn(savedWords.length?'paused':'idle');
+    if(_helpPending){_helpPending=false;clearTimeout(_helpTimer);_doHelp();}
   };
   return r;
 }
@@ -2586,8 +2814,12 @@ function setBtn(state){
 }
 
 function clearAll(){
+  if(!_keepQ){_retryQ=[];_retryTarget=-1;}
+  const _rb=document.getElementById('retryBanner');if(_rb)_rb.style.display='none';
+  const _tn=document.getElementById('tailNote');if(_tn)_tn.style.display='none';
   if(recognizing){try{recInst.stop();}catch(e){}recognizing=false;}
-  recInst=null;savedWords=[];selWord=null;currentText='';
+  recInst=null;savedWords=[];selWord=null;currentText='';_insertAt=null;
+  _resetHelp();
   renderTranscript();
   document.getElementById('checkBtn').className='check-btn';
   document.getElementById('clearBtn').className='clear-btn';
@@ -2599,14 +2831,121 @@ function clearAll(){
   }
 }
 function retryRec(){clearAll();}
+// قائمة مواضع الخطأ (آيات فيها أخطاء لم تُصحَّح بعد) بترتيب الصفحة: [{ay,st,en}]
+// تُحدَّث بعد كل «تحقق»: الآيات التي قُرئت كاملةً وصحّت تُحذف، والآيات التي فيها أخطاء تُضاف
+var _retryQ=[],_retryTarget=-1,_keepQ=false,_firstErrAbs=-1;
+function _ayahSpan(abs){
+  for(let i=ayahBounds.length-1;i>=0;i--){
+    if(ayahBounds[i].start<=abs){
+      const en=((i+1<ayahBounds.length)?ayahBounds[i+1].start:refWords.length)-1;
+      return {ay:ayahBounds[i].num,st:ayahBounds[i].start,en:en};
+    }
+  }
+  return {ay:0,st:abs,en:abs};
+}
+function _updateRetryQueue(startIdx,results){
+  const covStart=startIdx,covEnd=startIdx+results.length-1;
+  // 1) نُبقي من القائمة ما لم يُقرأ كاملًا في هذه المحاولة
+  let q=_retryQ.filter(it=>!(it.st>=covStart&&it.en<=covEnd));
+  // 2) نُضيف آيات هذه المحاولة التي فيها أخطاء
+  const seen={};q.forEach(it=>{seen[it.st]=1;});
+  for(let i=0;i<results.length;i++){
+    if(results[i].status!=='ok'){
+      const sp=_ayahSpan(startIdx+i);
+      if(!seen[sp.st]){seen[sp.st]=1;q.push(sp);}
+    }
+  }
+  q.sort((x,y)=>x.st-y.st);
+  _retryQ=q;
+}
+function _renderRetryBtn(){
+  const btn=document.getElementById('retryWrongBtn');if(!btn)return;
+  const q=_retryQ,inRetry=_retryTarget>=0;
+  const _bn=document.getElementById('retryBanner');
+  if(_bn&&inRetry&&(!q.length||q[0].st!==_retryTarget))_bn.style.display='none';
+  if(!q.length){
+    if(inRetry){btn.textContent=_tx('retryDone');btn.style.display='block';btn.onclick=null;btn.style.cursor='default';}
+    else btn.style.display='none';
+    return;
+  }
+  btn.style.cursor='pointer';btn.onclick=retryWrong;
+  const first=q[0],rest=q.length-1;
+  if(!inRetry)btn.textContent=_tx('retryWrong')+(q.length>1?' ('+q.length+')':'');
+  else if(first.st===_retryTarget)btn.textContent=_tx('retryAgain',{n:first.ay||''});
+  else btn.textContent=_tx('retryNext',{n:first.ay||'',r:q.length});
+  btn.style.display='block';
+}
+function retryWrong(){
+  if(!_retryQ.length)return;
+  const it=_retryQ[0];
+  _keepQ=true;clearAll();_keepQ=false;
+  _retryTarget=it.st;
+  const b=document.getElementById('retryBanner');
+  b.textContent=it.ay>0?(_retryQ.length>1?_tx('retryBannerLeft',{n:it.ay,r:_retryQ.length}):_tx('retryBanner',{n:it.ay})):_tx('retryBannerNoAyah');
+  b.style.display='block';
+  document.getElementById('recCard').scrollIntoView({behavior:'smooth'});
+}
 
-function checkRecitation(){
+// لقطة من سجل التقدّم قبل حفظ النتيجة، لنستعيدها إن اختار المستخدم «أردتُ الصفحة كاملة» فلا تبقى درجة الجزء المقروء وحده
+// نطاق التسميع: الصفحة كاملة (الافتراضي: الباقي يُحسب نسيانًا) أو من أي مكان (تُحسب الكلمات المقروءة فقط)
+var _scopeFull=true;
+try{if(localStorage.getItem('darbi_rec_scope')==='part')_scopeFull=false;}catch(e){}
+function _renderScope(){
+  const f=document.getElementById('scopeFullBtn'),pb=document.getElementById('scopePartBtn'),h=document.getElementById('scopeHint');
+  if(!f||!pb)return;
+  const _fill=function(b,t,sub){b.textContent='';const a=document.createElement('span');a.className='sc-t';a.textContent=_tx(t);const c=document.createElement('span');c.className='sc-s';c.textContent=_tx(sub);b.appendChild(a);b.appendChild(c);};
+  _fill(f,'scopeFull','scopeFullSub');_fill(pb,'scopePart','scopePartSub');
+  // فاصل الصفحة بلون أخضر (بدل إيموجي 🔖 الأحمر): أيقونة SVG تتبع لون الزر
+  (function(){
+    const t=pb.querySelector('.sc-t');if(!t||t.querySelector('svg'))return;
+    const NS='http://www.w3.org/2000/svg';
+    const sv=document.createElementNS(NS,'svg');sv.setAttribute('width','13');sv.setAttribute('height','16');sv.setAttribute('viewBox','0 0 14 16');sv.setAttribute('aria-hidden','true');sv.setAttribute('class','sc-ico');
+    const pa=document.createElementNS(NS,'path');pa.setAttribute('d','M2 1h10a1 1 0 0 1 1 1v13l-6-3.5L1 15V2a1 1 0 0 1 1-1z');pa.setAttribute('fill','currentColor');
+    sv.appendChild(pa);t.insertBefore(sv,t.firstChild);t.insertBefore(document.createTextNode(' '),sv.nextSibling);
+  })();
+  f.className=_scopeFull?'on':'';pb.className=_scopeFull?'':'on';
+  if(h)h.textContent=_tx(_scopeFull?'scopeHintFull':'scopeHintPart');
+}
+function setScope(full){
+  _scopeFull=!!full;
+  try{localStorage.setItem('darbi_rec_scope',_scopeFull?'full':'part');}catch(e){}
+  _renderScope();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_renderScope);else _renderScope();
+var _recSnapData=null;
+function _recSnap(){
+  try{
+    var all=JSON.parse(localStorage.getItem('darbi_progress')||'{}');var k=darbiProgressKey(currentKey);
+    return {k:k,v:(all[k]&&all[k].recitation)?JSON.parse(JSON.stringify(all[k].recitation)):null};
+  }catch(e){return null;}
+}
+function _recRestore(sn){
+  try{
+    if(!sn)return;
+    var all=JSON.parse(localStorage.getItem('darbi_progress')||'{}');
+    if(!all[sn.k])all[sn.k]={};
+    if(sn.v)all[sn.k].recitation=sn.v;else delete all[sn.k].recitation;
+    localStorage.setItem('darbi_progress',JSON.stringify(all));
+  }catch(e){}
+}
+function checkRecitation(forceFull){
+  const _fromBtn=(forceFull===true);          // ضغط زر «أردتُ الصفحة كاملة» بعد نتيجة جزئية
+  forceFull=_fromBtn||(_scopeFull&&_retryTarget<0);   // وضع «الصفحة كاملة» (إلا أثناء إعادة موضع خطأ)
   if(recognizing){try{recInst.stop();}catch(e){}recognizing=false;}
   setBtn('idle');
   const userWords=mergeYaAyyuha(savedWords.filter(w=>w.length>0));
   if(!userWords.length)return;
-  const startIdx=findStart(userWords);
-  const ref=refWords.slice(startIdx,startIdx+userWords.length+10);
+  let startIdx=findStart(userWords);
+  // أثناء إعادة موضع خطأ: نعرف الآية المقصودة، فإن بدأ القارئ بأول كلمة فيها نثبّت البداية عليها (الآيات القصيرة قد يلتبس موضعها)
+  if(_retryTarget>=0&&_retryQ.length&&_retryQ[0].st===_retryTarget&&norm(userWords[0])===norm(refWords[_retryTarget]))startIdx=_retryTarget;
+  let _refEnd=startIdx+userWords.length+10;
+  // إعادة آية واحدة: نحصر المقارنة في الآية المقصودة (+ كلمتين زيادة) كي لا تتطابق كلمة أخيرة مكرَّرة («أحد»…) مع آية لاحقة
+  if(_retryTarget>=0&&startIdx===_retryTarget&&_retryQ.length&&_retryQ[0].st===_retryTarget){
+    const _it=_retryQ[0];
+    if(userWords.length<=(_it.en-_it.st+1)+2)_refEnd=Math.min(_refEnd,_it.en+1+2);
+  }
+  if(forceFull)_refEnd=refWords.length;   // «أردتُ الصفحة كاملة»: نقارن بكل ما بقي من الصفحة
+  const ref=refWords.slice(startIdx,_refEnd);
   let results=compareWords(userWords,ref);
   // الشريحة بتاخد +10 كلمة زيادة عشان تمسك الكلمات المتخطّاة. لكن لو
   // القارئ وقف قبل آخر الصفحة، الكلمات اللي ما وصلهاش ما ينفعش
@@ -2623,18 +2962,38 @@ function checkRecitation(){
     const _absTail=startIdx+_tailStart;
     // هل الذيل بيبدأ عند رأس آية؟ يبقى القارئ وقف عندها
     const _atAyahHead=ayahBounds.some(b=>b.start===_absTail);
-    if(_atAyahHead)results=results.slice(0,_tailStart);
+    if(_atAyahHead&&!forceFull)results=results.slice(0,_tailStart);
   }
   if(!results.length)return;
-  const ok=results.filter(r=>r.status==='ok').length;
+  // كلمة قُرئت صحيحة لكن بعد مساعدة: تُلوَّن بلون مختلف ولا تُحسب حفظًا كاملًا
+  const _isHelped=i=>helpIdx.indexOf(startIdx+i)>=0;
+  const ok=results.filter((r,i)=>r.status==='ok'&&!_isHelped(i)).length;
   const bad=results.filter(r=>r.status!=='ok').length;
   const total=results.length;
   const pct=Math.round(ok/total*100);
-  saveDarbiProgress('recitation',ok,total);
-  saveRecitationDetail(pct,startIdx,results);
-  let where=startIdx===0?darbiT('recite.where_start'):darbiT('recite.where_approx',{n:startIdx+1});
+  _updateRetryQueue(startIdx,results);
+  _renderRetryBtn();
+  // محاولة «إعادة موضع خطأ» (آية واحدة مثلًا) لا تُحسب درجةً للصفحة: نُحدّث مواضع المراجعة فقط
+  const _isRetryAttempt=_retryTarget>=0;
+  if(_fromBtn){_recRestore(_recSnapData);}else{_recSnapData=_recSnap();}
+  if(!_isRetryAttempt)saveDarbiProgress('recitation',ok,total);
+  saveRecitationDetail(pct,startIdx,results,_isRetryAttempt);
+  let _ayN=0;
+  for(let i=0;i<ayahBounds.length;i++){if(ayahBounds[i].start<=startIdx)_ayN=ayahBounds[i].num;}
+  let where=startIdx===0?darbiT('recite.where_start'):(_ayN>0?_tx('whereAyah',{n:_ayN}):darbiT('recite.where_approx',{n:startIdx+1}));
   document.getElementById('resultCard').style.display='block';
   document.getElementById('whereMsg').textContent=where;
+  // لو توقّف القارئ قبل نهاية الصفحة: نوضّح أن الباقي لم يُحسب، ونتيح له اختيار «أردتُ الصفحة كاملة»
+  (function(){
+    const nt=document.getElementById('tailNote');if(!nt)return;
+    const endAbs=startIdx+results.length,rem=refWords.length-endAbs;
+    if(forceFull||_isRetryAttempt||rem<=0){nt.style.display='none';return;}
+    const _ayAt=function(abs){let n=0;for(let i=0;i<ayahBounds.length;i++){if(ayahBounds[i].start<=abs)n=ayahBounds[i].num;}return n;};
+    const lastRead=_ayAt(Math.max(0,endAbs-1)),fromA=_ayAt(endAbs),toA=ayahBounds.length?ayahBounds[ayahBounds.length-1].num:0;
+    document.getElementById('tailNoteTxt').textContent=(lastRead>0&&fromA>0&&toA>0)?_tx('tailNote',{a:lastRead,k:rem,f:fromA,t:toA}):_tx('tailNoteNoAyah',{k:rem});
+    document.getElementById('tailNoteBtn').textContent=_tx('tailBtn');
+    nt.style.display='block';
+  })();
   document.getElementById('statOk').textContent='✓ '+ok;
   document.getElementById('statErr').textContent='✗ '+bad;
   document.getElementById('statPct').textContent=darbiT('recite.pct_label',{pct:pct});
@@ -2657,7 +3016,7 @@ function checkRecitation(){
       const st=all.every(x=>x.status==='ok')?'ok'
               :(all.some(x=>x.status==='err')?'err':'missing');
       const sp0=document.createElement('span');
-      sp0.className=(st==='ok')?'w-ok':(st==='err'?'w-err':'w-missing');
+      sp0.className=(st==='ok')?(all.some((x,k)=>_isHelped(k))?'w-help':'w-ok'):(st==='err'?'w-err':'w-missing');
       sp0.textContent=muqRun.raw;
       if(st==='err')sp0.title=darbiT('recite.said_prefix')+all.map(x=>x.user||'').join(' ').trim();
       display.appendChild(sp0);display.appendChild(document.createTextNode(' '));
@@ -2668,9 +3027,10 @@ function checkRecitation(){
       return;
     }
     const sp=document.createElement('span');
-    if(r.status==='ok'){sp.className='w-ok';sp.textContent=r.ref;}
+    if(r.status==='ok'){sp.className=_isHelped(i)?'w-help':'w-ok';sp.textContent=r.ref;}
     else if(r.status==='err'){sp.className='w-err';sp.textContent=r.ref;sp.title=darbiT('recite.said_prefix')+(r.user||'');}
     else{sp.className='w-missing';sp.textContent=r.ref;}
+    if(i===0&&startIdx>0)sp.className+=' w-start';
     display.appendChild(sp);display.appendChild(document.createTextNode(' '));
     const wm=waqfMarkerAfter(startIdx+i);
     if(wm){
@@ -2685,6 +3045,18 @@ function checkRecitation(){
       display.appendChild(m);
     }
   });
+  // قسم «كلمات احتجت إلى مساعدة فيها» + عنصر الدليل
+  const _hr=document.getElementById('helpResult'),_hl=document.getElementById('legendHelp');
+  if(helpWords.length){
+    document.getElementById('helpResultTitle').textContent='💡 '+_tx('helpTitle',{n:helpWords.length});
+    const _hw=document.getElementById('helpWhy');
+    const _helpedN=total-ok-bad;
+    if(_hw){if(bad===0&&_helpedN>0&&pct<100){_hw.textContent=_tx('helpWhy',{p:pct,n:_helpedN});_hw.style.display='block';}else _hw.style.display='none';}
+    const ch=document.getElementById('helpChips');ch.innerHTML='';
+    helpWords.forEach(w=>{const c=document.createElement('span');c.textContent=w;ch.appendChild(c);});
+    _hr.style.display='block';
+    document.getElementById('legendHelpTxt').textContent=_tx('helpLegend');_hl.style.display='flex';
+  }else{_hr.style.display='none';_hl.style.display='none';}
   document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
 }
 
