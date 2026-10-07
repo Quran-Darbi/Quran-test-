@@ -1038,7 +1038,7 @@ renderDarbiProgress();
 // كل مرة يتضاف جزء جديد.
 (function updateHstatPartsCount(){
   const el=document.getElementById('hstat-parts-count');
-  if(el) el.textContent=Object.keys(JUZ_GROUPS).length;
+  if(el) el.textContent=Object.values(JUZ_GROUPS).filter(m=>m.groups.some(g=>g.kind!=='soon')).length;
 })();
 
 // عدد "الاختبارات" و"السور" بيتحسبوا تلقائيًا من JUZ_GROUPS (الصفحات المتاحة فعليًا، بدون المقاطع "قريبًا")
