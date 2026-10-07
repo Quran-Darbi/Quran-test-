@@ -832,27 +832,28 @@ function groupCardsHtml(g){
 }
 
 function buildAccBody(meta){
-  const multi = meta.groups.length>1;
   let out='', cards='', panels='';
   const flush=()=>{
     if(cards){ out+=`<div class="cards-grid surah-cards">${cards}${panels}</div>`; cards=''; panels=''; }
   };
   meta.groups.forEach((g,gi)=>{
-    if(g.kind==='soon'){ cards+=groupCardsHtml(g); return; }
     const noteBtn = g.note ? `<button class="note-btn" onclick="goJuz(${g.noteTarget})">${g.note}</button>` : '';
-    if(multi && g.kind==='full' && g.name){
+    if(g.kind==='soon'||g.kind==='single'){ cards+=groupCardsHtml(g); return; }
+    if(g.kind==='full'||g.kind==='range'){
       const arr=g.arr, from=('from' in g)?g.from:0, to=('to' in g)?g.to:arr.length;
       const pages=arr.slice(from,to);
+      const label=(g.name||'').replace(/^سورة /,'');
       if(pages.length>1){
         const id='sp'+gi+'_'+Math.random().toString(36).slice(2,7);
-        cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${g.name}</div><div class="card-meta">${pages[0][1]}</div></button>`;
-        panels+=`<div class="surah-panel" id="${id}"><div class="surah-panel-title notranslate" translate="no">${g.name}</div><div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}</div>`;
-        return;
+        cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${label}</div><div class="card-meta">${pages[0][1]}</div></button>`;
+        panels+=`<div class="surah-panel" id="${id}"><div class="surah-panel-title notranslate" translate="no">${label}</div><div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}</div>`;
+      } else if(pages.length===1){
+        cards+=card(pages[0][0],label,pages[0][1],true,g.surah);
       }
+      return;
     }
     flush();
-    const heading = (multi && g.name) ? `<div class="surah-name notranslate" translate="no">${g.name}</div>` : '';
-    out+=`${heading}<div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}`;
+    out+=`<div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}`;
   });
   flush();
   return out;

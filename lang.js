@@ -2607,7 +2607,7 @@ function idxName(x,lg){x=String(x).trim();if(nrm(x)==='جزء عم')return T[lg]
   var m=x.match(/^(.+?) \((.+)\)$/);
   if(m){var a=surahName(m[1],lg);if(!a)return null;var inner=m[2].trim(),nt;
     if(/^[\d\s–-]+$/.test(inner))return a+' ('+dg(inner)+')';
-    if((nt=inner.match(/^(تتمة)\s+([\d\s–-]+)$/)))return a+' ('+(NOTE[nrm(nt[1])][lg])+' '+dg(nt[2])+')';
+    if((nt=inner.match(/^(تتمة|تابع)\s+([\d\s–-]+)$/)))return a+' ('+(NOTE[nrm(nt[1])][lg])+' '+dg(nt[2])+')';
     var r=NOTE[nrm(inner)];return r&&r[lg]?a+' ('+r[lg]+')':null;}
   return null;}
 function idxLoc(src,lg){
