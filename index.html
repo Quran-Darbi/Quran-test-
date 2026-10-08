@@ -1083,8 +1083,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   // كل الأجزاء مغلقة بالوضع الافتراضي
 });
 
+function _digitsEn(t){return String(t||'').replace(/[٠-٩]/g,d=>d.charCodeAt(0)-1632).replace(/[۰-۹]/g,d=>d.charCodeAt(0)-1776);}
 function doSearch(val){
-  currentSearchQ=(val||'').trim();
+  currentSearchQ=_digitsEn(val).trim();
   applyJuzFilters();
 }
 
@@ -1101,7 +1102,7 @@ function applyJuzFilters(){
   document.querySelectorAll('.acc').forEach(acc=>{
     const cards=acc.querySelectorAll('.quiz-card');
     let any=false;
-    cards.forEach(c=>{const m=!q||(c.dataset.s||c.innerText).toLowerCase().includes(q.toLowerCase());c.style.display=m?'':'none';if(m)any=true;});
+    cards.forEach(c=>{const m=!q||_digitsEn(c.dataset.s||c.innerText).toLowerCase().includes(q.toLowerCase());c.style.display=m?'':'none';if(m)any=true;});
     const matchesSearch = !q || any;
 
     const state=acc.dataset.state||'soon';
