@@ -673,7 +673,7 @@ function renderContinue(all){
   const e=all[t[0]]||{};
   document.getElementById('continue-link').href=t[0]+'.html';
   document.getElementById('continue-name').textContent=pgName(t[1]);
-  const lv=['easy','medium','hard'].map(l=>(e[l]&&e[l].done?'✅ ':'⬜ ')+levelLabel(l));
+  const lv=['easy','medium','hard','order'].map(l=>(e[l]&&e[l].done?'✅ ':'⬜ ')+levelLabel(l));
   document.getElementById('continue-meta').textContent=lv.join('  ');
 }
 

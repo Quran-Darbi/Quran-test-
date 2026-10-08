@@ -1274,6 +1274,38 @@ const MUQATTAAT={
 // اللي اتمدد لها، ونجمّعهم في شريحة واحدة وقت عرض النتيجة بس.
 // المطابقة والحكم مابيتغيروش — ده عرض بحت.
 let muqRun=null;
+// مجموعات الحروف المقطعة في أول الصفحة (حم / حم + عسق): كل مجموعة = قائمة أسماء حروفها
+let muqGroups=[];
+function _muqGroupsOf(words){
+  const g=[];
+  for(let i=0;i<2&&i<words.length;i++){
+    if(isRealMuqattaa(words[i]))g.push(MUQATTAAT[norm(words[i])]);else break;
+  }
+  return g;
+}
+// التعرف الصوتي يكتب الحروف المقطعة ككلمة واحدة بدل أسماء الحروف منفصلة:
+// «حا ميييم» ← «حميم» أو «حاميم» أو «حم»، «يس» ← «ياسين»، «طه» ← «طاها»...
+// فنقبل الكلمة الأولى المسموعة لو طابقت أحد الأشكال المحتملة لأسماء الحروف، ونردّها لأسماء الحروف نفسها
+function _muqVariants(names){
+  const base=names.map(norm),v=new Set();
+  v.add(base.join(''));
+  v.add(base.map(x=>x.length>1?x.replace(/ا$/,''):x).join(''));
+  v.add(norm(names.map(x=>x.charAt(0)).join('')));
+  return v;
+}
+function collapseMuqSTT(words){
+  if(!muqGroups.length||!words||!words.length)return words;
+  const out=[];let pos=0;
+  for(const names of muqGroups){
+    if(pos>=words.length)break;
+    let exact=pos+names.length<=words.length;
+    for(let k=0;exact&&k<names.length;k++)if(norm(words[pos+k])!==norm(names[k]))exact=false;
+    if(exact){out.push(...words.slice(pos,pos+names.length));pos+=names.length;continue;}
+    if(_muqVariants(names).has(norm(words[pos]))){out.push(...names);pos++;continue;}
+    break;
+  }
+  return out.concat(words.slice(pos));
+}
 function captureMuqattaat(words){
   if(!words||!words.length)return null;
   if(!isRealMuqattaa(words[0]))return null;
@@ -1734,6 +1766,7 @@ function applySurah(){
   refWords=splitRefWords(TEXTS[currentKey]);
   if(currentKey!=='fatiha')refWords=stripLeadingBasmala(refWords);
   muqRun=captureMuqattaat(refWords);
+  muqGroups=_muqGroupsOf(refWords);
   refWords=expandMuqattaat(refWords);
   ayahBounds=computeAyahBounds(currentKey);
   waqfMarks=computeWaqfMarks(currentKey);
@@ -2058,6 +2091,7 @@ function unmaskWords(words){
 // بدل أن تُلحق بآخر النص. يُصفَّر عند بدء جلسة تسجيل جديدة أو انتهائها أو مسح النص.
 let _insertAt=null;
 function _normSaved(){
+  savedWords=collapseMuqSTT(savedWords);
   savedWords=expandDigits(savedWords);
   savedWords=unmaskWords(savedWords);
   savedWords=splitMergedWords(savedWords);

@@ -86,11 +86,21 @@ function isRealMuqattaa(w){
   return true;
 }
 
+// التعرف الصوتي يكتب الحروف المقطعة أحيانًا ككلمة واحدة («حا ميييم» ← «حميم» / «حاميم» / «حم»،
+// «يس» ← «ياسين»، «طه» ← «طاها») — نقبلها لو طابقت أحد أشكال أسماء الحروف (نفس قاعدة recitation.html)
+function _muqVariants(names){
+  const base=names.map(normalize),v=new Set();
+  v.add(base.join(''));
+  v.add(base.map(x=>x.length>1?x.replace(/ا$/,''):x).join(''));
+  v.add(normalize(names.map(x=>x.charAt(0)).join('')));
+  return v;
+}
 function collapseMuqattaat(words,correctAnswer){
   if(!words||!words.length||!correctAnswer)return words;
   const cw=correctAnswer.trim().split(/\s+/);
   if(!isRealMuqattaa(cw[0]))return words;
   const names=MUQATTAAT[normalize(cw[0])];
+  if(names&&_muqVariants(names).has(normalize(words[0])))return [cw[0]].concat(words.slice(1));
   if(!names||words.length<names.length)return words;
   for(let k=0;k<names.length;k++){
     if(normalize(words[k])!==normalize(names[k]))return words;
