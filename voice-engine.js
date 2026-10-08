@@ -95,12 +95,25 @@ function _muqVariants(names){
   v.add(normalize(names.map(x=>x.charAt(0)).join('')));
   return v;
 }
+const _MUQ_ALT={'كاف':['كيف','كف','كافه'],'ها':['هاء','هي','ه'],'يا':['ياء','يه','يي'],'عين':['عن','عان','عيون'],'صاد':['ساد','صد','صاض','سد'],
+  'نون':['ن','نن','نوان'],'ميم':['مم','مييم','ميمم'],'لام':['لم','لاام'],'سين':['سن','سيين'],'حا':['حاء','ها','ح'],'قاف':['قف','كاف','قاا'],'طا':['تا','طاء','طه'],'را':['راء','رى','ر'],'الف':['الفا','ألف','ا']};
+function _muqSpan(names,words,N){
+  const base=names.map(N);let forms=[''];
+  for(const b of base){const alts=[b].concat((_MUQ_ALT[b]||[]).map(N));const nf=[];for(const f of forms)for(const a of alts)nf.push(f+a);forms=nf;if(forms.length>400)break;}
+  const dd=x=>x.replace(/(.)\1+/g,'$1');
+  const ok=new Set(forms.map(dd));
+  for(const v of _muqVariants(names))ok.add(dd(v));
+  for(let k=1;k<=Math.min(words.length,names.length+2);k++){
+    if(ok.has(dd(words.slice(0,k).map(N).join(''))))return k;
+  }
+  return 0;
+}
 function collapseMuqattaat(words,correctAnswer){
   if(!words||!words.length||!correctAnswer)return words;
   const cw=correctAnswer.trim().split(/\s+/);
   if(!isRealMuqattaa(cw[0]))return words;
   const names=MUQATTAAT[normalize(cw[0])];
-  if(names&&_muqVariants(names).has(normalize(words[0])))return [cw[0]].concat(words.slice(1));
+  if(names){const _sp=_muqSpan(names,words,normalize);if(_sp)return [cw[0]].concat(words.slice(_sp));}
   if(!names||words.length<names.length)return words;
   for(let k=0;k<names.length;k++){
     if(normalize(words[k])!==normalize(names[k]))return words;
@@ -353,6 +366,7 @@ const STT_WORD_ALTS=[
   {ref:'يوف',heard:['وف','وفق','يوفق','يوفي','يوفا','يوفى','يوفوا','يوافق','يوافقه']},
   {ref:'يأب',heard:['يابى','يابي','يابا']},
   {ref:'لبثت',heard:['لبست']},
+  {ref:'مسغبه',heard:['مصغبه','مزغبه','مسقبه','مصقبه']},
   {ref:'انى',heard:['ان','اين','انه','اني']},
   {ref:'يتسنه',heard:['يتسنى','يتسني','يتسنا','يتسن','يتسنن','تسنه','يسنه','متسنه']},
   {ref:'ننشزها',heard:['ننشرها','ننشدها','ننشذها','ننشيها','نشرها']},
@@ -361,8 +375,9 @@ const STT_WORD_ALTS=[
 // كلمتان (أو أكثر) في المصحف يسمعها التعرف بعدد كلمات مختلف
 const STT_PHRASE_ALTS=[
   {ref:['أنكالا'],heard:[['ان','كانوا'],['ان','كالا'],['انكانوا']]},
-  {ref:['وألو','استقاموا'],heard:[['الا','واستقاموا'],['الا','و','استقاموا'],['الا','واستقامو']]},
+  {ref:['وألو','استقاموا'],heard:[['والا','واستقاموا'],['والا','استقاموا'],['وانلو','استقاموا'],['الا','واستقاموا'],['الا','و','استقاموا'],['الا','واستقامو']]},
   {ref:['ونسرا'],heard:[['و','نسرو'],['و','نسروا'],['و','نسر'],['و','نسرا']]},
+  {ref:['وألو'],heard:[['وان','لو'],['وان','لوا'],['وانلو'],['وانلوا'],['ان','لو'],['ان','لوا'],['وال','لو']]},
   {ref:['ألن'],heard:[['الا','ان']]}
 ];
 const _STT_TBL=new Map();
