@@ -123,7 +123,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .score-bar{background:var(--surface2);border-radius:8px;height:10px;margin-bottom:14px;overflow:hidden;}
 .score-fill{height:100%;border-radius:8px;transition:width .6s;}
 .where-msg{font-size:12px;color:var(--accent);background:var(--surface2);border-radius:8px;padding:7px 12px;margin-bottom:12px;text-align:center;}
-.scope-note{font-size:12.5px;color:var(--text);background:var(--hint-btn-bg);border:1.5px dashed var(--gold);border-radius:10px;padding:10px 12px;margin-bottom:12px;text-align:center;line-height:1.8;}
+.scope-note{font-size:12.5px;color:var(--text);background:var(--hint-btn-bg);border:1.5px dashed var(--gold);border-radius:10px;padding:10px 12px;margin-top:12px;text-align:center;line-height:1.8;}
 .legend{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:12px;}
 .legend-dot{width:13px;height:13px;border-radius:3px;}
@@ -141,7 +141,7 @@ html[data-theme="dark"] .w-help{color:#f0d88a;background:#3a3114;}
 html[data-theme="dark"] .help-chips span{background:#3a3114;color:#f0d88a;}
 .rec-word{border-bottom:2px dotted var(--gold);}
 .retry-wrong-btn{display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-family:inherit;font-size:15px;cursor:pointer;}
-.tail-note{display:none;margin-bottom:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-size:13px;text-align:center;line-height:1.7;}
+.tail-note{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-size:13px;text-align:center;line-height:1.7;}
 .tail-note button{margin-top:8px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--gold);background:transparent;color:var(--text);font-family:inherit;font-size:14px;cursor:pointer;}
 .scope-switch{display:flex;gap:6px;margin-bottom:4px;}
 .scope-switch button{flex:1;padding:9px 6px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center;line-height:1.35;}
@@ -635,8 +635,6 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   </div>
   <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
   <div class="where-msg" id="whereMsg"></div>
-  <div class="tail-note" id="tailNote"><div id="tailNoteTxt"></div><button type="button" id="tailNoteBtn" onclick="checkRecitation(true)"></button></div>
-  <div class="scope-note" data-i18n="recite.scope_note">ℹ️ هذا الاختبار يتحقق من الكلمات وترتيبها في حفظك، ولا يتحقق حالياً من دقة الحركات (التشكيل) أو أحكام التجويد والمدود — هذا الجزء قيد البحث والتطوير.</div>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c3e6cb;border:1px solid #155724"></div><span data-i18n="recite.legend_correct">صحيحة</span></div>
     <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div><span data-i18n="recite.legend_wrong">خاطئة</span></div>
@@ -647,6 +645,8 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   <div class="help-result" id="helpResult"><div class="help-result-title" id="helpResultTitle"></div><div class="help-why" id="helpWhy"></div><div class="help-chips" id="helpChips"></div></div>
   <button class="retry-wrong-btn" id="retryWrongBtn" onclick="retryWrong()"></button>
   <button class="retry-btn" onclick="retryRec()" data-i18n="recite.retry_btn">🔄 إعادة التسجيل</button>
+  <div class="tail-note" id="tailNote"><div id="tailNoteTxt"></div><button type="button" id="tailNoteBtn" onclick="checkRecitation(true)"></button></div>
+  <div class="scope-note" data-i18n="recite.scope_note">ℹ️ هذا الاختبار يتحقق من الكلمات وترتيبها في حفظك، ولا يتحقق حالياً من دقة الحركات (التشكيل) أو أحكام التجويد والمدود — هذا الجزء قيد البحث والتطوير.</div>
 </div>
 <script>
 
@@ -1887,14 +1887,28 @@ function findStart(userWords){
   // وكان بيرجع 0 بالصدفة أحيانًا أو يبدأ من مكان غلط تمامًا — يعني
   // علامة الآية بتضيع أو الترقيم كله بيتزاح. نتأكد من الحالة دي الأول.
   if(muqRun&&norm(userWords[0])===norm(muqRun.raw))return 0;
+  // أول كلمتين (أو أول كلمة) قد تتكرران في أكثر من آية بالصفحة («وَقَالَ ٱلَّذِينَ كَفَرُوا۟» في ٢٦ و٢٩):
+  // نجمع كل المواضع المحتملة ونختار الأوفق لباقي كلمات القارئ، وعند التعادل الأسبق كما كان
+  const _pickBest=function(cands){
+    if(cands.length<2)return cands.length?cands[0]:-1;
+    let best=cands[0],bestScore=-1;
+    for(const c of cands){
+      const sc=compareWords(userWords,refWords.slice(c,c+userWords.length+10)).filter(r=>r.status==='ok').length;
+      if(sc>bestScore){bestScore=sc;best=c;}
+    }
+    return best;
+  };
+  const u2=userWords.slice(0,2).map(norm).join(' ');
+  const c2=[];
   for(let i=0;i<=refWords.length-2;i++){
-    const u2=userWords.slice(0,2).map(norm).join(' ');
-    const r2=refWords.slice(i,i+2).map(norm).join(' ');
-    if(u2===r2)return i;
+    if(u2===refWords.slice(i,i+2).map(norm).join(' '))c2.push(i);
   }
+  if(c2.length)return _pickBest(c2);
   const u1=norm(userWords[0]);
-  for(let i=0;i<refWords.length;i++){if(norm(refWords[i])===u1)return i;}
-  return 0;
+  const c1=[];
+  for(let i=0;i<refWords.length;i++){if(norm(refWords[i])===u1)c1.push(i);}
+  const b1=_pickBest(c1);
+  return b1>=0?b1:0;
 }
 
 // إدغام النون الساكنة والتنوين في (ي ر م ل و ن) والإقلاب قبل الباء: «وَإِن مَّسَّهُ» تُسمع «وامّسه»
