@@ -1096,13 +1096,30 @@ function setJuzFilter(mode,btn){
   applyJuzFilters();
 }
 
+// بحث الأرقام: الرقم وحده يُعامَل كرقم صفحة («ص ٤٥») مطابقةً كاملة؛ فإن لم يوجد اختبار لصفحة بهذا الرقم
+// فيُبحث عنه ضمن نطاقات الآيات (مثل ٢٥٥). لا مطابقة جزئية داخل رقم أكبر (٤٥ لا تطابق ١٤٥ ولا «٣٨–٤٥»).
+function _cardPageHas(s,n){return new RegExp('ص\\s*'+n+'(?!\\d)').test(s);}
+function _cardNumHas(s,n){
+  const v=+n;
+  for(const m of s.matchAll(/(\d+)\s*[–-]\s*(\d+)/g)){if(+m[1]<=v&&v<=+m[2])return true;}
+  return (s.match(/\d+/g)||[]).some(x=>+x===v);
+}
 function applyJuzFilters(){
   const q=currentSearchQ;
+  const isNum=/^\d+$/.test(q);
+  const sOf=c=>_digitsEn(c.dataset.s||c.innerText).toLowerCase();
+  const pageMode=isNum&&[...document.querySelectorAll('a.quiz-card')].some(c=>_cardPageHas(sOf(c),q)); // يوجد اختبار فعلي لهذه الصفحة
+  const cardMatches=c=>{
+    if(!q)return true;
+    const s=sOf(c);
+    if(!isNum)return s.includes(q.toLowerCase());
+    return pageMode?_cardPageHas(s,q):_cardNumHas(s,q);
+  };
   let visibleCount=0;
   document.querySelectorAll('.acc').forEach(acc=>{
     const cards=acc.querySelectorAll('.quiz-card');
     let any=false;
-    cards.forEach(c=>{const m=!q||_digitsEn(c.dataset.s||c.innerText).toLowerCase().includes(q.toLowerCase());c.style.display=m?'':'none';if(m)any=true;});
+    cards.forEach(c=>{const m=cardMatches(c);c.style.display=m?'':'none';if(m)any=true;});
     const matchesSearch = !q || any;
 
     const state=acc.dataset.state||'soon';
