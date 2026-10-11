@@ -3,6 +3,7 @@
 const fs=require('fs'),path=require('path');const {ROOT,SRC,readJSON,pages}=require('./lib.js');const {norm,loadCorpus}=require('./quran_ref.js');const {checkRecitation}=require('./check_recitation.js');const {checkAmbiguity}=require('./check_ambiguity.js');
 const REF=path.join(ROOT,'Scripts','quran-uthmani.txt');const C=loadCorpus(REF);
 const KI=fs.existsSync(path.join(__dirname,'known_issues.json'))?readJSON(path.join(__dirname,'known_issues.json')):{};
+const GH=new Set(fs.existsSync(path.join(__dirname,'grouped_hard.json'))?readJSON(path.join(__dirname,'grouped_hard.json')).pages:[]);
 const errors=[],warns=[],known=[];
 const E=(s,m)=>errors.push(s+': '+m),W=(s,m)=>warns.push(s+': '+m);
 const all=new Set(pages().map(p=>p.stem));let nAyat=0,nQ=0;
@@ -19,6 +20,12 @@ for(const {stem,file} of pages()){
   if(!d.BAD_SPELL||!('$regex' in d.BAD_SPELL))E(stem,'BAD_SPELL (حارس الإملاء) مفقود');
   // قاعدة الإقلاب (ثابتة): علامة واحدة + ميم صغيرة؛ ممنوع تنوين مفتوح (ࣰ ࣱ ࣲ) قبل ۢ / ۭ
   const _iq=JSON.stringify(d).match(/[\u08F0-\u08F2][\u06E2\u06ED]/g);if(_iq)E(stem,'إقلاب بتنوين مفتوح ('+_iq.length+') — القاعدة: فتحة/ضمة/كسرة واحدة + ميم صغيرة (RASM_RULES.md ٨)');
+  // الصعب المجمَّع (للصفحات المسجَّلة في tools/grouped_hard.json): ≤٥ أسئلة، ٣–٤ آيات متتالية لكل سؤال
+  if(GH.has(stem)){const H=d.HARD_Q||[],N=d.AYAT_NUMS||[];let pos=0;if(H.length>5)E(stem,'HARD_Q '+H.length+' > 5 (قاعدة الصعب المجمَّع)');
+    H.forEach((h,i)=>{const m=String(h.q).match(/^اكتب الآيات (\d+)[–-](\d+)$/);if(!m)return E(stem,'HARD_Q['+i+'] صيغة غير صحيحة (المطلوب «اكتب الآيات 6–9»)');const a=N.indexOf(+m[1]),b=N.indexOf(+m[2]),n=b-a+1;
+      if(a!==pos||b<a)E(stem,'HARD_Q['+i+'] مجموعة غير متتالية');else if((N.length>=3)&&(n<3||n>4))E(stem,'HARD_Q['+i+'] حجم المجموعة '+n+' (المطلوب ٣–٤)');
+      if(h.answer!==(d.AYAT||[]).slice(a,b+1).join(' '))E(stem,'HARD_Q['+i+'] الإجابة لا تطابق AYAT');pos=b+1;});
+    if(H.length&&pos!==(d.AYAT||[]).length)E(stem,'HARD_Q لا يغطي كل آيات الصفحة');}
   const joined=norm((d.AYAT||[]).join(' '));
   // 1) مطابقة النص القرآني مع المرجع
   (d.AYAT||[]).forEach((a,i)=>{nAyat++;const n=norm(a);if(n&&!C.text.includes(n)){const key=stem+'#'+i;if((KI.ayat||[]).includes(key))known.push(key);else E(stem,'AYAT['+i+'] لا يطابق النص المرجعي: '+a.slice(0,50));}});
