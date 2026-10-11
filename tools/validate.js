@@ -17,6 +17,8 @@ for(const {stem,file} of pages()){
   if(!Array.isArray(d.AYAT)||!d.AYAT.length||d.AYAT.some(a=>typeof a!=='string'||!a.trim()))E(stem,'AYAT غير صالح');
   if(d.AYAT_NUMS&&(!Array.isArray(d.AYAT_NUMS)||d.AYAT_NUMS.length!==(d.AYAT||[]).length))E(stem,'AYAT_NUMS لا يطابق عدد AYAT');
   if(!d.BAD_SPELL||!('$regex' in d.BAD_SPELL))E(stem,'BAD_SPELL (حارس الإملاء) مفقود');
+  // قاعدة الإقلاب (ثابتة): علامة واحدة + ميم صغيرة؛ ممنوع تنوين مفتوح (ࣰ ࣱ ࣲ) قبل ۢ / ۭ
+  const _iq=JSON.stringify(d).match(/[\u08F0-\u08F2][\u06E2\u06ED]/g);if(_iq)E(stem,'إقلاب بتنوين مفتوح ('+_iq.length+') — القاعدة: فتحة/ضمة/كسرة واحدة + ميم صغيرة (RASM_RULES.md ٨)');
   const joined=norm((d.AYAT||[]).join(' '));
   // 1) مطابقة النص القرآني مع المرجع
   (d.AYAT||[]).forEach((a,i)=>{nAyat++;const n=norm(a);if(n&&!C.text.includes(n)){const key=stem+'#'+i;if((KI.ayat||[]).includes(key))known.push(key);else E(stem,'AYAT['+i+'] لا يطابق النص المرجعي: '+a.slice(0,50));}});
