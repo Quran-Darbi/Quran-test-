@@ -22,7 +22,7 @@ for(const {stem,file} of pages()){
   const _iq=JSON.stringify(d).match(/[\u08F0-\u08F2][\u06E2\u06ED]/g);if(_iq)E(stem,'إقلاب بتنوين مفتوح ('+_iq.length+') — القاعدة: فتحة/ضمة/كسرة واحدة + ميم صغيرة (RASM_RULES.md ٨)');
   // الصعب المجمَّع (للصفحات المسجَّلة في tools/grouped_hard.json): الصفحة ٣–٥ أجزاء متتالية، سؤال لكل جزء عن مدى آياته
   if(GH.has(stem)){const H=d.HARD_Q||[],N=d.AYAT_NUMS||[];let pos=0;if(H.length>5||(H.length<3&&(d.AYAT||[]).length>=3))E(stem,'HARD_Q '+H.length+' (المطلوب ٣–٥ أجزاء، قاعدة الصعب المجمَّع)');
-    H.forEach((h,i)=>{const m=String(h.q).match(/^اكتب الآيات (\d+)[–-](\d+)$/);if(!m)return E(stem,'HARD_Q['+i+'] صيغة غير صحيحة (المطلوب «اكتب الآيات 6–9»)');const a=N.indexOf(+m[1]),b=N.indexOf(+(m[2]||m[1]));
+    H.forEach((h,i)=>{const m=String(h.q).match(/^اكتب (?:الآيات (\d+)[–-](\d+)|الآية (\d+))$/);if(!m)return E(stem,'HARD_Q['+i+'] صيغة غير صحيحة (المطلوب «اكتب الآيات 6–9»)');const a=N.indexOf(+(m[1]||m[3])),b=N.indexOf(+(m[2]||m[1]||m[3]));
       if(a!==pos||b<a)E(stem,'HARD_Q['+i+'] مجموعة غير متتالية');
       if(h.answer!==(d.AYAT||[]).slice(a,b+1).join(' '))E(stem,'HARD_Q['+i+'] الإجابة لا تطابق AYAT');pos=b+1;});
     if(H.length&&pos!==(d.AYAT||[]).length)E(stem,'HARD_Q لا يغطي كل آيات الصفحة');}
