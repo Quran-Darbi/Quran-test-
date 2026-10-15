@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<!--
+  دربي لحفظ القرآن — https://quran-darbi.com
+  جميع الحقوق محفوظة © 2026 هند هاني أبوبكر
+  العمل مملوك ملكية كاملة: الشيفرة والتصميم وصياغة الاختبارات
+  وخوارزميات المقارنة والتطبيع. لا يُرخَّص استعماله أو نسخه أو
+  اشتقاقه إلا بإذن كتابي صريح. راجع ملف LICENSE.
+  النص القرآني الكريم ليس محلًّا لأي دعوى ملكية.
+-->
+<html lang="ar" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
+<title>اختبار حفظ سورة النازعات | جزء عمّ</title>
+<meta name="description" content="اختبر حفظك لسورة النازعات (الآيات 1–46 كاملة)، بمستويات متدرّجة: اختيار، وإكمال الفراغ، وكتابة الآيات وترتيبها، مع اختبار تلاوة بصوتك.">
+<meta property="og:title" content="اختبار حفظ سورة النازعات | جزء عمّ">
+<meta property="og:description" content="اختبر حفظك لسورة النازعات (الآيات 1–46 كاملة)، بمستويات متدرّجة: اختيار، وإكمال الفراغ، وكتابة الآيات وترتيبها، مع اختبار تلاوة بصوتك.">
+<meta property="og:url" content="https://quran-darbi.com/annaziat.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://quran-darbi.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="دربي لحفظ القرآن — اختبارات تفاعلية لحفظ كتاب الله ومراجعته">
+<meta property="og:site_name" content="دربي لحفظ القرآن">
+<meta property="og:locale" content="ar_AR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="اختبار حفظ سورة النازعات | جزء عمّ">
+<meta name="twitter:description" content="اختبر حفظك لسورة النازعات (الآيات 1–46 كاملة)، بمستويات متدرّجة: اختيار، وإكمال الفراغ، وكتابة الآيات وترتيبها، مع اختبار تلاوة بصوتك.">
+<meta name="twitter:image" content="https://quran-darbi.com/og-image.png">
+<link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/quiz.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4a7c4a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="دربي">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/darbi_favicon_32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/darbi_favicon_64.png">
+<link rel="icon" type="image/png" sizes="128x128" href="icons/darbi_favicon_128.png">
+<link rel="icon" type="image/png" sizes="256x256" href="icons/darbi_favicon_256.png">
+<link rel="apple-touch-icon" href="icons/darbi_favicon_512.png">
+<link rel="canonical" href="https://quran-darbi.com/annaziat.html">
+<script src="voice-engine.js"></script>
+<script src="lang.js"></script>
+</head>
+<body>
+<div class="top-bar">
+  <a href="index.html" class="back-btn" data-i18n="nav.back">← الرجوع</a>
+  <button id="theme-toggle" onclick="toggleTheme()" style="background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;">🌙</button><div class="tools-fab" id="tools-fab">
+  <button class="tools-fab-btn" id="tools-fab-btn" onclick="toolsToggle(event)" data-i18n-title="nav.tools_title" title="الأدوات">☰</button>
+  <div class="tools-menu" id="tools-menu">
+    <button class="tools-item" onclick="toolsLangToggle(event)">🌍 <span data-i18n="nav.lang_label">اللغة</span> <span class="tools-lang-inline"><span id="tools-lang-cur">العربية</span><span class="tools-arrow" id="tools-lang-arrow">▾</span></span></button>
+    <div class="tools-lang-list" id="tools-lang-list">
+      <button onclick="langSelect('ar')" data-code="ar">العربية<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('en')" data-code="en">🇬🇧 English<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fr')" data-code="fr">🇫🇷 Français<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('tr')" data-code="tr">🇹🇷 Türkçe<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('de')" data-code="de">🇩🇪 Deutsch<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('es')" data-code="es">🇪🇸 Español<span class="lang-check">✓</span></button>
+      <button onclick="langSelect('fa')" data-code="fa">🇮🇷 فارسی<span class="lang-check">✓</span></button>
+    </div>
+    <!--PROGRESS_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='progress.html';"><span data-i18n="nav.progress">📊 تقدّمي</span></button>
+    <button class="tools-item" onclick="toolsClose();fdbkOpen();"><span data-i18n="nav.feedback">💬 الاقتراحات</span></button>
+    <button class="tools-item" onclick="toolsClose();showQR();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg> <span data-i18n="nav.qr">كود QR</span></button>
+    <button class="tools-item" onclick="toolsClose();shareApp();"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.5"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/></svg> <span data-i18n="nav.share">مشاركة الصفحة</span></button>
+    <!--ABOUT_IN_TOOLS--><button class="tools-item" onclick="toolsClose();location.href='about.html';"><span data-i18n="nav.about">📖 عن المشروع</span></button>
+  </div>
+</div></div>
+<div class="info-card">
+  <div class="surah-title">سورة النازعات</div>
+  <div class="ayat-range">الآيات 1–46 كاملة</div>
+  <div class="page-info">اختبار الحفظ | ص 583–584 | جزء عمّ</div>
+  <div class="stats-row">
+    <div class="stat-badge badge-neutral" id="qnum-badge"><span data-i18n="quiz.q_number_short">السؤال 1 /</span><br><span id="total-q">-</span></div>
+    <div class="stat-badge badge-neutral" id="wrong-badge">0 ✗<br><span data-i18n="quiz.stat_wrong">خطأ</span></div>
+    <div class="stat-badge badge-neutral" id="correct-badge">0 ✓<br><span data-i18n="quiz.stat_correct">صحيح</span></div>
+  </div>
+</div>
+<div id="resume-banner" style="display:none;margin:0 16px 16px;background:var(--surface2);border:1.5px solid var(--gold);border-radius:14px;padding:14px 16px;text-align:center;">
+  <div style="margin-bottom:10px;font-size:15px;color:var(--text);" data-i18n="quiz.resume_text">📌 لديك اختبار لم يكتمل. هل ترغب في المتابعة من حيث توقفتَ، أم البدء من جديد؟</div>
+  <div style="display:flex;gap:10px;">
+    <button onclick="resumeQuiz()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px;font-family:inherit;font-size:15px;cursor:pointer;" data-i18n="quiz.resume_continue">المتابعة من هنا</button>
+    <button onclick="dismissResume()" style="flex:1;background:var(--surface3);color:var(--text-soft);border:1.5px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:15px;cursor:pointer;" data-i18n="quiz.resume_restart">البدء من جديد</button>
+  </div>
+</div>
+<div style="margin:0 16px 16px;">
+  <a href="recitation.html?surah=annaziat" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:13px 20px;font-size:16px;font-family:inherit;color:var(--accent);text-decoration:none;" data-i18n="quiz.recite_test_link">
+    🎤 اختبر تلاوتك
+  </a>
+</div>
+
+<div class="level-card" id="level-card">
+  <div class="level-title" data-i18n="level.choose_title">اختر مستوى الاختبار</div>
+  <div class="level-sub" data-i18n="level.choose_sub">كل مستوى له طريقة مختلفة في الاختبار</div>
+  <div class="levels-grid">
+    <button class="level-btn" onclick="selectLevel('easy')" id="btn-easy"><span class="level-icon">🌱</span><span class="level-name" data-i18n="level.easy_name">سهل</span><span class="level-desc" data-i18n="level.easy_desc">اختر الإجابة الصحيحة</span></button>
+    <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium"><span class="level-icon">🌿</span><span class="level-name" data-i18n="level.medium_name">متوسط</span><span class="level-desc" data-i18n="level.medium_desc">أكمل الفراغ</span></button>
+    <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard"><span class="level-icon">🌳</span><span class="level-name" data-i18n="level.hard_name">صعب</span><span class="level-desc" data-i18n="level.hard_desc">اكتب الآية كاملة</span></button>
+    <button class="level-btn" onclick="selectLevel('order')" id="btn-order"><span class="level-icon">🔀</span><span class="level-name" data-i18n="level.order_name">ترتيب</span><span class="level-desc" data-i18n="level.order_desc">رتّب الآيات</span></button>
+  </div>
+  <button class="start-btn" id="start-btn" onclick="startQuiz()" data-i18n="level.start_btn">ابدأ الاختبار ←</button>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="annaba.html" class="prev-page-btn" data-i18n="level.prev_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="abasa.html" class="next-page-btn" data-i18n="level.next_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
+</div>
+<div class="quiz-area" id="quiz-area">
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+  <div id="dot-progress" style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:14px;"></div>
+  <div class="q-number" id="q-number" data-i18n="quiz.q_number_short">السؤال 1</div>
+  <div class="q-text" id="q-text"></div>
+  <div id="answer-zone"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="prev-btn" onclick="prevQuestion()" data-i18n="quiz.prev_q">→ السؤال السابق</button>
+    <button class="nav-btn" id="skip-btn" onclick="skipQuestion()" data-i18n="quiz.skip_q">⏭ تخطي</button>
+    <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()" style="display:none;" data-i18n="quiz.next_q">السؤال التالي ←</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+  <button class="level-return-btn" onclick="returnToLevels()" data-i18n="quiz.return_to_levels">🔄 اختر اختباراً آخر</button>
+<div class="page-nav-row" id="quiz-page-nav" style="display:none;gap:8px;margin-top:10px;"><a href="annaba.html" class="prev-page-btn" data-i18n="level.prev_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="abasa.html" class="next-page-btn" data-i18n="level.next_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
+</div>
+<div class="quiz-area" id="order-area">
+  <div class="q-number" data-i18n="order.instruction">رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها</div>
+  <!--OHHTML v5-->
+  <div class="order-help-row"><button type="button" class="order-help-btn" id="order-help-btn" onclick="toggleOrderHelp()" aria-controls="order-help" aria-expanded="false" data-i18n="order.help_btn">؟ كيف يعمل الترتيب</button></div>
+  <div class="order-help" id="order-help" role="note" style="display:none;">
+    <div class="order-help-head">
+      <span class="t" data-i18n="order.help_title">طريقة الترتيب</span>
+      <span class="oh-count" id="oh-count"></span>
+      <span class="oh-dots" id="oh-dots" aria-hidden="true"></span>
+    </div>
+    <div class="oh-cap" id="oh-cap" aria-live="polite"><div class="act"></div><div class="why"></div></div>
+    <div class="oh-board" id="oh-board">
+      <div id="oh-slots"></div>
+      <div id="oh-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px;"></div>
+      <div class="oh-tap" id="oh-tap"></div>
+    </div>
+    <div class="oh-ctrls">
+      <button type="button" onclick="ohPrev()" data-i18n="order.help_prev">&#8592; السابق</button>
+      <button type="button" onclick="ohToggle()" id="oh-play" data-i18n="order.help_stop">&#9199; إيقاف</button>
+      <button type="button" onclick="ohNext()" data-i18n="order.help_next">التالي &#8594;</button>
+    </div>
+    <button type="button" class="order-help-close" onclick="closeOrderHelp()" data-i18n="order.help_start_btn">ابدأ الترتيب</button>
+  </div>
+  <!--OHHTML-END-->
+  <div id="order-slots" style="margin-bottom:16px;"></div>
+  <div id="order-pool" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px;"></div>
+  <div class="nav-row">
+    <button class="nav-btn" id="order-reveal-btn" onclick="revealOrderAnswer()" data-i18n="order.reveal_btn">💡 أظهر الترتيب الصحيح</button>
+    <button class="nav-btn primary" id="order-check-btn" onclick="checkOrderAnswer()" style="display:none;" data-i18n="order.check_btn">تحقق ✓</button>
+  </div>
+  <div id="order-reveal" style="display:none;"></div>
+  <div class="feedback" id="order-feedback"></div>
+  <button class="level-return-btn" onclick="returnToLevels()" data-i18n="quiz.return_to_levels">🔄 اختر اختباراً آخر</button>
+<div class="page-nav-row" style="display:flex;gap:8px;margin-top:10px;"><a href="annaba.html" class="prev-page-btn" data-i18n="level.prev_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="abasa.html" class="next-page-btn" data-i18n="level.next_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
+</div>
+<div class="result-area" id="result-area">
+  <div class="result-icon" id="result-icon">🌟</div>
+  <div class="result-title" id="result-title" data-i18n="result.great_title">أحسنت!</div>
+  <div class="result-score" id="result-score"></div>
+  <div class="result-msg" id="result-msg"></div>
+  <button class="retry-btn" id="review-mistakes-btn" onclick="startReview()" style="display:none;background:var(--wrong-border);" data-i18n="result.review_mistakes">📝 راجع أخطائي</button>
+  <button class="retry-btn" onclick="retryQuiz()" data-i18n="result.retry">🔄 اختر اختباراً آخر</button>
+  <a href="index.html" class="home-link" data-i18n="result.home_link">← الرئيسية</a>
+  <div class="page-nav-row" id="result-page-nav" style="display:flex;gap:8px;margin-top:14px;"><a href="annaba.html" class="prev-page-btn" data-i18n="level.prev_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">⏮️ الصفحة السابقة</a><a href="abasa.html" class="next-page-btn" data-i18n="level.next_page" style="flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;">الصفحة التالية ⏭️</a></div>
+</div>
+<div class="quiz-area" id="review-area" style="display:none;">
+  <div class="q-number" id="review-number"></div>
+  <div class="q-text" id="review-q-text"></div>
+  <div style="background:var(--surface3);border-radius:12px;padding:16px;text-align:center;font-size:19px;line-height:2;color:var(--correct-text);" id="review-answer"></div>
+  <div class="nav-row" style="margin-top:14px;">
+    <button class="nav-btn" onclick="reviewNav(-1)" data-i18n="review.prev">→ السابق</button>
+    <button class="nav-btn primary" onclick="reviewNav(1)" data-i18n="review.next">التالي ←</button>
+  </div>
+  <a href="#" onclick="endReview();return false;" style="display:block;text-align:center;margin-top:14px;color:var(--text-soft);font-size:14px;" data-i18n="review.end">إنهاء المراجعة</a>
+</div>
+<div id="confetti-container" style="position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;display:none;"></div>
+<script>
+const PAGE_OPTIONS={"hardLabel":"text"};
+const RESUME_KEY="quranResume_annaziat";
+const AYAT=["وَٱلنَّٰزِعَٰتِ غَرْقࣰا","وَٱلنَّٰشِطَٰتِ نَشْطࣰا","وَٱلسَّٰبِحَٰتِ سَبْحࣰا","فَٱلسَّٰبِقَٰتِ سَبْقࣰا","فَٱلْمُدَبِّرَٰتِ أَمْرࣰا","يَوْمَ تَرْجُفُ ٱلرَّاجِفَةُ","تَتْبَعُهَا ٱلرَّادِفَةُ","قُلُوبࣱ يَوْمَئِذࣲ وَاجِفَةٌ","أَبْصَٰرُهَا خَٰشِعَةࣱ","يَقُولُونَ أَءِنَّا لَمَرْدُودُونَ فِى ٱلْحَافِرَةِ","أَءِذَا كُنَّا عِظَٰمࣰا نَّخِرَةࣰ","قَالُوا تِلْكَ إِذࣰا كَرَّةٌ خَاسِرَةࣱ","فَإِنَّمَا هِىَ زَجْرَةࣱ وَٰحِدَةࣱ","فَإِذَا هُم بِٱلسَّاهِرَةِ","هَلْ أَتَىٰكَ حَدِيثُ مُوسَىٰ","إِذْ نَادَىٰهُ رَبُّهُۥ بِٱلْوَادِ ٱلْمُقَدَّسِ طُوًى","ٱذْهَبْ إِلَىٰ فِرْعَوْنَ إِنَّهُۥ طَغَىٰ","فَقُلْ هَل لَّكَ إِلَىٰٓ أَن تَزَكَّىٰ","وَأَهْدِيَكَ إِلَىٰ رَبِّكَ فَتَخْشَىٰ","فَأَرَىٰهُ ٱلْءَايَةَ ٱلْكُبْرَىٰ","فَكَذَّبَ وَعَصَىٰ","ثُمَّ أَدْبَرَ يَسْعَىٰ","فَحَشَرَ فَنَادَىٰ","فَقَالَ أَنَا۠ رَبُّكُمُ ٱلْأَعْلَىٰ","فَأَخَذَهُ ٱللَّهُ نَكَالَ ٱلْءَاخِرَةِ وَٱلْأُولَىٰ","إِنَّ فِى ذَٰلِكَ لَعِبْرَةࣰ لِّمَن يَخْشَىٰ","ءَأَنتُمْ أَشَدُّ خَلْقًا أَمِ ٱلسَّمَآءُ بَنَىٰهَا","رَفَعَ سَمْكَهَا فَسَوَّىٰهَا","وَأَغْطَشَ لَيْلَهَا وَأَخْرَجَ ضُحَىٰهَا","وَٱلْأَرْضَ بَعْدَ ذَٰلِكَ دَحَىٰهَا","أَخْرَجَ مِنْهَا مَآءَهَا وَمَرْعَىٰهَا","وَٱلْجِبَالَ أَرْسَىٰهَا","مَتَٰعࣰا لَّكُمْ وَلِأَنْعَٰمِكُمْ","فَإِذَا جَآءَتِ ٱلطَّآمَّةُ ٱلْكُبْرَىٰ","يَوْمَ يَتَذَكَّرُ ٱلْإِنسَٰنُ مَا سَعَىٰ","وَبُرِّزَتِ ٱلْجَحِيمُ لِمَن يَرَىٰ","فَأَمَّا مَن طَغَىٰ","وَءَاثَرَ ٱلْحَيَوٰةَ ٱلدُّنْيَا","فَإِنَّ ٱلْجَحِيمَ هِىَ ٱلْمَأْوَىٰ","وَأَمَّا مَنْ خَافَ مَقَامَ رَبِّهِۦ وَنَهَى ٱلنَّفْسَ عَنِ ٱلْهَوَىٰ","فَإِنَّ ٱلْجَنَّةَ هِىَ ٱلْمَأْوَىٰ","يَسْـَٔلُونَكَ عَنِ ٱلسَّاعَةِ أَيَّانَ مُرْسَىٰهَا","فِيمَ أَنتَ مِن ذِكْرَىٰهَآ","إِلَىٰ رَبِّكَ مُنتَهَىٰهَآ","إِنَّمَآ أَنتَ مُنذِرُ مَن يَخْشَىٰهَا","كَأَنَّهُمْ يَوْمَ يَرَوْنَهَا لَمْ يَلْبَثُوٓا إِلَّا عَشِيَّةً أَوْ ضُحَىٰهَا"];
+const EASY_Q=[{"q":"«وَٱلنَّٰزِعَٰتِ ___»","choices":["غَرْقࣰا","نَشْطࣰا","سَبْقࣰا"],"answer":0},{"q":"«وَٱلسَّٰبِحَٰتِ ___»","choices":["سَبْحࣰا","غَرْقࣰا","أَمْرࣰا"],"answer":0},{"q":"«فَٱلْمُدَبِّرَٰتِ ___»","choices":["أَمْرࣰا","خَلْقًا","حُكْمࣰا"],"answer":0},{"q":"«تَتْبَعُهَا ___»","choices":["ٱلرَّادِفَةُ","ٱلْوَاقِعَةُ","ٱلطَّامَّةُ"],"answer":0},{"q":"«أَبْصَٰرُهَا ___»","choices":["خَٰشِعَةࣱ","وَاجِفَةٌ","خَاسِرَةࣱ"],"answer":0},{"q":"«أَءِذَا كُنَّا عِظَٰمࣰا ___»","choices":["نَّخِرَةࣰ","رَمِيمࣱ","تُرَابࣰا"],"answer":0},{"q":"«فَإِنَّمَا هِىَ زَجْرَةࣱ ___»","choices":["وَٰحِدَةࣱ","خَٰشِعَةࣱ","وَاجِفَةٌ"],"answer":0},{"q":"«هَلْ أَتَىٰكَ حَدِيثُ ___»","choices":["مُوسَىٰ","هَٰرُونَ","عِيسَىٰ"],"answer":0},{"q":"«ٱذْهَبْ إِلَىٰ ___ إِنَّهُۥ طَغَىٰ»","choices":["فِرْعَوْنَ","قَارُونَ","هَٰمَٰنَ"],"answer":0},{"q":"«وَأَهْدِيَكَ إِلَىٰ رَبِّكَ ___»","choices":["فَتَخْشَىٰ","تَزَكَّىٰ","يَسْعَىٰ"],"answer":0},{"q":"«فَكَذَّبَ ___»","choices":["وَعَصَىٰ","طَغَىٰ","وَتَوَلَّىٰ"],"answer":0},{"q":"«فَحَشَرَ ___»","choices":["فَنَادَىٰ","فَقَالَ","فَجَمَعَ"],"answer":0},{"q":"«فَأَخَذَهُ ٱللَّهُ نَكَالَ ٱلْءَاخِرَةِ ___»","choices":["وَٱلْأُولَىٰ","ٱلْأُخْرَىٰ","ٱلْكُبْرَىٰ"],"answer":0},{"q":"«ءَأَنتُمْ أَشَدُّ خَلْقًا أَمِ ٱلسَّمَآءُ ___»","choices":["بَنَىٰهَا","رَفَعَهَا","سَوَّىٰهَا"],"answer":0},{"q":"«___ لَيْلَهَا وَأَخْرَجَ ضُحَىٰهَا»","choices":["وَأَغْطَشَ","أَظْلَمَ","غَسَقِ"],"answer":0},{"q":"«أَخْرَجَ مِنْهَا مَآءَهَا ___»","choices":["وَمَرْعَىٰهَا","دَحَىٰهَا","أَرْسَىٰهَا"],"answer":0},{"q":"«مَتَٰعࣰا لَّكُمْ ___»","choices":["وَلِأَنْعَٰمِكُمْ","لِأَنفُسِكُمْ","لِقُلُوبِكُمْ"],"answer":0},{"q":"«يَوْمَ يَتَذَكَّرُ ٱلْإِنسَٰنُ مَا ___»","choices":["سَعَىٰ","كَسَبَ","عَمِلَ"],"answer":0},{"q":"«___ مَن طَغَىٰ»","choices":["فَأَمَّا","وَأَمَّا","فَإِنَّ"],"answer":0},{"q":"«فَإِنَّ ٱلْجَحِيمَ هِىَ ___»","choices":["ٱلْمَأْوَىٰ","ٱلْمَصِيرُ","ٱلْمُسْتَقَرُّ"],"answer":0},{"q":"«فَإِنَّ ___ هِىَ ٱلْمَأْوَىٰ»","choices":["ٱلْجَنَّةَ","ٱلنَّعِيمَ","ٱلْفِرْدَوْسَ"],"answer":0},{"q":"«إِنَّمَآ أَنتَ مُنذِرُ مَن ___»","choices":["يَخْشَىٰهَا","يَرَوْنَهَا","يَصْلَىٰهَآ"],"answer":0}];
+const MEDIUM_Q=[{"q":"«___ نَشْطࣰا»","answer":"وَٱلنَّٰشِطَٰتِ"},{"q":"«___ سَبْقࣰا»","answer":"فَٱلسَّٰبِقَٰتِ"},{"q":"«يَوْمَ ___ ٱلرَّاجِفَةُ»","answer":"تَرْجُفُ"},{"q":"«قُلُوبࣱ ___ وَاجِفَةٌ»","answer":"يَوْمَئِذࣲ"},{"q":"«يَقُولُونَ أَءِنَّا ___ فِى ٱلْحَافِرَةِ»","answer":"لَمَرْدُودُونَ"},{"q":"«قَالُوا ___ إِذࣰا كَرَّةٌ خَاسِرَةࣱ»","answer":"تِلْكَ"},{"q":"«فَإِذَا هُم ___»","answer":"بِٱلسَّاهِرَةِ"},{"q":"«إِذْ نَادَىٰهُ رَبُّهُۥ ___ ٱلْمُقَدَّسِ طُوًى»","answer":"بِٱلْوَادِ"},{"q":"«فَأَرَىٰهُ ___ ٱلْكُبْرَىٰ»","answer":"ٱلْءَايَةَ"},{"q":"«ثُمَّ ___ يَسْعَىٰ»","answer":"أَدْبَرَ"},{"q":"«فَقَالَ أَنَا۠ ___ ٱلْأَعْلَىٰ»","answer":"رَبُّكُمُ"},{"q":"«إِنَّ فِى ذَٰلِكَ ___ لِّمَن يَخْشَىٰ»","answer":"لَعِبْرَةࣰ"},{"q":"«رَفَعَ ___ فَسَوَّىٰهَا»","answer":"سَمْكَهَا"},{"q":"«___ بَعْدَ ذَٰلِكَ دَحَىٰهَا»","answer":"وَٱلْأَرْضَ"},{"q":"«___ أَرْسَىٰهَا»","answer":"وَٱلْجِبَالَ"},{"q":"«فَإِذَا جَآءَتِ ___ ٱلْكُبْرَىٰ»","answer":"ٱلطَّآمَّةُ"},{"q":"«___ ٱلْجَحِيمُ لِمَن يَرَىٰ»","answer":"وَبُرِّزَتِ"},{"q":"«وَءَاثَرَ ___ ٱلدُّنْيَا»","answer":"ٱلْحَيَوٰةَ"},{"q":"«وَأَمَّا مَنْ خَافَ مَقَامَ رَبِّهِۦ وَنَهَى ___ عَنِ ٱلْهَوَىٰ»","answer":"ٱلنَّفْسَ"},{"q":"«يَسْـَٔلُونَكَ عَنِ ___ أَيَّانَ مُرْسَىٰهَا»","answer":"ٱلسَّاعَةِ"},{"q":"«فِيمَ أَنتَ مِن ذِكْرَىٰهَآ إِلَىٰ رَبِّكَ ___»","answer":"مُنتَهَىٰهَآ"},{"q":"«كَأَنَّهُمْ يَوْمَ يَرَوْنَهَا لَمْ ___ إِلَّا عَشِيَّةً أَوْ ضُحَىٰهَا»","answer":"يَلْبَثُوٓا"}];
+const HARD_Q=[{"q":"اكتب الآيات 1–15 من سورة النازعات","answer":"وَٱلنَّٰزِعَٰتِ غَرْقࣰا وَٱلنَّٰشِطَٰتِ نَشْطࣰا وَٱلسَّٰبِحَٰتِ سَبْحࣰا فَٱلسَّٰبِقَٰتِ سَبْقࣰا فَٱلْمُدَبِّرَٰتِ أَمْرࣰا يَوْمَ تَرْجُفُ ٱلرَّاجِفَةُ تَتْبَعُهَا ٱلرَّادِفَةُ قُلُوبࣱ يَوْمَئِذࣲ وَاجِفَةٌ أَبْصَٰرُهَا خَٰشِعَةࣱ يَقُولُونَ أَءِنَّا لَمَرْدُودُونَ فِى ٱلْحَافِرَةِ أَءِذَا كُنَّا عِظَٰمࣰا نَّخِرَةࣰ قَالُوا تِلْكَ إِذࣰا كَرَّةٌ خَاسِرَةࣱ فَإِنَّمَا هِىَ زَجْرَةࣱ وَٰحِدَةࣱ فَإِذَا هُم بِٱلسَّاهِرَةِ هَلْ أَتَىٰكَ حَدِيثُ مُوسَىٰ"},{"q":"اكتب الآيات 16–26 من سورة النازعات","answer":"إِذْ نَادَىٰهُ رَبُّهُۥ بِٱلْوَادِ ٱلْمُقَدَّسِ طُوًى ٱذْهَبْ إِلَىٰ فِرْعَوْنَ إِنَّهُۥ طَغَىٰ فَقُلْ هَل لَّكَ إِلَىٰٓ أَن تَزَكَّىٰ وَأَهْدِيَكَ إِلَىٰ رَبِّكَ فَتَخْشَىٰ فَأَرَىٰهُ ٱلْءَايَةَ ٱلْكُبْرَىٰ فَكَذَّبَ وَعَصَىٰ ثُمَّ أَدْبَرَ يَسْعَىٰ فَحَشَرَ فَنَادَىٰ فَقَالَ أَنَا۠ رَبُّكُمُ ٱلْأَعْلَىٰ فَأَخَذَهُ ٱللَّهُ نَكَالَ ٱلْءَاخِرَةِ وَٱلْأُولَىٰ إِنَّ فِى ذَٰلِكَ لَعِبْرَةࣰ لِّمَن يَخْشَىٰ"},{"q":"اكتب الآيات 27–33 من سورة النازعات","answer":"ءَأَنتُمْ أَشَدُّ خَلْقًا أَمِ ٱلسَّمَآءُ بَنَىٰهَا رَفَعَ سَمْكَهَا فَسَوَّىٰهَا وَأَغْطَشَ لَيْلَهَا وَأَخْرَجَ ضُحَىٰهَا وَٱلْأَرْضَ بَعْدَ ذَٰلِكَ دَحَىٰهَا أَخْرَجَ مِنْهَا مَآءَهَا وَمَرْعَىٰهَا وَٱلْجِبَالَ أَرْسَىٰهَا مَتَٰعࣰا لَّكُمْ وَلِأَنْعَٰمِكُمْ"},{"q":"اكتب الآيات 34–41 من سورة النازعات","answer":"فَإِذَا جَآءَتِ ٱلطَّآمَّةُ ٱلْكُبْرَىٰ يَوْمَ يَتَذَكَّرُ ٱلْإِنسَٰنُ مَا سَعَىٰ وَبُرِّزَتِ ٱلْجَحِيمُ لِمَن يَرَىٰ فَأَمَّا مَن طَغَىٰ وَءَاثَرَ ٱلْحَيَوٰةَ ٱلدُّنْيَا فَإِنَّ ٱلْجَحِيمَ هِىَ ٱلْمَأْوَىٰ وَأَمَّا مَنْ خَافَ مَقَامَ رَبِّهِۦ وَنَهَى ٱلنَّفْسَ عَنِ ٱلْهَوَىٰ فَإِنَّ ٱلْجَنَّةَ هِىَ ٱلْمَأْوَىٰ"},{"q":"اكتب الآيات 42–46 من سورة النازعات","answer":"يَسْـَٔلُونَكَ عَنِ ٱلسَّاعَةِ أَيَّانَ مُرْسَىٰهَا فِيمَ أَنتَ مِن ذِكْرَىٰهَآ إِلَىٰ رَبِّكَ مُنتَهَىٰهَآ إِنَّمَآ أَنتَ مُنذِرُ مَن يَخْشَىٰهَا كَأَنَّهُمْ يَوْمَ يَرَوْنَهَا لَمْ يَلْبَثُوٓا إِلَّا عَشِيَّةً أَوْ ضُحَىٰهَا"}];
+const BAD_SPELL=/^(اللذين|اللذي|اللتي|اللذان|اللذين|اللتين|اللتان|اللاتي|اللائي|اللواتي)$/;
+</script>
+<script src="engine/engine1.js"></script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('service-worker.js')
+      .then(r=>console.log('SW:',r.scope))
+      .catch(e=>console.log('SW err:',e));
+  });
+}
+</script>
+<script src="darbi-progress-plus.js"></script>
+<div class="fdbk-overlay" id="fdbk-overlay">
+  <div class="fdbk-modal">
+    <h3 data-i18n="fdbk.title">💬 شاركنا رأيك</h3>
+    <label data-i18n="fdbk.type_label">نوع الملاحظة</label>
+    <select id="fdbk-type">
+      <option data-i18n="fdbk.type_quran">خطأ في النص القرآني</option>
+      <option data-i18n="fdbk.type_question">خطأ في السؤال أو الإجابة</option>
+      <option data-i18n="fdbk.type_voice">مشكلة في التسجيل الصوتي</option>
+      <option data-i18n="fdbk.type_design">مشكلة تصميم أو عرض</option>
+      <option data-i18n="fdbk.type_suggestion">اقتراح تحسين</option>
+      <option data-i18n="fdbk.type_other">أخرى</option>
+    </select>
+    <label data-i18n="fdbk.note_label">تفاصيل الملاحظة (اختياري)</label>
+    <textarea id="fdbk-note" data-i18n-placeholder="fdbk.note_placeholder" placeholder="اكتب ملاحظتك هنا..."></textarea>
+    <div class="fdbk-actions">
+      <button class="fdbk-send" onclick="fdbkSend()" data-i18n="fdbk.send">إرسال عبر واتساب</button>
+      <button class="fdbk-cancel" onclick="fdbkClose()" data-i18n="fdbk.cancel">إلغاء</button>
+    </div>
+  </div>
+</div>
+<div class="qr-overlay" id="qr-overlay" onclick="if(event.target===this)closeQR()">
+  <div class="qr-modal">
+    <div class="qr-title" data-i18n="qr.title">🔲 امسح الكود لفتح الصفحة</div>
+    <img class="qr-img" id="qr-img" src="" data-i18n-alt="qr.img_alt" alt="QR كود لفتح هذه الصفحة على الموبايل" width="260" height="260" loading="lazy">
+    <div class="qr-caption" data-i18n="qr.caption">امسح الكود لفتح الموقع على موبايلك</div>
+    <div class="qr-url notranslate" translate="no" id="qr-url-text"></div>
+    <div class="qr-actions">
+      <button class="qr-copy-btn" onclick="copyQRLink()" id="qr-copy-btn" data-i18n="qr.copy_btn">📋 نسخ الرابط</button>
+      <button class="qr-close-btn" onclick="closeQR()" data-i18n="qr.close_btn">إغلاق</button>
+    </div>
+  </div>
+</div>
+<script>
+function toolsToggle(e){if(e)e.stopPropagation();document.getElementById('tools-fab').classList.toggle('open');}
+function toolsClose(){document.getElementById('tools-fab').classList.remove('open');var l=document.getElementById('tools-lang-list');if(l)l.classList.remove('open');}
+function toolsLangToggle(e){if(e)e.stopPropagation();var l=document.getElementById('tools-lang-list');var a=document.getElementById('tools-lang-arrow');l.classList.toggle('open');a.style.transform=l.classList.contains('open')?'rotate(180deg)':'rotate(0)';}
+document.addEventListener('click',function(e){var w=document.getElementById('tools-fab');if(w&&!w.contains(e.target))toolsClose();});
+
+function fdbkOpen(){toolsClose();document.getElementById('fdbk-overlay').classList.add('open');}
+function fdbkClose(){document.getElementById('fdbk-overlay').classList.remove('open');}
+function fdbkSend(){
+  var type=document.getElementById('fdbk-type').value;
+  var note=document.getElementById('fdbk-note').value.trim();
+  var page=document.title||location.pathname.split('/').pop();
+  var msg='ملاحظة من دربي لحفظ القرآن\nالصفحة: '+page+'\nالنوع: '+type+(note?'\nالتفاصيل: '+note:'');
+  window.open('https://wa.me/201034365326?text='+encodeURIComponent(msg),'_blank');
+  fdbkClose();
+}
+
+function showQR(){
+  var url=location.href;
+  document.getElementById('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data='+encodeURIComponent(url);
+  document.getElementById('qr-url-text').textContent=url.replace(/^https?:\/\//,'');
+  document.getElementById('qr-overlay').classList.add('open');
+}
+function closeQR(){document.getElementById('qr-overlay').classList.remove('open');}
+function copyQRLink(){
+  var url=location.href;
+  var b=document.getElementById('qr-copy-btn');
+  navigator.clipboard.writeText(url).then(function(){b.textContent=darbiT('qr.copied');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);}).catch(function(){b.textContent=darbiT('qr.copy_failed');setTimeout(function(){b.textContent=darbiT('qr.copy_btn');},2000);});
+}
+
+// إعادة رسم أي نص ديناميكي (شارات، السؤال الحالي، لوحة شرح الترتيب) عند تبديل اللغة
+window.onDarbiLangChange = function(){
+  if(typeof updateBadges==='function' && document.getElementById('quiz-area').style.display==='block'){
+    updateBadges();
+  }
+  if(typeof showQuestion==='function' && currentLevel && currentLevel!=='order' && document.getElementById('quiz-area').style.display==='block' && questions.length){
+    document.getElementById('q-number').textContent=darbiT('quiz.q_number',{cur:toArabicNum(qIndex+1),total:toArabicNum(questions.length)});
+  }
+  if(typeof ohVisible==='function' && ohVisible()){
+    ohBuildDots();ohPaintDots();ohSay(OH_STEPS[ohStep].act,OH_STEPS[ohStep].why);ohDraw();
+  }
+};
+</script>
+</body>
+</html>

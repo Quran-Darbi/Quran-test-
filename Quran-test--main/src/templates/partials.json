@@ -1,0 +1,4 @@
+{
+ "prevBtn": "<a href=\"{{prev}}\" class=\"prev-page-btn\" data-i18n=\"level.prev_page\" style=\"flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;\">⏮️ الصفحة السابقة</a>",
+ "nextBtn": "<a href=\"{{next}}\" class=\"next-page-btn\" data-i18n=\"level.next_page\" style=\"flex:1;text-align:center;text-decoration:none;padding:8px 4px;border-radius:10px;background:transparent;color:var(--soft,var(--text-faint,#6B8067));border:1.5px dashed var(--border);font-family:inherit;font-size:12.5px;\">الصفحة التالية ⏭️</a>"
+}
