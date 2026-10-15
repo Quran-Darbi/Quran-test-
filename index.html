@@ -569,6 +569,14 @@ const almursalatPages=[
   ['almursalat_p580.html','ص 580','1–19'],['almursalat_p581.html','ص 581','20–50'],
 ];
 
+const zukhrufPages=[
+  ['azzukhruf_p489.html','ص 489','1–10'],['azzukhruf_p490.html','ص 490','11–22'],['azzukhruf_p491.html','ص 491','23–33'],
+  ['azzukhruf_p492.html','ص 492','34–47'],['azzukhruf_p493.html','ص 493','48–60'],['azzukhruf_p494.html','ص 494','61–73'],
+  ['azzukhruf_p495.html','ص 495','74–89'],
+];
+const dukhanPages=[
+  ['addukhan_p496.html','ص 496','1–18'],['addukhan_p497.html','ص 497','19–39'],['addukhan_p498.html','ص 498','40–59'],
+];
 const alahqafPages=[
   ['alahqaf_p502.html','ص 502','1–5'],['alahqaf_p503.html','ص 503','6–14'],['alahqaf_p504.html','ص 504','15–20'],
   ['alahqaf_p505.html','ص 505','21–28'],['alahqaf_p506.html','ص 506','29–35'],
@@ -766,8 +774,8 @@ const JUZ_GROUPS = {
   25:{ title:'فصلت، الشورى، الزخرف، الدخان، الجاثية', groups:[
         { kind:'range', arr:fussilatPages, from:5, to:6, name:'سورة فصلت (47–54)', surah:'فصلت', note:'◄ سورة فصلت بدأت في الجزء 24', noteTarget:24 },
         { kind:'full', arr:shuraPages, name:'الشورى', surah:'الشورى' },
-        { kind:'soon', name:'الزخرف', page:489 },
-        { kind:'soon', name:'الدخان', page:496 },
+        { kind:'full', arr:zukhrufPages, name:'الزخرف', surah:'الزخرف' },
+        { kind:'full', arr:dukhanPages, name:'الدخان', surah:'الدخان' },
         { kind:'soon', name:'الجاثية', page:499 }
       ] },
   26:{ title:'الأحقاف، الذاريات', groups:[
@@ -972,6 +980,8 @@ function renderDarbiProgress(){
   yaseenPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة يس '+p[1];});
   fussilatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة فصلت '+p[1];});
   shuraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الشورى '+p[1];});
+  zukhrufPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الزخرف '+p[1];});
+  dukhanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الدخان '+p[1];});
   arrahmanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الرحمن '+p[1];});
   alwaqiahPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الواقعة '+p[1];});
   almulkPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الملك '+p[1];});
@@ -1033,7 +1043,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 

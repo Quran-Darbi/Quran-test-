@@ -1532,22 +1532,84 @@
    {
     "stem": "shura_p486",
     "name": "الشورى ص 486",
-    "range": "23–29"
+    "range": "23–31"
    },
    {
     "stem": "shura_p487",
     "name": "الشورى ص 487",
-    "range": "30–35"
+    "range": "32–44"
    },
    {
     "stem": "shura_p488",
     "name": "الشورى ص 488",
-    "range": "36–43"
+    "range": "45–51"
    },
    {
     "stem": "shura_p489",
     "name": "الشورى ص 489",
-    "range": "44–53"
+    "range": "52–53"
+   }
+  ]
+ },
+ {
+  "label": "سورة الزخرف",
+  "juz": 25,
+  "pages": [
+   {
+    "stem": "azzukhruf_p489",
+    "name": "الزخرف ص 489",
+    "range": "1–10"
+   },
+   {
+    "stem": "azzukhruf_p490",
+    "name": "الزخرف ص 490",
+    "range": "11–22"
+   },
+   {
+    "stem": "azzukhruf_p491",
+    "name": "الزخرف ص 491",
+    "range": "23–33"
+   },
+   {
+    "stem": "azzukhruf_p492",
+    "name": "الزخرف ص 492",
+    "range": "34–47"
+   },
+   {
+    "stem": "azzukhruf_p493",
+    "name": "الزخرف ص 493",
+    "range": "48–60"
+   },
+   {
+    "stem": "azzukhruf_p494",
+    "name": "الزخرف ص 494",
+    "range": "61–73"
+   },
+   {
+    "stem": "azzukhruf_p495",
+    "name": "الزخرف ص 495",
+    "range": "74–89"
+   }
+  ]
+ },
+ {
+  "label": "سورة الدخان",
+  "juz": 25,
+  "pages": [
+   {
+    "stem": "addukhan_p496",
+    "name": "الدخان ص 496",
+    "range": "1–18"
+   },
+   {
+    "stem": "addukhan_p497",
+    "name": "الدخان ص 497",
+    "range": "19–39"
+   },
+   {
+    "stem": "addukhan_p498",
+    "name": "الدخان ص 498",
+    "range": "40–59"
    }
   ]
  }
