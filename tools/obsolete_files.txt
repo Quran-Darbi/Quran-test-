@@ -6,3 +6,5 @@ legacy/fix_files.py
 legacy/patch_all.py
 NOTES_juz27.txt
 Scripts/pages_kahf.json
+patch_all.py
+audit_report.txt
