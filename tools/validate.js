@@ -36,7 +36,13 @@ for(const {stem,file} of pages()){
     if(!Number.isInteger(q.answer)||q.answer<0||q.answer>=q.choices.length)E(stem,t+' فهرس الإجابة خارج الخيارات');
     if(new Set(q.choices).size!==q.choices.length)E(stem,t+' خيارات مكررة');
     if(seen.has(q.q))W(stem,t+' نص السؤال مكرر (قد يكون مقصوداً لآية مكرّرة)');seen.add(q.q);
-    if(q.q.includes('___')&&Number.isInteger(q.answer)){const parts=q.q.replace(/[«»]/g,'').split('___');const full=norm(parts[0]+' '+q.choices[q.answer]+' '+(parts[1]||''));if(full&&!joined.includes(full))W(stem,t+' نص السؤال مع الإجابة لا يظهر متصلاً في AYAT');}});
+    if(q.q.includes('___')&&Number.isInteger(q.answer)){const qm=q.q.match(/«([^»]*___[^»]*)»/);const body=(qm?qm[1]:q.q).replace(/[«»]/g,'').replace(/﴿[^﴾]*﴾/g,' ').replace(/\([^)]*الآية[^)]*\)/g,' ');
+      // فراغ واحد: النص مع الإجابة متصلاً (الفراغ الملاصق لحرف يُوصَل بلا مسافة، مثل «بِ___»)؛ فراغات متعددة: كل مقطع ثابت يُفحص على حدة
+      const blanks=body.split('___').length-1;
+      let bad;
+      if(blanks===1){const m=body.match(/^([\s\S]*?)(\s?)___(\s?)([\s\S]*)$/);const full=norm(m[1]+m[2]+q.choices[q.answer]+m[3]+m[4]);bad=full&&!joined.includes(full);}
+      else bad=body.split('___').some(x=>{const n=norm(x);return n&&!joined.includes(n);});
+      if(bad)W(stem,t+' نص السؤال مع الإجابة لا يظهر متصلاً في AYAT');}});
   for(const k of ['MEDIUM_Q','HARD_Q'])(d[k]||[]).forEach((q,i)=>{nQ++;const t=k+'['+i+']';
     if(!q.q||typeof q.answer!=='string'||!q.answer.trim())return E(stem,t+' هيكل غير صالح');
     if(!C.text.includes(norm(q.answer))&&!(KI.answers||[]).includes(stem+':'+k+':'+i))W(stem,t+' الإجابة ليست متصلة في النص المرجعي (قد تكون جمعاً مقصوداً لأجزاء)');});
