@@ -1612,5 +1612,31 @@
     "range": "40–59"
    }
   ]
+ },
+ {
+  "label": "سورة الجاثية",
+  "juz": 25,
+  "pages": [
+   {
+    "stem": "aljathiya_p499",
+    "name": "الجاثية ص 499",
+    "range": "1–13"
+   },
+   {
+    "stem": "aljathiya_p500",
+    "name": "الجاثية ص 500",
+    "range": "14–22"
+   },
+   {
+    "stem": "aljathiya_p501",
+    "name": "الجاثية ص 501",
+    "range": "23–32"
+   },
+   {
+    "stem": "aljathiya_p502",
+    "name": "الجاثية ص 502",
+    "range": "33–37"
+   }
+  ]
  }
 ]
