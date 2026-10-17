@@ -445,6 +445,39 @@ const alimranPages=[
   ['alimran_p76.html','ص 76','195–200'],
 ];
 
+const nisaPages=[
+  ['annisa_p77.html','ص 77','1–6'],
+  ['annisa_p78.html','ص 78','7–11'],
+  ['annisa_p79.html','ص 79','12–14'],
+  ['annisa_p80.html','ص 80','15–19'],
+  ['annisa_p81.html','ص 81','20–23'],
+  ['annisa_p82.html','ص 82','24–26'],
+  ['annisa_p83.html','ص 83','27–33'],
+  ['annisa_p84.html','ص 84','34–37'],
+  ['annisa_p85.html','ص 85','38–44'],
+  ['annisa_p86.html','ص 86','45–51'],
+  ['annisa_p87.html','ص 87','52–59'],
+  ['annisa_p88.html','ص 88','60–65'],
+  ['annisa_p89.html','ص 89','66–74'],
+  ['annisa_p90.html','ص 90','75–79'],
+  ['annisa_p91.html','ص 91','80–86'],
+  ['annisa_p92.html','ص 92','87–91'],
+  ['annisa_p93.html','ص 93','92–94'],
+  ['annisa_p94.html','ص 94','95–101'],
+  ['annisa_p95.html','ص 95','102–105'],
+  ['annisa_p96.html','ص 96','106–113'],
+  ['annisa_p97.html','ص 97','114–121'],
+  ['annisa_p98.html','ص 98','122–127'],
+  ['annisa_p99.html','ص 99','128–134'],
+  ['annisa_p100.html','ص 100','135–140'],
+  ['annisa_p101.html','ص 101','141–147'],
+  ['annisa_p102.html','ص 102','148–154'],
+  ['annisa_p103.html','ص 103','155–162'],
+  ['annisa_p104.html','ص 104','163–170'],
+  ['annisa_p105.html','ص 105','171–175'],
+  ['annisa_p106.html','ص 106','176'],
+];
+
 const kahfPages=[
   ['alkahf_p293.html','ص 293','1–4'],['alkahf_p294.html','ص 294','5–15'],
   ['alkahf_p295.html','ص 295','16–20'],['alkahf_p296.html','ص 296','21–27'],
@@ -679,13 +712,13 @@ const JUZ_GROUPS = {
       ] },
   4: { title:'آل عمران، النساء', groups:[
         { kind:'range', arr:alimranPages, from:12, to:27, name:'سورة آل عمران (92–200)', surah:'آل عمران', note:'◄ سورة آل عمران بدأت في الجزء 3', noteTarget:3 },
-        { kind:'soon', name:'النساء', page:77 }
+        { kind:'range', arr:nisaPages, from:0, to:5, name:'سورة النساء (1–23)', surah:'النساء', note:'سورة النساء تكمل في الجزء 5 ←', noteTarget:5 }
       ] },
   5:{ title:'النساء', groups:[
-        { kind:'soon', name:'النساء (تابع)', page:82 }
+        { kind:'range', arr:nisaPages, from:5, to:25, name:'سورة النساء (24–147)', surah:'النساء', note:'سورة النساء تكمل في الجزء 6 ←', noteTarget:6 }
       ] },
   6:{ title:'النساء، المائدة', groups:[
-        { kind:'soon', name:'النساء (تابع)', page:102 },
+        { kind:'range', arr:nisaPages, from:25, to:30, name:'سورة النساء (148–176)', surah:'النساء', note:'◄ سورة النساء بدأت في الجزء 4', noteTarget:4 },
         { kind:'soon', name:'المائدة', page:106 }
       ] },
   7:{ title:'المائدة، الأنعام', groups:[
@@ -977,6 +1010,7 @@ function renderDarbiProgress(){
   const nameByKey={alfatiha:'الفاتحة'};
   baqaraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة البقرة '+p[1];});
   alimranPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة آل عمران '+p[1];});
+  nisaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة النساء '+p[1];});
   kahfPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الكهف '+p[1];});
   maryamPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة مريم '+p[1];});
   tahaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة طه '+p[1];});
@@ -1047,7 +1081,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 

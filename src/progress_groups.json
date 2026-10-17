@@ -257,6 +257,162 @@
   ]
  },
  {
+  "label": "سورة النساء",
+  "juz": 4,
+  "pages": [
+   {
+    "stem": "annisa_p77",
+    "name": "النساء ص 77",
+    "range": "1–6"
+   },
+   {
+    "stem": "annisa_p78",
+    "name": "النساء ص 78",
+    "range": "7–11"
+   },
+   {
+    "stem": "annisa_p79",
+    "name": "النساء ص 79",
+    "range": "12–14"
+   },
+   {
+    "stem": "annisa_p80",
+    "name": "النساء ص 80",
+    "range": "15–19"
+   },
+   {
+    "stem": "annisa_p81",
+    "name": "النساء ص 81",
+    "range": "20–23"
+   },
+   {
+    "stem": "annisa_p82",
+    "name": "النساء ص 82",
+    "range": "24–26"
+   },
+   {
+    "stem": "annisa_p83",
+    "name": "النساء ص 83",
+    "range": "27–33"
+   },
+   {
+    "stem": "annisa_p84",
+    "name": "النساء ص 84",
+    "range": "34–37"
+   },
+   {
+    "stem": "annisa_p85",
+    "name": "النساء ص 85",
+    "range": "38–44"
+   },
+   {
+    "stem": "annisa_p86",
+    "name": "النساء ص 86",
+    "range": "45–51"
+   },
+   {
+    "stem": "annisa_p87",
+    "name": "النساء ص 87",
+    "range": "52–59"
+   },
+   {
+    "stem": "annisa_p88",
+    "name": "النساء ص 88",
+    "range": "60–65"
+   },
+   {
+    "stem": "annisa_p89",
+    "name": "النساء ص 89",
+    "range": "66–74"
+   },
+   {
+    "stem": "annisa_p90",
+    "name": "النساء ص 90",
+    "range": "75–79"
+   },
+   {
+    "stem": "annisa_p91",
+    "name": "النساء ص 91",
+    "range": "80–86"
+   },
+   {
+    "stem": "annisa_p92",
+    "name": "النساء ص 92",
+    "range": "87–91"
+   },
+   {
+    "stem": "annisa_p93",
+    "name": "النساء ص 93",
+    "range": "92–94"
+   },
+   {
+    "stem": "annisa_p94",
+    "name": "النساء ص 94",
+    "range": "95–101"
+   },
+   {
+    "stem": "annisa_p95",
+    "name": "النساء ص 95",
+    "range": "102–105"
+   },
+   {
+    "stem": "annisa_p96",
+    "name": "النساء ص 96",
+    "range": "106–113"
+   },
+   {
+    "stem": "annisa_p97",
+    "name": "النساء ص 97",
+    "range": "114–121"
+   },
+   {
+    "stem": "annisa_p98",
+    "name": "النساء ص 98",
+    "range": "122–127"
+   },
+   {
+    "stem": "annisa_p99",
+    "name": "النساء ص 99",
+    "range": "128–134"
+   },
+   {
+    "stem": "annisa_p100",
+    "name": "النساء ص 100",
+    "range": "135–140"
+   },
+   {
+    "stem": "annisa_p101",
+    "name": "النساء ص 101",
+    "range": "141–147"
+   },
+   {
+    "stem": "annisa_p102",
+    "name": "النساء ص 102",
+    "range": "148–154"
+   },
+   {
+    "stem": "annisa_p103",
+    "name": "النساء ص 103",
+    "range": "155–162"
+   },
+   {
+    "stem": "annisa_p104",
+    "name": "النساء ص 104",
+    "range": "163–170"
+   },
+   {
+    "stem": "annisa_p105",
+    "name": "النساء ص 105",
+    "range": "171–175"
+   },
+   {
+    "stem": "annisa_p106",
+    "name": "النساء ص 106",
+    "range": "176"
+   }
+  ]
+ },
+ {
   "label": "سورة الكهف",
   "juz": 15,
   "pages": [
