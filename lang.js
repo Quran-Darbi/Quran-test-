@@ -146,6 +146,8 @@ ar: {
   'quiz.hard_placeholder_plural':'اكتب الآيات كاملة...',
   'quiz.submit_check':'تحقق ✓',
   'quiz.ayah_label':'الآية {n}',
+  'quiz.hard_from':'من',
+  'quiz.hard_to':'إلى',
 
   // ===== الترتيب =====
   'order.instruction':'رتّب الآيات — اضغط على الآية فتُوضَع بالتسلسل. تريد تخطّي خانة؟ اضغط على الخانة التي تريد المتابعة منها',
@@ -474,6 +476,8 @@ en: {
   'quiz.hard_placeholder_plural':'Type the full ayahs...',
   'quiz.submit_check':'Check ✓',
   'quiz.ayah_label':'Ayah {n}',
+  'quiz.hard_from':'From',
+  'quiz.hard_to':'To',
 
   // ===== Ordering =====
   'order.instruction':'Put the ayahs in order — tap an ayah to place it in sequence. Want to skip a slot? Tap the slot you want to continue from.',
@@ -797,6 +801,8 @@ fr: {
   'quiz.hard_placeholder_plural':'Écrivez les versets complets...',
   'quiz.submit_check':'Vérifier ✓',
   'quiz.ayah_label':'Verset {n}',
+  'quiz.hard_from':'De',
+  'quiz.hard_to':'À',
 
   // ===== Remise en ordre =====
   'order.instruction':'Remettez les versets dans l’ordre — touchez un verset pour le placer dans la séquence. Vous voulez passer une case ? Touchez la case à partir de laquelle continuer.',
@@ -1120,6 +1126,8 @@ tr: {
   'quiz.hard_placeholder_plural':'Ayetlerin tamamını yaz...',
   'quiz.submit_check':'Kontrol et ✓',
   'quiz.ayah_label':'{n}. Ayet',
+  'quiz.hard_from':'Başlangıç',
+  'quiz.hard_to':'Bitiş',
 
   // ===== Sıralama =====
   'order.instruction':'Ayetleri sıraya diz — sırayla yerleştirmek için bir ayete dokun. Bir hücreyi atlamak mı istiyorsun? Devam etmek istediğin hücreye dokun.',
@@ -1444,6 +1452,8 @@ de: {
   'quiz.hard_placeholder_plural':'Gib die vollständigen Ayat ein...',
   'quiz.submit_check':'Prüfen ✓',
   'quiz.ayah_label':'Ayah {n}',
+  'quiz.hard_from':'Von',
+  'quiz.hard_to':'Bis',
 
   // ===== Reihenfolge =====
   'order.instruction':'Bringe die Ayat in die richtige Reihenfolge — tippe eine Ayah an, um sie einzusetzen. Möchtest du einen Platz überspringen? Tippe den Platz an, ab dem du fortfahren möchtest.',
@@ -1767,6 +1777,8 @@ es: {
   'quiz.hard_placeholder_plural':'Escribe las aleyas completas...',
   'quiz.submit_check':'Comprobar ✓',
   'quiz.ayah_label':'Aleya {n}',
+  'quiz.hard_from':'Desde',
+  'quiz.hard_to':'Hasta',
 
   // ===== Ordenar =====
   'order.instruction':'Ordena las aleyas — toca una aleya para colocarla en la secuencia. ¿Quieres saltar una casilla? Toca la casilla desde la que quieres continuar.',
@@ -2090,6 +2102,8 @@ fa: {
   'quiz.hard_placeholder_plural':'آیات کامل را بنویسید...',
   'quiz.submit_check':'بررسی ✓',
   'quiz.ayah_label':'آیه {n}',
+  'quiz.hard_from':'از',
+  'quiz.hard_to':'تا',
 
   // ===== ترتیب =====
   'order.instruction':'آیات را به ترتیب بچینید — برای قرار دادن یک آیه در توالی، روی آن ضربه بزنید. می‌خواهید از یک جایگاه رد شوید؟ روی جایگاهی که می‌خواهید از آن ادامه دهید ضربه بزنید.',
