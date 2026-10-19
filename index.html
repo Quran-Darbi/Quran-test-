@@ -478,6 +478,31 @@ const nisaPages=[
   ['annisa_p106.html','ص 106','176'],
 ];
 
+const maidaPages=[
+  ['almaida_p106.html','ص 106','1–2'],
+  ['almaida_p107.html','ص 107','3–5'],
+  ['almaida_p108.html','ص 108','6–9'],
+  ['almaida_p109.html','ص 109','10–13'],
+  ['almaida_p110.html','ص 110','14–17'],
+  ['almaida_p111.html','ص 111','18–23'],
+  ['almaida_p112.html','ص 112','24–31'],
+  ['almaida_p113.html','ص 113','32–36'],
+  ['almaida_p114.html','ص 114','37–41'],
+  ['almaida_p115.html','ص 115','42–45'],
+  ['almaida_p116.html','ص 116','46–50'],
+  ['almaida_p117.html','ص 117','51–57'],
+  ['almaida_p118.html','ص 118','58–64'],
+  ['almaida_p119.html','ص 119','65–70'],
+  ['almaida_p120.html','ص 120','71–77'],
+  ['almaida_p121.html','ص 121','78–83'],
+  ['almaida_p122.html','ص 122','84–90'],
+  ['almaida_p123.html','ص 123','91–95'],
+  ['almaida_p124.html','ص 124','96–103'],
+  ['almaida_p125.html','ص 125','104–108'],
+  ['almaida_p126.html','ص 126','109–113'],
+  ['almaida_p127.html','ص 127','114–120'],
+];
+
 const kahfPages=[
   ['alkahf_p293.html','ص 293','1–4'],['alkahf_p294.html','ص 294','5–15'],
   ['alkahf_p295.html','ص 295','16–20'],['alkahf_p296.html','ص 296','21–27'],
@@ -719,10 +744,10 @@ const JUZ_GROUPS = {
       ] },
   6:{ title:'النساء، المائدة', groups:[
         { kind:'range', arr:nisaPages, from:25, to:30, name:'سورة النساء (148–176)', surah:'النساء', note:'◄ سورة النساء بدأت في الجزء 4', noteTarget:4 },
-        { kind:'soon', name:'المائدة', page:106 }
+        { kind:'range', arr:maidaPages, from:0, to:15, name:'سورة المائدة (1–77)', surah:'المائدة', note:'سورة المائدة تكمل في الجزء 7 ←', noteTarget:7 }
       ] },
   7:{ title:'المائدة، الأنعام', groups:[
-        { kind:'soon', name:'المائدة (تابع)', page:121 },
+        { kind:'range', arr:maidaPages, from:15, to:22, name:'سورة المائدة (78–120)', surah:'المائدة', note:'◄ سورة المائدة بدأت في الجزء 6', noteTarget:6 },
         { kind:'soon', name:'الأنعام', page:128 }
       ] },
   8:{ title:'الأنعام، الأعراف', groups:[
@@ -1081,7 +1106,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 

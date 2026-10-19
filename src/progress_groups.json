@@ -1794,5 +1794,121 @@
     "range": "33–37"
    }
   ]
+ },
+ {
+  "label": "سورة المائدة",
+  "juz": 6,
+  "pages": [
+   {
+    "stem": "almaida_p106",
+    "name": "المائدة ص 106",
+    "range": "1–2"
+   },
+   {
+    "stem": "almaida_p107",
+    "name": "المائدة ص 107",
+    "range": "3–5"
+   },
+   {
+    "stem": "almaida_p108",
+    "name": "المائدة ص 108",
+    "range": "6–9"
+   },
+   {
+    "stem": "almaida_p109",
+    "name": "المائدة ص 109",
+    "range": "10–13"
+   },
+   {
+    "stem": "almaida_p110",
+    "name": "المائدة ص 110",
+    "range": "14–17"
+   },
+   {
+    "stem": "almaida_p111",
+    "name": "المائدة ص 111",
+    "range": "18–23"
+   },
+   {
+    "stem": "almaida_p112",
+    "name": "المائدة ص 112",
+    "range": "24–31"
+   },
+   {
+    "stem": "almaida_p113",
+    "name": "المائدة ص 113",
+    "range": "32–36"
+   },
+   {
+    "stem": "almaida_p114",
+    "name": "المائدة ص 114",
+    "range": "37–41"
+   },
+   {
+    "stem": "almaida_p115",
+    "name": "المائدة ص 115",
+    "range": "42–45"
+   },
+   {
+    "stem": "almaida_p116",
+    "name": "المائدة ص 116",
+    "range": "46–50"
+   },
+   {
+    "stem": "almaida_p117",
+    "name": "المائدة ص 117",
+    "range": "51–57"
+   },
+   {
+    "stem": "almaida_p118",
+    "name": "المائدة ص 118",
+    "range": "58–64"
+   },
+   {
+    "stem": "almaida_p119",
+    "name": "المائدة ص 119",
+    "range": "65–70"
+   },
+   {
+    "stem": "almaida_p120",
+    "name": "المائدة ص 120",
+    "range": "71–77"
+   },
+   {
+    "stem": "almaida_p121",
+    "name": "المائدة ص 121",
+    "range": "78–83"
+   },
+   {
+    "stem": "almaida_p122",
+    "name": "المائدة ص 122",
+    "range": "84–90"
+   },
+   {
+    "stem": "almaida_p123",
+    "name": "المائدة ص 123",
+    "range": "91–95"
+   },
+   {
+    "stem": "almaida_p124",
+    "name": "المائدة ص 124",
+    "range": "96–103"
+   },
+   {
+    "stem": "almaida_p125",
+    "name": "المائدة ص 125",
+    "range": "104–108"
+   },
+   {
+    "stem": "almaida_p126",
+    "name": "المائدة ص 126",
+    "range": "109–113"
+   },
+   {
+    "stem": "almaida_p127",
+    "name": "المائدة ص 127",
+    "range": "114–120"
+   }
+  ]
  }
 ]
