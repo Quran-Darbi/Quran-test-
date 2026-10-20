@@ -503,6 +503,32 @@ const maidaPages=[
   ['almaida_p127.html','ص 127','114–120'],
 ];
 
+const anamPages=[
+  ['alanam_p128.html','ص 128','1–8'],
+  ['alanam_p129.html','ص 129','9–18'],
+  ['alanam_p130.html','ص 130','19–27'],
+  ['alanam_p131.html','ص 131','28–35'],
+  ['alanam_p132.html','ص 132','36–44'],
+  ['alanam_p133.html','ص 133','45–52'],
+  ['alanam_p134.html','ص 134','53–59'],
+  ['alanam_p135.html','ص 135','60–68'],
+  ['alanam_p136.html','ص 136','69–73'],
+  ['alanam_p137.html','ص 137','74–81'],
+  ['alanam_p138.html','ص 138','82–90'],
+  ['alanam_p139.html','ص 139','91–94'],
+  ['alanam_p140.html','ص 140','95–101'],
+  ['alanam_p141.html','ص 141','102–110'],
+  ['alanam_p142.html','ص 142','111–118'],
+  ['alanam_p143.html','ص 143','119–124'],
+  ['alanam_p144.html','ص 144','125–130'],
+  ['alanam_p145.html','ص 145','131–137'],
+  ['alanam_p146.html','ص 146','138–142'],
+  ['alanam_p147.html','ص 147','143–146'],
+  ['alanam_p148.html','ص 148','147–151'],
+  ['alanam_p149.html','ص 149','152–157'],
+  ['alanam_p150.html','ص 150','158–165'],
+];
+
 const kahfPages=[
   ['alkahf_p293.html','ص 293','1–4'],['alkahf_p294.html','ص 294','5–15'],
   ['alkahf_p295.html','ص 295','16–20'],['alkahf_p296.html','ص 296','21–27'],
@@ -748,10 +774,10 @@ const JUZ_GROUPS = {
       ] },
   7:{ title:'المائدة، الأنعام', groups:[
         { kind:'range', arr:maidaPages, from:15, to:22, name:'سورة المائدة (78–120)', surah:'المائدة', note:'◄ سورة المائدة بدأت في الجزء 6', noteTarget:6 },
-        { kind:'soon', name:'الأنعام', page:128 }
+        { kind:'range', arr:anamPages, from:0, to:14, name:'سورة الأنعام (1–110)', surah:'الأنعام', note:'سورة الأنعام تكمل في الجزء 8 ←', noteTarget:8 }
       ] },
   8:{ title:'الأنعام، الأعراف', groups:[
-        { kind:'soon', name:'الأنعام (تابع)', page:142 },
+        { kind:'range', arr:anamPages, from:14, to:23, name:'سورة الأنعام (111–165)', surah:'الأنعام', note:'◄ سورة الأنعام بدأت في الجزء 7', noteTarget:7 },
         { kind:'soon', name:'الأعراف', page:151 }
       ] },
   9:{ title:'الأعراف، الأنفال', groups:[
@@ -1106,7 +1132,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 

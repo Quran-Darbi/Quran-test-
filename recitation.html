@@ -404,6 +404,31 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <option value="almaida_p126">ص126 — آيات 109–113</option>
       <option value="almaida_p127">ص127 — آيات 114–120</option>
     </optgroup>
+    <optgroup label="سورة الأنعام">
+      <option value="alanam_p128">ص128 — آيات 1–8</option>
+      <option value="alanam_p129">ص129 — آيات 9–18</option>
+      <option value="alanam_p130">ص130 — آيات 19–27</option>
+      <option value="alanam_p131">ص131 — آيات 28–35</option>
+      <option value="alanam_p132">ص132 — آيات 36–44</option>
+      <option value="alanam_p133">ص133 — آيات 45–52</option>
+      <option value="alanam_p134">ص134 — آيات 53–59</option>
+      <option value="alanam_p135">ص135 — آيات 60–68</option>
+      <option value="alanam_p136">ص136 — آيات 69–73</option>
+      <option value="alanam_p137">ص137 — آيات 74–81</option>
+      <option value="alanam_p138">ص138 — آيات 82–90</option>
+      <option value="alanam_p139">ص139 — آيات 91–94</option>
+      <option value="alanam_p140">ص140 — آيات 95–101</option>
+      <option value="alanam_p141">ص141 — آيات 102–110</option>
+      <option value="alanam_p142">ص142 — آيات 111–118</option>
+      <option value="alanam_p143">ص143 — آيات 119–124</option>
+      <option value="alanam_p144">ص144 — آيات 125–130</option>
+      <option value="alanam_p145">ص145 — آيات 131–137</option>
+      <option value="alanam_p146">ص146 — آيات 138–142</option>
+      <option value="alanam_p147">ص147 — آيات 143–146</option>
+      <option value="alanam_p148">ص148 — آيات 147–151</option>
+      <option value="alanam_p149">ص149 — آيات 152–157</option>
+      <option value="alanam_p150">ص150 — آيات 158–165</option>
+    </optgroup>
     <optgroup label="سورة الكهف">
       <option value="alkahf_p293">ص293 — آيات 1–4</option>
       <option value="alkahf_p294">ص294 — آيات 5–15</option>
@@ -887,6 +912,29 @@ const SURAH_NAMES = {
   almaida_p125:'المائدة ص125 — آيات 104–108',
   almaida_p126:'المائدة ص126 — آيات 109–113',
   almaida_p127:'المائدة ص127 — آيات 114–120',
+  alanam_p128:'الأنعام ص128 — آيات 1–8',
+  alanam_p129:'الأنعام ص129 — آيات 9–18',
+  alanam_p130:'الأنعام ص130 — آيات 19–27',
+  alanam_p131:'الأنعام ص131 — آيات 28–35',
+  alanam_p132:'الأنعام ص132 — آيات 36–44',
+  alanam_p133:'الأنعام ص133 — آيات 45–52',
+  alanam_p134:'الأنعام ص134 — آيات 53–59',
+  alanam_p135:'الأنعام ص135 — آيات 60–68',
+  alanam_p136:'الأنعام ص136 — آيات 69–73',
+  alanam_p137:'الأنعام ص137 — آيات 74–81',
+  alanam_p138:'الأنعام ص138 — آيات 82–90',
+  alanam_p139:'الأنعام ص139 — آيات 91–94',
+  alanam_p140:'الأنعام ص140 — آيات 95–101',
+  alanam_p141:'الأنعام ص141 — آيات 102–110',
+  alanam_p142:'الأنعام ص142 — آيات 111–118',
+  alanam_p143:'الأنعام ص143 — آيات 119–124',
+  alanam_p144:'الأنعام ص144 — آيات 125–130',
+  alanam_p145:'الأنعام ص145 — آيات 131–137',
+  alanam_p146:'الأنعام ص146 — آيات 138–142',
+  alanam_p147:'الأنعام ص147 — آيات 143–146',
+  alanam_p148:'الأنعام ص148 — آيات 147–151',
+  alanam_p149:'الأنعام ص149 — آيات 152–157',
+  alanam_p150:'الأنعام ص150 — آيات 158–165',
   alkahf_p293:'الكهف ص293 — آيات 1–4',
   alkahf_p294:'الكهف ص294 — آيات 5–15',
   alkahf_p295:'الكهف ص295 — آيات 16–20',
@@ -1518,6 +1566,7 @@ const AYAH_START={
   alimran_p55:38, alimran_p56:46, alimran_p57:53, alimran_p58:62, alimran_p59:71, alimran_p60:78, alimran_p61:84, alimran_p62:92,
   alimran_p63:101, alimran_p64:109, alimran_p65:116, alimran_p66:122, alimran_p67:133, alimran_p68:141, alimran_p69:149, alimran_p70:154, alimran_p71:158, alimran_p72:166, alimran_p73:174, alimran_p74:181, alimran_p75:187, alimran_p76:195,
   annisa_p77:1, annisa_p78:7, annisa_p79:12, annisa_p80:15, annisa_p81:20, annisa_p82:24, annisa_p83:27, annisa_p84:34, annisa_p85:38, annisa_p86:45, annisa_p87:52, annisa_p88:60, annisa_p89:66, annisa_p90:75, annisa_p91:80, annisa_p92:87, annisa_p93:92, annisa_p94:95, annisa_p95:102, annisa_p96:106, annisa_p97:114, annisa_p98:122, annisa_p99:128, annisa_p100:135, annisa_p101:141, annisa_p102:148, annisa_p103:155, annisa_p104:163, annisa_p105:171, annisa_p106:176, almaida_p106:1, almaida_p107:3, almaida_p108:6, almaida_p109:10, almaida_p110:14, almaida_p111:18, almaida_p112:24, almaida_p113:32, almaida_p114:37, almaida_p115:42, almaida_p116:46, almaida_p117:51, almaida_p118:58, almaida_p119:65, almaida_p120:71, almaida_p121:78, almaida_p122:84, almaida_p123:91, almaida_p124:96, almaida_p125:104, almaida_p126:109, almaida_p127:114,
+  alanam_p128:1, alanam_p129:9, alanam_p130:19, alanam_p131:28, alanam_p132:36, alanam_p133:45, alanam_p134:53, alanam_p135:60, alanam_p136:69, alanam_p137:74, alanam_p138:82, alanam_p139:91, alanam_p140:95, alanam_p141:102, alanam_p142:111, alanam_p143:119, alanam_p144:125, alanam_p145:131, alanam_p146:138, alanam_p147:143, alanam_p148:147, alanam_p149:152, alanam_p150:158,
   maryam_p305:1,
   maryam_p306:12,
   maryam_p307:26,
@@ -1757,7 +1806,7 @@ const RECITE_SEQUENCE=['fatiha',
 'alimran_p50','alimran_p51','alimran_p52','alimran_p53','alimran_p54',
 'alimran_p55','alimran_p56','alimran_p57','alimran_p58','alimran_p59','alimran_p60','alimran_p61','alimran_p62',
 'alimran_p63','alimran_p64','alimran_p65','alimran_p66','alimran_p67','alimran_p68','alimran_p69','alimran_p70','alimran_p71','alimran_p72','alimran_p73','alimran_p74','alimran_p75','alimran_p76',
-'annisa_p77','annisa_p78','annisa_p79','annisa_p80','annisa_p81','annisa_p82','annisa_p83','annisa_p84','annisa_p85','annisa_p86','annisa_p87','annisa_p88','annisa_p89','annisa_p90','annisa_p91','annisa_p92','annisa_p93','annisa_p94','annisa_p95','annisa_p96','annisa_p97','annisa_p98','annisa_p99','annisa_p100','annisa_p101','annisa_p102','annisa_p103','annisa_p104','annisa_p105','annisa_p106','almaida_p106','almaida_p107','almaida_p108','almaida_p109','almaida_p110','almaida_p111','almaida_p112','almaida_p113','almaida_p114','almaida_p115','almaida_p116','almaida_p117','almaida_p118','almaida_p119','almaida_p120','almaida_p121','almaida_p122','almaida_p123','almaida_p124','almaida_p125','almaida_p126','almaida_p127',
+'annisa_p77','annisa_p78','annisa_p79','annisa_p80','annisa_p81','annisa_p82','annisa_p83','annisa_p84','annisa_p85','annisa_p86','annisa_p87','annisa_p88','annisa_p89','annisa_p90','annisa_p91','annisa_p92','annisa_p93','annisa_p94','annisa_p95','annisa_p96','annisa_p97','annisa_p98','annisa_p99','annisa_p100','annisa_p101','annisa_p102','annisa_p103','annisa_p104','annisa_p105','annisa_p106','almaida_p106','almaida_p107','almaida_p108','almaida_p109','almaida_p110','almaida_p111','almaida_p112','almaida_p113','almaida_p114','almaida_p115','almaida_p116','almaida_p117','almaida_p118','almaida_p119','almaida_p120','almaida_p121','almaida_p122','almaida_p123','almaida_p124','almaida_p125','almaida_p126','almaida_p127','alanam_p128','alanam_p129','alanam_p130','alanam_p131','alanam_p132','alanam_p133','alanam_p134','alanam_p135','alanam_p136','alanam_p137','alanam_p138','alanam_p139','alanam_p140','alanam_p141','alanam_p142','alanam_p143','alanam_p144','alanam_p145','alanam_p146','alanam_p147','alanam_p148','alanam_p149','alanam_p150',
 'maryam_p305','maryam_p306','maryam_p307','maryam_p308','maryam_p309','maryam_p310','maryam_p311','maryam_p312',
 'taha_p312','taha_p313','taha_p314','taha_p315','taha_p316','taha_p317','taha_p318','taha_p319','taha_p320','taha_p321',
 'yaseen_p440','yaseen_p441','yaseen_p442','yaseen_p443','yaseen_p444','yaseen_p445',
