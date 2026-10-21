@@ -2167,5 +2167,61 @@
     "range": "196–206"
    }
   ]
+ },
+ {
+  "label": "سورة الأنفال",
+  "juz": 9,
+  "pages": [
+   {
+    "stem": "alanfal_p177",
+    "name": "الأنفال ص 177",
+    "range": "1–8"
+   },
+   {
+    "stem": "alanfal_p178",
+    "name": "الأنفال ص 178",
+    "range": "9–16"
+   },
+   {
+    "stem": "alanfal_p179",
+    "name": "الأنفال ص 179",
+    "range": "17–25"
+   },
+   {
+    "stem": "alanfal_p180",
+    "name": "الأنفال ص 180",
+    "range": "26–33"
+   },
+   {
+    "stem": "alanfal_p181",
+    "name": "الأنفال ص 181",
+    "range": "34–40"
+   },
+   {
+    "stem": "alanfal_p182",
+    "name": "الأنفال ص 182",
+    "range": "41–45"
+   },
+   {
+    "stem": "alanfal_p183",
+    "name": "الأنفال ص 183",
+    "range": "46–52"
+   },
+   {
+    "stem": "alanfal_p184",
+    "name": "الأنفال ص 184",
+    "range": "53–61"
+   },
+   {
+    "stem": "alanfal_p185",
+    "name": "الأنفال ص 185",
+    "range": "62–69"
+   },
+   {
+    "stem": "alanfal_p186",
+    "name": "الأنفال ص 186",
+    "range": "70–75"
+   }
+  ]
  }
 ]
