@@ -2223,5 +2223,116 @@
     "range": "70–75"
    }
   ]
+ },
+ {
+  "label": "سورة التوبة",
+  "juz": 10,
+  "pages": [
+   {
+    "stem": "attawba_p187",
+    "name": "التوبة ص 187",
+    "range": "1–6"
+   },
+   {
+    "stem": "attawba_p188",
+    "name": "التوبة ص 188",
+    "range": "7–13"
+   },
+   {
+    "stem": "attawba_p189",
+    "name": "التوبة ص 189",
+    "range": "14–20"
+   },
+   {
+    "stem": "attawba_p190",
+    "name": "التوبة ص 190",
+    "range": "21–26"
+   },
+   {
+    "stem": "attawba_p191",
+    "name": "التوبة ص 191",
+    "range": "27–31"
+   },
+   {
+    "stem": "attawba_p192",
+    "name": "التوبة ص 192",
+    "range": "32–36"
+   },
+   {
+    "stem": "attawba_p193",
+    "name": "التوبة ص 193",
+    "range": "37–40"
+   },
+   {
+    "stem": "attawba_p194",
+    "name": "التوبة ص 194",
+    "range": "41–47"
+   },
+   {
+    "stem": "attawba_p195",
+    "name": "التوبة ص 195",
+    "range": "48–54"
+   },
+   {
+    "stem": "attawba_p196",
+    "name": "التوبة ص 196",
+    "range": "55–61"
+   },
+   {
+    "stem": "attawba_p197",
+    "name": "التوبة ص 197",
+    "range": "62–68"
+   },
+   {
+    "stem": "attawba_p198",
+    "name": "التوبة ص 198",
+    "range": "69–72"
+   },
+   {
+    "stem": "attawba_p199",
+    "name": "التوبة ص 199",
+    "range": "73–79"
+   },
+   {
+    "stem": "attawba_p200",
+    "name": "التوبة ص 200",
+    "range": "80–86"
+   },
+   {
+    "stem": "attawba_p201",
+    "name": "التوبة ص 201",
+    "range": "87–93"
+   },
+   {
+    "stem": "attawba_p202",
+    "name": "التوبة ص 202",
+    "range": "94–99"
+   },
+   {
+    "stem": "attawba_p203",
+    "name": "التوبة ص 203",
+    "range": "100–106"
+   },
+   {
+    "stem": "attawba_p204",
+    "name": "التوبة ص 204",
+    "range": "107–111"
+   },
+   {
+    "stem": "attawba_p205",
+    "name": "التوبة ص 205",
+    "range": "112–117"
+   },
+   {
+    "stem": "attawba_p206",
+    "name": "التوبة ص 206",
+    "range": "118–122"
+   },
+   {
+    "stem": "attawba_p207",
+    "name": "التوبة ص 207",
+    "range": "123–129"
+   }
+  ]
  }
 ]
