@@ -529,6 +529,35 @@ const anamPages=[
   ['alanam_p150.html','ص 150','158–165'],
 ];
 
+const araafPages=[
+  ['alaaraf_p151.html','ص 151','1–11'],
+  ['alaaraf_p152.html','ص 152','12–22'],
+  ['alaaraf_p153.html','ص 153','23–30'],
+  ['alaaraf_p154.html','ص 154','31–37'],
+  ['alaaraf_p155.html','ص 155','38–43'],
+  ['alaaraf_p156.html','ص 156','44–51'],
+  ['alaaraf_p157.html','ص 157','52–57'],
+  ['alaaraf_p158.html','ص 158','58–67'],
+  ['alaaraf_p159.html','ص 159','68–73'],
+  ['alaaraf_p160.html','ص 160','74–81'],
+  ['alaaraf_p161.html','ص 161','82–87'],
+  ['alaaraf_p162.html','ص 162','88–95'],
+  ['alaaraf_p163.html','ص 163','96–104'],
+  ['alaaraf_p164.html','ص 164','105–120'],
+  ['alaaraf_p165.html','ص 165','121–130'],
+  ['alaaraf_p166.html','ص 166','131–137'],
+  ['alaaraf_p167.html','ص 167','138–143'],
+  ['alaaraf_p168.html','ص 168','144–149'],
+  ['alaaraf_p169.html','ص 169','150–155'],
+  ['alaaraf_p170.html','ص 170','156–159'],
+  ['alaaraf_p171.html','ص 171','160–163'],
+  ['alaaraf_p172.html','ص 172','164–170'],
+  ['alaaraf_p173.html','ص 173','171–178'],
+  ['alaaraf_p174.html','ص 174','179–187'],
+  ['alaaraf_p175.html','ص 175','188–195'],
+  ['alaaraf_p176.html','ص 176','196–206'],
+];
+
 const kahfPages=[
   ['alkahf_p293.html','ص 293','1–4'],['alkahf_p294.html','ص 294','5–15'],
   ['alkahf_p295.html','ص 295','16–20'],['alkahf_p296.html','ص 296','21–27'],
@@ -778,10 +807,10 @@ const JUZ_GROUPS = {
       ] },
   8:{ title:'الأنعام، الأعراف', groups:[
         { kind:'range', arr:anamPages, from:14, to:23, name:'سورة الأنعام (111–165)', surah:'الأنعام', note:'◄ سورة الأنعام بدأت في الجزء 7', noteTarget:7 },
-        { kind:'soon', name:'الأعراف', page:151 }
+        { kind:'range', arr:araafPages, from:0, to:11, name:'سورة الأعراف (1–87)', surah:'الأعراف', note:'سورة الأعراف تكمل في الجزء 9 ←', noteTarget:9 }
       ] },
   9:{ title:'الأعراف، الأنفال', groups:[
-        { kind:'soon', name:'الأعراف (تابع)', page:162 },
+        { kind:'range', arr:araafPages, from:11, to:26, name:'سورة الأعراف (88–206)', surah:'الأعراف', note:'◄ سورة الأعراف بدأت في الجزء 8', noteTarget:8 },
         { kind:'soon', name:'الأنفال', page:177 }
       ] },
   10:{ title:'الأنفال، التوبة', groups:[
@@ -1132,7 +1161,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+araafPages.length+kahfPages.length+maryamPages.length+tahaPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
