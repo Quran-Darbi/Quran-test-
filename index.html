@@ -595,6 +595,24 @@ const tawbaPages=[
   ['attawba_p207.html','ص 207','123–129'],
 ];
 
+const hudPages=[
+  ['hud_p221.html','ص 221','1–5'],
+  ['hud_p222.html','ص 222','6–12'],
+  ['hud_p223.html','ص 223','13–19'],
+  ['hud_p224.html','ص 224','20–28'],
+  ['hud_p225.html','ص 225','29–37'],
+  ['hud_p226.html','ص 226','38–45'],
+  ['hud_p227.html','ص 227','46–53'],
+  ['hud_p228.html','ص 228','54–62'],
+  ['hud_p229.html','ص 229','63–71'],
+  ['hud_p230.html','ص 230','72–81'],
+  ['hud_p231.html','ص 231','82–88'],
+  ['hud_p232.html','ص 232','89–97'],
+  ['hud_p233.html','ص 233','98–108'],
+  ['hud_p234.html','ص 234','109–117'],
+  ['hud_p235.html','ص 235','118–123'],
+];
+
 const kahfPages=[
   ['alkahf_p293.html','ص 293','1–4'],['alkahf_p294.html','ص 294','5–15'],
   ['alkahf_p295.html','ص 295','16–20'],['alkahf_p296.html','ص 296','21–27'],
@@ -857,10 +875,10 @@ const JUZ_GROUPS = {
   11:{ title:'التوبة، يونس، هود', groups:[
         { kind:'range', arr:tawbaPages, from:14, to:21, name:'سورة التوبة (87–129)', surah:'التوبة', note:'◄ سورة التوبة بدأت في الجزء 10', noteTarget:10 },
         { kind:'soon', name:'يونس', page:208 },
-        { kind:'soon', name:'هود', page:221 }
+        { kind:'range', arr:hudPages, from:0, to:1, name:'سورة هود (1–5)', surah:'هود', note:'سورة هود تكمل في الجزء 12 ←', noteTarget:12 }
       ] },
   12:{ title:'هود، يوسف', groups:[
-        { kind:'soon', name:'هود (تابع)', page:221 },
+        { kind:'range', arr:hudPages, from:1, to:15, name:'سورة هود (6–123)', surah:'هود', note:'◄ سورة هود بدأت في الجزء 11', noteTarget:11 },
         { kind:'soon', name:'يوسف', page:235 }
       ] },
   13:{ title:'يوسف، الرعد، إبراهيم', groups:[
