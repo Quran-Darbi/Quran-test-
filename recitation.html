@@ -559,6 +559,31 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <option value="ibrahim_p260">ص260 — آيات 34–42</option>
       <option value="ibrahim_p261">ص261 — آيات 43–52</option>
     </optgroup>
+    <optgroup label="سورة الحجر">
+      <option value="alhijr_p262">ص262 — آيات 1–15</option>
+      <option value="alhijr_p263">ص263 — آيات 16–31</option>
+      <option value="alhijr_p264">ص264 — آيات 32–51</option>
+      <option value="alhijr_p265">ص265 — آيات 52–70</option>
+      <option value="alhijr_p266">ص266 — آيات 71–90</option>
+      <option value="alhijr_p267">ص267 — آيات 91–99</option>
+    </optgroup>
+    <optgroup label="سورة النحل">
+      <option value="annahl_p267">ص267 — آيات 1–6</option>
+      <option value="annahl_p268">ص268 — آيات 7–14</option>
+      <option value="annahl_p269">ص269 — آيات 15–26</option>
+      <option value="annahl_p270">ص270 — آيات 27–34</option>
+      <option value="annahl_p271">ص271 — آيات 35–42</option>
+      <option value="annahl_p272">ص272 — آيات 43–54</option>
+      <option value="annahl_p273">ص273 — آيات 55–64</option>
+      <option value="annahl_p274">ص274 — آيات 65–72</option>
+      <option value="annahl_p275">ص275 — آيات 73–79</option>
+      <option value="annahl_p276">ص276 — آيات 80–87</option>
+      <option value="annahl_p277">ص277 — آيات 88–93</option>
+      <option value="annahl_p278">ص278 — آيات 94–102</option>
+      <option value="annahl_p279">ص279 — آيات 103–110</option>
+      <option value="annahl_p280">ص280 — آيات 111–118</option>
+      <option value="annahl_p281">ص281 — آيات 119–128</option>
+    </optgroup>
     <optgroup label="سورة الكهف">
       <option value="alkahf_p293">ص293 — آيات 1–4</option>
       <option value="alkahf_p294">ص294 — آيات 5–15</option>
@@ -1179,6 +1204,27 @@ const SURAH_NAMES = {
   ibrahim_p259:'إبراهيم ص259 — آيات 25–33',
   ibrahim_p260:'إبراهيم ص260 — آيات 34–42',
   ibrahim_p261:'إبراهيم ص261 — آيات 43–52',
+  alhijr_p262:'الحجر ص262 — آيات 1–15',
+  alhijr_p263:'الحجر ص263 — آيات 16–31',
+  alhijr_p264:'الحجر ص264 — آيات 32–51',
+  alhijr_p265:'الحجر ص265 — آيات 52–70',
+  alhijr_p266:'الحجر ص266 — آيات 71–90',
+  alhijr_p267:'الحجر ص267 — آيات 91–99',
+  annahl_p267:'النحل ص267 — آيات 1–6',
+  annahl_p268:'النحل ص268 — آيات 7–14',
+  annahl_p269:'النحل ص269 — آيات 15–26',
+  annahl_p270:'النحل ص270 — آيات 27–34',
+  annahl_p271:'النحل ص271 — آيات 35–42',
+  annahl_p272:'النحل ص272 — آيات 43–54',
+  annahl_p273:'النحل ص273 — آيات 55–64',
+  annahl_p274:'النحل ص274 — آيات 65–72',
+  annahl_p275:'النحل ص275 — آيات 73–79',
+  annahl_p276:'النحل ص276 — آيات 80–87',
+  annahl_p277:'النحل ص277 — آيات 88–93',
+  annahl_p278:'النحل ص278 — آيات 94–102',
+  annahl_p279:'النحل ص279 — آيات 103–110',
+  annahl_p280:'النحل ص280 — آيات 111–118',
+  annahl_p281:'النحل ص281 — آيات 119–128',
   alkahf_p293:'الكهف ص293 — آيات 1–4',
   alkahf_p294:'الكهف ص294 — آيات 5–15',
   alkahf_p295:'الكهف ص295 — آيات 16–20',
@@ -1821,6 +1867,7 @@ const AYAH_START={
   yusuf_p235:1, yusuf_p236:5, yusuf_p237:15, yusuf_p238:23, yusuf_p239:31, yusuf_p240:38, yusuf_p241:44, yusuf_p242:53, yusuf_p243:64, yusuf_p244:70, yusuf_p245:79, yusuf_p246:87, yusuf_p247:96, yusuf_p248:104,
   arraad_p249:1, arraad_p250:6, arraad_p251:14, arraad_p252:19, arraad_p253:29, arraad_p254:35, arraad_p255:43,
   ibrahim_p255:1, ibrahim_p256:6, ibrahim_p257:11, ibrahim_p258:19, ibrahim_p259:25, ibrahim_p260:34, ibrahim_p261:43,
+  alhijr_p262:1, alhijr_p263:16, alhijr_p264:32, alhijr_p265:52, alhijr_p266:71, alhijr_p267:91, annahl_p267:1, annahl_p268:7, annahl_p269:15, annahl_p270:27, annahl_p271:35, annahl_p272:43, annahl_p273:55, annahl_p274:65, annahl_p275:73, annahl_p276:80, annahl_p277:88, annahl_p278:94, annahl_p279:103, annahl_p280:111, annahl_p281:119,
   maryam_p305:1,
   maryam_p306:12,
   maryam_p307:26,
@@ -2067,6 +2114,7 @@ const RECITE_SEQUENCE=['fatiha',
 'yusuf_p235','yusuf_p236','yusuf_p237','yusuf_p238','yusuf_p239','yusuf_p240','yusuf_p241','yusuf_p242','yusuf_p243','yusuf_p244','yusuf_p245','yusuf_p246','yusuf_p247','yusuf_p248',
 'arraad_p249','arraad_p250','arraad_p251','arraad_p252','arraad_p253','arraad_p254','arraad_p255',
 'ibrahim_p255','ibrahim_p256','ibrahim_p257','ibrahim_p258','ibrahim_p259','ibrahim_p260','ibrahim_p261',
+'alhijr_p262','alhijr_p263','alhijr_p264','alhijr_p265','alhijr_p266','alhijr_p267','annahl_p267','annahl_p268','annahl_p269','annahl_p270','annahl_p271','annahl_p272','annahl_p273','annahl_p274','annahl_p275','annahl_p276','annahl_p277','annahl_p278','annahl_p279','annahl_p280','annahl_p281',
 'maryam_p305','maryam_p306','maryam_p307','maryam_p308','maryam_p309','maryam_p310','maryam_p311','maryam_p312',
 'taha_p312','taha_p313','taha_p314','taha_p315','taha_p316','taha_p317','taha_p318','taha_p319','taha_p320','taha_p321',
 'yaseen_p440','yaseen_p441','yaseen_p442','yaseen_p443','yaseen_p444','yaseen_p445',
