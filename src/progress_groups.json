@@ -1,2419 +1,2653 @@
 [
- {
-  "label": "الفاتحة",
-  "juz": 1,
-  "pages": [
-   {
-    "stem": "alfatiha",
-    "name": "الفاتحة",
-    "range": ""
-   }
-  ]
- },
- {
-  "label": "سورة البقرة",
-  "juz": 1,
-  "pages": [
-   {
-    "stem": "albaqara_p2",
-    "name": "البقرة ص 2",
-    "range": "1–5"
-   },
-   {
-    "stem": "albaqara_p3",
-    "name": "البقرة ص 3",
-    "range": "6–16"
-   },
-   {
-    "stem": "albaqara_p4",
-    "name": "البقرة ص 4",
-    "range": "17–24"
-   },
-   {
-    "stem": "albaqara_p5",
-    "name": "البقرة ص 5",
-    "range": "25–29"
-   },
-   {
-    "stem": "albaqara_p6",
-    "name": "البقرة ص 6",
-    "range": "30–37"
-   },
-   {
-    "stem": "albaqara_p7",
-    "name": "البقرة ص 7",
-    "range": "38–48"
-   },
-   {
-    "stem": "albaqara_p8",
-    "name": "البقرة ص 8",
-    "range": "49–57"
-   },
-   {
-    "stem": "albaqara_p9",
-    "name": "البقرة ص 9",
-    "range": "58–61"
-   },
-   {
-    "stem": "albaqara_p10",
-    "name": "البقرة ص 10",
-    "range": "62–69"
-   },
-   {
-    "stem": "albaqara_p11",
-    "name": "البقرة ص 11",
-    "range": "70–76"
-   },
-   {
-    "stem": "albaqara_p12",
-    "name": "البقرة ص 12",
-    "range": "77–83"
-   },
-   {
-    "stem": "albaqara_p13",
-    "name": "البقرة ص 13",
-    "range": "84–88"
-   },
-   {
-    "stem": "albaqara_p14",
-    "name": "البقرة ص 14",
-    "range": "89–93"
-   },
-   {
-    "stem": "albaqara_p15",
-    "name": "البقرة ص 15",
-    "range": "94–101"
-   },
-   {
-    "stem": "albaqara_p16",
-    "name": "البقرة ص 16",
-    "range": "102–105"
-   },
-   {
-    "stem": "albaqara_p17",
-    "name": "البقرة ص 17",
-    "range": "106–112"
-   },
-   {
-    "stem": "albaqara_p18",
-    "name": "البقرة ص 18",
-    "range": "113–119"
-   },
-   {
-    "stem": "albaqara_p19",
-    "name": "البقرة ص 19",
-    "range": "120–126"
-   },
-   {
-    "stem": "albaqara_p20",
-    "name": "البقرة ص 20",
-    "range": "127–134"
-   },
-   {
-    "stem": "albaqara_p21",
-    "name": "البقرة ص 21",
-    "range": "135–141"
-   },
-   {
-    "stem": "albaqara_p22",
-    "name": "البقرة ص 22",
-    "range": "142–145"
-   },
-   {
-    "stem": "albaqara_p23",
-    "name": "البقرة ص 23",
-    "range": "146–153"
-   },
-   {
-    "stem": "albaqara_p24",
-    "name": "البقرة ص 24",
-    "range": "154–163"
-   },
-   {
-    "stem": "albaqara_p25",
-    "name": "البقرة ص 25",
-    "range": "164–169"
-   },
-   {
-    "stem": "albaqara_p26",
-    "name": "البقرة ص 26",
-    "range": "170–176"
-   },
-   {
-    "stem": "albaqara_p27",
-    "name": "البقرة ص 27",
-    "range": "177–181"
-   },
-   {
-    "stem": "albaqara_p28",
-    "name": "البقرة ص 28",
-    "range": "182–186"
-   },
-   {
-    "stem": "albaqara_p29",
-    "name": "البقرة ص 29",
-    "range": "187–190"
-   },
-   {
-    "stem": "albaqara_p30",
-    "name": "البقرة ص 30",
-    "range": "191–196"
-   },
-   {
-    "stem": "albaqara_p31",
-    "name": "البقرة ص 31",
-    "range": "197–202"
-   },
-   {
-    "stem": "albaqara_p32",
-    "name": "البقرة ص 32",
-    "range": "203–210"
-   },
-   {
-    "stem": "albaqara_p33",
-    "name": "البقرة ص 33",
-    "range": "211–215"
-   },
-   {
-    "stem": "albaqara_p34",
-    "name": "البقرة ص 34",
-    "range": "216–219"
-   },
-   {
-    "stem": "albaqara_p35",
-    "name": "البقرة ص 35",
-    "range": "220–224"
-   },
-   {
-    "stem": "albaqara_p36",
-    "name": "البقرة ص 36",
-    "range": "225–230"
-   },
-   {
-    "stem": "albaqara_p37",
-    "name": "البقرة ص 37",
-    "range": "231–233"
-   },
-   {
-    "stem": "albaqara_p38",
-    "name": "البقرة ص 38",
-    "range": "234–237"
-   },
-   {
-    "stem": "albaqara_p39",
-    "name": "البقرة ص 39",
-    "range": "238–245"
-   },
-   {
-    "stem": "albaqara_p40",
-    "name": "البقرة ص 40",
-    "range": "246–248"
-   },
-   {
-    "stem": "albaqara_p41",
-    "name": "البقرة ص 41",
-    "range": "249–252"
-   },
-   {
-    "stem": "albaqara_p42",
-    "name": "البقرة ص 42",
-    "range": "آية الكرسي"
-   },
-   {
-    "stem": "albaqara_p43",
-    "name": "البقرة ص 43",
-    "range": "257–259"
-   },
-   {
-    "stem": "albaqara_p44",
-    "name": "البقرة ص 44",
-    "range": "260–264"
-   },
-   {
-    "stem": "albaqara_p45",
-    "name": "البقرة ص 45",
-    "range": "265–269"
-   },
-   {
-    "stem": "albaqara_p46",
-    "name": "البقرة ص 46",
-    "range": "270–274"
-   },
-   {
-    "stem": "albaqara_p47",
-    "name": "البقرة ص 47",
-    "range": "275–281"
-   },
-   {
-    "stem": "albaqara_p48",
-    "name": "البقرة ص 48",
-    "range": "آية الدَّين"
-   },
-   {
-    "stem": "albaqara_p49",
-    "name": "البقرة ص 49",
-    "range": "283–286"
-   }
-  ]
- },
- {
-  "label": "سورة النساء",
-  "juz": 4,
-  "pages": [
-   {
-    "stem": "annisa_p77",
-    "name": "النساء ص 77",
-    "range": "1–6"
-   },
-   {
-    "stem": "annisa_p78",
-    "name": "النساء ص 78",
-    "range": "7–11"
-   },
-   {
-    "stem": "annisa_p79",
-    "name": "النساء ص 79",
-    "range": "12–14"
-   },
-   {
-    "stem": "annisa_p80",
-    "name": "النساء ص 80",
-    "range": "15–19"
-   },
-   {
-    "stem": "annisa_p81",
-    "name": "النساء ص 81",
-    "range": "20–23"
-   },
-   {
-    "stem": "annisa_p82",
-    "name": "النساء ص 82",
-    "range": "24–26"
-   },
-   {
-    "stem": "annisa_p83",
-    "name": "النساء ص 83",
-    "range": "27–33"
-   },
-   {
-    "stem": "annisa_p84",
-    "name": "النساء ص 84",
-    "range": "34–37"
-   },
-   {
-    "stem": "annisa_p85",
-    "name": "النساء ص 85",
-    "range": "38–44"
-   },
-   {
-    "stem": "annisa_p86",
-    "name": "النساء ص 86",
-    "range": "45–51"
-   },
-   {
-    "stem": "annisa_p87",
-    "name": "النساء ص 87",
-    "range": "52–59"
-   },
-   {
-    "stem": "annisa_p88",
-    "name": "النساء ص 88",
-    "range": "60–65"
-   },
-   {
-    "stem": "annisa_p89",
-    "name": "النساء ص 89",
-    "range": "66–74"
-   },
-   {
-    "stem": "annisa_p90",
-    "name": "النساء ص 90",
-    "range": "75–79"
-   },
-   {
-    "stem": "annisa_p91",
-    "name": "النساء ص 91",
-    "range": "80–86"
-   },
-   {
-    "stem": "annisa_p92",
-    "name": "النساء ص 92",
-    "range": "87–91"
-   },
-   {
-    "stem": "annisa_p93",
-    "name": "النساء ص 93",
-    "range": "92–94"
-   },
-   {
-    "stem": "annisa_p94",
-    "name": "النساء ص 94",
-    "range": "95–101"
-   },
-   {
-    "stem": "annisa_p95",
-    "name": "النساء ص 95",
-    "range": "102–105"
-   },
-   {
-    "stem": "annisa_p96",
-    "name": "النساء ص 96",
-    "range": "106–113"
-   },
-   {
-    "stem": "annisa_p97",
-    "name": "النساء ص 97",
-    "range": "114–121"
-   },
-   {
-    "stem": "annisa_p98",
-    "name": "النساء ص 98",
-    "range": "122–127"
-   },
-   {
-    "stem": "annisa_p99",
-    "name": "النساء ص 99",
-    "range": "128–134"
-   },
-   {
-    "stem": "annisa_p100",
-    "name": "النساء ص 100",
-    "range": "135–140"
-   },
-   {
-    "stem": "annisa_p101",
-    "name": "النساء ص 101",
-    "range": "141–147"
-   },
-   {
-    "stem": "annisa_p102",
-    "name": "النساء ص 102",
-    "range": "148–154"
-   },
-   {
-    "stem": "annisa_p103",
-    "name": "النساء ص 103",
-    "range": "155–162"
-   },
-   {
-    "stem": "annisa_p104",
-    "name": "النساء ص 104",
-    "range": "163–170"
-   },
-   {
-    "stem": "annisa_p105",
-    "name": "النساء ص 105",
-    "range": "171–175"
-   },
-   {
-    "stem": "annisa_p106",
-    "name": "النساء ص 106",
-    "range": "176"
-   }
-  ]
- },
- {
-  "label": "سورة الكهف",
-  "juz": 15,
-  "pages": [
-   {
-    "stem": "alkahf_p293",
-    "name": "الكهف ص 293",
-    "range": "1–4"
-   },
-   {
-    "stem": "alkahf_p294",
-    "name": "الكهف ص 294",
-    "range": "5–15"
-   },
-   {
-    "stem": "alkahf_p295",
-    "name": "الكهف ص 295",
-    "range": "16–20"
-   },
-   {
-    "stem": "alkahf_p296",
-    "name": "الكهف ص 296",
-    "range": "21–27"
-   },
-   {
-    "stem": "alkahf_p297",
-    "name": "الكهف ص 297",
-    "range": "28–34"
-   },
-   {
-    "stem": "alkahf_p298",
-    "name": "الكهف ص 298",
-    "range": "35–45"
-   },
-   {
-    "stem": "alkahf_p299",
-    "name": "الكهف ص 299",
-    "range": "46–53"
-   },
-   {
-    "stem": "alkahf_p300",
-    "name": "الكهف ص 300",
-    "range": "54–61"
-   },
-   {
-    "stem": "alkahf_p301",
-    "name": "الكهف ص 301",
-    "range": "62–74"
-   },
-   {
-    "stem": "alkahf_p302",
-    "name": "الكهف ص 302",
-    "range": "75–83"
-   },
-   {
-    "stem": "alkahf_p303",
-    "name": "الكهف ص 303",
-    "range": "84–97"
-   },
-   {
-    "stem": "alkahf_p304",
-    "name": "الكهف ص 304",
-    "range": "98–110"
-   }
-  ]
- },
- {
-  "label": "سورة مريم",
-  "juz": 16,
-  "pages": [
-   {
-    "stem": "maryam_p305",
-    "name": "مريم ص 305",
-    "range": "1–11"
-   },
-   {
-    "stem": "maryam_p306",
-    "name": "مريم ص 306",
-    "range": "12–25"
-   },
-   {
-    "stem": "maryam_p307",
-    "name": "مريم ص 307",
-    "range": "26–38"
-   },
-   {
-    "stem": "maryam_p308",
-    "name": "مريم ص 308",
-    "range": "39–51"
-   },
-   {
-    "stem": "maryam_p309",
-    "name": "مريم ص 309",
-    "range": "52–64"
-   },
-   {
-    "stem": "maryam_p310",
-    "name": "مريم ص 310",
-    "range": "65–76"
-   },
-   {
-    "stem": "maryam_p311",
-    "name": "مريم ص 311",
-    "range": "77–95"
-   },
-   {
-    "stem": "maryam_p312",
-    "name": "مريم ص 312",
-    "range": "96–98"
-   }
-  ]
- },
- {
-  "label": "سورة طه",
-  "juz": 16,
-  "pages": [
-   {
-    "stem": "taha_p312",
-    "name": "طه ص 312",
-    "range": "1–12"
-   },
-   {
-    "stem": "taha_p313",
-    "name": "طه ص 313",
-    "range": "13–37"
-   },
-   {
-    "stem": "taha_p314",
-    "name": "طه ص 314",
-    "range": "38–51"
-   },
-   {
-    "stem": "taha_p315",
-    "name": "طه ص 315",
-    "range": "52–64"
-   },
-   {
-    "stem": "taha_p316",
-    "name": "طه ص 316",
-    "range": "65–76"
-   },
-   {
-    "stem": "taha_p317",
-    "name": "طه ص 317",
-    "range": "77–87"
-   },
-   {
-    "stem": "taha_p318",
-    "name": "طه ص 318",
-    "range": "88–98"
-   },
-   {
-    "stem": "taha_p319",
-    "name": "طه ص 319",
-    "range": "99–113"
-   },
-   {
-    "stem": "taha_p320",
-    "name": "طه ص 320",
-    "range": "114–125"
-   },
-   {
-    "stem": "taha_p321",
-    "name": "طه ص 321",
-    "range": "126–135"
-   }
-  ]
- },
- {
-  "label": "سورة يس",
-  "juz": 22,
-  "pages": [
-   {
-    "stem": "yaseen_p440",
-    "name": "يس ص 440",
-    "range": "1–12"
-   },
-   {
-    "stem": "yaseen_p441",
-    "name": "يس ص 441",
-    "range": "13–27"
-   },
-   {
-    "stem": "yaseen_p442",
-    "name": "يس ص 442",
-    "range": "28–40"
-   },
-   {
-    "stem": "yaseen_p443",
-    "name": "يس ص 443",
-    "range": "41–54"
-   },
-   {
-    "stem": "yaseen_p444",
-    "name": "يس ص 444",
-    "range": "55–70"
-   },
-   {
-    "stem": "yaseen_p445",
-    "name": "يس ص 445",
-    "range": "71–83"
-   }
-  ]
- },
- {
-  "label": "سورة فصلت",
-  "juz": 24,
-  "pages": [
-   {
-    "stem": "fussilat_p477",
-    "name": "فصلت ص 477",
-    "range": "1–11"
-   },
-   {
-    "stem": "fussilat_p478",
-    "name": "فصلت ص 478",
-    "range": "12–20"
-   },
-   {
-    "stem": "fussilat_p479",
-    "name": "فصلت ص 479",
-    "range": "21–29"
-   },
-   {
-    "stem": "fussilat_p480",
-    "name": "فصلت ص 480",
-    "range": "30–38"
-   },
-   {
-    "stem": "fussilat_p481",
-    "name": "فصلت ص 481",
-    "range": "39–46"
-   },
-   {
-    "stem": "fussilat_p482",
-    "name": "فصلت ص 482",
-    "range": "47–54"
-   }
-  ]
- },
- {
-  "label": "سورة الأحقاف",
-  "juz": 26,
-  "pages": [
-   {
-    "stem": "alahqaf_p502",
-    "name": "الأحقاف ص 502",
-    "range": "1–5"
-   },
-   {
-    "stem": "alahqaf_p503",
-    "name": "الأحقاف ص 503",
-    "range": "6–14"
-   },
-   {
-    "stem": "alahqaf_p504",
-    "name": "الأحقاف ص 504",
-    "range": "15–20"
-   },
-   {
-    "stem": "alahqaf_p505",
-    "name": "الأحقاف ص 505",
-    "range": "21–28"
-   },
-   {
-    "stem": "alahqaf_p506",
-    "name": "الأحقاف ص 506",
-    "range": "29–35"
-   }
-  ]
- },
- {
-  "label": "سورة محمد",
-  "juz": 26,
-  "pages": [
-   {
-    "stem": "muhammad_p507",
-    "name": "محمد ص 507",
-    "range": "1–11"
-   },
-   {
-    "stem": "muhammad_p508",
-    "name": "محمد ص 508",
-    "range": "12–19"
-   },
-   {
-    "stem": "muhammad_p509",
-    "name": "محمد ص 509",
-    "range": "20–29"
-   },
-   {
-    "stem": "muhammad_p510",
-    "name": "محمد ص 510",
-    "range": "30–38"
-   }
-  ]
- },
- {
-  "label": "سورة الفتح",
-  "juz": 26,
-  "pages": [
-   {
-    "stem": "alfath_p511",
-    "name": "الفتح ص 511",
-    "range": "1–9"
-   },
-   {
-    "stem": "alfath_p512",
-    "name": "الفتح ص 512",
-    "range": "10–15"
-   },
-   {
-    "stem": "alfath_p513",
-    "name": "الفتح ص 513",
-    "range": "16–23"
-   },
-   {
-    "stem": "alfath_p514",
-    "name": "الفتح ص 514",
-    "range": "24–28"
-   },
-   {
-    "stem": "alfath_p515",
-    "name": "الفتح ص 515",
-    "range": "29"
-   }
-  ]
- },
- {
-  "label": "سورة الحجرات",
-  "juz": 26,
-  "pages": [
-   {
-    "stem": "alhujurat_p515",
-    "name": "الحجرات ص 515",
-    "range": "1–4"
-   },
-   {
-    "stem": "alhujurat_p516",
-    "name": "الحجرات ص 516",
-    "range": "5–11"
-   },
-   {
-    "stem": "alhujurat_p517",
-    "name": "الحجرات ص 517",
-    "range": "12–18"
-   }
-  ]
- },
- {
-  "label": "سورة ق",
-  "juz": 26,
-  "pages": [
-   {
-    "stem": "qaf_p518",
-    "name": "ق ص 518",
-    "range": "1–15"
-   },
-   {
-    "stem": "qaf_p519",
-    "name": "ق ص 519",
-    "range": "16–35"
-   },
-   {
-    "stem": "qaf_p520",
-    "name": "ق ص 520",
-    "range": "36–45"
-   }
-  ]
- },
- {
-  "label": "سورة الذاريات",
-  "juz": 26,
-  "pages": [
-   {
-    "stem": "azzariyat_p520",
-    "name": "الذاريات ص 520",
-    "range": "1–6"
-   },
-   {
-    "stem": "azzariyat_p521",
-    "name": "الذاريات ص 521",
-    "range": "7–30"
-   },
-   {
-    "stem": "azzariyat_p522",
-    "name": "الذاريات ص 522",
-    "range": "31–51"
-   },
-   {
-    "stem": "azzariyat_p523",
-    "name": "الذاريات ص 523",
-    "range": "52–60"
-   }
-  ]
- },
- {
-  "label": "سورة الطور",
-  "juz": 27,
-  "pages": [
-   {
-    "stem": "attur_p523",
-    "name": "الطور ص 523",
-    "range": "1–14"
-   },
-   {
-    "stem": "attur_p524",
-    "name": "الطور ص 524",
-    "range": "15–31"
-   },
-   {
-    "stem": "attur_p525",
-    "name": "الطور ص 525",
-    "range": "32–49"
-   }
-  ]
- },
- {
-  "label": "سورة النجم",
-  "juz": 27,
-  "pages": [
-   {
-    "stem": "annajm_p526",
-    "name": "النجم ص 526",
-    "range": "1–26"
-   },
-   {
-    "stem": "annajm_p527",
-    "name": "النجم ص 527",
-    "range": "27–44"
-   },
-   {
-    "stem": "annajm_p528",
-    "name": "النجم ص 528",
-    "range": "45–62"
-   }
-  ]
- },
- {
-  "label": "سورة القمر",
-  "juz": 27,
-  "pages": [
-   {
-    "stem": "alqamar_p528",
-    "name": "القمر ص 528",
-    "range": "1–6"
-   },
-   {
-    "stem": "alqamar_p529",
-    "name": "القمر ص 529",
-    "range": "7–27"
-   },
-   {
-    "stem": "alqamar_p530",
-    "name": "القمر ص 530",
-    "range": "28–49"
-   },
-   {
-    "stem": "alqamar_p531",
-    "name": "القمر ص 531",
-    "range": "50–55"
-   }
-  ]
- },
- {
-  "label": "سورة الرحمن",
-  "juz": 27,
-  "pages": [
-   {
-    "stem": "arrahman_p531",
-    "name": "الرحمن ص 531",
-    "range": "1–16"
-   },
-   {
-    "stem": "arrahman_p532",
-    "name": "الرحمن ص 532",
-    "range": "17–40"
-   },
-   {
-    "stem": "arrahman_p533",
-    "name": "الرحمن ص 533",
-    "range": "41–67"
-   },
-   {
-    "stem": "arrahman_p534",
-    "name": "الرحمن ص 534",
-    "range": "68–78"
-   }
-  ]
- },
- {
-  "label": "سورة الواقعة",
-  "juz": 27,
-  "pages": [
-   {
-    "stem": "alwaqiah_p534",
-    "name": "الواقعة ص 534",
-    "range": "1–16"
-   },
-   {
-    "stem": "alwaqiah_p535",
-    "name": "الواقعة ص 535",
-    "range": "17–50"
-   },
-   {
-    "stem": "alwaqiah_p536",
-    "name": "الواقعة ص 536",
-    "range": "51–76"
-   },
-   {
-    "stem": "alwaqiah_p537",
-    "name": "الواقعة ص 537",
-    "range": "77–96"
-   }
-  ]
- },
- {
-  "label": "سورة الحديد",
-  "juz": 27,
-  "pages": [
-   {
-    "stem": "alhadid_p537",
-    "name": "الحديد ص 537",
-    "range": "1–3"
-   },
-   {
-    "stem": "alhadid_p538",
-    "name": "الحديد ص 538",
-    "range": "4–11"
-   },
-   {
-    "stem": "alhadid_p539",
-    "name": "الحديد ص 539",
-    "range": "12–18"
-   },
-   {
-    "stem": "alhadid_p540",
-    "name": "الحديد ص 540",
-    "range": "19–24"
-   },
-   {
-    "stem": "alhadid_p541",
-    "name": "الحديد ص 541",
-    "range": "25–29"
-   }
-  ]
- },
- {
-  "label": "سورة المجادلة",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "almujadila_p542",
-    "name": "المجادلة ص 542",
-    "range": "1–6"
-   },
-   {
-    "stem": "almujadila_p543",
-    "name": "المجادلة ص 543",
-    "range": "7–11"
-   },
-   {
-    "stem": "almujadila_p544",
-    "name": "المجادلة ص 544",
-    "range": "12–21"
-   },
-   {
-    "stem": "almujadila_p545",
-    "name": "المجادلة ص 545",
-    "range": "22"
-   }
-  ]
- },
- {
-  "label": "سورة الحشر",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "alhashr_p545",
-    "name": "الحشر ص 545",
-    "range": "1–3"
-   },
-   {
-    "stem": "alhashr_p546",
-    "name": "الحشر ص 546",
-    "range": "4–9"
-   },
-   {
-    "stem": "alhashr_p547",
-    "name": "الحشر ص 547",
-    "range": "10–16"
-   },
-   {
-    "stem": "alhashr_p548",
-    "name": "الحشر ص 548",
-    "range": "17–24"
-   }
-  ]
- },
- {
-  "label": "سورة الممتحنة",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "almumtahana_p549",
-    "name": "الممتحنة ص 549",
-    "range": "1–5"
-   },
-   {
-    "stem": "almumtahana_p550",
-    "name": "الممتحنة ص 550",
-    "range": "6–11"
-   },
-   {
-    "stem": "almumtahana_p551",
-    "name": "الممتحنة ص 551",
-    "range": "12–13"
-   }
-  ]
- },
- {
-  "label": "سورة الصف",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "alsaff_p551",
-    "name": "الصف ص 551",
-    "range": "1–5"
-   },
-   {
-    "stem": "alsaff_p552",
-    "name": "الصف ص 552",
-    "range": "6–14"
-   }
-  ]
- },
- {
-  "label": "سورة الجمعة",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "aljumua_p553",
-    "name": "الجمعة ص 553",
-    "range": "1–8"
-   },
-   {
-    "stem": "aljumua_p554",
-    "name": "الجمعة ص 554",
-    "range": "9–11"
-   }
-  ]
- },
- {
-  "label": "سورة المنافقون",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "almunafiqun_p554",
-    "name": "المنافقون ص 554",
-    "range": "1–4"
-   },
-   {
-    "stem": "almunafiqun_p555",
-    "name": "المنافقون ص 555",
-    "range": "5–11"
-   }
-  ]
- },
- {
-  "label": "سورة التغابن",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "attaghabun_p556",
-    "name": "التغابن ص 556",
-    "range": "1–9"
-   },
-   {
-    "stem": "attaghabun_p557",
-    "name": "التغابن ص 557",
-    "range": "10–18"
-   }
-  ]
- },
- {
-  "label": "سورة الطلاق",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "attalaq_p558",
-    "name": "الطلاق ص 558",
-    "range": "1–5"
-   },
-   {
-    "stem": "attalaq_p559",
-    "name": "الطلاق ص 559",
-    "range": "6–12"
-   }
-  ]
- },
- {
-  "label": "سورة التحريم",
-  "juz": 28,
-  "pages": [
-   {
-    "stem": "attahrim_p560",
-    "name": "التحريم ص 560",
-    "range": "1–7"
-   },
-   {
-    "stem": "attahrim_p561",
-    "name": "التحريم ص 561",
-    "range": "8–12"
-   }
-  ]
- },
- {
-  "label": "سورة الملك",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "almulk_p562",
-    "name": "الملك ص 562",
-    "range": "1–12"
-   },
-   {
-    "stem": "almulk_p563",
-    "name": "الملك ص 563",
-    "range": "13–26"
-   },
-   {
-    "stem": "almulk_p564",
-    "name": "الملك ص 564",
-    "range": "27–30"
-   }
-  ]
- },
- {
-  "label": "سورة القلم",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "alqalam_p564",
-    "name": "القلم ص 564",
-    "range": "1–15"
-   },
-   {
-    "stem": "alqalam_p565",
-    "name": "القلم ص 565",
-    "range": "16–42"
-   },
-   {
-    "stem": "alqalam_p566",
-    "name": "القلم ص 566",
-    "range": "43–52"
-   }
-  ]
- },
- {
-  "label": "سورة الحاقة",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "alhaqqa_p566",
-    "name": "الحاقة ص 566",
-    "range": "1–8"
-   },
-   {
-    "stem": "alhaqqa_p567",
-    "name": "الحاقة ص 567",
-    "range": "9–34"
-   },
-   {
-    "stem": "alhaqqa_p568",
-    "name": "الحاقة ص 568",
-    "range": "35–52"
-   }
-  ]
- },
- {
-  "label": "سورة المعارج",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "almaarij_p568",
-    "name": "المعارج ص 568",
-    "range": "1–10"
-   },
-   {
-    "stem": "almaarij_p569",
-    "name": "المعارج ص 569",
-    "range": "11–39"
-   },
-   {
-    "stem": "almaarij_p570",
-    "name": "المعارج ص 570",
-    "range": "40–44"
-   }
-  ]
- },
- {
-  "label": "سورة نوح",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "nuh_p570",
-    "name": "نوح ص 570",
-    "range": "1–10"
-   },
-   {
-    "stem": "nuh_p571",
-    "name": "نوح ص 571",
-    "range": "11–28"
-   }
-  ]
- },
- {
-  "label": "سورة الجن",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "aljinn_p572",
-    "name": "الجن ص 572",
-    "range": "1–13"
-   },
-   {
-    "stem": "aljinn_p573",
-    "name": "الجن ص 573",
-    "range": "14–28"
-   }
-  ]
- },
- {
-  "label": "سورة المزمل",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "almuzzammil_p574",
-    "name": "المزمل ص 574",
-    "range": "1–19"
-   },
-   {
-    "stem": "almuzzammil_p575",
-    "name": "المزمل ص 575",
-    "range": "20 + المدثر 1–17"
-   }
-  ]
- },
- {
-  "label": "سورة المدثر",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "almudaththir_p575",
-    "name": "المدثر ص 575",
-    "range": "1–17 (مع المزمل)"
-   },
-   {
-    "stem": "almudaththir_p576",
-    "name": "المدثر ص 576",
-    "range": "18–47"
-   },
-   {
-    "stem": "almudaththir_p577",
-    "name": "المدثر ص 577",
-    "range": "48–56 + القيامة 1–19"
-   }
-  ]
- },
- {
-  "label": "سورة القيامة",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "alqiyama_p577",
-    "name": "القيامة ص 577",
-    "range": "1–19 (مع المدثر)"
-   },
-   {
-    "stem": "alqiyama_p578",
-    "name": "القيامة ص 578",
-    "range": "20–40"
-   }
-  ]
- },
- {
-  "label": "سورة الإنسان",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "alinsan_p578",
-    "name": "الإنسان ص 578",
-    "range": "1–5"
-   },
-   {
-    "stem": "alinsan_p579",
-    "name": "الإنسان ص 579",
-    "range": "6–25"
-   },
-   {
-    "stem": "alinsan_p580",
-    "name": "الإنسان ص 580",
-    "range": "26–31"
-   }
-  ]
- },
- {
-  "label": "سورة المرسلات",
-  "juz": 29,
-  "pages": [
-   {
-    "stem": "almursalat_p580",
-    "name": "المرسلات ص 580",
-    "range": "1–19"
-   },
-   {
-    "stem": "almursalat_p581",
-    "name": "المرسلات ص 581",
-    "range": "20–50"
-   }
-  ]
- },
- {
-  "label": "جزء عمّ",
-  "juz": 30,
-  "pages": [
-   {
-    "stem": "annaba",
-    "name": "النبأ",
-    "range": ""
-   },
-   {
-    "stem": "annaziat",
-    "name": "النازعات",
-    "range": ""
-   },
-   {
-    "stem": "abasa",
-    "name": "عبس",
-    "range": ""
-   },
-   {
-    "stem": "attakwir",
-    "name": "التكوير",
-    "range": ""
-   },
-   {
-    "stem": "alinfitar",
-    "name": "الانفطار",
-    "range": ""
-   },
-   {
-    "stem": "almutaffifin",
-    "name": "المطففين",
-    "range": ""
-   },
-   {
-    "stem": "alinshiqaq",
-    "name": "الانشقاق",
-    "range": ""
-   },
-   {
-    "stem": "alburuj",
-    "name": "البروج",
-    "range": ""
-   },
-   {
-    "stem": "altariq",
-    "name": "الطارق",
-    "range": ""
-   },
-   {
-    "stem": "alaala",
-    "name": "الأعلى",
-    "range": ""
-   },
-   {
-    "stem": "alghasiya",
-    "name": "الغاشية",
-    "range": ""
-   },
-   {
-    "stem": "alfajr",
-    "name": "الفجر",
-    "range": ""
-   },
-   {
-    "stem": "albalad",
-    "name": "البلد",
-    "range": ""
-   },
-   {
-    "stem": "alshams",
-    "name": "الشمس",
-    "range": ""
-   },
-   {
-    "stem": "allayl",
-    "name": "الليل",
-    "range": ""
-   },
-   {
-    "stem": "alduha",
-    "name": "الضحى",
-    "range": ""
-   },
-   {
-    "stem": "alsharh",
-    "name": "الشرح",
-    "range": ""
-   },
-   {
-    "stem": "atteen",
-    "name": "التين",
-    "range": ""
-   },
-   {
-    "stem": "alalaq",
-    "name": "العلق",
-    "range": ""
-   },
-   {
-    "stem": "alqadr",
-    "name": "القدر",
-    "range": ""
-   },
-   {
-    "stem": "albayyina",
-    "name": "البيِّنة",
-    "range": ""
-   },
-   {
-    "stem": "alzalzala",
-    "name": "الزلزلة",
-    "range": ""
-   },
-   {
-    "stem": "alaadiyat",
-    "name": "العاديات",
-    "range": ""
-   },
-   {
-    "stem": "alqaria",
-    "name": "القارعة",
-    "range": ""
-   },
-   {
-    "stem": "altakathur",
-    "name": "التكاثر",
-    "range": ""
-   },
-   {
-    "stem": "alasr",
-    "name": "العصر",
-    "range": ""
-   },
-   {
-    "stem": "alhumaza",
-    "name": "الهمزة",
-    "range": ""
-   },
-   {
-    "stem": "alfiyl",
-    "name": "الفيل",
-    "range": ""
-   },
-   {
-    "stem": "aquraysh",
-    "name": "قريش",
-    "range": ""
-   },
-   {
-    "stem": "almaoon",
-    "name": "الماعون",
-    "range": ""
-   },
-   {
-    "stem": "alkawthur",
-    "name": "الكوثر",
-    "range": ""
-   },
-   {
-    "stem": "alkafirun",
-    "name": "الكافرون",
-    "range": ""
-   },
-   {
-    "stem": "alnnasr",
-    "name": "النصر",
-    "range": ""
-   },
-   {
-    "stem": "almasad",
-    "name": "المسد",
-    "range": ""
-   },
-   {
-    "stem": "alikhlas",
-    "name": "الإخلاص",
-    "range": ""
-   },
-   {
-    "stem": "alfalaq",
-    "name": "الفلق",
-    "range": ""
-   },
-   {
-    "stem": "alnnas",
-    "name": "الناس",
-    "range": ""
-   }
-  ]
- },
- {
-  "label": "سورة آل عمران",
-  "juz": 3,
-  "pages": [
-   {
-    "stem": "alimran_p50",
-    "name": "آل عمران ص 50",
-    "range": "1–9"
-   },
-   {
-    "stem": "alimran_p51",
-    "name": "آل عمران ص 51",
-    "range": "10–15"
-   },
-   {
-    "stem": "alimran_p52",
-    "name": "آل عمران ص 52",
-    "range": "16–22"
-   },
-   {
-    "stem": "alimran_p53",
-    "name": "آل عمران ص 53",
-    "range": "23–29"
-   },
-   {
-    "stem": "alimran_p54",
-    "name": "آل عمران ص 54",
-    "range": "30–37"
-   },
-   {
-    "stem": "alimran_p55",
-    "name": "آل عمران ص 55",
-    "range": "38–45"
-   },
-   {
-    "stem": "alimran_p56",
-    "name": "آل عمران ص 56",
-    "range": "46–52"
-   },
-   {
-    "stem": "alimran_p57",
-    "name": "آل عمران ص 57",
-    "range": "53–61"
-   },
-   {
-    "stem": "alimran_p58",
-    "name": "آل عمران ص 58",
-    "range": "62–70"
-   },
-   {
-    "stem": "alimran_p59",
-    "name": "آل عمران ص 59",
-    "range": "71–77"
-   },
-   {
-    "stem": "alimran_p60",
-    "name": "آل عمران ص 60",
-    "range": "78–83"
-   },
-   {
-    "stem": "alimran_p61",
-    "name": "آل عمران ص 61",
-    "range": "84–91"
-   },
-   {
-    "stem": "alimran_p62",
-    "name": "آل عمران ص 62",
-    "range": "92–100"
-   },
-   {
-    "stem": "alimran_p63",
-    "name": "آل عمران ص 63",
-    "range": "101–108"
-   },
-   {
-    "stem": "alimran_p64",
-    "name": "آل عمران ص 64",
-    "range": "109–115"
-   },
-   {
-    "stem": "alimran_p65",
-    "name": "آل عمران ص 65",
-    "range": "116–121"
-   },
-   {
-    "stem": "alimran_p66",
-    "name": "آل عمران ص 66",
-    "range": "122–132"
-   },
-   {
-    "stem": "alimran_p67",
-    "name": "آل عمران ص 67",
-    "range": "133–140"
-   },
-   {
-    "stem": "alimran_p68",
-    "name": "آل عمران ص 68",
-    "range": "141–148"
-   },
-   {
-    "stem": "alimran_p69",
-    "name": "آل عمران ص 69",
-    "range": "149–153"
-   },
-   {
-    "stem": "alimran_p70",
-    "name": "آل عمران ص 70",
-    "range": "154–157"
-   },
-   {
-    "stem": "alimran_p71",
-    "name": "آل عمران ص 71",
-    "range": "158–165"
-   },
-   {
-    "stem": "alimran_p72",
-    "name": "آل عمران ص 72",
-    "range": "166–173"
-   },
-   {
-    "stem": "alimran_p73",
-    "name": "آل عمران ص 73",
-    "range": "174–180"
-   },
-   {
-    "stem": "alimran_p74",
-    "name": "آل عمران ص 74",
-    "range": "181–186"
-   },
-   {
-    "stem": "alimran_p75",
-    "name": "آل عمران ص 75",
-    "range": "187–194"
-   },
-   {
-    "stem": "alimran_p76",
-    "name": "آل عمران ص 76",
-    "range": "195–200"
-   }
-  ]
- },
- {
-  "label": "سورة الشورى",
-  "juz": 25,
-  "pages": [
-   {
-    "stem": "shura_p483",
-    "name": "الشورى ص 483",
-    "range": "1–10"
-   },
-   {
-    "stem": "shura_p484",
-    "name": "الشورى ص 484",
-    "range": "11–15"
-   },
-   {
-    "stem": "shura_p485",
-    "name": "الشورى ص 485",
-    "range": "16–22"
-   },
-   {
-    "stem": "shura_p486",
-    "name": "الشورى ص 486",
-    "range": "23–31"
-   },
-   {
-    "stem": "shura_p487",
-    "name": "الشورى ص 487",
-    "range": "32–44"
-   },
-   {
-    "stem": "shura_p488",
-    "name": "الشورى ص 488",
-    "range": "45–51"
-   },
-   {
-    "stem": "shura_p489",
-    "name": "الشورى ص 489",
-    "range": "52–53"
-   }
-  ]
- },
- {
-  "label": "سورة الزخرف",
-  "juz": 25,
-  "pages": [
-   {
-    "stem": "azzukhruf_p489",
-    "name": "الزخرف ص 489",
-    "range": "1–10"
-   },
-   {
-    "stem": "azzukhruf_p490",
-    "name": "الزخرف ص 490",
-    "range": "11–22"
-   },
-   {
-    "stem": "azzukhruf_p491",
-    "name": "الزخرف ص 491",
-    "range": "23–33"
-   },
-   {
-    "stem": "azzukhruf_p492",
-    "name": "الزخرف ص 492",
-    "range": "34–47"
-   },
-   {
-    "stem": "azzukhruf_p493",
-    "name": "الزخرف ص 493",
-    "range": "48–60"
-   },
-   {
-    "stem": "azzukhruf_p494",
-    "name": "الزخرف ص 494",
-    "range": "61–73"
-   },
-   {
-    "stem": "azzukhruf_p495",
-    "name": "الزخرف ص 495",
-    "range": "74–89"
-   }
-  ]
- },
- {
-  "label": "سورة الدخان",
-  "juz": 25,
-  "pages": [
-   {
-    "stem": "addukhan_p496",
-    "name": "الدخان ص 496",
-    "range": "1–18"
-   },
-   {
-    "stem": "addukhan_p497",
-    "name": "الدخان ص 497",
-    "range": "19–39"
-   },
-   {
-    "stem": "addukhan_p498",
-    "name": "الدخان ص 498",
-    "range": "40–59"
-   }
-  ]
- },
- {
-  "label": "سورة الجاثية",
-  "juz": 25,
-  "pages": [
-   {
-    "stem": "aljathiya_p499",
-    "name": "الجاثية ص 499",
-    "range": "1–13"
-   },
-   {
-    "stem": "aljathiya_p500",
-    "name": "الجاثية ص 500",
-    "range": "14–22"
-   },
-   {
-    "stem": "aljathiya_p501",
-    "name": "الجاثية ص 501",
-    "range": "23–32"
-   },
-   {
-    "stem": "aljathiya_p502",
-    "name": "الجاثية ص 502",
-    "range": "33–37"
-   }
-  ]
- },
- {
-  "label": "سورة المائدة",
-  "juz": 6,
-  "pages": [
-   {
-    "stem": "almaida_p106",
-    "name": "المائدة ص 106",
-    "range": "1–2"
-   },
-   {
-    "stem": "almaida_p107",
-    "name": "المائدة ص 107",
-    "range": "3–5"
-   },
-   {
-    "stem": "almaida_p108",
-    "name": "المائدة ص 108",
-    "range": "6–9"
-   },
-   {
-    "stem": "almaida_p109",
-    "name": "المائدة ص 109",
-    "range": "10–13"
-   },
-   {
-    "stem": "almaida_p110",
-    "name": "المائدة ص 110",
-    "range": "14–17"
-   },
-   {
-    "stem": "almaida_p111",
-    "name": "المائدة ص 111",
-    "range": "18–23"
-   },
-   {
-    "stem": "almaida_p112",
-    "name": "المائدة ص 112",
-    "range": "24–31"
-   },
-   {
-    "stem": "almaida_p113",
-    "name": "المائدة ص 113",
-    "range": "32–36"
-   },
-   {
-    "stem": "almaida_p114",
-    "name": "المائدة ص 114",
-    "range": "37–41"
-   },
-   {
-    "stem": "almaida_p115",
-    "name": "المائدة ص 115",
-    "range": "42–45"
-   },
-   {
-    "stem": "almaida_p116",
-    "name": "المائدة ص 116",
-    "range": "46–50"
-   },
-   {
-    "stem": "almaida_p117",
-    "name": "المائدة ص 117",
-    "range": "51–57"
-   },
-   {
-    "stem": "almaida_p118",
-    "name": "المائدة ص 118",
-    "range": "58–64"
-   },
-   {
-    "stem": "almaida_p119",
-    "name": "المائدة ص 119",
-    "range": "65–70"
-   },
-   {
-    "stem": "almaida_p120",
-    "name": "المائدة ص 120",
-    "range": "71–77"
-   },
-   {
-    "stem": "almaida_p121",
-    "name": "المائدة ص 121",
-    "range": "78–83"
-   },
-   {
-    "stem": "almaida_p122",
-    "name": "المائدة ص 122",
-    "range": "84–90"
-   },
-   {
-    "stem": "almaida_p123",
-    "name": "المائدة ص 123",
-    "range": "91–95"
-   },
-   {
-    "stem": "almaida_p124",
-    "name": "المائدة ص 124",
-    "range": "96–103"
-   },
-   {
-    "stem": "almaida_p125",
-    "name": "المائدة ص 125",
-    "range": "104–108"
-   },
-   {
-    "stem": "almaida_p126",
-    "name": "المائدة ص 126",
-    "range": "109–113"
-   },
-   {
-    "stem": "almaida_p127",
-    "name": "المائدة ص 127",
-    "range": "114–120"
-   }
-  ]
- },
- {
-  "label": "سورة الأنعام",
-  "juz": 7,
-  "pages": [
-   {
-    "stem": "alanam_p128",
-    "name": "الأنعام ص 128",
-    "range": "1–8"
-   },
-   {
-    "stem": "alanam_p129",
-    "name": "الأنعام ص 129",
-    "range": "9–18"
-   },
-   {
-    "stem": "alanam_p130",
-    "name": "الأنعام ص 130",
-    "range": "19–27"
-   },
-   {
-    "stem": "alanam_p131",
-    "name": "الأنعام ص 131",
-    "range": "28–35"
-   },
-   {
-    "stem": "alanam_p132",
-    "name": "الأنعام ص 132",
-    "range": "36–44"
-   },
-   {
-    "stem": "alanam_p133",
-    "name": "الأنعام ص 133",
-    "range": "45–52"
-   },
-   {
-    "stem": "alanam_p134",
-    "name": "الأنعام ص 134",
-    "range": "53–59"
-   },
-   {
-    "stem": "alanam_p135",
-    "name": "الأنعام ص 135",
-    "range": "60–68"
-   },
-   {
-    "stem": "alanam_p136",
-    "name": "الأنعام ص 136",
-    "range": "69–73"
-   },
-   {
-    "stem": "alanam_p137",
-    "name": "الأنعام ص 137",
-    "range": "74–81"
-   },
-   {
-    "stem": "alanam_p138",
-    "name": "الأنعام ص 138",
-    "range": "82–90"
-   },
-   {
-    "stem": "alanam_p139",
-    "name": "الأنعام ص 139",
-    "range": "91–94"
-   },
-   {
-    "stem": "alanam_p140",
-    "name": "الأنعام ص 140",
-    "range": "95–101"
-   },
-   {
-    "stem": "alanam_p141",
-    "name": "الأنعام ص 141",
-    "range": "102–110"
-   },
-   {
-    "stem": "alanam_p142",
-    "name": "الأنعام ص 142",
-    "range": "111–118"
-   },
-   {
-    "stem": "alanam_p143",
-    "name": "الأنعام ص 143",
-    "range": "119–124"
-   },
-   {
-    "stem": "alanam_p144",
-    "name": "الأنعام ص 144",
-    "range": "125–130"
-   },
-   {
-    "stem": "alanam_p145",
-    "name": "الأنعام ص 145",
-    "range": "131–137"
-   },
-   {
-    "stem": "alanam_p146",
-    "name": "الأنعام ص 146",
-    "range": "138–142"
-   },
-   {
-    "stem": "alanam_p147",
-    "name": "الأنعام ص 147",
-    "range": "143–146"
-   },
-   {
-    "stem": "alanam_p148",
-    "name": "الأنعام ص 148",
-    "range": "147–151"
-   },
-   {
-    "stem": "alanam_p149",
-    "name": "الأنعام ص 149",
-    "range": "152–157"
-   },
-   {
-    "stem": "alanam_p150",
-    "name": "الأنعام ص 150",
-    "range": "158–165"
-   }
-  ]
- },
- {
-  "label": "سورة الأعراف",
-  "juz": 8,
-  "pages": [
-   {
-    "stem": "alaaraf_p151",
-    "name": "الأعراف ص 151",
-    "range": "1–11"
-   },
-   {
-    "stem": "alaaraf_p152",
-    "name": "الأعراف ص 152",
-    "range": "12–22"
-   },
-   {
-    "stem": "alaaraf_p153",
-    "name": "الأعراف ص 153",
-    "range": "23–30"
-   },
-   {
-    "stem": "alaaraf_p154",
-    "name": "الأعراف ص 154",
-    "range": "31–37"
-   },
-   {
-    "stem": "alaaraf_p155",
-    "name": "الأعراف ص 155",
-    "range": "38–43"
-   },
-   {
-    "stem": "alaaraf_p156",
-    "name": "الأعراف ص 156",
-    "range": "44–51"
-   },
-   {
-    "stem": "alaaraf_p157",
-    "name": "الأعراف ص 157",
-    "range": "52–57"
-   },
-   {
-    "stem": "alaaraf_p158",
-    "name": "الأعراف ص 158",
-    "range": "58–67"
-   },
-   {
-    "stem": "alaaraf_p159",
-    "name": "الأعراف ص 159",
-    "range": "68–73"
-   },
-   {
-    "stem": "alaaraf_p160",
-    "name": "الأعراف ص 160",
-    "range": "74–81"
-   },
-   {
-    "stem": "alaaraf_p161",
-    "name": "الأعراف ص 161",
-    "range": "82–87"
-   },
-   {
-    "stem": "alaaraf_p162",
-    "name": "الأعراف ص 162",
-    "range": "88–95"
-   },
-   {
-    "stem": "alaaraf_p163",
-    "name": "الأعراف ص 163",
-    "range": "96–104"
-   },
-   {
-    "stem": "alaaraf_p164",
-    "name": "الأعراف ص 164",
-    "range": "105–120"
-   },
-   {
-    "stem": "alaaraf_p165",
-    "name": "الأعراف ص 165",
-    "range": "121–130"
-   },
-   {
-    "stem": "alaaraf_p166",
-    "name": "الأعراف ص 166",
-    "range": "131–137"
-   },
-   {
-    "stem": "alaaraf_p167",
-    "name": "الأعراف ص 167",
-    "range": "138–143"
-   },
-   {
-    "stem": "alaaraf_p168",
-    "name": "الأعراف ص 168",
-    "range": "144–149"
-   },
-   {
-    "stem": "alaaraf_p169",
-    "name": "الأعراف ص 169",
-    "range": "150–155"
-   },
-   {
-    "stem": "alaaraf_p170",
-    "name": "الأعراف ص 170",
-    "range": "156–159"
-   },
-   {
-    "stem": "alaaraf_p171",
-    "name": "الأعراف ص 171",
-    "range": "160–163"
-   },
-   {
-    "stem": "alaaraf_p172",
-    "name": "الأعراف ص 172",
-    "range": "164–170"
-   },
-   {
-    "stem": "alaaraf_p173",
-    "name": "الأعراف ص 173",
-    "range": "171–178"
-   },
-   {
-    "stem": "alaaraf_p174",
-    "name": "الأعراف ص 174",
-    "range": "179–187"
-   },
-   {
-    "stem": "alaaraf_p175",
-    "name": "الأعراف ص 175",
-    "range": "188–195"
-   },
-   {
-    "stem": "alaaraf_p176",
-    "name": "الأعراف ص 176",
-    "range": "196–206"
-   }
-  ]
- },
- {
-  "label": "سورة الأنفال",
-  "juz": 9,
-  "pages": [
-   {
-    "stem": "alanfal_p177",
-    "name": "الأنفال ص 177",
-    "range": "1–8"
-   },
-   {
-    "stem": "alanfal_p178",
-    "name": "الأنفال ص 178",
-    "range": "9–16"
-   },
-   {
-    "stem": "alanfal_p179",
-    "name": "الأنفال ص 179",
-    "range": "17–25"
-   },
-   {
-    "stem": "alanfal_p180",
-    "name": "الأنفال ص 180",
-    "range": "26–33"
-   },
-   {
-    "stem": "alanfal_p181",
-    "name": "الأنفال ص 181",
-    "range": "34–40"
-   },
-   {
-    "stem": "alanfal_p182",
-    "name": "الأنفال ص 182",
-    "range": "41–45"
-   },
-   {
-    "stem": "alanfal_p183",
-    "name": "الأنفال ص 183",
-    "range": "46–52"
-   },
-   {
-    "stem": "alanfal_p184",
-    "name": "الأنفال ص 184",
-    "range": "53–61"
-   },
-   {
-    "stem": "alanfal_p185",
-    "name": "الأنفال ص 185",
-    "range": "62–69"
-   },
-   {
-    "stem": "alanfal_p186",
-    "name": "الأنفال ص 186",
-    "range": "70–75"
-   }
-  ]
- },
- {
-  "label": "سورة التوبة",
-  "juz": 10,
-  "pages": [
-   {
-    "stem": "attawba_p187",
-    "name": "التوبة ص 187",
-    "range": "1–6"
-   },
-   {
-    "stem": "attawba_p188",
-    "name": "التوبة ص 188",
-    "range": "7–13"
-   },
-   {
-    "stem": "attawba_p189",
-    "name": "التوبة ص 189",
-    "range": "14–20"
-   },
-   {
-    "stem": "attawba_p190",
-    "name": "التوبة ص 190",
-    "range": "21–26"
-   },
-   {
-    "stem": "attawba_p191",
-    "name": "التوبة ص 191",
-    "range": "27–31"
-   },
-   {
-    "stem": "attawba_p192",
-    "name": "التوبة ص 192",
-    "range": "32–36"
-   },
-   {
-    "stem": "attawba_p193",
-    "name": "التوبة ص 193",
-    "range": "37–40"
-   },
-   {
-    "stem": "attawba_p194",
-    "name": "التوبة ص 194",
-    "range": "41–47"
-   },
-   {
-    "stem": "attawba_p195",
-    "name": "التوبة ص 195",
-    "range": "48–54"
-   },
-   {
-    "stem": "attawba_p196",
-    "name": "التوبة ص 196",
-    "range": "55–61"
-   },
-   {
-    "stem": "attawba_p197",
-    "name": "التوبة ص 197",
-    "range": "62–68"
-   },
-   {
-    "stem": "attawba_p198",
-    "name": "التوبة ص 198",
-    "range": "69–72"
-   },
-   {
-    "stem": "attawba_p199",
-    "name": "التوبة ص 199",
-    "range": "73–79"
-   },
-   {
-    "stem": "attawba_p200",
-    "name": "التوبة ص 200",
-    "range": "80–86"
-   },
-   {
-    "stem": "attawba_p201",
-    "name": "التوبة ص 201",
-    "range": "87–93"
-   },
-   {
-    "stem": "attawba_p202",
-    "name": "التوبة ص 202",
-    "range": "94–99"
-   },
-   {
-    "stem": "attawba_p203",
-    "name": "التوبة ص 203",
-    "range": "100–106"
-   },
-   {
-    "stem": "attawba_p204",
-    "name": "التوبة ص 204",
-    "range": "107–111"
-   },
-   {
-    "stem": "attawba_p205",
-    "name": "التوبة ص 205",
-    "range": "112–117"
-   },
-   {
-    "stem": "attawba_p206",
-    "name": "التوبة ص 206",
-    "range": "118–122"
-   },
-   {
-    "stem": "attawba_p207",
-    "name": "التوبة ص 207",
-    "range": "123–129"
-   }
-  ]
- },
- {
-  "label": "سورة هود",
-  "juz": 11,
-  "pages": [
-   {
-    "stem": "hud_p221",
-    "name": "هود ص 221",
-    "range": "1–5"
-   },
-   {
-    "stem": "hud_p222",
-    "name": "هود ص 222",
-    "range": "6–12"
-   },
-   {
-    "stem": "hud_p223",
-    "name": "هود ص 223",
-    "range": "13–19"
-   },
-   {
-    "stem": "hud_p224",
-    "name": "هود ص 224",
-    "range": "20–28"
-   },
-   {
-    "stem": "hud_p225",
-    "name": "هود ص 225",
-    "range": "29–37"
-   },
-   {
-    "stem": "hud_p226",
-    "name": "هود ص 226",
-    "range": "38–45"
-   },
-   {
-    "stem": "hud_p227",
-    "name": "هود ص 227",
-    "range": "46–53"
-   },
-   {
-    "stem": "hud_p228",
-    "name": "هود ص 228",
-    "range": "54–62"
-   },
-   {
-    "stem": "hud_p229",
-    "name": "هود ص 229",
-    "range": "63–71"
-   },
-   {
-    "stem": "hud_p230",
-    "name": "هود ص 230",
-    "range": "72–81"
-   },
-   {
-    "stem": "hud_p231",
-    "name": "هود ص 231",
-    "range": "82–88"
-   },
-   {
-    "stem": "hud_p232",
-    "name": "هود ص 232",
-    "range": "89–97"
-   },
-   {
-    "stem": "hud_p233",
-    "name": "هود ص 233",
-    "range": "98–108"
-   },
-   {
-    "stem": "hud_p234",
-    "name": "هود ص 234",
-    "range": "109–117"
-   },
-   {
-    "stem": "hud_p235",
-    "name": "هود ص 235",
-    "range": "118–123"
-   }
-  ]
- }
+  {
+    "label": "الفاتحة",
+    "juz": 1,
+    "pages": [
+      {
+        "stem": "alfatiha",
+        "name": "الفاتحة",
+        "range": ""
+      }
+    ]
+  },
+  {
+    "label": "سورة البقرة",
+    "juz": 1,
+    "pages": [
+      {
+        "stem": "albaqara_p2",
+        "name": "البقرة ص 2",
+        "range": "1–5"
+      },
+      {
+        "stem": "albaqara_p3",
+        "name": "البقرة ص 3",
+        "range": "6–16"
+      },
+      {
+        "stem": "albaqara_p4",
+        "name": "البقرة ص 4",
+        "range": "17–24"
+      },
+      {
+        "stem": "albaqara_p5",
+        "name": "البقرة ص 5",
+        "range": "25–29"
+      },
+      {
+        "stem": "albaqara_p6",
+        "name": "البقرة ص 6",
+        "range": "30–37"
+      },
+      {
+        "stem": "albaqara_p7",
+        "name": "البقرة ص 7",
+        "range": "38–48"
+      },
+      {
+        "stem": "albaqara_p8",
+        "name": "البقرة ص 8",
+        "range": "49–57"
+      },
+      {
+        "stem": "albaqara_p9",
+        "name": "البقرة ص 9",
+        "range": "58–61"
+      },
+      {
+        "stem": "albaqara_p10",
+        "name": "البقرة ص 10",
+        "range": "62–69"
+      },
+      {
+        "stem": "albaqara_p11",
+        "name": "البقرة ص 11",
+        "range": "70–76"
+      },
+      {
+        "stem": "albaqara_p12",
+        "name": "البقرة ص 12",
+        "range": "77–83"
+      },
+      {
+        "stem": "albaqara_p13",
+        "name": "البقرة ص 13",
+        "range": "84–88"
+      },
+      {
+        "stem": "albaqara_p14",
+        "name": "البقرة ص 14",
+        "range": "89–93"
+      },
+      {
+        "stem": "albaqara_p15",
+        "name": "البقرة ص 15",
+        "range": "94–101"
+      },
+      {
+        "stem": "albaqara_p16",
+        "name": "البقرة ص 16",
+        "range": "102–105"
+      },
+      {
+        "stem": "albaqara_p17",
+        "name": "البقرة ص 17",
+        "range": "106–112"
+      },
+      {
+        "stem": "albaqara_p18",
+        "name": "البقرة ص 18",
+        "range": "113–119"
+      },
+      {
+        "stem": "albaqara_p19",
+        "name": "البقرة ص 19",
+        "range": "120–126"
+      },
+      {
+        "stem": "albaqara_p20",
+        "name": "البقرة ص 20",
+        "range": "127–134"
+      },
+      {
+        "stem": "albaqara_p21",
+        "name": "البقرة ص 21",
+        "range": "135–141"
+      },
+      {
+        "stem": "albaqara_p22",
+        "name": "البقرة ص 22",
+        "range": "142–145"
+      },
+      {
+        "stem": "albaqara_p23",
+        "name": "البقرة ص 23",
+        "range": "146–153"
+      },
+      {
+        "stem": "albaqara_p24",
+        "name": "البقرة ص 24",
+        "range": "154–163"
+      },
+      {
+        "stem": "albaqara_p25",
+        "name": "البقرة ص 25",
+        "range": "164–169"
+      },
+      {
+        "stem": "albaqara_p26",
+        "name": "البقرة ص 26",
+        "range": "170–176"
+      },
+      {
+        "stem": "albaqara_p27",
+        "name": "البقرة ص 27",
+        "range": "177–181"
+      },
+      {
+        "stem": "albaqara_p28",
+        "name": "البقرة ص 28",
+        "range": "182–186"
+      },
+      {
+        "stem": "albaqara_p29",
+        "name": "البقرة ص 29",
+        "range": "187–190"
+      },
+      {
+        "stem": "albaqara_p30",
+        "name": "البقرة ص 30",
+        "range": "191–196"
+      },
+      {
+        "stem": "albaqara_p31",
+        "name": "البقرة ص 31",
+        "range": "197–202"
+      },
+      {
+        "stem": "albaqara_p32",
+        "name": "البقرة ص 32",
+        "range": "203–210"
+      },
+      {
+        "stem": "albaqara_p33",
+        "name": "البقرة ص 33",
+        "range": "211–215"
+      },
+      {
+        "stem": "albaqara_p34",
+        "name": "البقرة ص 34",
+        "range": "216–219"
+      },
+      {
+        "stem": "albaqara_p35",
+        "name": "البقرة ص 35",
+        "range": "220–224"
+      },
+      {
+        "stem": "albaqara_p36",
+        "name": "البقرة ص 36",
+        "range": "225–230"
+      },
+      {
+        "stem": "albaqara_p37",
+        "name": "البقرة ص 37",
+        "range": "231–233"
+      },
+      {
+        "stem": "albaqara_p38",
+        "name": "البقرة ص 38",
+        "range": "234–237"
+      },
+      {
+        "stem": "albaqara_p39",
+        "name": "البقرة ص 39",
+        "range": "238–245"
+      },
+      {
+        "stem": "albaqara_p40",
+        "name": "البقرة ص 40",
+        "range": "246–248"
+      },
+      {
+        "stem": "albaqara_p41",
+        "name": "البقرة ص 41",
+        "range": "249–252"
+      },
+      {
+        "stem": "albaqara_p42",
+        "name": "البقرة ص 42",
+        "range": "آية الكرسي"
+      },
+      {
+        "stem": "albaqara_p43",
+        "name": "البقرة ص 43",
+        "range": "257–259"
+      },
+      {
+        "stem": "albaqara_p44",
+        "name": "البقرة ص 44",
+        "range": "260–264"
+      },
+      {
+        "stem": "albaqara_p45",
+        "name": "البقرة ص 45",
+        "range": "265–269"
+      },
+      {
+        "stem": "albaqara_p46",
+        "name": "البقرة ص 46",
+        "range": "270–274"
+      },
+      {
+        "stem": "albaqara_p47",
+        "name": "البقرة ص 47",
+        "range": "275–281"
+      },
+      {
+        "stem": "albaqara_p48",
+        "name": "البقرة ص 48",
+        "range": "آية الدَّين"
+      },
+      {
+        "stem": "albaqara_p49",
+        "name": "البقرة ص 49",
+        "range": "283–286"
+      }
+    ]
+  },
+  {
+    "label": "سورة النساء",
+    "juz": 4,
+    "pages": [
+      {
+        "stem": "annisa_p77",
+        "name": "النساء ص 77",
+        "range": "1–6"
+      },
+      {
+        "stem": "annisa_p78",
+        "name": "النساء ص 78",
+        "range": "7–11"
+      },
+      {
+        "stem": "annisa_p79",
+        "name": "النساء ص 79",
+        "range": "12–14"
+      },
+      {
+        "stem": "annisa_p80",
+        "name": "النساء ص 80",
+        "range": "15–19"
+      },
+      {
+        "stem": "annisa_p81",
+        "name": "النساء ص 81",
+        "range": "20–23"
+      },
+      {
+        "stem": "annisa_p82",
+        "name": "النساء ص 82",
+        "range": "24–26"
+      },
+      {
+        "stem": "annisa_p83",
+        "name": "النساء ص 83",
+        "range": "27–33"
+      },
+      {
+        "stem": "annisa_p84",
+        "name": "النساء ص 84",
+        "range": "34–37"
+      },
+      {
+        "stem": "annisa_p85",
+        "name": "النساء ص 85",
+        "range": "38–44"
+      },
+      {
+        "stem": "annisa_p86",
+        "name": "النساء ص 86",
+        "range": "45–51"
+      },
+      {
+        "stem": "annisa_p87",
+        "name": "النساء ص 87",
+        "range": "52–59"
+      },
+      {
+        "stem": "annisa_p88",
+        "name": "النساء ص 88",
+        "range": "60–65"
+      },
+      {
+        "stem": "annisa_p89",
+        "name": "النساء ص 89",
+        "range": "66–74"
+      },
+      {
+        "stem": "annisa_p90",
+        "name": "النساء ص 90",
+        "range": "75–79"
+      },
+      {
+        "stem": "annisa_p91",
+        "name": "النساء ص 91",
+        "range": "80–86"
+      },
+      {
+        "stem": "annisa_p92",
+        "name": "النساء ص 92",
+        "range": "87–91"
+      },
+      {
+        "stem": "annisa_p93",
+        "name": "النساء ص 93",
+        "range": "92–94"
+      },
+      {
+        "stem": "annisa_p94",
+        "name": "النساء ص 94",
+        "range": "95–101"
+      },
+      {
+        "stem": "annisa_p95",
+        "name": "النساء ص 95",
+        "range": "102–105"
+      },
+      {
+        "stem": "annisa_p96",
+        "name": "النساء ص 96",
+        "range": "106–113"
+      },
+      {
+        "stem": "annisa_p97",
+        "name": "النساء ص 97",
+        "range": "114–121"
+      },
+      {
+        "stem": "annisa_p98",
+        "name": "النساء ص 98",
+        "range": "122–127"
+      },
+      {
+        "stem": "annisa_p99",
+        "name": "النساء ص 99",
+        "range": "128–134"
+      },
+      {
+        "stem": "annisa_p100",
+        "name": "النساء ص 100",
+        "range": "135–140"
+      },
+      {
+        "stem": "annisa_p101",
+        "name": "النساء ص 101",
+        "range": "141–147"
+      },
+      {
+        "stem": "annisa_p102",
+        "name": "النساء ص 102",
+        "range": "148–154"
+      },
+      {
+        "stem": "annisa_p103",
+        "name": "النساء ص 103",
+        "range": "155–162"
+      },
+      {
+        "stem": "annisa_p104",
+        "name": "النساء ص 104",
+        "range": "163–170"
+      },
+      {
+        "stem": "annisa_p105",
+        "name": "النساء ص 105",
+        "range": "171–175"
+      },
+      {
+        "stem": "annisa_p106",
+        "name": "النساء ص 106",
+        "range": "176"
+      }
+    ]
+  },
+  {
+    "label": "سورة الكهف",
+    "juz": 15,
+    "pages": [
+      {
+        "stem": "alkahf_p293",
+        "name": "الكهف ص 293",
+        "range": "1–4"
+      },
+      {
+        "stem": "alkahf_p294",
+        "name": "الكهف ص 294",
+        "range": "5–15"
+      },
+      {
+        "stem": "alkahf_p295",
+        "name": "الكهف ص 295",
+        "range": "16–20"
+      },
+      {
+        "stem": "alkahf_p296",
+        "name": "الكهف ص 296",
+        "range": "21–27"
+      },
+      {
+        "stem": "alkahf_p297",
+        "name": "الكهف ص 297",
+        "range": "28–34"
+      },
+      {
+        "stem": "alkahf_p298",
+        "name": "الكهف ص 298",
+        "range": "35–45"
+      },
+      {
+        "stem": "alkahf_p299",
+        "name": "الكهف ص 299",
+        "range": "46–53"
+      },
+      {
+        "stem": "alkahf_p300",
+        "name": "الكهف ص 300",
+        "range": "54–61"
+      },
+      {
+        "stem": "alkahf_p301",
+        "name": "الكهف ص 301",
+        "range": "62–74"
+      },
+      {
+        "stem": "alkahf_p302",
+        "name": "الكهف ص 302",
+        "range": "75–83"
+      },
+      {
+        "stem": "alkahf_p303",
+        "name": "الكهف ص 303",
+        "range": "84–97"
+      },
+      {
+        "stem": "alkahf_p304",
+        "name": "الكهف ص 304",
+        "range": "98–110"
+      }
+    ]
+  },
+  {
+    "label": "سورة مريم",
+    "juz": 16,
+    "pages": [
+      {
+        "stem": "maryam_p305",
+        "name": "مريم ص 305",
+        "range": "1–11"
+      },
+      {
+        "stem": "maryam_p306",
+        "name": "مريم ص 306",
+        "range": "12–25"
+      },
+      {
+        "stem": "maryam_p307",
+        "name": "مريم ص 307",
+        "range": "26–38"
+      },
+      {
+        "stem": "maryam_p308",
+        "name": "مريم ص 308",
+        "range": "39–51"
+      },
+      {
+        "stem": "maryam_p309",
+        "name": "مريم ص 309",
+        "range": "52–64"
+      },
+      {
+        "stem": "maryam_p310",
+        "name": "مريم ص 310",
+        "range": "65–76"
+      },
+      {
+        "stem": "maryam_p311",
+        "name": "مريم ص 311",
+        "range": "77–95"
+      },
+      {
+        "stem": "maryam_p312",
+        "name": "مريم ص 312",
+        "range": "96–98"
+      }
+    ]
+  },
+  {
+    "label": "سورة طه",
+    "juz": 16,
+    "pages": [
+      {
+        "stem": "taha_p312",
+        "name": "طه ص 312",
+        "range": "1–12"
+      },
+      {
+        "stem": "taha_p313",
+        "name": "طه ص 313",
+        "range": "13–37"
+      },
+      {
+        "stem": "taha_p314",
+        "name": "طه ص 314",
+        "range": "38–51"
+      },
+      {
+        "stem": "taha_p315",
+        "name": "طه ص 315",
+        "range": "52–64"
+      },
+      {
+        "stem": "taha_p316",
+        "name": "طه ص 316",
+        "range": "65–76"
+      },
+      {
+        "stem": "taha_p317",
+        "name": "طه ص 317",
+        "range": "77–87"
+      },
+      {
+        "stem": "taha_p318",
+        "name": "طه ص 318",
+        "range": "88–98"
+      },
+      {
+        "stem": "taha_p319",
+        "name": "طه ص 319",
+        "range": "99–113"
+      },
+      {
+        "stem": "taha_p320",
+        "name": "طه ص 320",
+        "range": "114–125"
+      },
+      {
+        "stem": "taha_p321",
+        "name": "طه ص 321",
+        "range": "126–135"
+      }
+    ]
+  },
+  {
+    "label": "سورة يس",
+    "juz": 22,
+    "pages": [
+      {
+        "stem": "yaseen_p440",
+        "name": "يس ص 440",
+        "range": "1–12"
+      },
+      {
+        "stem": "yaseen_p441",
+        "name": "يس ص 441",
+        "range": "13–27"
+      },
+      {
+        "stem": "yaseen_p442",
+        "name": "يس ص 442",
+        "range": "28–40"
+      },
+      {
+        "stem": "yaseen_p443",
+        "name": "يس ص 443",
+        "range": "41–54"
+      },
+      {
+        "stem": "yaseen_p444",
+        "name": "يس ص 444",
+        "range": "55–70"
+      },
+      {
+        "stem": "yaseen_p445",
+        "name": "يس ص 445",
+        "range": "71–83"
+      }
+    ]
+  },
+  {
+    "label": "سورة فصلت",
+    "juz": 24,
+    "pages": [
+      {
+        "stem": "fussilat_p477",
+        "name": "فصلت ص 477",
+        "range": "1–11"
+      },
+      {
+        "stem": "fussilat_p478",
+        "name": "فصلت ص 478",
+        "range": "12–20"
+      },
+      {
+        "stem": "fussilat_p479",
+        "name": "فصلت ص 479",
+        "range": "21–29"
+      },
+      {
+        "stem": "fussilat_p480",
+        "name": "فصلت ص 480",
+        "range": "30–38"
+      },
+      {
+        "stem": "fussilat_p481",
+        "name": "فصلت ص 481",
+        "range": "39–46"
+      },
+      {
+        "stem": "fussilat_p482",
+        "name": "فصلت ص 482",
+        "range": "47–54"
+      }
+    ]
+  },
+  {
+    "label": "سورة الأحقاف",
+    "juz": 26,
+    "pages": [
+      {
+        "stem": "alahqaf_p502",
+        "name": "الأحقاف ص 502",
+        "range": "1–5"
+      },
+      {
+        "stem": "alahqaf_p503",
+        "name": "الأحقاف ص 503",
+        "range": "6–14"
+      },
+      {
+        "stem": "alahqaf_p504",
+        "name": "الأحقاف ص 504",
+        "range": "15–20"
+      },
+      {
+        "stem": "alahqaf_p505",
+        "name": "الأحقاف ص 505",
+        "range": "21–28"
+      },
+      {
+        "stem": "alahqaf_p506",
+        "name": "الأحقاف ص 506",
+        "range": "29–35"
+      }
+    ]
+  },
+  {
+    "label": "سورة محمد",
+    "juz": 26,
+    "pages": [
+      {
+        "stem": "muhammad_p507",
+        "name": "محمد ص 507",
+        "range": "1–11"
+      },
+      {
+        "stem": "muhammad_p508",
+        "name": "محمد ص 508",
+        "range": "12–19"
+      },
+      {
+        "stem": "muhammad_p509",
+        "name": "محمد ص 509",
+        "range": "20–29"
+      },
+      {
+        "stem": "muhammad_p510",
+        "name": "محمد ص 510",
+        "range": "30–38"
+      }
+    ]
+  },
+  {
+    "label": "سورة الفتح",
+    "juz": 26,
+    "pages": [
+      {
+        "stem": "alfath_p511",
+        "name": "الفتح ص 511",
+        "range": "1–9"
+      },
+      {
+        "stem": "alfath_p512",
+        "name": "الفتح ص 512",
+        "range": "10–15"
+      },
+      {
+        "stem": "alfath_p513",
+        "name": "الفتح ص 513",
+        "range": "16–23"
+      },
+      {
+        "stem": "alfath_p514",
+        "name": "الفتح ص 514",
+        "range": "24–28"
+      },
+      {
+        "stem": "alfath_p515",
+        "name": "الفتح ص 515",
+        "range": "29"
+      }
+    ]
+  },
+  {
+    "label": "سورة الحجرات",
+    "juz": 26,
+    "pages": [
+      {
+        "stem": "alhujurat_p515",
+        "name": "الحجرات ص 515",
+        "range": "1–4"
+      },
+      {
+        "stem": "alhujurat_p516",
+        "name": "الحجرات ص 516",
+        "range": "5–11"
+      },
+      {
+        "stem": "alhujurat_p517",
+        "name": "الحجرات ص 517",
+        "range": "12–18"
+      }
+    ]
+  },
+  {
+    "label": "سورة ق",
+    "juz": 26,
+    "pages": [
+      {
+        "stem": "qaf_p518",
+        "name": "ق ص 518",
+        "range": "1–15"
+      },
+      {
+        "stem": "qaf_p519",
+        "name": "ق ص 519",
+        "range": "16–35"
+      },
+      {
+        "stem": "qaf_p520",
+        "name": "ق ص 520",
+        "range": "36–45"
+      }
+    ]
+  },
+  {
+    "label": "سورة الذاريات",
+    "juz": 26,
+    "pages": [
+      {
+        "stem": "azzariyat_p520",
+        "name": "الذاريات ص 520",
+        "range": "1–6"
+      },
+      {
+        "stem": "azzariyat_p521",
+        "name": "الذاريات ص 521",
+        "range": "7–30"
+      },
+      {
+        "stem": "azzariyat_p522",
+        "name": "الذاريات ص 522",
+        "range": "31–51"
+      },
+      {
+        "stem": "azzariyat_p523",
+        "name": "الذاريات ص 523",
+        "range": "52–60"
+      }
+    ]
+  },
+  {
+    "label": "سورة الطور",
+    "juz": 27,
+    "pages": [
+      {
+        "stem": "attur_p523",
+        "name": "الطور ص 523",
+        "range": "1–14"
+      },
+      {
+        "stem": "attur_p524",
+        "name": "الطور ص 524",
+        "range": "15–31"
+      },
+      {
+        "stem": "attur_p525",
+        "name": "الطور ص 525",
+        "range": "32–49"
+      }
+    ]
+  },
+  {
+    "label": "سورة النجم",
+    "juz": 27,
+    "pages": [
+      {
+        "stem": "annajm_p526",
+        "name": "النجم ص 526",
+        "range": "1–26"
+      },
+      {
+        "stem": "annajm_p527",
+        "name": "النجم ص 527",
+        "range": "27–44"
+      },
+      {
+        "stem": "annajm_p528",
+        "name": "النجم ص 528",
+        "range": "45–62"
+      }
+    ]
+  },
+  {
+    "label": "سورة القمر",
+    "juz": 27,
+    "pages": [
+      {
+        "stem": "alqamar_p528",
+        "name": "القمر ص 528",
+        "range": "1–6"
+      },
+      {
+        "stem": "alqamar_p529",
+        "name": "القمر ص 529",
+        "range": "7–27"
+      },
+      {
+        "stem": "alqamar_p530",
+        "name": "القمر ص 530",
+        "range": "28–49"
+      },
+      {
+        "stem": "alqamar_p531",
+        "name": "القمر ص 531",
+        "range": "50–55"
+      }
+    ]
+  },
+  {
+    "label": "سورة الرحمن",
+    "juz": 27,
+    "pages": [
+      {
+        "stem": "arrahman_p531",
+        "name": "الرحمن ص 531",
+        "range": "1–16"
+      },
+      {
+        "stem": "arrahman_p532",
+        "name": "الرحمن ص 532",
+        "range": "17–40"
+      },
+      {
+        "stem": "arrahman_p533",
+        "name": "الرحمن ص 533",
+        "range": "41–67"
+      },
+      {
+        "stem": "arrahman_p534",
+        "name": "الرحمن ص 534",
+        "range": "68–78"
+      }
+    ]
+  },
+  {
+    "label": "سورة الواقعة",
+    "juz": 27,
+    "pages": [
+      {
+        "stem": "alwaqiah_p534",
+        "name": "الواقعة ص 534",
+        "range": "1–16"
+      },
+      {
+        "stem": "alwaqiah_p535",
+        "name": "الواقعة ص 535",
+        "range": "17–50"
+      },
+      {
+        "stem": "alwaqiah_p536",
+        "name": "الواقعة ص 536",
+        "range": "51–76"
+      },
+      {
+        "stem": "alwaqiah_p537",
+        "name": "الواقعة ص 537",
+        "range": "77–96"
+      }
+    ]
+  },
+  {
+    "label": "سورة الحديد",
+    "juz": 27,
+    "pages": [
+      {
+        "stem": "alhadid_p537",
+        "name": "الحديد ص 537",
+        "range": "1–3"
+      },
+      {
+        "stem": "alhadid_p538",
+        "name": "الحديد ص 538",
+        "range": "4–11"
+      },
+      {
+        "stem": "alhadid_p539",
+        "name": "الحديد ص 539",
+        "range": "12–18"
+      },
+      {
+        "stem": "alhadid_p540",
+        "name": "الحديد ص 540",
+        "range": "19–24"
+      },
+      {
+        "stem": "alhadid_p541",
+        "name": "الحديد ص 541",
+        "range": "25–29"
+      }
+    ]
+  },
+  {
+    "label": "سورة المجادلة",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "almujadila_p542",
+        "name": "المجادلة ص 542",
+        "range": "1–6"
+      },
+      {
+        "stem": "almujadila_p543",
+        "name": "المجادلة ص 543",
+        "range": "7–11"
+      },
+      {
+        "stem": "almujadila_p544",
+        "name": "المجادلة ص 544",
+        "range": "12–21"
+      },
+      {
+        "stem": "almujadila_p545",
+        "name": "المجادلة ص 545",
+        "range": "22"
+      }
+    ]
+  },
+  {
+    "label": "سورة الحشر",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "alhashr_p545",
+        "name": "الحشر ص 545",
+        "range": "1–3"
+      },
+      {
+        "stem": "alhashr_p546",
+        "name": "الحشر ص 546",
+        "range": "4–9"
+      },
+      {
+        "stem": "alhashr_p547",
+        "name": "الحشر ص 547",
+        "range": "10–16"
+      },
+      {
+        "stem": "alhashr_p548",
+        "name": "الحشر ص 548",
+        "range": "17–24"
+      }
+    ]
+  },
+  {
+    "label": "سورة الممتحنة",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "almumtahana_p549",
+        "name": "الممتحنة ص 549",
+        "range": "1–5"
+      },
+      {
+        "stem": "almumtahana_p550",
+        "name": "الممتحنة ص 550",
+        "range": "6–11"
+      },
+      {
+        "stem": "almumtahana_p551",
+        "name": "الممتحنة ص 551",
+        "range": "12–13"
+      }
+    ]
+  },
+  {
+    "label": "سورة الصف",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "alsaff_p551",
+        "name": "الصف ص 551",
+        "range": "1–5"
+      },
+      {
+        "stem": "alsaff_p552",
+        "name": "الصف ص 552",
+        "range": "6–14"
+      }
+    ]
+  },
+  {
+    "label": "سورة الجمعة",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "aljumua_p553",
+        "name": "الجمعة ص 553",
+        "range": "1–8"
+      },
+      {
+        "stem": "aljumua_p554",
+        "name": "الجمعة ص 554",
+        "range": "9–11"
+      }
+    ]
+  },
+  {
+    "label": "سورة المنافقون",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "almunafiqun_p554",
+        "name": "المنافقون ص 554",
+        "range": "1–4"
+      },
+      {
+        "stem": "almunafiqun_p555",
+        "name": "المنافقون ص 555",
+        "range": "5–11"
+      }
+    ]
+  },
+  {
+    "label": "سورة التغابن",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "attaghabun_p556",
+        "name": "التغابن ص 556",
+        "range": "1–9"
+      },
+      {
+        "stem": "attaghabun_p557",
+        "name": "التغابن ص 557",
+        "range": "10–18"
+      }
+    ]
+  },
+  {
+    "label": "سورة الطلاق",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "attalaq_p558",
+        "name": "الطلاق ص 558",
+        "range": "1–5"
+      },
+      {
+        "stem": "attalaq_p559",
+        "name": "الطلاق ص 559",
+        "range": "6–12"
+      }
+    ]
+  },
+  {
+    "label": "سورة التحريم",
+    "juz": 28,
+    "pages": [
+      {
+        "stem": "attahrim_p560",
+        "name": "التحريم ص 560",
+        "range": "1–7"
+      },
+      {
+        "stem": "attahrim_p561",
+        "name": "التحريم ص 561",
+        "range": "8–12"
+      }
+    ]
+  },
+  {
+    "label": "سورة الملك",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "almulk_p562",
+        "name": "الملك ص 562",
+        "range": "1–12"
+      },
+      {
+        "stem": "almulk_p563",
+        "name": "الملك ص 563",
+        "range": "13–26"
+      },
+      {
+        "stem": "almulk_p564",
+        "name": "الملك ص 564",
+        "range": "27–30"
+      }
+    ]
+  },
+  {
+    "label": "سورة القلم",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "alqalam_p564",
+        "name": "القلم ص 564",
+        "range": "1–15"
+      },
+      {
+        "stem": "alqalam_p565",
+        "name": "القلم ص 565",
+        "range": "16–42"
+      },
+      {
+        "stem": "alqalam_p566",
+        "name": "القلم ص 566",
+        "range": "43–52"
+      }
+    ]
+  },
+  {
+    "label": "سورة الحاقة",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "alhaqqa_p566",
+        "name": "الحاقة ص 566",
+        "range": "1–8"
+      },
+      {
+        "stem": "alhaqqa_p567",
+        "name": "الحاقة ص 567",
+        "range": "9–34"
+      },
+      {
+        "stem": "alhaqqa_p568",
+        "name": "الحاقة ص 568",
+        "range": "35–52"
+      }
+    ]
+  },
+  {
+    "label": "سورة المعارج",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "almaarij_p568",
+        "name": "المعارج ص 568",
+        "range": "1–10"
+      },
+      {
+        "stem": "almaarij_p569",
+        "name": "المعارج ص 569",
+        "range": "11–39"
+      },
+      {
+        "stem": "almaarij_p570",
+        "name": "المعارج ص 570",
+        "range": "40–44"
+      }
+    ]
+  },
+  {
+    "label": "سورة نوح",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "nuh_p570",
+        "name": "نوح ص 570",
+        "range": "1–10"
+      },
+      {
+        "stem": "nuh_p571",
+        "name": "نوح ص 571",
+        "range": "11–28"
+      }
+    ]
+  },
+  {
+    "label": "سورة الجن",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "aljinn_p572",
+        "name": "الجن ص 572",
+        "range": "1–13"
+      },
+      {
+        "stem": "aljinn_p573",
+        "name": "الجن ص 573",
+        "range": "14–28"
+      }
+    ]
+  },
+  {
+    "label": "سورة المزمل",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "almuzzammil_p574",
+        "name": "المزمل ص 574",
+        "range": "1–19"
+      },
+      {
+        "stem": "almuzzammil_p575",
+        "name": "المزمل ص 575",
+        "range": "20 + المدثر 1–17"
+      }
+    ]
+  },
+  {
+    "label": "سورة المدثر",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "almudaththir_p575",
+        "name": "المدثر ص 575",
+        "range": "1–17 (مع المزمل)"
+      },
+      {
+        "stem": "almudaththir_p576",
+        "name": "المدثر ص 576",
+        "range": "18–47"
+      },
+      {
+        "stem": "almudaththir_p577",
+        "name": "المدثر ص 577",
+        "range": "48–56 + القيامة 1–19"
+      }
+    ]
+  },
+  {
+    "label": "سورة القيامة",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "alqiyama_p577",
+        "name": "القيامة ص 577",
+        "range": "1–19 (مع المدثر)"
+      },
+      {
+        "stem": "alqiyama_p578",
+        "name": "القيامة ص 578",
+        "range": "20–40"
+      }
+    ]
+  },
+  {
+    "label": "سورة الإنسان",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "alinsan_p578",
+        "name": "الإنسان ص 578",
+        "range": "1–5"
+      },
+      {
+        "stem": "alinsan_p579",
+        "name": "الإنسان ص 579",
+        "range": "6–25"
+      },
+      {
+        "stem": "alinsan_p580",
+        "name": "الإنسان ص 580",
+        "range": "26–31"
+      }
+    ]
+  },
+  {
+    "label": "سورة المرسلات",
+    "juz": 29,
+    "pages": [
+      {
+        "stem": "almursalat_p580",
+        "name": "المرسلات ص 580",
+        "range": "1–19"
+      },
+      {
+        "stem": "almursalat_p581",
+        "name": "المرسلات ص 581",
+        "range": "20–50"
+      }
+    ]
+  },
+  {
+    "label": "جزء عمّ",
+    "juz": 30,
+    "pages": [
+      {
+        "stem": "annaba",
+        "name": "النبأ",
+        "range": ""
+      },
+      {
+        "stem": "annaziat",
+        "name": "النازعات",
+        "range": ""
+      },
+      {
+        "stem": "abasa",
+        "name": "عبس",
+        "range": ""
+      },
+      {
+        "stem": "attakwir",
+        "name": "التكوير",
+        "range": ""
+      },
+      {
+        "stem": "alinfitar",
+        "name": "الانفطار",
+        "range": ""
+      },
+      {
+        "stem": "almutaffifin",
+        "name": "المطففين",
+        "range": ""
+      },
+      {
+        "stem": "alinshiqaq",
+        "name": "الانشقاق",
+        "range": ""
+      },
+      {
+        "stem": "alburuj",
+        "name": "البروج",
+        "range": ""
+      },
+      {
+        "stem": "altariq",
+        "name": "الطارق",
+        "range": ""
+      },
+      {
+        "stem": "alaala",
+        "name": "الأعلى",
+        "range": ""
+      },
+      {
+        "stem": "alghasiya",
+        "name": "الغاشية",
+        "range": ""
+      },
+      {
+        "stem": "alfajr",
+        "name": "الفجر",
+        "range": ""
+      },
+      {
+        "stem": "albalad",
+        "name": "البلد",
+        "range": ""
+      },
+      {
+        "stem": "alshams",
+        "name": "الشمس",
+        "range": ""
+      },
+      {
+        "stem": "allayl",
+        "name": "الليل",
+        "range": ""
+      },
+      {
+        "stem": "alduha",
+        "name": "الضحى",
+        "range": ""
+      },
+      {
+        "stem": "alsharh",
+        "name": "الشرح",
+        "range": ""
+      },
+      {
+        "stem": "atteen",
+        "name": "التين",
+        "range": ""
+      },
+      {
+        "stem": "alalaq",
+        "name": "العلق",
+        "range": ""
+      },
+      {
+        "stem": "alqadr",
+        "name": "القدر",
+        "range": ""
+      },
+      {
+        "stem": "albayyina",
+        "name": "البيِّنة",
+        "range": ""
+      },
+      {
+        "stem": "alzalzala",
+        "name": "الزلزلة",
+        "range": ""
+      },
+      {
+        "stem": "alaadiyat",
+        "name": "العاديات",
+        "range": ""
+      },
+      {
+        "stem": "alqaria",
+        "name": "القارعة",
+        "range": ""
+      },
+      {
+        "stem": "altakathur",
+        "name": "التكاثر",
+        "range": ""
+      },
+      {
+        "stem": "alasr",
+        "name": "العصر",
+        "range": ""
+      },
+      {
+        "stem": "alhumaza",
+        "name": "الهمزة",
+        "range": ""
+      },
+      {
+        "stem": "alfiyl",
+        "name": "الفيل",
+        "range": ""
+      },
+      {
+        "stem": "aquraysh",
+        "name": "قريش",
+        "range": ""
+      },
+      {
+        "stem": "almaoon",
+        "name": "الماعون",
+        "range": ""
+      },
+      {
+        "stem": "alkawthur",
+        "name": "الكوثر",
+        "range": ""
+      },
+      {
+        "stem": "alkafirun",
+        "name": "الكافرون",
+        "range": ""
+      },
+      {
+        "stem": "alnnasr",
+        "name": "النصر",
+        "range": ""
+      },
+      {
+        "stem": "almasad",
+        "name": "المسد",
+        "range": ""
+      },
+      {
+        "stem": "alikhlas",
+        "name": "الإخلاص",
+        "range": ""
+      },
+      {
+        "stem": "alfalaq",
+        "name": "الفلق",
+        "range": ""
+      },
+      {
+        "stem": "alnnas",
+        "name": "الناس",
+        "range": ""
+      }
+    ]
+  },
+  {
+    "label": "سورة آل عمران",
+    "juz": 3,
+    "pages": [
+      {
+        "stem": "alimran_p50",
+        "name": "آل عمران ص 50",
+        "range": "1–9"
+      },
+      {
+        "stem": "alimran_p51",
+        "name": "آل عمران ص 51",
+        "range": "10–15"
+      },
+      {
+        "stem": "alimran_p52",
+        "name": "آل عمران ص 52",
+        "range": "16–22"
+      },
+      {
+        "stem": "alimran_p53",
+        "name": "آل عمران ص 53",
+        "range": "23–29"
+      },
+      {
+        "stem": "alimran_p54",
+        "name": "آل عمران ص 54",
+        "range": "30–37"
+      },
+      {
+        "stem": "alimran_p55",
+        "name": "آل عمران ص 55",
+        "range": "38–45"
+      },
+      {
+        "stem": "alimran_p56",
+        "name": "آل عمران ص 56",
+        "range": "46–52"
+      },
+      {
+        "stem": "alimran_p57",
+        "name": "آل عمران ص 57",
+        "range": "53–61"
+      },
+      {
+        "stem": "alimran_p58",
+        "name": "آل عمران ص 58",
+        "range": "62–70"
+      },
+      {
+        "stem": "alimran_p59",
+        "name": "آل عمران ص 59",
+        "range": "71–77"
+      },
+      {
+        "stem": "alimran_p60",
+        "name": "آل عمران ص 60",
+        "range": "78–83"
+      },
+      {
+        "stem": "alimran_p61",
+        "name": "آل عمران ص 61",
+        "range": "84–91"
+      },
+      {
+        "stem": "alimran_p62",
+        "name": "آل عمران ص 62",
+        "range": "92–100"
+      },
+      {
+        "stem": "alimran_p63",
+        "name": "آل عمران ص 63",
+        "range": "101–108"
+      },
+      {
+        "stem": "alimran_p64",
+        "name": "آل عمران ص 64",
+        "range": "109–115"
+      },
+      {
+        "stem": "alimran_p65",
+        "name": "آل عمران ص 65",
+        "range": "116–121"
+      },
+      {
+        "stem": "alimran_p66",
+        "name": "آل عمران ص 66",
+        "range": "122–132"
+      },
+      {
+        "stem": "alimran_p67",
+        "name": "آل عمران ص 67",
+        "range": "133–140"
+      },
+      {
+        "stem": "alimran_p68",
+        "name": "آل عمران ص 68",
+        "range": "141–148"
+      },
+      {
+        "stem": "alimran_p69",
+        "name": "آل عمران ص 69",
+        "range": "149–153"
+      },
+      {
+        "stem": "alimran_p70",
+        "name": "آل عمران ص 70",
+        "range": "154–157"
+      },
+      {
+        "stem": "alimran_p71",
+        "name": "آل عمران ص 71",
+        "range": "158–165"
+      },
+      {
+        "stem": "alimran_p72",
+        "name": "آل عمران ص 72",
+        "range": "166–173"
+      },
+      {
+        "stem": "alimran_p73",
+        "name": "آل عمران ص 73",
+        "range": "174–180"
+      },
+      {
+        "stem": "alimran_p74",
+        "name": "آل عمران ص 74",
+        "range": "181–186"
+      },
+      {
+        "stem": "alimran_p75",
+        "name": "آل عمران ص 75",
+        "range": "187–194"
+      },
+      {
+        "stem": "alimran_p76",
+        "name": "آل عمران ص 76",
+        "range": "195–200"
+      }
+    ]
+  },
+  {
+    "label": "سورة الشورى",
+    "juz": 25,
+    "pages": [
+      {
+        "stem": "shura_p483",
+        "name": "الشورى ص 483",
+        "range": "1–10"
+      },
+      {
+        "stem": "shura_p484",
+        "name": "الشورى ص 484",
+        "range": "11–15"
+      },
+      {
+        "stem": "shura_p485",
+        "name": "الشورى ص 485",
+        "range": "16–22"
+      },
+      {
+        "stem": "shura_p486",
+        "name": "الشورى ص 486",
+        "range": "23–31"
+      },
+      {
+        "stem": "shura_p487",
+        "name": "الشورى ص 487",
+        "range": "32–44"
+      },
+      {
+        "stem": "shura_p488",
+        "name": "الشورى ص 488",
+        "range": "45–51"
+      },
+      {
+        "stem": "shura_p489",
+        "name": "الشورى ص 489",
+        "range": "52–53"
+      }
+    ]
+  },
+  {
+    "label": "سورة الزخرف",
+    "juz": 25,
+    "pages": [
+      {
+        "stem": "azzukhruf_p489",
+        "name": "الزخرف ص 489",
+        "range": "1–10"
+      },
+      {
+        "stem": "azzukhruf_p490",
+        "name": "الزخرف ص 490",
+        "range": "11–22"
+      },
+      {
+        "stem": "azzukhruf_p491",
+        "name": "الزخرف ص 491",
+        "range": "23–33"
+      },
+      {
+        "stem": "azzukhruf_p492",
+        "name": "الزخرف ص 492",
+        "range": "34–47"
+      },
+      {
+        "stem": "azzukhruf_p493",
+        "name": "الزخرف ص 493",
+        "range": "48–60"
+      },
+      {
+        "stem": "azzukhruf_p494",
+        "name": "الزخرف ص 494",
+        "range": "61–73"
+      },
+      {
+        "stem": "azzukhruf_p495",
+        "name": "الزخرف ص 495",
+        "range": "74–89"
+      }
+    ]
+  },
+  {
+    "label": "سورة الدخان",
+    "juz": 25,
+    "pages": [
+      {
+        "stem": "addukhan_p496",
+        "name": "الدخان ص 496",
+        "range": "1–18"
+      },
+      {
+        "stem": "addukhan_p497",
+        "name": "الدخان ص 497",
+        "range": "19–39"
+      },
+      {
+        "stem": "addukhan_p498",
+        "name": "الدخان ص 498",
+        "range": "40–59"
+      }
+    ]
+  },
+  {
+    "label": "سورة الجاثية",
+    "juz": 25,
+    "pages": [
+      {
+        "stem": "aljathiya_p499",
+        "name": "الجاثية ص 499",
+        "range": "1–13"
+      },
+      {
+        "stem": "aljathiya_p500",
+        "name": "الجاثية ص 500",
+        "range": "14–22"
+      },
+      {
+        "stem": "aljathiya_p501",
+        "name": "الجاثية ص 501",
+        "range": "23–32"
+      },
+      {
+        "stem": "aljathiya_p502",
+        "name": "الجاثية ص 502",
+        "range": "33–37"
+      }
+    ]
+  },
+  {
+    "label": "سورة المائدة",
+    "juz": 6,
+    "pages": [
+      {
+        "stem": "almaida_p106",
+        "name": "المائدة ص 106",
+        "range": "1–2"
+      },
+      {
+        "stem": "almaida_p107",
+        "name": "المائدة ص 107",
+        "range": "3–5"
+      },
+      {
+        "stem": "almaida_p108",
+        "name": "المائدة ص 108",
+        "range": "6–9"
+      },
+      {
+        "stem": "almaida_p109",
+        "name": "المائدة ص 109",
+        "range": "10–13"
+      },
+      {
+        "stem": "almaida_p110",
+        "name": "المائدة ص 110",
+        "range": "14–17"
+      },
+      {
+        "stem": "almaida_p111",
+        "name": "المائدة ص 111",
+        "range": "18–23"
+      },
+      {
+        "stem": "almaida_p112",
+        "name": "المائدة ص 112",
+        "range": "24–31"
+      },
+      {
+        "stem": "almaida_p113",
+        "name": "المائدة ص 113",
+        "range": "32–36"
+      },
+      {
+        "stem": "almaida_p114",
+        "name": "المائدة ص 114",
+        "range": "37–41"
+      },
+      {
+        "stem": "almaida_p115",
+        "name": "المائدة ص 115",
+        "range": "42–45"
+      },
+      {
+        "stem": "almaida_p116",
+        "name": "المائدة ص 116",
+        "range": "46–50"
+      },
+      {
+        "stem": "almaida_p117",
+        "name": "المائدة ص 117",
+        "range": "51–57"
+      },
+      {
+        "stem": "almaida_p118",
+        "name": "المائدة ص 118",
+        "range": "58–64"
+      },
+      {
+        "stem": "almaida_p119",
+        "name": "المائدة ص 119",
+        "range": "65–70"
+      },
+      {
+        "stem": "almaida_p120",
+        "name": "المائدة ص 120",
+        "range": "71–77"
+      },
+      {
+        "stem": "almaida_p121",
+        "name": "المائدة ص 121",
+        "range": "78–83"
+      },
+      {
+        "stem": "almaida_p122",
+        "name": "المائدة ص 122",
+        "range": "84–90"
+      },
+      {
+        "stem": "almaida_p123",
+        "name": "المائدة ص 123",
+        "range": "91–95"
+      },
+      {
+        "stem": "almaida_p124",
+        "name": "المائدة ص 124",
+        "range": "96–103"
+      },
+      {
+        "stem": "almaida_p125",
+        "name": "المائدة ص 125",
+        "range": "104–108"
+      },
+      {
+        "stem": "almaida_p126",
+        "name": "المائدة ص 126",
+        "range": "109–113"
+      },
+      {
+        "stem": "almaida_p127",
+        "name": "المائدة ص 127",
+        "range": "114–120"
+      }
+    ]
+  },
+  {
+    "label": "سورة الأنعام",
+    "juz": 7,
+    "pages": [
+      {
+        "stem": "alanam_p128",
+        "name": "الأنعام ص 128",
+        "range": "1–8"
+      },
+      {
+        "stem": "alanam_p129",
+        "name": "الأنعام ص 129",
+        "range": "9–18"
+      },
+      {
+        "stem": "alanam_p130",
+        "name": "الأنعام ص 130",
+        "range": "19–27"
+      },
+      {
+        "stem": "alanam_p131",
+        "name": "الأنعام ص 131",
+        "range": "28–35"
+      },
+      {
+        "stem": "alanam_p132",
+        "name": "الأنعام ص 132",
+        "range": "36–44"
+      },
+      {
+        "stem": "alanam_p133",
+        "name": "الأنعام ص 133",
+        "range": "45–52"
+      },
+      {
+        "stem": "alanam_p134",
+        "name": "الأنعام ص 134",
+        "range": "53–59"
+      },
+      {
+        "stem": "alanam_p135",
+        "name": "الأنعام ص 135",
+        "range": "60–68"
+      },
+      {
+        "stem": "alanam_p136",
+        "name": "الأنعام ص 136",
+        "range": "69–73"
+      },
+      {
+        "stem": "alanam_p137",
+        "name": "الأنعام ص 137",
+        "range": "74–81"
+      },
+      {
+        "stem": "alanam_p138",
+        "name": "الأنعام ص 138",
+        "range": "82–90"
+      },
+      {
+        "stem": "alanam_p139",
+        "name": "الأنعام ص 139",
+        "range": "91–94"
+      },
+      {
+        "stem": "alanam_p140",
+        "name": "الأنعام ص 140",
+        "range": "95–101"
+      },
+      {
+        "stem": "alanam_p141",
+        "name": "الأنعام ص 141",
+        "range": "102–110"
+      },
+      {
+        "stem": "alanam_p142",
+        "name": "الأنعام ص 142",
+        "range": "111–118"
+      },
+      {
+        "stem": "alanam_p143",
+        "name": "الأنعام ص 143",
+        "range": "119–124"
+      },
+      {
+        "stem": "alanam_p144",
+        "name": "الأنعام ص 144",
+        "range": "125–130"
+      },
+      {
+        "stem": "alanam_p145",
+        "name": "الأنعام ص 145",
+        "range": "131–137"
+      },
+      {
+        "stem": "alanam_p146",
+        "name": "الأنعام ص 146",
+        "range": "138–142"
+      },
+      {
+        "stem": "alanam_p147",
+        "name": "الأنعام ص 147",
+        "range": "143–146"
+      },
+      {
+        "stem": "alanam_p148",
+        "name": "الأنعام ص 148",
+        "range": "147–151"
+      },
+      {
+        "stem": "alanam_p149",
+        "name": "الأنعام ص 149",
+        "range": "152–157"
+      },
+      {
+        "stem": "alanam_p150",
+        "name": "الأنعام ص 150",
+        "range": "158–165"
+      }
+    ]
+  },
+  {
+    "label": "سورة الأعراف",
+    "juz": 8,
+    "pages": [
+      {
+        "stem": "alaaraf_p151",
+        "name": "الأعراف ص 151",
+        "range": "1–11"
+      },
+      {
+        "stem": "alaaraf_p152",
+        "name": "الأعراف ص 152",
+        "range": "12–22"
+      },
+      {
+        "stem": "alaaraf_p153",
+        "name": "الأعراف ص 153",
+        "range": "23–30"
+      },
+      {
+        "stem": "alaaraf_p154",
+        "name": "الأعراف ص 154",
+        "range": "31–37"
+      },
+      {
+        "stem": "alaaraf_p155",
+        "name": "الأعراف ص 155",
+        "range": "38–43"
+      },
+      {
+        "stem": "alaaraf_p156",
+        "name": "الأعراف ص 156",
+        "range": "44–51"
+      },
+      {
+        "stem": "alaaraf_p157",
+        "name": "الأعراف ص 157",
+        "range": "52–57"
+      },
+      {
+        "stem": "alaaraf_p158",
+        "name": "الأعراف ص 158",
+        "range": "58–67"
+      },
+      {
+        "stem": "alaaraf_p159",
+        "name": "الأعراف ص 159",
+        "range": "68–73"
+      },
+      {
+        "stem": "alaaraf_p160",
+        "name": "الأعراف ص 160",
+        "range": "74–81"
+      },
+      {
+        "stem": "alaaraf_p161",
+        "name": "الأعراف ص 161",
+        "range": "82–87"
+      },
+      {
+        "stem": "alaaraf_p162",
+        "name": "الأعراف ص 162",
+        "range": "88–95"
+      },
+      {
+        "stem": "alaaraf_p163",
+        "name": "الأعراف ص 163",
+        "range": "96–104"
+      },
+      {
+        "stem": "alaaraf_p164",
+        "name": "الأعراف ص 164",
+        "range": "105–120"
+      },
+      {
+        "stem": "alaaraf_p165",
+        "name": "الأعراف ص 165",
+        "range": "121–130"
+      },
+      {
+        "stem": "alaaraf_p166",
+        "name": "الأعراف ص 166",
+        "range": "131–137"
+      },
+      {
+        "stem": "alaaraf_p167",
+        "name": "الأعراف ص 167",
+        "range": "138–143"
+      },
+      {
+        "stem": "alaaraf_p168",
+        "name": "الأعراف ص 168",
+        "range": "144–149"
+      },
+      {
+        "stem": "alaaraf_p169",
+        "name": "الأعراف ص 169",
+        "range": "150–155"
+      },
+      {
+        "stem": "alaaraf_p170",
+        "name": "الأعراف ص 170",
+        "range": "156–159"
+      },
+      {
+        "stem": "alaaraf_p171",
+        "name": "الأعراف ص 171",
+        "range": "160–163"
+      },
+      {
+        "stem": "alaaraf_p172",
+        "name": "الأعراف ص 172",
+        "range": "164–170"
+      },
+      {
+        "stem": "alaaraf_p173",
+        "name": "الأعراف ص 173",
+        "range": "171–178"
+      },
+      {
+        "stem": "alaaraf_p174",
+        "name": "الأعراف ص 174",
+        "range": "179–187"
+      },
+      {
+        "stem": "alaaraf_p175",
+        "name": "الأعراف ص 175",
+        "range": "188–195"
+      },
+      {
+        "stem": "alaaraf_p176",
+        "name": "الأعراف ص 176",
+        "range": "196–206"
+      }
+    ]
+  },
+  {
+    "label": "سورة الأنفال",
+    "juz": 9,
+    "pages": [
+      {
+        "stem": "alanfal_p177",
+        "name": "الأنفال ص 177",
+        "range": "1–8"
+      },
+      {
+        "stem": "alanfal_p178",
+        "name": "الأنفال ص 178",
+        "range": "9–16"
+      },
+      {
+        "stem": "alanfal_p179",
+        "name": "الأنفال ص 179",
+        "range": "17–25"
+      },
+      {
+        "stem": "alanfal_p180",
+        "name": "الأنفال ص 180",
+        "range": "26–33"
+      },
+      {
+        "stem": "alanfal_p181",
+        "name": "الأنفال ص 181",
+        "range": "34–40"
+      },
+      {
+        "stem": "alanfal_p182",
+        "name": "الأنفال ص 182",
+        "range": "41–45"
+      },
+      {
+        "stem": "alanfal_p183",
+        "name": "الأنفال ص 183",
+        "range": "46–52"
+      },
+      {
+        "stem": "alanfal_p184",
+        "name": "الأنفال ص 184",
+        "range": "53–61"
+      },
+      {
+        "stem": "alanfal_p185",
+        "name": "الأنفال ص 185",
+        "range": "62–69"
+      },
+      {
+        "stem": "alanfal_p186",
+        "name": "الأنفال ص 186",
+        "range": "70–75"
+      }
+    ]
+  },
+  {
+    "label": "سورة التوبة",
+    "juz": 10,
+    "pages": [
+      {
+        "stem": "attawba_p187",
+        "name": "التوبة ص 187",
+        "range": "1–6"
+      },
+      {
+        "stem": "attawba_p188",
+        "name": "التوبة ص 188",
+        "range": "7–13"
+      },
+      {
+        "stem": "attawba_p189",
+        "name": "التوبة ص 189",
+        "range": "14–20"
+      },
+      {
+        "stem": "attawba_p190",
+        "name": "التوبة ص 190",
+        "range": "21–26"
+      },
+      {
+        "stem": "attawba_p191",
+        "name": "التوبة ص 191",
+        "range": "27–31"
+      },
+      {
+        "stem": "attawba_p192",
+        "name": "التوبة ص 192",
+        "range": "32–36"
+      },
+      {
+        "stem": "attawba_p193",
+        "name": "التوبة ص 193",
+        "range": "37–40"
+      },
+      {
+        "stem": "attawba_p194",
+        "name": "التوبة ص 194",
+        "range": "41–47"
+      },
+      {
+        "stem": "attawba_p195",
+        "name": "التوبة ص 195",
+        "range": "48–54"
+      },
+      {
+        "stem": "attawba_p196",
+        "name": "التوبة ص 196",
+        "range": "55–61"
+      },
+      {
+        "stem": "attawba_p197",
+        "name": "التوبة ص 197",
+        "range": "62–68"
+      },
+      {
+        "stem": "attawba_p198",
+        "name": "التوبة ص 198",
+        "range": "69–72"
+      },
+      {
+        "stem": "attawba_p199",
+        "name": "التوبة ص 199",
+        "range": "73–79"
+      },
+      {
+        "stem": "attawba_p200",
+        "name": "التوبة ص 200",
+        "range": "80–86"
+      },
+      {
+        "stem": "attawba_p201",
+        "name": "التوبة ص 201",
+        "range": "87–93"
+      },
+      {
+        "stem": "attawba_p202",
+        "name": "التوبة ص 202",
+        "range": "94–99"
+      },
+      {
+        "stem": "attawba_p203",
+        "name": "التوبة ص 203",
+        "range": "100–106"
+      },
+      {
+        "stem": "attawba_p204",
+        "name": "التوبة ص 204",
+        "range": "107–111"
+      },
+      {
+        "stem": "attawba_p205",
+        "name": "التوبة ص 205",
+        "range": "112–117"
+      },
+      {
+        "stem": "attawba_p206",
+        "name": "التوبة ص 206",
+        "range": "118–122"
+      },
+      {
+        "stem": "attawba_p207",
+        "name": "التوبة ص 207",
+        "range": "123–129"
+      }
+    ]
+  },
+  {
+    "label": "سورة هود",
+    "juz": 11,
+    "pages": [
+      {
+        "stem": "hud_p221",
+        "name": "هود ص 221",
+        "range": "1–5"
+      },
+      {
+        "stem": "hud_p222",
+        "name": "هود ص 222",
+        "range": "6–12"
+      },
+      {
+        "stem": "hud_p223",
+        "name": "هود ص 223",
+        "range": "13–19"
+      },
+      {
+        "stem": "hud_p224",
+        "name": "هود ص 224",
+        "range": "20–28"
+      },
+      {
+        "stem": "hud_p225",
+        "name": "هود ص 225",
+        "range": "29–37"
+      },
+      {
+        "stem": "hud_p226",
+        "name": "هود ص 226",
+        "range": "38–45"
+      },
+      {
+        "stem": "hud_p227",
+        "name": "هود ص 227",
+        "range": "46–53"
+      },
+      {
+        "stem": "hud_p228",
+        "name": "هود ص 228",
+        "range": "54–62"
+      },
+      {
+        "stem": "hud_p229",
+        "name": "هود ص 229",
+        "range": "63–71"
+      },
+      {
+        "stem": "hud_p230",
+        "name": "هود ص 230",
+        "range": "72–81"
+      },
+      {
+        "stem": "hud_p231",
+        "name": "هود ص 231",
+        "range": "82–88"
+      },
+      {
+        "stem": "hud_p232",
+        "name": "هود ص 232",
+        "range": "89–97"
+      },
+      {
+        "stem": "hud_p233",
+        "name": "هود ص 233",
+        "range": "98–108"
+      },
+      {
+        "stem": "hud_p234",
+        "name": "هود ص 234",
+        "range": "109–117"
+      },
+      {
+        "stem": "hud_p235",
+        "name": "هود ص 235",
+        "range": "118–123"
+      }
+    ]
+  },
+  {
+    "label": "سورة يونس",
+    "juz": 11,
+    "pages": [
+      {
+        "stem": "yunus_p208",
+        "name": "يونس ص 208",
+        "range": "1–6"
+      },
+      {
+        "stem": "yunus_p209",
+        "name": "يونس ص 209",
+        "range": "7–14"
+      },
+      {
+        "stem": "yunus_p210",
+        "name": "يونس ص 210",
+        "range": "15–20"
+      },
+      {
+        "stem": "yunus_p211",
+        "name": "يونس ص 211",
+        "range": "21–25"
+      },
+      {
+        "stem": "yunus_p212",
+        "name": "يونس ص 212",
+        "range": "26–33"
+      },
+      {
+        "stem": "yunus_p213",
+        "name": "يونس ص 213",
+        "range": "34–42"
+      },
+      {
+        "stem": "yunus_p214",
+        "name": "يونس ص 214",
+        "range": "43–53"
+      },
+      {
+        "stem": "yunus_p215",
+        "name": "يونس ص 215",
+        "range": "54–61"
+      },
+      {
+        "stem": "yunus_p216",
+        "name": "يونس ص 216",
+        "range": "62–70"
+      },
+      {
+        "stem": "yunus_p217",
+        "name": "يونس ص 217",
+        "range": "71–78"
+      },
+      {
+        "stem": "yunus_p218",
+        "name": "يونس ص 218",
+        "range": "79–88"
+      },
+      {
+        "stem": "yunus_p219",
+        "name": "يونس ص 219",
+        "range": "89–97"
+      },
+      {
+        "stem": "yunus_p220",
+        "name": "يونس ص 220",
+        "range": "98–106"
+      },
+      {
+        "stem": "yunus_p221",
+        "name": "يونس ص 221",
+        "range": "107–109"
+      }
+    ]
+  },
+  {
+    "label": "سورة يوسف",
+    "juz": 12,
+    "pages": [
+      {
+        "stem": "yusuf_p235",
+        "name": "يوسف ص 235",
+        "range": "1–4"
+      },
+      {
+        "stem": "yusuf_p236",
+        "name": "يوسف ص 236",
+        "range": "5–14"
+      },
+      {
+        "stem": "yusuf_p237",
+        "name": "يوسف ص 237",
+        "range": "15–22"
+      },
+      {
+        "stem": "yusuf_p238",
+        "name": "يوسف ص 238",
+        "range": "23–30"
+      },
+      {
+        "stem": "yusuf_p239",
+        "name": "يوسف ص 239",
+        "range": "31–37"
+      },
+      {
+        "stem": "yusuf_p240",
+        "name": "يوسف ص 240",
+        "range": "38–43"
+      },
+      {
+        "stem": "yusuf_p241",
+        "name": "يوسف ص 241",
+        "range": "44–52"
+      },
+      {
+        "stem": "yusuf_p242",
+        "name": "يوسف ص 242",
+        "range": "53–63"
+      },
+      {
+        "stem": "yusuf_p243",
+        "name": "يوسف ص 243",
+        "range": "64–69"
+      },
+      {
+        "stem": "yusuf_p244",
+        "name": "يوسف ص 244",
+        "range": "70–78"
+      },
+      {
+        "stem": "yusuf_p245",
+        "name": "يوسف ص 245",
+        "range": "79–86"
+      },
+      {
+        "stem": "yusuf_p246",
+        "name": "يوسف ص 246",
+        "range": "87–95"
+      },
+      {
+        "stem": "yusuf_p247",
+        "name": "يوسف ص 247",
+        "range": "96–103"
+      },
+      {
+        "stem": "yusuf_p248",
+        "name": "يوسف ص 248",
+        "range": "104–111"
+      }
+    ]
+  },
+  {
+    "label": "سورة الرعد",
+    "juz": 13,
+    "pages": [
+      {
+        "stem": "arraad_p249",
+        "name": "الرعد ص 249",
+        "range": "1–5"
+      },
+      {
+        "stem": "arraad_p250",
+        "name": "الرعد ص 250",
+        "range": "6–13"
+      },
+      {
+        "stem": "arraad_p251",
+        "name": "الرعد ص 251",
+        "range": "14–18"
+      },
+      {
+        "stem": "arraad_p252",
+        "name": "الرعد ص 252",
+        "range": "19–28"
+      },
+      {
+        "stem": "arraad_p253",
+        "name": "الرعد ص 253",
+        "range": "29–34"
+      },
+      {
+        "stem": "arraad_p254",
+        "name": "الرعد ص 254",
+        "range": "35–42"
+      },
+      {
+        "stem": "arraad_p255",
+        "name": "الرعد ص 255",
+        "range": "43"
+      }
+    ]
+  },
+  {
+    "label": "سورة إبراهيم",
+    "juz": 13,
+    "pages": [
+      {
+        "stem": "ibrahim_p255",
+        "name": "إبراهيم ص 255",
+        "range": "1–5"
+      },
+      {
+        "stem": "ibrahim_p256",
+        "name": "إبراهيم ص 256",
+        "range": "6–10"
+      },
+      {
+        "stem": "ibrahim_p257",
+        "name": "إبراهيم ص 257",
+        "range": "11–18"
+      },
+      {
+        "stem": "ibrahim_p258",
+        "name": "إبراهيم ص 258",
+        "range": "19–24"
+      },
+      {
+        "stem": "ibrahim_p259",
+        "name": "إبراهيم ص 259",
+        "range": "25–33"
+      },
+      {
+        "stem": "ibrahim_p260",
+        "name": "إبراهيم ص 260",
+        "range": "34–42"
+      },
+      {
+        "stem": "ibrahim_p261",
+        "name": "إبراهيم ص 261",
+        "range": "43–52"
+      }
+    ]
+  }
 ]
