@@ -1303,7 +1303,7 @@ function _tx(k,v){
   return t;
 }
 // المساعدة التدريجية: فهارس الكلمات (مطلقة في refWords) التي كُشفت، وقائمتها بالترتيب
-let helpIdx=[],helpWords=[],_startCue='';
+let helpIdx=[],helpWords=[],_startCue='',_startCueN=0;
 
 // ===== نظام تتبع التقدم الدائم (يوليو 2026) — نفس مفتاح localStorage
 // 'darbi_progress' المستخدم في صفحات الاختبار، تحت مستوى 'recitation' =====
@@ -2242,26 +2242,42 @@ function _doHelp(){
   if(!refWords.length)return;
   const idx=_nextRefIdx();
   if(idx>=refWords.length)return;
-  // الحروف المقطعة تُعرض برسم المصحف (الٓمٓ) وتُكشف كوحدة واحدة
-  let word,idxs;
-  if(muqRun&&muqRun.n&&idx<muqRun.n){
-    word=muqRun.raw;idxs=[];for(let i=0;i<muqRun.n;i++)idxs.push(i);
-  }else{word=refWords[idx];idxs=[idx];}
-  if(idxs[0]===0){
-    // أول كلمة في الصفحة: تلميح بداية فقط (لا يدل على ضعف الحفظ) فتُعرض ولا تُحسب مساعدة ولا تمنع ١٠٠٪
-    _startCue=word;
-  }else if(helpIdx.indexOf(idxs[0])<0){
-    idxs.forEach(i=>{if(helpIdx.indexOf(i)<0)helpIdx.push(i);});
-    helpWords.push(word);
+  // بداية الصفحة (لم يُقرأ شيء بعد): تلميح بداية بأول ٣ كلمات، لا يُحسب مساعدة ولا يمنع ١٠٠٪.
+  // وبعد ظهورها لا يكشف الزر شيئًا جديدًا ما دام لم يقرأ؛ فإذا قرأ وطلب المساعدة جاءت كلمة كلمة وتُحسب عليه.
+  if(idx===0&&!_startCue){
+    // الحروف المقطعة تُعرض برسم المصحف (الٓمٓ) وتُحسب وحدة واحدة
+    const mn=(muqRun&&muqRun.n)?muqRun.n:0;
+    if(mn){_startCue=[muqRun.raw].concat(refWords.slice(mn,mn+2)).join(' ');_startCueN=Math.min(refWords.length,mn+2);}
+    else{_startCue=refWords.slice(0,3).join(' ');_startCueN=Math.min(refWords.length,3);}
+  }else if(idx<_startCueN){
+    // الكلمة التالية ظهرت أصلًا ضمن تلميح البداية: تُعرض ولا تُحسب مساعدة
+  }else{
+    let word,idxs;
+    if(muqRun&&muqRun.n&&idx<muqRun.n){
+      word=muqRun.raw;idxs=[];for(let i=0;i<muqRun.n;i++)idxs.push(i);
+    }else{word=refWords[idx];idxs=[idx];}
+    if(helpIdx.indexOf(idxs[0])<0){
+      idxs.forEach(i=>{if(helpIdx.indexOf(i)<0)helpIdx.push(i);});
+      helpWords.push(word);
+    }
   }
   const box=document.getElementById('hintBox');
   box.textContent=[_startCue].concat(helpWords).filter(Boolean).join(' ');
   box.style.display='block';
   const btn=document.getElementById('hintBtn');
   btn.textContent=darbiT('hint.btn')+(helpWords.length?' ('+helpWords.length+')':'');
+  _syncHelpBtn();
+}
+// بعد ظهور تلميح البداية يُعطَّل الزر حتى يقرأ المستخدم شيئًا (ويعود يعمل بمجرد وجود قراءة)
+function _syncHelpBtn(){
+  if(!_startCue)return;
+  const btn=document.getElementById('hintBtn');if(!btn)return;
+  let wait=false;
+  try{wait=(_nextRefIdx()===0);}catch(e){}
+  btn.disabled=wait;
 }
 function _resetHelp(){
-  helpIdx=[];helpWords=[];_startCue='';
+  helpIdx=[];helpWords=[];_startCue='';_startCueN=0;
   const box=document.getElementById('hintBox');if(box)box.style.display='none';
   const btn=document.getElementById('hintBtn');
   if(btn){btn.disabled=false;btn.textContent=darbiT('hint.btn');}
@@ -3111,6 +3127,7 @@ function _waqfSepEl(mark){
   return el;
 }
 function renderTranscript(){
+  _syncHelpBtn();
   const box=document.getElementById('transcriptBox');
   box.innerHTML='';
   if(selWord!==null&&selWord>=savedWords.length)selWord=null;
