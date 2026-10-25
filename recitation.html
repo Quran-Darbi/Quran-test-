@@ -2389,17 +2389,30 @@ function showHint(){
   }
   _doHelp();
 }
+// موضع بداية المساعدة: أول الصفحة، أو أول الآية المطلوب إعادتها أثناء «إعادة موضع الخطأ»
+function _helpBase(){return (_retryTarget>=0&&_retryTarget<refWords.length)?_retryTarget:0;}
+// الكلمة التالية للمساعدة: إن لم يُقرأ شيء بعد فهي بداية الآية المُعادة (أو الصفحة)، وإلا ما بعد آخر كلمة صحيحة
+function _helpNextIdx(){
+  const none=savedWords.filter(w=>w.length>0).length===0;
+  return none?_helpBase():_nextRefIdx();
+}
 function _doHelp(){
   if(!refWords.length)return;
-  const idx=_nextRefIdx();
+  const base=_helpBase();
+  const idx=_helpNextIdx();
   if(idx>=refWords.length)return;
   // بداية الصفحة (لم يُقرأ شيء بعد): تلميح بداية بأول ٣ كلمات، لا يُحسب مساعدة ولا يمنع ١٠٠٪.
   // وبعد ظهورها لا يكشف الزر شيئًا جديدًا ما دام لم يقرأ؛ فإذا قرأ وطلب المساعدة جاءت كلمة كلمة وتُحسب عليه.
-  if(idx===0&&!_startCue){
-    // الحروف المقطعة تُعرض برسم المصحف (الٓمٓ) وتُحسب وحدة واحدة
-    const mn=(muqRun&&muqRun.n)?muqRun.n:0;
+  if(idx===base&&!_startCue){
+    // الحروف المقطعة تُعرض برسم المصحف (الٓمٓ) وتُحسب وحدة واحدة (في بداية الصفحة فقط)
+    const mn=(base===0&&muqRun&&muqRun.n)?muqRun.n:0;
     if(mn){_startCue=[muqRun.raw].concat(refWords.slice(mn,mn+2)).join(' ');_startCueN=Math.min(refWords.length,mn+2);}
-    else{_startCue=refWords.slice(0,3).join(' ');_startCueN=Math.min(refWords.length,3);}
+    else{
+      // في إعادة آية: أول ٣ كلمات من هذه الآية، دون أن نتجاوز آخرها
+      const en=(base>0)?_ayahSpan(base).en:refWords.length-1;
+      const e=Math.min(base+3,en+1,refWords.length);
+      _startCue=refWords.slice(base,e).join(' ');_startCueN=e;
+    }
   }else if(idx<_startCueN){
     // الكلمة التالية ظهرت أصلًا ضمن تلميح البداية: تُعرض ولا تُحسب مساعدة
   }else{
@@ -2424,7 +2437,7 @@ function _syncHelpBtn(){
   if(!_startCue)return;
   const btn=document.getElementById('hintBtn');if(!btn)return;
   let wait=false;
-  try{wait=(_nextRefIdx()===0);}catch(e){}
+  try{wait=(_helpNextIdx()===_helpBase());}catch(e){}
   btn.disabled=wait;
 }
 function _resetHelp(){
