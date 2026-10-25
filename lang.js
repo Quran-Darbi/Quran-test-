@@ -189,6 +189,7 @@ ar: {
 
   // ===== المساعدة (صعب) =====
   'hint.btn':'💡 مساعدة',
+  'hint.btn_rec':'💡 مساعدة',
   'voice.record_btn':'🎤 تسجيل صوتي',
   'voice.text_btn':'⌨️ كتابة',
   'reminder.banner':'🌙 لم تبدأ وردك اليوم بعد — أكمل حفظك الآن',
@@ -519,6 +520,7 @@ en: {
 
   // ===== Hint (hard level) =====
   'hint.btn':'💡 Help',
+  'hint.btn_rec':'💡 Help',
   'voice.record_btn':'🎤 Voice recording',
   'voice.text_btn':'⌨️ Typing',
   'reminder.banner':'🌙 You haven’t started today’s portion yet — continue your memorization now',
@@ -844,6 +846,7 @@ fr: {
 
   // ===== Aide (niveau difficile) =====
   'hint.btn':'💡 Indice (les 3 premiers mots)',
+  'hint.btn_rec':'💡 Aide',
   'voice.record_btn':'🎤 Enregistrement vocal',
   'voice.text_btn':'⌨️ Écrire',
   'reminder.banner':'🌙 Vous n’avez pas encore commencé votre révision du jour — poursuivez votre mémorisation maintenant',
@@ -1169,6 +1172,7 @@ tr: {
 
   // ===== İpucu (zor seviye) =====
   'hint.btn':'💡 İpucu (ilk 3 kelime)',
+  'hint.btn_rec':'💡 İpucu',
   'voice.record_btn':'🎤 Sesli kayıt',
   'voice.text_btn':'⌨️ Yazarak',
   'reminder.banner':'🌙 Bugünkü çalışmanıza henüz başlamadınız — ezberinize şimdi devam edin',
@@ -1495,6 +1499,7 @@ de: {
 
   // ===== Hinweis (schweres Level) =====
   'hint.btn':'💡 Hinweis (erste 3 Wörter)',
+  'hint.btn_rec':'💡 Hinweis',
   'voice.record_btn':'🎤 Sprachaufnahme',
   'voice.text_btn':'⌨️ Tippen',
   'reminder.banner':'🌙 Du hast heute noch nicht angefangen — mach jetzt mit deinem Auswendiglernen weiter',
@@ -1820,6 +1825,7 @@ es: {
 
   // ===== Pista (nivel difícil) =====
   'hint.btn':'💡 Pista (primeras 3 palabras)',
+  'hint.btn_rec':'💡 Pista',
   'voice.record_btn':'🎤 Grabación de voz',
   'voice.text_btn':'⌨️ Escribir',
   'reminder.banner':'🌙 Aún no has empezado tu repaso de hoy — continúa tu memorización ahora',
@@ -2145,6 +2151,7 @@ fa: {
 
   // ===== راهنمایی (سطح دشوار) =====
   'hint.btn':'💡 راهنمایی (۳ کلمه‌ی اول)',
+  'hint.btn_rec':'💡 راهنمایی',
   'voice.record_btn':'🎤 ضبط صدا',
   'voice.text_btn':'⌨️ تایپ',
   'reminder.banner':'🌙 هنوز ورد امروز را شروع نکرده‌اید — همین حالا حفظ خود را ادامه دهید',

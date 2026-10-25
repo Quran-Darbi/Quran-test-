@@ -800,13 +800,13 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   </div>
 </div>
 <div class="rec-card" id="recCard">
-  <div class="rec-desc" data-i18n-html="recite.rec_desc_html">اضغط 🎤 وابدأ التلاوة من أي آية<br>توقف متى شئت — سنحدد موضعك تلقائياً<br>🟢 صح &nbsp;|&nbsp; 🔴 غلط &nbsp;|&nbsp; ➖ محذوف</div>
+  <div class="rec-desc" data-i18n-html="recite.rec_desc_html" style="display:none;">اضغط 🎤 وابدأ التلاوة من أي آية<br>توقف متى شئت — سنحدد موضعك تلقائياً<br>🟢 صح &nbsp;|&nbsp; 🔴 غلط &nbsp;|&nbsp; ➖ محذوف</div>
   <div class="retry-banner" id="retryBanner"></div>
   <div class="scope-switch" id="scopeSwitch"><button type="button" id="scopeFullBtn" onclick="setScope(true)"></button><button type="button" id="scopePartBtn" onclick="setScope(false)"></button></div>
   <div class="scope-hint" id="scopeHint"></div>
   <button class="rec-btn" id="recBtn" onclick="toggleRec()" data-i18n="recite.choose_surah_first">اختر سورة أولاً</button>
   <button class="reveal-btn" id="revealBtn" onclick="toggleReveal()" style="display:none;" data-i18n="recite.show_text_btn">📖 اعرض نص السورة</button>
-  <button class="reveal-btn" id="hintBtn" onclick="showHint()" style="display:none;" data-i18n="hint.btn">💡 مساعدة (أول 3 كلمات)</button>
+  <button class="reveal-btn" id="hintBtn" onclick="showHint()" style="display:none;" data-i18n="hint.btn_rec">💡 مساعدة</button>
   <div class="reveal-box" id="hintBox" style="display:none;"></div>
   <div class="reveal-box" id="revealBox" style="display:none;"></div>
   <div class="edit-tip" id="editTip"></div>
@@ -2160,7 +2160,7 @@ function applySurah(){
   document.getElementById('revealBtn').style.display='block';
   document.getElementById('hintBtn').style.display='block';
   document.getElementById('hintBtn').disabled=false;
-  document.getElementById('hintBtn').textContent=darbiT('hint.btn');
+  document.getElementById('hintBtn').textContent=darbiT('hint.btn_rec');
   document.getElementById('hintBox').style.display='none';
   clearAll();
 }
@@ -2265,7 +2265,7 @@ function _doHelp(){
   box.textContent=[_startCue].concat(helpWords).filter(Boolean).join(' ');
   box.style.display='block';
   const btn=document.getElementById('hintBtn');
-  btn.textContent=darbiT('hint.btn')+(helpWords.length?' ('+helpWords.length+')':'');
+  btn.textContent=darbiT('hint.btn_rec')+(helpWords.length?' ('+helpWords.length+')':'');
   _syncHelpBtn();
 }
 // بعد ظهور تلميح البداية يُعطَّل الزر حتى يقرأ المستخدم شيئًا (ويعود يعمل بمجرد وجود قراءة)
@@ -2280,7 +2280,7 @@ function _resetHelp(){
   helpIdx=[];helpWords=[];_startCue='';_startCueN=0;
   const box=document.getElementById('hintBox');if(box)box.style.display='none';
   const btn=document.getElementById('hintBtn');
-  if(btn){btn.disabled=false;btn.textContent=darbiT('hint.btn');}
+  if(btn){btn.disabled=false;btn.textContent=darbiT('hint.btn_rec');}
 }
 
 function toggleReveal(){
@@ -3832,7 +3832,7 @@ window.onDarbiLangChange = function(){
   }
   var hintBtn=document.getElementById('hintBtn');
   if(hintBtn && hintBtn.style.display!=='none' && !hintBtn.disabled){
-    hintBtn.textContent=darbiT('hint.btn');
+    hintBtn.textContent=darbiT('hint.btn_rec');
   }
   var transcriptBox=document.getElementById('transcriptBox');
   if(transcriptBox && !savedWords.length && !currentText){
