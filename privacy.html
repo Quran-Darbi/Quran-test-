@@ -302,6 +302,7 @@ if('serviceWorker' in navigator){
 .tools-lang-list button.lang-active .lang-check{visibility:visible;}
 #google_translate_element{display:none !important;}
 .goog-te-banner-frame.skiptranslate{display:none !important;}
+iframe.skiptranslate,.VIpgJd-ZVi9od-ORHb-OEVmcd{display:none !important;}
 .goog-te-gadget{height:0;overflow:hidden;}
 body{top:0 !important;}
 .fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
@@ -421,7 +422,14 @@ function langSelect(code){
   }
   location.reload();
 }
+function langApplyDir(){
+  var c=langCookie();var code='ar';
+  if(c){var parts=c.split('/');if(parts[2])code=parts[2];}
+  document.documentElement.setAttribute('dir',(code==='ar'||code==='fa')?'rtl':'ltr');
+}
 langApplyLabel();
+langApplyDir();
+window.addEventListener('load',langApplyDir);
 </script>
 </body>
 </html>
