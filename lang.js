@@ -86,6 +86,7 @@ ar: {
   'about.role_p1':'هذا الموقع أداة مساعدة لتثبيت حفظ القرآن ومتشابهاته، ولا يُغني عن التلقي من شيخ مُتقِن؛ فالتشكيل وأحكام التجويد تُؤخذ بالسماع والمشافهة.',
   'about.role_p2':'فليكن مُعِينًا لك على الإتقان، لا بديلًا عن القراءة على أهل الإتقان.',
   'home.footer_copy':'دربي لحفظ القرآن — جميع الحقوق محفوظة',
+  'home.privacy_link':"سياسة الخصوصية",
 
   // ===== نافذة الملاحظات =====
   'fdbk.title':'💬 شاركنا رأيك',
@@ -417,6 +418,7 @@ en: {
   'about.role_p1':'This site is a helping tool for consolidating your memorization of the Quran and its similar verses (mutashabihat). It is not a substitute for learning from a qualified teacher (shaykh): vocalization and the rules of tajweed are taken through listening and direct oral transmission.',
   'about.role_p2':'Let it be an aid toward mastery, not a replacement for reciting to those who have mastered it.',
   'home.footer_copy':'Darbi — Quran Memorization. All rights reserved',
+  'home.privacy_link':"Privacy Policy",
 
   // ===== Feedback modal =====
   'fdbk.title':'💬 Share your feedback',
@@ -743,6 +745,7 @@ fr: {
   'about.role_p1':'Ce site est un outil d’aide pour consolider la mémorisation du Coran et de ses versets similaires (mutashabihat). Il ne remplace pas l’apprentissage auprès d’un maître qualifié (cheikh) : la vocalisation et les règles du tajwid s’acquièrent par l’écoute et la transmission orale.',
   'about.role_p2':'Qu’il soit pour vous un soutien vers la maîtrise, et non un substitut à la récitation auprès de ceux qui la maîtrisent.',
   'home.footer_copy':'Darbi — Mémorisation du Coran. Tous droits réservés',
+  'home.privacy_link':"Politique de confidentialité",
 
   // ===== Fenêtre de suggestions =====
   'fdbk.title':'💬 Partagez votre avis',
@@ -1069,6 +1072,7 @@ tr: {
   'about.role_p1':'Bu site, Kur’an’ın ve müteşabih ayetlerinin ezberini pekiştirmeye yardımcı bir araçtır. Ehil bir hocanın (şeyhin) yanında öğrenmenin yerini tutmaz; harekeler ve tecvid kuralları dinleyerek ve yüz yüze aktarımla öğrenilir.',
   'about.role_p2':'Bu site ustalığa ulaşmanızda size yardımcı olsun; ehil kişilere okumanın yerine geçmesin.',
   'home.footer_copy':'Darbi — Kur’an Ezberleme. Tüm hakları saklıdır',
+  'home.privacy_link':"Gizlilik Politikası",
 
   // ===== Geri bildirim penceresi =====
   'fdbk.title':'💬 Görüşünü paylaş',
@@ -1396,6 +1400,7 @@ de: {
   'about.role_p1':'Diese Website ist ein Hilfsmittel, um das Auswendiglernen des Korans und seiner ähnlichen Verse (Mutaschabihat) zu festigen. Sie ersetzt nicht das Lernen bei einem qualifizierten Lehrer (Scheich): Vokalisierung und Tadschwid-Regeln werden durch Zuhören und mündliche Überlieferung erlernt.',
   'about.role_p2':'Sie soll eine Hilfe auf dem Weg zur Meisterschaft sein, kein Ersatz für das Rezitieren bei Kundigen.',
   'home.footer_copy':'Darbi — Koran-Auswendiglernen. Alle Rechte vorbehalten',
+  'home.privacy_link':"Datenschutzerklärung",
 
   // ===== Feedback-Modal =====
   'fdbk.title':'💬 Teile dein Feedback',
@@ -1722,6 +1727,7 @@ es: {
   'about.role_p1':'Este sitio es una herramienta de apoyo para consolidar la memorización del Corán y de sus versículos similares (mutashabihat). No sustituye el aprendizaje con un maestro cualificado (sheij): la vocalización y las reglas del tayuid se adquieren escuchando y por transmisión oral.',
   'about.role_p2':'Que sea una ayuda hacia la maestría, y no un sustituto de recitar ante quienes la dominan.',
   'home.footer_copy':'Darbi — Memorización del Corán. Todos los derechos reservados',
+  'home.privacy_link':"Política de privacidad",
 
   // ===== Modal de comentarios =====
   'fdbk.title':'💬 Comparte tu opinión',
@@ -2048,6 +2054,7 @@ fa: {
   'about.role_p1':'این سایت ابزاری کمکی برای تثبیت حفظ قرآن و آیات متشابه آن است و جای آموختن از استاد ماهر (شیخ) را نمی‌گیرد؛ حرکات و احکام تجوید با شنیدن و مشافهه آموخته می‌شود.',
   'about.role_p2':'باشد که یاری‌رسان شما در اتقان باشد، نه جایگزین قرائت نزد اهل اتقان.',
   'home.footer_copy':'دربی — حفظ قرآن. تمامی حقوق محفوظ است',
+  'home.privacy_link':"سیاست حریم خصوصی",
 
   // ===== پنجره بازخورد =====
   'fdbk.title':'💬 بازخورد خود را به اشتراک بگذارید',
