@@ -1,1 +1,11 @@
-
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.qurandarbi.app",
+      "sha256_cert_fingerprints":
+        ["7B:04:92:8C:9B:44:D7:52:33:67:F3:42:27:88:18:18:13:71:CB:7C:20:23:56:A0:4C:CB:E4:22:92:F6:1C:BC"]
+    }
+  }
+]
