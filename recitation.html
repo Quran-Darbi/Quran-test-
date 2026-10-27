@@ -670,6 +670,30 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <option value="alfurqan_p359">ص359 — آيات 1–2</option>
       <option value="alfurqan_p360">ص360 — آيات 3–11</option>
       <option value="alfurqan_p361">ص361 — آيات 12–20</option>
+      <option value="alfurqan_p362">ص362 — آيات 21–32</option>
+      <option value="alfurqan_p363">ص363 — آيات 33–43</option>
+      <option value="alfurqan_p364">ص364 — آيات 44–55</option>
+      <option value="alfurqan_p365">ص365 — آيات 56–67</option>
+      <option value="alfurqan_p366">ص366 — آيات 68–77</option>
+    </optgroup>
+    <optgroup label="سورة الشعراء">
+      <option value="ashshuara_p367">ص367 — آيات 1–19</option>
+      <option value="ashshuara_p368">ص368 — آيات 20–39</option>
+      <option value="ashshuara_p369">ص369 — آيات 40–60</option>
+      <option value="ashshuara_p370">ص370 — آيات 61–83</option>
+      <option value="ashshuara_p371">ص371 — آيات 84–111</option>
+      <option value="ashshuara_p372">ص372 — آيات 112–136</option>
+      <option value="ashshuara_p373">ص373 — آيات 137–159</option>
+      <option value="ashshuara_p374">ص374 — آيات 160–183</option>
+      <option value="ashshuara_p375">ص375 — آيات 184–206</option>
+      <option value="ashshuara_p376">ص376 — آيات 207–227</option>
+    </optgroup>
+    <optgroup label="سورة النمل">
+      <option value="annaml_p377">ص377 — آيات 1–13</option>
+      <option value="annaml_p378">ص378 — آيات 14–22</option>
+      <option value="annaml_p379">ص379 — آيات 23–35</option>
+      <option value="annaml_p380">ص380 — آيات 36–44</option>
+      <option value="annaml_p381">ص381 — آيات 45–55</option>
     </optgroup>
     <optgroup label="سورة يس">
       <option value="yaseen_p440">ص440 — آيات 1–12</option>
@@ -1347,6 +1371,26 @@ const SURAH_NAMES = {
   alfurqan_p359:'الفرقان ص359 — آيات 1–2',
   alfurqan_p360:'الفرقان ص360 — آيات 3–11',
   alfurqan_p361:'الفرقان ص361 — آيات 12–20',
+  alfurqan_p362:'الفرقان ص362 — آيات 21–32',
+  alfurqan_p363:'الفرقان ص363 — آيات 33–43',
+  alfurqan_p364:'الفرقان ص364 — آيات 44–55',
+  alfurqan_p365:'الفرقان ص365 — آيات 56–67',
+  alfurqan_p366:'الفرقان ص366 — آيات 68–77',
+  ashshuara_p367:'الشعراء ص367 — آيات 1–19',
+  ashshuara_p368:'الشعراء ص368 — آيات 20–39',
+  ashshuara_p369:'الشعراء ص369 — آيات 40–60',
+  ashshuara_p370:'الشعراء ص370 — آيات 61–83',
+  ashshuara_p371:'الشعراء ص371 — آيات 84–111',
+  ashshuara_p372:'الشعراء ص372 — آيات 112–136',
+  ashshuara_p373:'الشعراء ص373 — آيات 137–159',
+  ashshuara_p374:'الشعراء ص374 — آيات 160–183',
+  ashshuara_p375:'الشعراء ص375 — آيات 184–206',
+  ashshuara_p376:'الشعراء ص376 — آيات 207–227',
+  annaml_p377:'النمل ص377 — آيات 1–13',
+  annaml_p378:'النمل ص378 — آيات 14–22',
+  annaml_p379:'النمل ص379 — آيات 23–35',
+  annaml_p380:'النمل ص380 — آيات 36–44',
+  annaml_p381:'النمل ص381 — آيات 45–55',
   yaseen_p440:'يس ص440 — آيات 1–12',
   yaseen_p441:'يس ص441 — آيات 13–27',
   yaseen_p442:'يس ص442 — آيات 28–40',
@@ -2019,6 +2063,26 @@ const AYAH_START={
   alfurqan_p359:1,
   alfurqan_p360:3,
   alfurqan_p361:12,
+  alfurqan_p362:21,
+  alfurqan_p363:33,
+  alfurqan_p364:44,
+  alfurqan_p365:56,
+  alfurqan_p366:68,
+  ashshuara_p367:1,
+  ashshuara_p368:20,
+  ashshuara_p369:40,
+  ashshuara_p370:61,
+  ashshuara_p371:84,
+  ashshuara_p372:112,
+  ashshuara_p373:137,
+  ashshuara_p374:160,
+  ashshuara_p375:184,
+  ashshuara_p376:207,
+  annaml_p377:1,
+  annaml_p378:14,
+  annaml_p379:23,
+  annaml_p380:36,
+  annaml_p381:45,
   yaseen_p440:1,
   yaseen_p441:13,
   yaseen_p442:28,
@@ -2250,7 +2314,7 @@ const RECITE_SEQUENCE=['fatiha',
 'alhijr_p262','alhijr_p263','alhijr_p264','alhijr_p265','alhijr_p266','alhijr_p267','annahl_p267','annahl_p268','annahl_p269','annahl_p270','annahl_p271','annahl_p272','annahl_p273','annahl_p274','annahl_p275','annahl_p276','annahl_p277','annahl_p278','annahl_p279','annahl_p280','annahl_p281',
 'maryam_p305','maryam_p306','maryam_p307','maryam_p308','maryam_p309','maryam_p310','maryam_p311','maryam_p312',
 'taha_p312','taha_p313','taha_p314','taha_p315','taha_p316','taha_p317','taha_p318','taha_p319','taha_p320','taha_p321',
-'alanbiya_p322','alanbiya_p323','alanbiya_p324','alanbiya_p325','alanbiya_p326','alanbiya_p327','alanbiya_p328','alanbiya_p329','alanbiya_p330','alanbiya_p331','alhajj_p332','alhajj_p333','alhajj_p334','alhajj_p335','alhajj_p336','alhajj_p337','alhajj_p338','alhajj_p339','alhajj_p340','alhajj_p341','almuminun_p342','almuminun_p343','almuminun_p344','almuminun_p345','almuminun_p346','almuminun_p347','almuminun_p348','almuminun_p349','annur_p350','annur_p351','annur_p352','annur_p353','annur_p354','annur_p355','annur_p356','annur_p357','annur_p358','annur_p359','alfurqan_p359','alfurqan_p360','alfurqan_p361',
+'alanbiya_p322','alanbiya_p323','alanbiya_p324','alanbiya_p325','alanbiya_p326','alanbiya_p327','alanbiya_p328','alanbiya_p329','alanbiya_p330','alanbiya_p331','alhajj_p332','alhajj_p333','alhajj_p334','alhajj_p335','alhajj_p336','alhajj_p337','alhajj_p338','alhajj_p339','alhajj_p340','alhajj_p341','almuminun_p342','almuminun_p343','almuminun_p344','almuminun_p345','almuminun_p346','almuminun_p347','almuminun_p348','almuminun_p349','annur_p350','annur_p351','annur_p352','annur_p353','annur_p354','annur_p355','annur_p356','annur_p357','annur_p358','annur_p359','alfurqan_p359','alfurqan_p360','alfurqan_p361','alfurqan_p362','alfurqan_p363','alfurqan_p364','alfurqan_p365','alfurqan_p366','ashshuara_p367','ashshuara_p368','ashshuara_p369','ashshuara_p370','ashshuara_p371','ashshuara_p372','ashshuara_p373','ashshuara_p374','ashshuara_p375','ashshuara_p376','annaml_p377','annaml_p378','annaml_p379','annaml_p380','annaml_p381',
 'yaseen_p440','yaseen_p441','yaseen_p442','yaseen_p443','yaseen_p444','yaseen_p445',
 'fussilat_p477','fussilat_p478','fussilat_p479','fussilat_p480','fussilat_p481','fussilat_p482',
 'alahqaf_p502','alahqaf_p503','alahqaf_p504','alahqaf_p505','alahqaf_p506','muhammad_p507','muhammad_p508','muhammad_p509','muhammad_p510','alfath_p511','alfath_p512','alfath_p513','alfath_p514','alfath_p515','alhujurat_p515','alhujurat_p516','alhujurat_p517','qaf_p518','qaf_p519','qaf_p520','azzariyat_p520','azzariyat_p521','azzariyat_p522','azzariyat_p523',

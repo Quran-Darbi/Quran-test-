@@ -2999,6 +2999,118 @@
     "stem": "alfurqan_p361",
     "name": "الفرقان ص 361",
     "range": "12–20"
+   },
+   {
+    "stem": "alfurqan_p362",
+    "name": "الفرقان ص 362",
+    "range": "21–32"
+   },
+   {
+    "stem": "alfurqan_p363",
+    "name": "الفرقان ص 363",
+    "range": "33–43"
+   },
+   {
+    "stem": "alfurqan_p364",
+    "name": "الفرقان ص 364",
+    "range": "44–55"
+   },
+   {
+    "stem": "alfurqan_p365",
+    "name": "الفرقان ص 365",
+    "range": "56–67"
+   },
+   {
+    "stem": "alfurqan_p366",
+    "name": "الفرقان ص 366",
+    "range": "68–77"
+   }
+  ]
+ },
+ {
+  "label": "سورة الشعراء",
+  "juz": 19,
+  "pages": [
+   {
+    "stem": "ashshuara_p367",
+    "name": "الشعراء ص 367",
+    "range": "1–19"
+   },
+   {
+    "stem": "ashshuara_p368",
+    "name": "الشعراء ص 368",
+    "range": "20–39"
+   },
+   {
+    "stem": "ashshuara_p369",
+    "name": "الشعراء ص 369",
+    "range": "40–60"
+   },
+   {
+    "stem": "ashshuara_p370",
+    "name": "الشعراء ص 370",
+    "range": "61–83"
+   },
+   {
+    "stem": "ashshuara_p371",
+    "name": "الشعراء ص 371",
+    "range": "84–111"
+   },
+   {
+    "stem": "ashshuara_p372",
+    "name": "الشعراء ص 372",
+    "range": "112–136"
+   },
+   {
+    "stem": "ashshuara_p373",
+    "name": "الشعراء ص 373",
+    "range": "137–159"
+   },
+   {
+    "stem": "ashshuara_p374",
+    "name": "الشعراء ص 374",
+    "range": "160–183"
+   },
+   {
+    "stem": "ashshuara_p375",
+    "name": "الشعراء ص 375",
+    "range": "184–206"
+   },
+   {
+    "stem": "ashshuara_p376",
+    "name": "الشعراء ص 376",
+    "range": "207–227"
+   }
+  ]
+ },
+ {
+  "label": "سورة النمل",
+  "juz": 19,
+  "pages": [
+   {
+    "stem": "annaml_p377",
+    "name": "النمل ص 377",
+    "range": "1–13"
+   },
+   {
+    "stem": "annaml_p378",
+    "name": "النمل ص 378",
+    "range": "14–22"
+   },
+   {
+    "stem": "annaml_p379",
+    "name": "النمل ص 379",
+    "range": "23–35"
+   },
+   {
+    "stem": "annaml_p380",
+    "name": "النمل ص 380",
+    "range": "36–44"
+   },
+   {
+    "stem": "annaml_p381",
+    "name": "النمل ص 381",
+    "range": "45–55"
    }
   ]
  }
