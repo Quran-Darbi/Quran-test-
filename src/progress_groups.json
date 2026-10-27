@@ -2878,5 +2878,128 @@
     "range": "56–64"
    }
   ]
+ },
+ {
+  "label": "سورة المؤمنون",
+  "juz": 18,
+  "pages": [
+   {
+    "stem": "almuminun_p342",
+    "name": "المؤمنون ص 342",
+    "range": "1–17"
+   },
+   {
+    "stem": "almuminun_p343",
+    "name": "المؤمنون ص 343",
+    "range": "18–27"
+   },
+   {
+    "stem": "almuminun_p344",
+    "name": "المؤمنون ص 344",
+    "range": "28–42"
+   },
+   {
+    "stem": "almuminun_p345",
+    "name": "المؤمنون ص 345",
+    "range": "43–59"
+   },
+   {
+    "stem": "almuminun_p346",
+    "name": "المؤمنون ص 346",
+    "range": "60–74"
+   },
+   {
+    "stem": "almuminun_p347",
+    "name": "المؤمنون ص 347",
+    "range": "75–89"
+   },
+   {
+    "stem": "almuminun_p348",
+    "name": "المؤمنون ص 348",
+    "range": "90–104"
+   },
+   {
+    "stem": "almuminun_p349",
+    "name": "المؤمنون ص 349",
+    "range": "105–118"
+   }
+  ]
+ },
+ {
+  "label": "سورة النور",
+  "juz": 18,
+  "pages": [
+   {
+    "stem": "annur_p350",
+    "name": "النور ص 350",
+    "range": "1–10"
+   },
+   {
+    "stem": "annur_p351",
+    "name": "النور ص 351",
+    "range": "11–20"
+   },
+   {
+    "stem": "annur_p352",
+    "name": "النور ص 352",
+    "range": "21–27"
+   },
+   {
+    "stem": "annur_p353",
+    "name": "النور ص 353",
+    "range": "28–31"
+   },
+   {
+    "stem": "annur_p354",
+    "name": "النور ص 354",
+    "range": "32–36"
+   },
+   {
+    "stem": "annur_p355",
+    "name": "النور ص 355",
+    "range": "37–43"
+   },
+   {
+    "stem": "annur_p356",
+    "name": "النور ص 356",
+    "range": "44–53"
+   },
+   {
+    "stem": "annur_p357",
+    "name": "النور ص 357",
+    "range": "54–58"
+   },
+   {
+    "stem": "annur_p358",
+    "name": "النور ص 358",
+    "range": "59–61"
+   },
+   {
+    "stem": "annur_p359",
+    "name": "النور ص 359",
+    "range": "62–64"
+   }
+  ]
+ },
+ {
+  "label": "سورة الفرقان",
+  "juz": 18,
+  "pages": [
+   {
+    "stem": "alfurqan_p359",
+    "name": "الفرقان ص 359",
+    "range": "1–2"
+   },
+   {
+    "stem": "alfurqan_p360",
+    "name": "الفرقان ص 360",
+    "range": "3–11"
+   },
+   {
+    "stem": "alfurqan_p361",
+    "name": "الفرقان ص 361",
+    "range": "12–20"
+   }
+  ]
  }
 ]

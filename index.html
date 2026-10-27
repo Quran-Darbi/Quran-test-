@@ -754,6 +754,36 @@ const hajjPages=[
   ['alhajj_p341.html','ص 341','73–78'],
 ];
 
+const muminunPages=[
+  ['almuminun_p342.html','ص 342','1–17'],
+  ['almuminun_p343.html','ص 343','18–27'],
+  ['almuminun_p344.html','ص 344','28–42'],
+  ['almuminun_p345.html','ص 345','43–59'],
+  ['almuminun_p346.html','ص 346','60–74'],
+  ['almuminun_p347.html','ص 347','75–89'],
+  ['almuminun_p348.html','ص 348','90–104'],
+  ['almuminun_p349.html','ص 349','105–118'],
+];
+
+const nurPages=[
+  ['annur_p350.html','ص 350','1–10'],
+  ['annur_p351.html','ص 351','11–20'],
+  ['annur_p352.html','ص 352','21–27'],
+  ['annur_p353.html','ص 353','28–31'],
+  ['annur_p354.html','ص 354','32–36'],
+  ['annur_p355.html','ص 355','37–43'],
+  ['annur_p356.html','ص 356','44–53'],
+  ['annur_p357.html','ص 357','54–58'],
+  ['annur_p358.html','ص 358','59–61'],
+  ['annur_p359.html','ص 359','62–64'],
+];
+
+const furqanPages=[
+  ['alfurqan_p359.html','ص 359','1–2'],
+  ['alfurqan_p360.html','ص 360','3–11'],
+  ['alfurqan_p361.html','ص 361','12–20'],
+];
+
 const yaseenPages=[
   ['yaseen_p440.html','ص 440','1–12'],['yaseen_p441.html','ص 441','13–27'],
   ['yaseen_p442.html','ص 442','28–40'],['yaseen_p443.html','ص 443','41–54'],
@@ -1012,9 +1042,9 @@ const JUZ_GROUPS = {
         { kind:'full', arr:hajjPages, name:'الحج', surah:'الحج' }
       ] },
   18:{ title:'المؤمنون، النور، الفرقان', groups:[
-        { kind:'soon', name:'المؤمنون', page:342 },
-        { kind:'soon', name:'النور', page:350 },
-        { kind:'soon', name:'الفرقان', page:359 }
+        { kind:'full', arr:muminunPages, name:'المؤمنون', surah:'المؤمنون' },
+        { kind:'full', arr:nurPages, name:'النور', surah:'النور' },
+        { kind:'range', arr:furqanPages, from:0, to:3, name:'سورة الفرقان (1–20)', surah:'الفرقان', note:'سورة الفرقان تكمل في الجزء 19 ←', noteTarget:19 }
       ] },
   19:{ title:'الفرقان، الشعراء، النمل', groups:[
         { kind:'soon', name:'الفرقان (تابع)', page:362 },
