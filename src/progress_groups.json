@@ -2766,5 +2766,117 @@
     "range": "119–128"
    }
   ]
+ },
+ {
+  "label": "سورة الأنبياء",
+  "juz": 17,
+  "pages": [
+   {
+    "stem": "alanbiya_p322",
+    "name": "الأنبياء ص 322",
+    "range": "1–10"
+   },
+   {
+    "stem": "alanbiya_p323",
+    "name": "الأنبياء ص 323",
+    "range": "11–24"
+   },
+   {
+    "stem": "alanbiya_p324",
+    "name": "الأنبياء ص 324",
+    "range": "25–35"
+   },
+   {
+    "stem": "alanbiya_p327",
+    "name": "الأنبياء ص 327",
+    "range": "58–72"
+   },
+   {
+    "stem": "alanbiya_p328",
+    "name": "الأنبياء ص 328",
+    "range": "73–81"
+   },
+   {
+    "stem": "alanbiya_p329",
+    "name": "الأنبياء ص 329",
+    "range": "82–90"
+   },
+   {
+    "stem": "alanbiya_p331",
+    "name": "الأنبياء ص 331",
+    "range": "102–112"
+   },
+   {
+    "stem": "alanbiya_p325",
+    "name": "الأنبياء ص 325",
+    "range": "36–44"
+   },
+   {
+    "stem": "alanbiya_p326",
+    "name": "الأنبياء ص 326",
+    "range": "45–57"
+   },
+   {
+    "stem": "alanbiya_p330",
+    "name": "الأنبياء ص 330",
+    "range": "91–101"
+   }
+  ]
+ },
+ {
+  "label": "سورة الحج",
+  "juz": 17,
+  "pages": [
+   {
+    "stem": "alhajj_p332",
+    "name": "الحج ص 332",
+    "range": "1–5"
+   },
+   {
+    "stem": "alhajj_p334",
+    "name": "الحج ص 334",
+    "range": "16–23"
+   },
+   {
+    "stem": "alhajj_p335",
+    "name": "الحج ص 335",
+    "range": "24–30"
+   },
+   {
+    "stem": "alhajj_p338",
+    "name": "الحج ص 338",
+    "range": "47–55"
+   },
+   {
+    "stem": "alhajj_p340",
+    "name": "الحج ص 340",
+    "range": "65–72"
+   },
+   {
+    "stem": "alhajj_p341",
+    "name": "الحج ص 341",
+    "range": "73–78"
+   },
+   {
+    "stem": "alhajj_p333",
+    "name": "الحج ص 333",
+    "range": "6–15"
+   },
+   {
+    "stem": "alhajj_p336",
+    "name": "الحج ص 336",
+    "range": "31–38"
+   },
+   {
+    "stem": "alhajj_p337",
+    "name": "الحج ص 337",
+    "range": "39–46"
+   },
+   {
+    "stem": "alhajj_p339",
+    "name": "الحج ص 339",
+    "range": "56–64"
+   }
+  ]
  }
 ]

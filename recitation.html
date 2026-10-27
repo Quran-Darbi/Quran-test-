@@ -620,6 +620,30 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <option value="taha_p320">ص320 — آيات 114–125</option>
       <option value="taha_p321">ص321 — آيات 126–135</option>
     </optgroup>
+    <optgroup label="سورة الأنبياء">
+      <option value="alanbiya_p322">ص322 — آيات 1–10</option>
+      <option value="alanbiya_p323">ص323 — آيات 11–24</option>
+      <option value="alanbiya_p324">ص324 — آيات 25–35</option>
+      <option value="alanbiya_p325">ص325 — آيات 36–44</option>
+      <option value="alanbiya_p326">ص326 — آيات 45–57</option>
+      <option value="alanbiya_p327">ص327 — آيات 58–72</option>
+      <option value="alanbiya_p328">ص328 — آيات 73–81</option>
+      <option value="alanbiya_p329">ص329 — آيات 82–90</option>
+      <option value="alanbiya_p330">ص330 — آيات 91–101</option>
+      <option value="alanbiya_p331">ص331 — آيات 102–112</option>
+    </optgroup>
+    <optgroup label="سورة الحج">
+      <option value="alhajj_p332">ص332 — آيات 1–5</option>
+      <option value="alhajj_p333">ص333 — آيات 6–15</option>
+      <option value="alhajj_p334">ص334 — آيات 16–23</option>
+      <option value="alhajj_p335">ص335 — آيات 24–30</option>
+      <option value="alhajj_p336">ص336 — آيات 31–38</option>
+      <option value="alhajj_p337">ص337 — آيات 39–46</option>
+      <option value="alhajj_p338">ص338 — آيات 47–55</option>
+      <option value="alhajj_p339">ص339 — آيات 56–64</option>
+      <option value="alhajj_p340">ص340 — آيات 65–72</option>
+      <option value="alhajj_p341">ص341 — آيات 73–78</option>
+    </optgroup>
     <optgroup label="سورة يس">
       <option value="yaseen_p440">ص440 — آيات 1–12</option>
       <option value="yaseen_p441">ص441 — آيات 13–27</option>
@@ -1255,6 +1279,26 @@ const SURAH_NAMES = {
   taha_p319:'طه ص319 — آيات 99–113',
   taha_p320:'طه ص320 — آيات 114–125',
   taha_p321:'طه ص321 — آيات 126–135',
+  alanbiya_p322:'الأنبياء ص322 — آيات 1–10',
+  alanbiya_p323:'الأنبياء ص323 — آيات 11–24',
+  alanbiya_p324:'الأنبياء ص324 — آيات 25–35',
+  alanbiya_p325:'الأنبياء ص325 — آيات 36–44',
+  alanbiya_p326:'الأنبياء ص326 — آيات 45–57',
+  alanbiya_p327:'الأنبياء ص327 — آيات 58–72',
+  alanbiya_p328:'الأنبياء ص328 — آيات 73–81',
+  alanbiya_p329:'الأنبياء ص329 — آيات 82–90',
+  alanbiya_p330:'الأنبياء ص330 — آيات 91–101',
+  alanbiya_p331:'الأنبياء ص331 — آيات 102–112',
+  alhajj_p332:'الحج ص332 — آيات 1–5',
+  alhajj_p333:'الحج ص333 — آيات 6–15',
+  alhajj_p334:'الحج ص334 — آيات 16–23',
+  alhajj_p335:'الحج ص335 — آيات 24–30',
+  alhajj_p336:'الحج ص336 — آيات 31–38',
+  alhajj_p337:'الحج ص337 — آيات 39–46',
+  alhajj_p338:'الحج ص338 — آيات 47–55',
+  alhajj_p339:'الحج ص339 — آيات 56–64',
+  alhajj_p340:'الحج ص340 — آيات 65–72',
+  alhajj_p341:'الحج ص341 — آيات 73–78',
   yaseen_p440:'يس ص440 — آيات 1–12',
   yaseen_p441:'يس ص441 — آيات 13–27',
   yaseen_p442:'يس ص442 — آيات 28–40',
@@ -1886,6 +1930,26 @@ const AYAH_START={
   taha_p319:99,
   taha_p320:114,
   taha_p321:126,
+  alanbiya_p322:1,
+  alanbiya_p323:11,
+  alanbiya_p324:25,
+  alanbiya_p325:36,
+  alanbiya_p326:45,
+  alanbiya_p327:58,
+  alanbiya_p328:73,
+  alanbiya_p329:82,
+  alanbiya_p330:91,
+  alanbiya_p331:102,
+  alhajj_p332:1,
+  alhajj_p333:6,
+  alhajj_p334:16,
+  alhajj_p335:24,
+  alhajj_p336:31,
+  alhajj_p337:39,
+  alhajj_p338:47,
+  alhajj_p339:56,
+  alhajj_p340:65,
+  alhajj_p341:73,
   yaseen_p440:1,
   yaseen_p441:13,
   yaseen_p442:28,
@@ -2117,6 +2181,7 @@ const RECITE_SEQUENCE=['fatiha',
 'alhijr_p262','alhijr_p263','alhijr_p264','alhijr_p265','alhijr_p266','alhijr_p267','annahl_p267','annahl_p268','annahl_p269','annahl_p270','annahl_p271','annahl_p272','annahl_p273','annahl_p274','annahl_p275','annahl_p276','annahl_p277','annahl_p278','annahl_p279','annahl_p280','annahl_p281',
 'maryam_p305','maryam_p306','maryam_p307','maryam_p308','maryam_p309','maryam_p310','maryam_p311','maryam_p312',
 'taha_p312','taha_p313','taha_p314','taha_p315','taha_p316','taha_p317','taha_p318','taha_p319','taha_p320','taha_p321',
+'alanbiya_p322','alanbiya_p323','alanbiya_p324','alanbiya_p325','alanbiya_p326','alanbiya_p327','alanbiya_p328','alanbiya_p329','alanbiya_p330','alanbiya_p331','alhajj_p332','alhajj_p333','alhajj_p334','alhajj_p335','alhajj_p336','alhajj_p337','alhajj_p338','alhajj_p339','alhajj_p340','alhajj_p341',
 'yaseen_p440','yaseen_p441','yaseen_p442','yaseen_p443','yaseen_p444','yaseen_p445',
 'fussilat_p477','fussilat_p478','fussilat_p479','fussilat_p480','fussilat_p481','fussilat_p482',
 'alahqaf_p502','alahqaf_p503','alahqaf_p504','alahqaf_p505','alahqaf_p506','muhammad_p507','muhammad_p508','muhammad_p509','muhammad_p510','alfath_p511','alfath_p512','alfath_p513','alfath_p514','alfath_p515','alhujurat_p515','alhujurat_p516','alhujurat_p517','qaf_p518','qaf_p519','qaf_p520','azzariyat_p520','azzariyat_p521','azzariyat_p522','azzariyat_p523',
