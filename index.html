@@ -105,6 +105,10 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .hero-start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.25);}
 .hero-types{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 5px;margin:0 -14px 20px;padding:0;}
 .hero-type{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.28);color:#fff;border-radius:14px;padding:2px 8px;font-size:clamp(0.62rem,3.3vw,0.8rem);line-height:1.7;white-space:nowrap;}
+.hero-continue{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.6);color:#fff;border-radius:18px;padding:7px 20px;min-height:36px;font-size:0.88rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:background .2s;}
+.hero-continue:hover{background:rgba(255,255,255,0.28);}
+.hero-continue::after{content:"→";}
+html[dir="rtl"] .hero-continue::after{content:"←";}
 #main{scroll-margin-top:130px;}
 .hero-start-btn::after{content:"←";display:inline-block;font-size:1.05rem;opacity:.75;}
 .hero-inner .ayah-banner{margin-top:24px;margin-bottom:0;}
@@ -328,7 +332,7 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <span class="hero-type">🎤 <span data-i18n="home.chip_voice">صوتي</span></span>
     </div>
     <div class="hero-btn-row">
-      <a href="alfatiha.html" class="hero-start-btn" data-i18n="home.cta_start" onclick="return darbiStartQuizzes();">🌱 ابدأ الاختبارات</a>
+      <a href="alfatiha.html" class="hero-start-btn" data-i18n="home.cta_start">🌱 ابدأ الاختبارات</a>
       <a href="recitation.html" class="hero-rec-btn" data-i18n="home.recite_btn">🎤 اختبر حفظك</a>
       <a href="progress.html" class="hero-progress-btn">
         <span data-i18n="home.progress_btn">📊 تقدّمي</span>
@@ -346,6 +350,7 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       </div>
       <div style="font-size:0.78rem;color:rgba(255,255,255,0.9);" id="hero-progress-text"></div>
       <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:4px;" id="hero-last-visited"></div>
+      <a class="hero-continue" id="hero-continue" href="alfatiha.html" style="display:none" data-i18n="home.continue_btn">تابع من حيث توقفت</a>
     </div>
     <div class="ayah-banner">
       <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
@@ -405,25 +410,6 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   <div class="footer-copy" style="margin-top:6px"><a href="privacy.html" data-i18n="home.privacy_link" style="color:inherit;text-decoration:underline">سياسة الخصوصية</a></div>
 </footer>
 
-<script>
-// زر «ابدأ الاختبارات»: للزائر الجديد يفتح الفاتحة، وللعائد يفتح آخر صفحة زارها
-function darbiStartQuizzes(){
-  var target='alfatiha.html';
-  try{
-    var all=JSON.parse(localStorage.getItem('darbi_progress')||'{}'),lastKey=null,lastTime=0;
-    Object.keys(all).forEach(function(k){
-      var t=all[k]&&all[k].lastVisited?new Date(all[k].lastVisited).getTime():0;
-      if(t>lastTime){lastTime=t;lastKey=k;}
-    });
-    if(lastKey){
-      var card=document.querySelector('a.quiz-card[data-key="'+lastKey+'"]');
-      if(card&&card.getAttribute('href'))target=card.getAttribute('href');
-    }
-  }catch(e){}
-  location.href=target;
-  return false;
-}
-</script>
 <script>
 const baqaraPages=[
   ['albaqara_p2.html','ص 2','1–5'],['albaqara_p3.html','ص 3','6–16'],
@@ -1456,6 +1442,12 @@ function renderDarbiProgress(){
     });
     const lv=document.getElementById('hero-last-visited');
     if(lv&&lastKey)lv.textContent=darbiT('home.hero_last_visited',{name:(nameByKey[lastKey]||lastKey)});
+    const cont=document.getElementById('hero-continue');
+    if(cont&&lastKey){
+      const card=document.querySelector('a.quiz-card[data-key="'+lastKey+'"]');
+      const href=card&&card.getAttribute('href');
+      if(href){cont.setAttribute('href',href);cont.style.display='inline-flex';}
+    }
   }
 }
 renderDarbiProgress();
