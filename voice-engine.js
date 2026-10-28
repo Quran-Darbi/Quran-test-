@@ -468,6 +468,13 @@ function sttPhrasePass(words,refWords,N){
       if(a===r1&&b===r2)continue;
       replaceSeq([a,b],k,2);
     }
+    // ألف المدّ (فتحة + ألف) قبل همزة الوصل تسقط نطقًا لالتقاء الساكنين، فتسقط معها الهمزة:
+    // لَوۡلَا ٱجۡتَبَيۡتَهَا ← «لولجتبيتها» (ملتصقة) أو «لو جتبيتها» (مقسومة)
+    if(r1.length>=3&&r1.charAt(r1.length-1)==='ا'&&/َا$/.test(refWords[k])){
+      const g2=r1.slice(0,-1)+r2.slice(1);
+      replaceSeq([g2],k,2);
+      replaceSeq([r1.slice(0,-1),r2.slice(1)],k,2);
+    }
   }
   // (ج) إدغام النون في الميم (مِن مَّآءࣲ): التعرف يسقط «من» فيسمع «ماء» فقط
   for(let k=0;k+1<refWords.length;k++){
