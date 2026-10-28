@@ -81,29 +81,38 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .rec-btn:hover{opacity:.88;}
 
 /* ===== HERO ===== */
-.hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:20px 20px 24px;text-align:center;position:relative;overflow:hidden;}
+.hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:28px 20px 12px;text-align:center;position:relative;overflow:hidden;}
 /* زخرفة دوائر خلفية */
 .hero::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);pointer-events:none;}
 .hero::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06);pointer-events:none;}
 /* زخرفة نقاط */
-.hero-stars-bottom{text-align:center;color:rgba(255,255,255,0.18);font-size:1.4rem;letter-spacing:6px;pointer-events:none;margin-top:20px;}
+.hero-stars-bottom{text-align:center;color:rgba(255,255,255,0.18);font-size:1.4rem;letter-spacing:6px;pointer-events:none;margin-top:4px;line-height:1.2;}
 .hero-inner{position:relative;z-index:1;}
-.hero-bismillah{font-family:'Scheherazade New',serif;font-size:1.1rem;color:rgba(255,255,255,0.75);margin-bottom:10px;letter-spacing:1px;}
-.hero-title{font-family:'Scheherazade New',serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:6px;}
-.hero-sub{text-wrap:balance;font-size:0.88rem;color:rgba(255,255,255,0.78);margin-bottom:12px;}
+.hero-bismillah{font-family:'Scheherazade New',serif;font-size:1.1rem;color:rgba(255,255,255,0.75);margin-bottom:16px;letter-spacing:1px;}
+.hero-title{font-family:'Scheherazade New',serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px;}
+.hero-sub{text-wrap:balance;font-size:1.02rem;line-height:1.7;color:rgba(255,255,255,0.78);margin-bottom:20px;}
 /* بطاقة الآية */
 .ayah-banner{display:inline-flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);border-radius:14px;padding:10px 18px;margin-bottom:12px;backdrop-filter:blur(6px);max-width:340px;}
 .ayah-text{font-family:'Scheherazade New',serif;font-size:1.05rem;color:#fff;line-height:1.9;margin-bottom:4px;}
 .ayah-ref{font-size:0.72rem;color:rgba(255,255,255,0.6);letter-spacing:.5px;}
 /* زر التلاوة */
-.hero-rec-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--green);border:none;border-radius:22px;padding:10px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.15);transition:transform .2s,box-shadow .2s;cursor:pointer;}
+.hero-rec-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;color:#1f5a2c;border:none;border-radius:22px;padding:8px 22px;font-size:0.9rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;box-shadow:0 3px 12px rgba(0,0,0,0.12);transition:transform .2s,box-shadow .2s;cursor:pointer;}
 .hero-rec-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.2);}
-.hero-btn-row{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.hero-rec-btn::after{content:"←";display:inline-block;font-size:1.05rem;opacity:.75;}
+.hero-btn-row{display:flex;flex-direction:column;align-items:center;gap:13px;}
+/* زر البدء الرئيسي + شارات أنواع الاختبارات */
+.hero-start-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;color:#1f5a2c;border:none;border-radius:22px;padding:14px 38px;font-size:1.22rem;min-width:240px;justify-content:center;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:transform .2s,box-shadow .2s;cursor:pointer;}
+.hero-start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.25);}
+.hero-types{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 5px;margin:0 -14px 20px;padding:0;}
+.hero-type{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.28);color:#fff;border-radius:14px;padding:2px 8px;font-size:clamp(0.62rem,3.3vw,0.8rem);line-height:1.7;white-space:nowrap;}
+#main{scroll-margin-top:130px;}
+.hero-start-btn::after{content:"←";display:inline-block;font-size:1.05rem;opacity:.75;}
+.hero-inner .ayah-banner{margin-top:24px;margin-bottom:0;}
 .hero-progress-btn{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:rgba(255,255,255,0.16);color:#fff;border:1.5px solid rgba(255,255,255,0.55);border-radius:18px;padding:9px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;cursor:pointer;}
 .hero-progress-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,0.26);}
 .hero-progress-btn-sub{font-size:0.68rem;font-weight:400;opacity:0.85;text-decoration:underline;}
 /* إحصائيات */
-.hero-stats{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.hero-stats{display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap;}
 .hstat{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:12px;padding:6px 14px;text-align:center;color:rgba(255,255,255,0.9);}
 .hstat b{display:block;font-size:1.05rem;color:#fff;}
 .hstat small{font-size:0.72rem;opacity:.8;}
@@ -311,11 +320,15 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
     <div class="hero-bismillah notranslate" translate="no">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     <div class="hero-title" data-i18n="home.title">دربي لحفظ القرآن</div>
     <div class="hero-sub" data-i18n="home.subtitle">اختبر حفظك صفحةً بصفحة — اختبارات تفاعلية لمراجعة الحفظ وتثبيته</div>
-    <div class="ayah-banner">
-      <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
-      <div class="ayah-ref notranslate" translate="no">سورة المزمل — آية 4</div>
+    <div class="hero-types" aria-label="أنواع الاختبارات">
+      <span class="hero-type">🌱 <span data-i18n="level.easy_name">سهل</span></span>
+      <span class="hero-type">🌿 <span data-i18n="level.medium_name">متوسط</span></span>
+      <span class="hero-type">🌳 <span data-i18n="level.hard_name">صعب</span></span>
+      <span class="hero-type">🔀 <span data-i18n="level.order_name">ترتيب</span></span>
+      <span class="hero-type">🎤 <span data-i18n="home.chip_voice">صوتي</span></span>
     </div>
     <div class="hero-btn-row">
+      <a href="alfatiha.html" class="hero-start-btn" data-i18n="home.cta_start" onclick="return darbiStartQuizzes();">🌱 ابدأ الاختبارات</a>
       <a href="recitation.html" class="hero-rec-btn" data-i18n="home.recite_btn">🎤 اختبر حفظك</a>
       <a href="progress.html" class="hero-progress-btn">
         <span data-i18n="home.progress_btn">📊 تقدّمي</span>
@@ -333,6 +346,10 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       </div>
       <div style="font-size:0.78rem;color:rgba(255,255,255,0.9);" id="hero-progress-text"></div>
       <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:4px;" id="hero-last-visited"></div>
+    </div>
+    <div class="ayah-banner">
+      <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
+      <div class="ayah-ref notranslate" translate="no">سورة المزمل — آية 4</div>
     </div>
     <div class="hero-stars-bottom">✦ ✦ ✦</div>
   </div>
@@ -388,6 +405,25 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   <div class="footer-copy" style="margin-top:6px"><a href="privacy.html" data-i18n="home.privacy_link" style="color:inherit;text-decoration:underline">سياسة الخصوصية</a></div>
 </footer>
 
+<script>
+// زر «ابدأ الاختبارات»: للزائر الجديد يفتح الفاتحة، وللعائد يفتح آخر صفحة زارها
+function darbiStartQuizzes(){
+  var target='alfatiha.html';
+  try{
+    var all=JSON.parse(localStorage.getItem('darbi_progress')||'{}'),lastKey=null,lastTime=0;
+    Object.keys(all).forEach(function(k){
+      var t=all[k]&&all[k].lastVisited?new Date(all[k].lastVisited).getTime():0;
+      if(t>lastTime){lastTime=t;lastKey=k;}
+    });
+    if(lastKey){
+      var card=document.querySelector('a.quiz-card[data-key="'+lastKey+'"]');
+      if(card&&card.getAttribute('href'))target=card.getAttribute('href');
+    }
+  }catch(e){}
+  location.href=target;
+  return false;
+}
+</script>
 <script>
 const baqaraPages=[
   ['albaqara_p2.html','ص 2','1–5'],['albaqara_p3.html','ص 3','6–16'],
