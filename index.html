@@ -81,12 +81,12 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .rec-btn:hover{opacity:.88;}
 
 /* ===== HERO ===== */
-.hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:28px 20px 12px;text-align:center;position:relative;overflow:hidden;}
+.hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:28px 20px 20px;text-align:center;position:relative;overflow:hidden;}
 /* زخرفة دوائر خلفية */
 .hero::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);pointer-events:none;}
 .hero::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06);pointer-events:none;}
 /* زخرفة نقاط */
-.hero-stars-bottom{text-align:center;color:rgba(255,255,255,0.18);font-size:1.4rem;letter-spacing:6px;pointer-events:none;margin-top:4px;line-height:1.2;}
+.hero-stars-bottom{text-align:center;color:rgba(255,255,255,0.18);font-size:1.4rem;letter-spacing:6px;pointer-events:none;margin-top:18px;line-height:1.2;}
 .hero-inner{position:relative;z-index:1;}
 .hero-bismillah{font-family:'Scheherazade New',serif;font-size:1.1rem;color:rgba(255,255,255,0.75);margin-bottom:16px;letter-spacing:1px;}
 .hero-title{font-family:'Scheherazade New',serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px;}
@@ -105,13 +105,19 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .hero-start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.25);}
 .hero-types{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 5px;margin:0 -14px 20px;padding:0;}
 .hero-type{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.28);color:#fff;border-radius:14px;padding:2px 8px;font-size:clamp(0.62rem,3.3vw,0.8rem);line-height:1.7;white-space:nowrap;}
-.hero-continue{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.6);color:#fff;border-radius:18px;padding:7px 20px;min-height:36px;font-size:0.88rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:background .2s;}
-.hero-continue:hover{background:rgba(255,255,255,0.28);}
+.hero-progress{margin-top:16px;}
+.hero-resume{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;max-width:360px;margin:0 auto;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:10px 14px;text-align:start;}
+.hero-resume-info{flex:1 1 170px;min-width:0;}
+.hero-resume-last{font-size:0.86rem;color:#fff;line-height:1.5;}
+.hero-resume-count{font-size:0.74rem;color:rgba(255,255,255,0.78);margin-top:2px;}
+.hero-resume-bar{background:rgba(255,255,255,0.2);border-radius:6px;height:5px;overflow:hidden;margin-top:6px;}
+.hero-continue{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.6);color:#fff;border-radius:16px;padding:6px 14px;font-size:0.85rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;}
+.hero-continue:hover{background:rgba(255,255,255,0.28);transform:translateY(-2px);}
 .hero-continue::after{content:"→";}
 html[dir="rtl"] .hero-continue::after{content:"←";}
 #main{scroll-margin-top:130px;}
 .hero-start-btn::after{content:"←";display:inline-block;font-size:1.05rem;opacity:.75;}
-.hero-inner .ayah-banner{margin-top:24px;margin-bottom:0;}
+.hero-inner .ayah-banner{margin-top:10px;margin-bottom:0;}
 .hero-progress-btn{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:rgba(255,255,255,0.16);color:#fff;border:1.5px solid rgba(255,255,255,0.55);border-radius:18px;padding:9px 24px;font-size:0.95rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;cursor:pointer;}
 .hero-progress-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,0.26);}
 .hero-progress-btn-sub{font-size:0.68rem;font-weight:400;opacity:0.85;text-decoration:underline;}
@@ -336,7 +342,6 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <a href="recitation.html" class="hero-rec-btn" data-i18n="home.recite_btn">🎤 اختبر حفظك</a>
       <a href="progress.html" class="hero-progress-btn">
         <span data-i18n="home.progress_btn">📊 تقدّمي</span>
-        <span class="hero-progress-btn-sub" data-i18n="home.progress_btn_sub">تقدّمي بالتفصيل ◀</span>
       </a>
     </div>
     <div class="hero-stats">
@@ -344,19 +349,21 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <div class="hstat"><b id="hstat-parts-count">4</b><small data-i18n="home.stat_parts">أجزاء</small></div>
       <div class="hstat"><b id="hstat-surahs-count">109</b><small data-i18n="home.stat_surahs">سورة</small></div>
     </div>
-    <div class="hero-progress" id="hero-progress" style="display:none;margin-top:16px;">
-      <div style="background:rgba(255,255,255,0.2);border-radius:8px;height:8px;overflow:hidden;max-width:300px;margin:0 auto 6px;">
-        <div id="hero-progress-fill" style="height:100%;background:#fff;border-radius:8px;width:0%;transition:width .5s;"></div>
+    <div class="hero-progress" id="hero-progress" style="display:none;">
+      <div class="hero-resume">
+        <div class="hero-resume-info">
+          <div class="hero-resume-last" id="hero-last-visited"></div>
+          <div class="hero-resume-count" id="hero-progress-text"></div>
+          <div class="hero-resume-bar"><div id="hero-progress-fill" style="height:100%;background:#fff;border-radius:6px;width:0%;transition:width .5s;"></div></div>
+        </div>
+        <a class="hero-continue" id="hero-continue" href="alfatiha.html" style="display:none" data-i18n="home.continue_btn">تابع من حيث توقفت</a>
       </div>
-      <div style="font-size:0.78rem;color:rgba(255,255,255,0.9);" id="hero-progress-text"></div>
-      <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-top:4px;" id="hero-last-visited"></div>
-      <a class="hero-continue" id="hero-continue" href="alfatiha.html" style="display:none" data-i18n="home.continue_btn">تابع من حيث توقفت</a>
     </div>
+    <div class="hero-stars-bottom">✦ ✦ ✦</div>
     <div class="ayah-banner">
       <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
       <div class="ayah-ref notranslate" translate="no">سورة المزمل — آية 4</div>
     </div>
-    <div class="hero-stars-bottom">✦ ✦ ✦</div>
   </div>
 </div>
 
@@ -1429,6 +1436,8 @@ function renderDarbiProgress(){
     const pct=Math.round(doneCount/totalPages*100);
     const heroProg=document.getElementById('hero-progress');
     if(heroProg)heroProg.style.display='block';
+    const heroStats=document.querySelector('.hero-stats');
+    if(heroStats)heroStats.style.display='none';
     const fill=document.getElementById('hero-progress-fill');
     if(fill)fill.style.width=pct+'%';
     const text=document.getElementById('hero-progress-text');
