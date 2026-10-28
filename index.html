@@ -82,16 +82,6 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 
 /* ===== HERO ===== */
 .hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:28px 20px 20px;text-align:center;position:relative;overflow:hidden;}
-/* الوضع الليلي: الجزء العلوي بنفس لغة ألوان باقي الصفحة (بطاقات داكنة + أخضر الإبراز) وينتهي بلون الخلفية بلا فاصل */
-html[data-theme="dark"] .hero{background:linear-gradient(180deg,var(--card) 0%,var(--bg) 100%);border-bottom:1.5px solid var(--border);}
-html[data-theme="dark"] .hero-title{color:var(--text);}
-html[data-theme="dark"] .hero-bismillah,html[data-theme="dark"] .hero-sub{color:var(--soft);}
-html[data-theme="dark"] .hero-start-btn{background:var(--green);color:#0f1f10;}
-html[data-theme="dark"] .hero-rec-btn,html[data-theme="dark"] .hero-progress-btn{background:var(--green3);color:var(--green);border:1.5px solid var(--green2);}
-html[data-theme="dark"] .hero-type,html[data-theme="dark"] .hstat,html[data-theme="dark"] .hero .ayah-banner,html[data-theme="dark"] .hero-resume{background:var(--green3);border-color:var(--border);}
-html[data-theme="dark"] .hero-type,html[data-theme="dark"] .hstat,html[data-theme="dark"] .hstat b{color:var(--text);}
-html[data-theme="dark"] .hero .ayah-text{color:var(--text);}
-html[data-theme="dark"] .hero .ayah-ref{color:var(--soft);}
 /* زخرفة دوائر خلفية */
 .hero::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);pointer-events:none;}
 .hero::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06);pointer-events:none;}
@@ -115,13 +105,12 @@ html[data-theme="dark"] .hero .ayah-ref{color:var(--soft);}
 .hero-start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,0.25);}
 .hero-types{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 5px;margin:0 -14px 20px;padding:0;}
 .hero-type{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.28);color:#fff;border-radius:14px;padding:2px 8px;font-size:clamp(0.62rem,3.3vw,0.8rem);line-height:1.7;white-space:nowrap;}
-.hero-progress{margin-top:16px;}
-.hero-resume{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;max-width:360px;margin:0 auto;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:10px 14px;text-align:start;}
-.hero-resume-info{flex:1 1 170px;min-width:0;}
-.hero-resume-last{font-size:0.86rem;color:#fff;line-height:1.5;}
-.hero-resume-count{font-size:0.74rem;color:rgba(255,255,255,0.78);margin-top:2px;}
-.hero-resume-bar{background:rgba(255,255,255,0.2);border-radius:6px;height:5px;overflow:hidden;margin-top:6px;}
-.hero-continue{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.6);color:#fff;border-radius:16px;padding:6px 14px;font-size:0.85rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;}
+.hero-progress{margin-top:20px;}
+.hero-resume{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:300px;margin:0 auto;padding:0;}
+.hero-resume-last{font-size:0.88rem;color:#fff;line-height:1.5;}
+.hero-resume-count{font-size:0.76rem;color:rgba(255,255,255,0.78);margin-top:2px;}
+.hero-resume-bar{width:100%;height:4px;margin:9px 0 12px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;}
+.hero-continue{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.6);color:#fff;border-radius:16px;padding:6px 14px;font-size:0.85rem;font-family:'Scheherazade New',serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;}
 .hero-continue:hover{background:rgba(255,255,255,0.28);transform:translateY(-2px);}
 .hero-continue::after{content:"→";}
 html[dir="rtl"] .hero-continue::after{content:"←";}
@@ -362,11 +351,9 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
     </div>
     <div class="hero-progress" id="hero-progress" style="display:none;">
       <div class="hero-resume">
-        <div class="hero-resume-info">
-          <div class="hero-resume-last" id="hero-last-visited"></div>
-          <div class="hero-resume-count" id="hero-progress-text"></div>
-          <div class="hero-resume-bar"><div id="hero-progress-fill" style="height:100%;background:#fff;border-radius:6px;width:0%;transition:width .5s;"></div></div>
-        </div>
+        <div class="hero-resume-last notranslate" id="hero-last-visited" translate="no"></div>
+        <div class="hero-resume-count" id="hero-progress-text"></div>
+        <div class="hero-resume-bar"><div id="hero-progress-fill" style="height:100%;background:#fff;border-radius:4px;width:0%;transition:width .5s;"></div></div>
         <a class="hero-continue" id="hero-continue" href="alfatiha.html" style="display:none" data-i18n="home.continue_btn">تابع من حيث توقفت</a>
       </div>
     </div>
@@ -1461,13 +1448,15 @@ function renderDarbiProgress(){
       }
     });
     const lv=document.getElementById('hero-last-visited');
-    if(lv&&lastKey)lv.textContent=darbiT('home.hero_last_visited',{name:(nameByKey[lastKey]||lastKey)});
     const cont=document.getElementById('hero-continue');
+    const lastName=lastKey?(nameByKey[lastKey]||lastKey):'';
+    let hasCont=false;
     if(cont&&lastKey){
       const card=document.querySelector('a.quiz-card[data-key="'+lastKey+'"]');
       const href=card&&card.getAttribute('href');
-      if(href){cont.setAttribute('href',href);cont.style.display='inline-flex';}
+      if(href){cont.setAttribute('href',href);cont.style.display='inline-flex';hasCont=true;}
     }
+    if(lv&&lastKey)lv.textContent=darbiT('home.hero_last_visited',{name:lastName});
   }
 }
 renderDarbiProgress();
