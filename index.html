@@ -1467,7 +1467,7 @@ function renderDarbiProgress(){
       const href=card&&card.getAttribute('href');
       if(href){cont.setAttribute('href',href);cont.style.display='inline-flex';hasCont=true;}
     }
-    if(lv&&lastKey)lv.textContent=darbiT('home.hero_last_visited',{name:lastName});
+    if(lv&&lastKey)lv.textContent=darbiT('home.hero_last_visited',{name:(window.darbiDisplayName&&darbiDisplayName(lastName))||lastName});
   }
 }
 renderDarbiProgress();

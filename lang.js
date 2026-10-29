@@ -2569,6 +2569,7 @@ function loc(src,lg){
   if((m=s.match(/^سورة (.+?) \((\d+) (?:آية|آيات)\)$/))){n=surahName(m[1],lg);return n?L.sur(n)+' ('+L.cnt(+m[2])+')':null;}
   if((m=s.match(/^(?:(سورة) )?(.+?) ص ?(\d+) — (آيات|آية) (\d+)(?:\s*[–-]\s*(\d+))?(?: \((.+)\))?$/))){n=surahName(m[2],lg);if(!n)return null;
     return (m[1]?L.sur(n):n)+' '+L.p+m[3]+' \u2014 '+(m[6]?L.vs(m[5],m[6]):L.v(m[5]))+par(m[7],lg);}
+  if((m=s.match(/^(?:(سورة) )?(.+?) ص ?(\d+)$/))){n=surahName(m[2],lg);if(n)return (m[1]?L.sur(n):n)+' '+L.p+m[3];}
   if((m=s.match(/^سورة (.+?) — آية (\d+)$/))){n=surahName(m[1],lg);return n?L.sur(n)+' \u2014 '+L.v(m[2]):null;}
   if((m=s.match(/^سورة (.+)$/))){n=surahName(m[1],lg);return n?L.sur(n):null;}
   if((m=s.match(/^(?:الآيتين|الآيتان) (\d+)\s*[–-]\s*(\d+)$/)))return L.vs(m[1],m[2]);
@@ -2675,7 +2676,7 @@ function idxLoc(src,lg){
   var res=out[0];for(i=1;i<out.length;i++)res+=(seps[i-1]==='،'?', ':' — ')+out[i];
   return res;}
 var IDXSEL='.card-name,.surah-name,.surah-panel-title,.juz-title,.card-meta,.note-btn';
-var PRE=/^(سورة|الآية|الآيات|الآيتين|الآيتان|من الآية|اكتب|اختبار الحفظ|صفحة|الصفحة|ص ?\d|[^\d]{2,25} ص ?\d+ — )/;
+var PRE=/^(جزء عم|سورة|الآية|الآيات|الآيتين|الآيتان|من الآية|اكتب|اختبار الحفظ|صفحة|الصفحة|ص ?\d|[^\d]{2,25} ص ?\d+ — )/;
 
 /* عنوان التبويب (document.title): يُترجم بنفس القواعد، والأصل العربي محفوظ للعودة */
 function stripLead(x){return String(x).replace(/^[^A-Za-zÀ-ɏ؀-ۿ]+/,'');}
