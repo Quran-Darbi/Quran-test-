@@ -82,6 +82,17 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 
 /* ===== HERO ===== */
 .hero{background:linear-gradient(160deg,#2E6B3E 0%,#3A8C50 60%,#4AA060 100%);padding:28px 20px 20px;text-align:center;position:relative;overflow:hidden;}
+/* الوضع الليلي: الجزء العلوي بنفس لغة ألوان باقي الصفحة (بطاقات داكنة + أخضر الإبراز) وينتهي بلون الخلفية */
+html[data-theme="dark"] .hero{background:linear-gradient(180deg,var(--card) 0%,var(--bg) 100%);border-bottom:1.5px solid var(--border);}
+html[data-theme="dark"] .hero-title{color:var(--text);}
+html[data-theme="dark"] .hero-bismillah,html[data-theme="dark"] .hero-sub{color:var(--soft);}
+html[data-theme="dark"] .hero-start-btn{background:var(--green);color:#0f1f10;}
+html[data-theme="dark"] .hero-rec-btn,html[data-theme="dark"] .hero-progress-btn,html[data-theme="dark"] .hero-continue{background:var(--green3);color:var(--green);border:1.5px solid var(--green2);}
+html[data-theme="dark"] .hero-type,html[data-theme="dark"] .hstat,html[data-theme="dark"] .hero .ayah-banner{background:var(--green3);border-color:var(--border);}
+html[data-theme="dark"] .hero-type,html[data-theme="dark"] .hstat,html[data-theme="dark"] .hstat b,html[data-theme="dark"] .hero-resume-last,html[data-theme="dark"] .hero .ayah-text{color:var(--text);}
+html[data-theme="dark"] .hero-resume-count,html[data-theme="dark"] .hero .ayah-ref{color:var(--soft);}
+html[data-theme="dark"] .hero-resume-bar{background:var(--border);}
+html[data-theme="dark"] #hero-progress-fill{background:var(--green)!important;}
 /* زخرفة دوائر خلفية */
 .hero::before{content:'';position:absolute;top:-60px;left:-60px;width:220px;height:220px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.08);pointer-events:none;}
 .hero::after{content:'';position:absolute;bottom:-80px;right:-40px;width:280px;height:280px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.06);pointer-events:none;}
