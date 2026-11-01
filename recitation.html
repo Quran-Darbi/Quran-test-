@@ -695,6 +695,32 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <option value="annaml_p380">ص380 — آيات 36–44</option>
       <option value="annaml_p381">ص381 — آيات 45–55</option>
     </optgroup>
+    <optgroup label="سورة الأحزاب">
+      <option value="alahzab_p422">ص422 — آيات 31–35</option>
+      <option value="alahzab_p423">ص423 — آيات 36–43</option>
+      <option value="alahzab_p424">ص424 — آيات 44–50</option>
+      <option value="alahzab_p425">ص425 — آيات 51–54</option>
+      <option value="alahzab_p426">ص426 — آيات 55–62</option>
+      <option value="alahzab_p427">ص427 — آيات 63–73</option>
+    </optgroup>
+    <optgroup label="سورة سبأ">
+      <option value="saba_p428">ص428 — آيات 1–7</option>
+      <option value="saba_p429">ص429 — آيات 8–14</option>
+      <option value="saba_p430">ص430 — آيات 15–22</option>
+      <option value="saba_p431">ص431 — آيات 23–31</option>
+      <option value="saba_p432">ص432 — آيات 32–39</option>
+      <option value="saba_p433">ص433 — آيات 40–48</option>
+      <option value="saba_p434">ص434 — آيات 49–54</option>
+    </optgroup>
+    <optgroup label="سورة فاطر">
+      <option value="fatir_p434">ص434 — آيات 1–3</option>
+      <option value="fatir_p435">ص435 — آيات 4–11</option>
+      <option value="fatir_p436">ص436 — آيات 12–18</option>
+      <option value="fatir_p437">ص437 — آيات 19–30</option>
+      <option value="fatir_p438">ص438 — آيات 31–38</option>
+      <option value="fatir_p439">ص439 — آيات 39–44</option>
+      <option value="fatir_p440">ص440 — آيات 45</option>
+    </optgroup>
     <optgroup label="سورة يس">
       <option value="yaseen_p440">ص440 — آيات 1–12</option>
       <option value="yaseen_p441">ص441 — آيات 13–27</option>
@@ -1391,6 +1417,26 @@ const SURAH_NAMES = {
   annaml_p379:'النمل ص379 — آيات 23–35',
   annaml_p380:'النمل ص380 — آيات 36–44',
   annaml_p381:'النمل ص381 — آيات 45–55',
+  alahzab_p422:'الأحزاب ص422 — آيات 31–35',
+  alahzab_p423:'الأحزاب ص423 — آيات 36–43',
+  alahzab_p424:'الأحزاب ص424 — آيات 44–50',
+  alahzab_p425:'الأحزاب ص425 — آيات 51–54',
+  alahzab_p426:'الأحزاب ص426 — آيات 55–62',
+  alahzab_p427:'الأحزاب ص427 — آيات 63–73',
+  saba_p428:'سبأ ص428 — آيات 1–7',
+  saba_p429:'سبأ ص429 — آيات 8–14',
+  saba_p430:'سبأ ص430 — آيات 15–22',
+  saba_p431:'سبأ ص431 — آيات 23–31',
+  saba_p432:'سبأ ص432 — آيات 32–39',
+  saba_p433:'سبأ ص433 — آيات 40–48',
+  saba_p434:'سبأ ص434 — آيات 49–54',
+  fatir_p434:'فاطر ص434 — آيات 1–3',
+  fatir_p435:'فاطر ص435 — آيات 4–11',
+  fatir_p436:'فاطر ص436 — آيات 12–18',
+  fatir_p437:'فاطر ص437 — آيات 19–30',
+  fatir_p438:'فاطر ص438 — آيات 31–38',
+  fatir_p439:'فاطر ص439 — آيات 39–44',
+  fatir_p440:'فاطر ص440 — آيات 45',
   yaseen_p440:'يس ص440 — آيات 1–12',
   yaseen_p441:'يس ص441 — آيات 13–27',
   yaseen_p442:'يس ص442 — آيات 28–40',
@@ -2083,6 +2129,26 @@ const AYAH_START={
   annaml_p379:23,
   annaml_p380:36,
   annaml_p381:45,
+  alahzab_p422:31,
+  alahzab_p423:36,
+  alahzab_p424:44,
+  alahzab_p425:51,
+  alahzab_p426:55,
+  alahzab_p427:63,
+  saba_p428:1,
+  saba_p429:8,
+  saba_p430:15,
+  saba_p431:23,
+  saba_p432:32,
+  saba_p433:40,
+  saba_p434:49,
+  fatir_p434:1,
+  fatir_p435:4,
+  fatir_p436:12,
+  fatir_p437:19,
+  fatir_p438:31,
+  fatir_p439:39,
+  fatir_p440:45,
   yaseen_p440:1,
   yaseen_p441:13,
   yaseen_p442:28,
@@ -2320,6 +2386,9 @@ const RECITE_SEQUENCE=['fatiha',
 'alfurqan_p359','alfurqan_p360','alfurqan_p361','alfurqan_p362','alfurqan_p363','alfurqan_p364','alfurqan_p365','alfurqan_p366',
 'ashshuara_p367','ashshuara_p368','ashshuara_p369','ashshuara_p370','ashshuara_p371','ashshuara_p372','ashshuara_p373','ashshuara_p374','ashshuara_p375','ashshuara_p376',
 'annaml_p377','annaml_p378','annaml_p379','annaml_p380','annaml_p381',
+'alahzab_p422','alahzab_p423','alahzab_p424','alahzab_p425','alahzab_p426','alahzab_p427',
+'saba_p428','saba_p429','saba_p430','saba_p431','saba_p432','saba_p433','saba_p434',
+'fatir_p434','fatir_p435','fatir_p436','fatir_p437','fatir_p438','fatir_p439','fatir_p440',
 'yaseen_p440','yaseen_p441','yaseen_p442','yaseen_p443','yaseen_p444','yaseen_p445',
 'fussilat_p477','fussilat_p478','fussilat_p479','fussilat_p480','fussilat_p481','fussilat_p482',
 'shura_p483','shura_p484','shura_p485','shura_p486','shura_p487','shura_p488','shura_p489',

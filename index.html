@@ -848,6 +848,35 @@ const annamlPages=[
   ['annaml_p381.html','ص 381','45–55'],
 ];
 
+const alahzabPages=[
+  ['alahzab_p422.html','ص 422','31–35'],
+  ['alahzab_p423.html','ص 423','36–43'],
+  ['alahzab_p424.html','ص 424','44–50'],
+  ['alahzab_p425.html','ص 425','51–54'],
+  ['alahzab_p426.html','ص 426','55–62'],
+  ['alahzab_p427.html','ص 427','63–73'],
+];
+
+const sabaPages=[
+  ['saba_p428.html','ص 428','1–7'],
+  ['saba_p429.html','ص 429','8–14'],
+  ['saba_p430.html','ص 430','15–22'],
+  ['saba_p431.html','ص 431','23–31'],
+  ['saba_p432.html','ص 432','32–39'],
+  ['saba_p433.html','ص 433','40–48'],
+  ['saba_p434.html','ص 434','49–54'],
+];
+
+const fatirPages=[
+  ['fatir_p434.html','ص 434','1–3'],
+  ['fatir_p435.html','ص 435','4–11'],
+  ['fatir_p436.html','ص 436','12–18'],
+  ['fatir_p437.html','ص 437','19–30'],
+  ['fatir_p438.html','ص 438','31–38'],
+  ['fatir_p439.html','ص 439','39–44'],
+  ['fatir_p440.html','ص 440','45'],
+];
+
 const yaseenPages=[
   ['yaseen_p440.html','ص 440','1–12'],['yaseen_p441.html','ص 441','13–27'],
   ['yaseen_p442.html','ص 442','28–40'],['yaseen_p443.html','ص 443','41–54'],
@@ -1128,9 +1157,9 @@ const JUZ_GROUPS = {
         { kind:'soon', name:'الأحزاب', page:418 }
       ] },
   22:{ title:'الأحزاب، سبأ، فاطر، يس', groups:[
-        { kind:'soon', name:'الأحزاب (تابع)', page:422 },
-        { kind:'soon', name:'سبأ', page:428 },
-        { kind:'soon', name:'فاطر', page:434 },
+        { kind:'range', arr:alahzabPages, from:0, to:6, name:'سورة الأحزاب (31–73)', surah:'الأحزاب', note:'◄ سورة الأحزاب بدأت في الجزء 21', noteTarget:21 },
+        { kind:'full', arr:sabaPages, name:'سبأ', surah:'سبأ' },
+        { kind:'full', arr:fatirPages, name:'فاطر', surah:'فاطر' },
         { kind:'range', arr:yaseenPages, from:0, to:2, name:'سورة يس (1–27)', surah:'يس', note:'سورة يس تكمل في الجزء 23 ←', noteTarget:23 }
       ] },
   23:{ title:'يس، الصافات، ص، الزمر', groups:[
@@ -1359,6 +1388,9 @@ function renderDarbiProgress(){
   ibrahimPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة إبراهيم '+p[1];});
   alhijrPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الحجر '+p[1];});
   annahlPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة النحل '+p[1];});
+  alahzabPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الأحزاب '+p[1];});
+  sabaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة سبأ '+p[1];});
+  fatirPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة فاطر '+p[1];});
   yaseenPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة يس '+p[1];});
   fussilatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة فصلت '+p[1];});
   shuraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الشورى '+p[1];});
@@ -1437,7 +1469,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+araafPages.length+anfalPages.length+tawbaPages.length+hudPages.length+kahfPages.length+maryamPages.length+tahaPages.length+anbiyaPages.length+hajjPages.length+yunusPages.length+yusufPages.length+arraadPages.length+ibrahimPages.length+alhijrPages.length+annahlPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ashshuaraPages.length+annamlPages.length+muminunPages.length+nurPages.length+furqanPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+araafPages.length+anfalPages.length+tawbaPages.length+hudPages.length+kahfPages.length+maryamPages.length+tahaPages.length+anbiyaPages.length+hajjPages.length+yunusPages.length+yusufPages.length+arraadPages.length+ibrahimPages.length+alhijrPages.length+annahlPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ashshuaraPages.length+annamlPages.length+alahzabPages.length+sabaPages.length+fatirPages.length+muminunPages.length+nurPages.length+furqanPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
