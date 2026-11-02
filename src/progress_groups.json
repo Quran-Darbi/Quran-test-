@@ -2037,6 +2037,26 @@
     "stem": "annaml_p381",
     "name": "النمل ص 381",
     "range": "45–55"
+   },
+   {
+    "stem": "annaml_p382",
+    "name": "النمل ص 382",
+    "range": "56–63"
+   },
+   {
+    "stem": "annaml_p383",
+    "name": "النمل ص 383",
+    "range": "64–76"
+   },
+   {
+    "stem": "annaml_p384",
+    "name": "النمل ص 384",
+    "range": "77–88"
+   },
+   {
+    "stem": "annaml_p385",
+    "name": "النمل ص 385",
+    "range": "89–93"
    }
   ]
  },
@@ -3229,6 +3249,108 @@
     "stem": "alnnas",
     "name": "الناس",
     "range": ""
+   }
+  ]
+ },
+ {
+  "label": "سورة القصص",
+  "juz": 20,
+  "pages": [
+   {
+    "stem": "alqasas_p385",
+    "name": "القصص ص 385",
+    "range": "1–5"
+   },
+   {
+    "stem": "alqasas_p386",
+    "name": "القصص ص 386",
+    "range": "6–13"
+   },
+   {
+    "stem": "alqasas_p387",
+    "name": "القصص ص 387",
+    "range": "14–21"
+   },
+   {
+    "stem": "alqasas_p388",
+    "name": "القصص ص 388",
+    "range": "22–28"
+   },
+   {
+    "stem": "alqasas_p389",
+    "name": "القصص ص 389",
+    "range": "29–35"
+   },
+   {
+    "stem": "alqasas_p390",
+    "name": "القصص ص 390",
+    "range": "36–43"
+   },
+   {
+    "stem": "alqasas_p391",
+    "name": "القصص ص 391",
+    "range": "44–50"
+   },
+   {
+    "stem": "alqasas_p392",
+    "name": "القصص ص 392",
+    "range": "51–59"
+   },
+   {
+    "stem": "alqasas_p393",
+    "name": "القصص ص 393",
+    "range": "60–70"
+   },
+   {
+    "stem": "alqasas_p394",
+    "name": "القصص ص 394",
+    "range": "71–77"
+   },
+   {
+    "stem": "alqasas_p395",
+    "name": "القصص ص 395",
+    "range": "78–84"
+   },
+   {
+    "stem": "alqasas_p396",
+    "name": "القصص ص 396",
+    "range": "85–88"
+   }
+  ]
+ },
+ {
+  "label": "سورة العنكبوت",
+  "juz": 20,
+  "pages": [
+   {
+    "stem": "alankabut_p396",
+    "name": "العنكبوت ص 396",
+    "range": "1–6"
+   },
+   {
+    "stem": "alankabut_p397",
+    "name": "العنكبوت ص 397",
+    "range": "7–14"
+   },
+   {
+    "stem": "alankabut_p398",
+    "name": "العنكبوت ص 398",
+    "range": "15–23"
+   },
+   {
+    "stem": "alankabut_p399",
+    "name": "العنكبوت ص 399",
+    "range": "24–30"
+   },
+   {
+    "stem": "alankabut_p400",
+    "name": "العنكبوت ص 400",
+    "range": "31–38"
+   },
+   {
+    "stem": "alankabut_p401",
+    "name": "العنكبوت ص 401",
+    "range": "39–45"
    }
   ]
  }

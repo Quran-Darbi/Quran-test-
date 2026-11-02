@@ -846,6 +846,34 @@ const annamlPages=[
   ['annaml_p379.html','ص 379','23–35'],
   ['annaml_p380.html','ص 380','36–44'],
   ['annaml_p381.html','ص 381','45–55'],
+  ['annaml_p382.html','ص 382','56–63'],
+  ['annaml_p383.html','ص 383','64–76'],
+  ['annaml_p384.html','ص 384','77–88'],
+  ['annaml_p385.html','ص 385','89–93'],
+];
+
+const qasasPages=[
+  ['alqasas_p385.html','ص 385','1–5'],
+  ['alqasas_p386.html','ص 386','6–13'],
+  ['alqasas_p387.html','ص 387','14–21'],
+  ['alqasas_p388.html','ص 388','22–28'],
+  ['alqasas_p389.html','ص 389','29–35'],
+  ['alqasas_p390.html','ص 390','36–43'],
+  ['alqasas_p391.html','ص 391','44–50'],
+  ['alqasas_p392.html','ص 392','51–59'],
+  ['alqasas_p393.html','ص 393','60–70'],
+  ['alqasas_p394.html','ص 394','71–77'],
+  ['alqasas_p395.html','ص 395','78–84'],
+  ['alqasas_p396.html','ص 396','85–88'],
+];
+
+const ankabutPages=[
+  ['alankabut_p396.html','ص 396','1–6'],
+  ['alankabut_p397.html','ص 397','7–14'],
+  ['alankabut_p398.html','ص 398','15–23'],
+  ['alankabut_p399.html','ص 399','24–30'],
+  ['alankabut_p400.html','ص 400','31–38'],
+  ['alankabut_p401.html','ص 401','39–45'],
 ];
 
 const alahzabPages=[
@@ -1142,12 +1170,12 @@ const JUZ_GROUPS = {
   19:{ title:'الفرقان، الشعراء، النمل', groups:[
         { kind:'range', arr:furqanPages, from:3, to:8, name:'سورة الفرقان (21–77)', surah:'الفرقان', note:'◄ سورة الفرقان بدأت في الجزء 18', noteTarget:18 },
         { kind:'full', arr:ashshuaraPages, name:'الشعراء', surah:'الشعراء' },
-        { kind:'full', arr:annamlPages, name:'سورة النمل (1–55)', surah:'النمل', note:'سورة النمل تكمل في الجزء 20 ←', noteTarget:20 }
+        { kind:'range', arr:annamlPages, from:0, to:5, name:'سورة النمل (1–55)', surah:'النمل', note:'سورة النمل تكمل في الجزء 20 ←', noteTarget:20 }
       ] },
   20:{ title:'النمل، القصص، العنكبوت', groups:[
-        { kind:'soon', name:'النمل (تابع)', page:382 },
-        { kind:'soon', name:'القصص', page:385 },
-        { kind:'soon', name:'العنكبوت', page:396 }
+        { kind:'range', arr:annamlPages, from:5, to:9, name:'سورة النمل (56–93)', surah:'النمل', note:'◄ سورة النمل بدأت في الجزء 19', noteTarget:19 },
+        { kind:'full', arr:qasasPages, name:'القصص', surah:'القصص' },
+        { kind:'full', arr:ankabutPages, name:'سورة العنكبوت (1–45)', surah:'العنكبوت', note:'سورة العنكبوت تكمل في الجزء 21 ←', noteTarget:21 }
       ] },
   21:{ title:'العنكبوت، الروم، لقمان، السجدة، الأحزاب', groups:[
         { kind:'soon', name:'العنكبوت (تابع)', page:402 },
@@ -1398,6 +1426,8 @@ function renderDarbiProgress(){
   dukhanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الدخان '+p[1];});
   ashshuaraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الشعراء '+p[1];});
   annamlPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة النمل '+p[1];});
+  qasasPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة القصص '+p[1];});
+  ankabutPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة العنكبوت '+p[1];});
   arrahmanPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الرحمن '+p[1];});
   alwaqiahPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الواقعة '+p[1];});
   almulkPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الملك '+p[1];});
@@ -1469,7 +1499,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+araafPages.length+anfalPages.length+tawbaPages.length+hudPages.length+kahfPages.length+maryamPages.length+tahaPages.length+anbiyaPages.length+hajjPages.length+yunusPages.length+yusufPages.length+arraadPages.length+ibrahimPages.length+alhijrPages.length+annahlPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ashshuaraPages.length+annamlPages.length+alahzabPages.length+sabaPages.length+fatirPages.length+muminunPages.length+nurPages.length+furqanPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+araafPages.length+anfalPages.length+tawbaPages.length+hudPages.length+kahfPages.length+maryamPages.length+tahaPages.length+anbiyaPages.length+hajjPages.length+yunusPages.length+yusufPages.length+arraadPages.length+ibrahimPages.length+alhijrPages.length+annahlPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ashshuaraPages.length+annamlPages.length+qasasPages.length+ankabutPages.length+alahzabPages.length+sabaPages.length+fatirPages.length+muminunPages.length+nurPages.length+furqanPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 
