@@ -2065,6 +2065,26 @@
   "juz": 22,
   "pages": [
    {
+    "stem": "alahzab_p418",
+    "name": "الأحزاب ص 418",
+    "range": "1–6"
+   },
+   {
+    "stem": "alahzab_p419",
+    "name": "الأحزاب ص 419",
+    "range": "7–15"
+   },
+   {
+    "stem": "alahzab_p420",
+    "name": "الأحزاب ص 420",
+    "range": "16–22"
+   },
+   {
+    "stem": "alahzab_p421",
+    "name": "الأحزاب ص 421",
+    "range": "23–30"
+   },
+   {
     "stem": "alahzab_p422",
     "name": "الأحزاب ص 422",
     "range": "31–35"
@@ -3351,6 +3371,109 @@
     "stem": "alankabut_p401",
     "name": "العنكبوت ص 401",
     "range": "39–45"
+   },
+   {
+    "stem": "alankabut_p402",
+    "name": "العنكبوت ص 402",
+    "range": "46–52"
+   },
+   {
+    "stem": "alankabut_p403",
+    "name": "العنكبوت ص 403",
+    "range": "53–63"
+   },
+   {
+    "stem": "alankabut_p404",
+    "name": "العنكبوت ص 404",
+    "range": "64–69"
+   }
+  ]
+ },
+ {
+  "label": "سورة الروم",
+  "juz": 21,
+  "pages": [
+   {
+    "stem": "arrum_p404",
+    "name": "الروم ص 404",
+    "range": "1–5"
+   },
+   {
+    "stem": "arrum_p405",
+    "name": "الروم ص 405",
+    "range": "6–15"
+   },
+   {
+    "stem": "arrum_p406",
+    "name": "الروم ص 406",
+    "range": "16–24"
+   },
+   {
+    "stem": "arrum_p407",
+    "name": "الروم ص 407",
+    "range": "25–32"
+   },
+   {
+    "stem": "arrum_p408",
+    "name": "الروم ص 408",
+    "range": "33–41"
+   },
+   {
+    "stem": "arrum_p409",
+    "name": "الروم ص 409",
+    "range": "42–50"
+   },
+   {
+    "stem": "arrum_p410",
+    "name": "الروم ص 410",
+    "range": "51–60"
+   }
+  ]
+ },
+ {
+  "label": "سورة لقمان",
+  "juz": 21,
+  "pages": [
+   {
+    "stem": "luqman_p411",
+    "name": "لقمان ص 411",
+    "range": "1–11"
+   },
+   {
+    "stem": "luqman_p412",
+    "name": "لقمان ص 412",
+    "range": "12–19"
+   },
+   {
+    "stem": "luqman_p413",
+    "name": "لقمان ص 413",
+    "range": "20–28"
+   },
+   {
+    "stem": "luqman_p414",
+    "name": "لقمان ص 414",
+    "range": "29–34"
+   }
+  ]
+ },
+ {
+  "label": "سورة السجدة",
+  "juz": 21,
+  "pages": [
+   {
+    "stem": "assajda_p415",
+    "name": "السجدة ص 415",
+    "range": "1–11"
+   },
+   {
+    "stem": "assajda_p416",
+    "name": "السجدة ص 416",
+    "range": "12–20"
+   },
+   {
+    "stem": "assajda_p417",
+    "name": "السجدة ص 417",
+    "range": "21–30"
    }
   ]
  }
