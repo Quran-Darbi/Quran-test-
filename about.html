@@ -75,6 +75,9 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .about-text{font-size:0.93rem;color:var(--soft);line-height:2;}
 .about-text p{margin:0 0 12px;}
 .about-text p:last-child{margin-bottom:0;}
+.about-hadith{margin-top:14px;background:var(--green3);border-radius:12px;border-right:3px solid var(--gold);padding:12px 14px;text-align:center;}
+.about-hadith-text{font-family:'Scheherazade New',serif;font-size:1.05rem;color:var(--green);line-height:2;}
+.about-hadith-src{font-size:0.78rem;color:var(--soft);margin-top:4px;line-height:1.7;}
 .about-dua{margin-top:14px;font-family:'Scheherazade New',serif;font-size:1.02rem;line-height:1.9;color:var(--green);text-align:center;}
 .about-ayah{margin-top:14px;background:var(--green3);border-radius:12px;padding:12px 14px;text-align:center;}
 .about-ayah-text{font-family:'Scheherazade New',serif;font-size:1rem;color:var(--green);line-height:1.9;}
@@ -176,10 +179,9 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
           <p data-i18n="home.about_p1">«دربي لحفظ القرآن» منصة تفاعلية تهدف إلى مساعدة الجميع على حفظ كتاب الله ومراجعته، من خلال اختبارات متنوعة.</p>
           <p data-i18n="home.about_p2">مصممة بعناية لتثبيت الحفظ وتعزيز إتقانه، مع التركيز على متشابهات القرآن الكريم.</p>
         </div>
-        <div class="about-dua notranslate" translate="no" data-i18n="about.dua">نسأل الله أن يجعل القرآن ربيع قلوبنا، ونور صدورنا، وأن يرزقنا حفظه وإتقانه والعمل به.</div>
-        <div class="about-ayah">
-          <div class="about-ayah-text notranslate" translate="no">﴿ وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ ﴾</div>
-          <div class="about-ayah-ref notranslate" translate="no">سورة القمر — آية 17</div>
+        <div class="about-hadith notranslate" translate="no">
+          <div class="about-hadith-text">عَنْ عَبْدِ اللَّهِ بْنِ عَمْرٍو رَضِيَ اللَّهُ عَنْهُمَا، عَنِ النَّبِيِّ ﷺ قَالَ: «يُقَالُ لِصَاحِبِ الْقُرْآنِ اقْرَأْ وَارْتَقِ وَرَتِّلْ كَمَا كُنْتَ تُرَتِّلُ فِي الدُّنْيَا فَإِنَّ مَنْزِلَكَ عِنْدَ آخِرِ آيَةٍ تَقْرَؤُهَا»</div>
+          <div class="about-hadith-src">رواه أبو داود والترمذي وأحمد</div>
         </div>
       </div>
     </div>
@@ -188,13 +190,23 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   <!-- ما دور هذا الموقع؟ -->
   <section class="about-card role" id="role">
     <div class="about-row">
-      <div class="role-mark" aria-hidden="true">🤝</div>
+      <div class="about-logo"><img src="icons/darbi_favicon_128.png" alt="دربي لحفظ القرآن" data-i18n-alt="home.title" width="52" height="52"></div>
       <div class="about-body">
         <h2 class="about-title" data-i18n="about.role_title">ما دور هذا الموقع؟</h2>
         <div class="about-text">
           <p data-i18n="about.role_p1">هذا الموقع أداة مساعدة لتثبيت حفظ القرآن ومتشابهاته، ولا يُغني عن التلقي من شيخ مُتقِن؛ فالتشكيل وأحكام التجويد تُؤخذ بالسماع والمشافهة.</p>
         </div>
         <div class="about-note" data-i18n="about.role_p2">فليكن مُعِينًا لك على الإتقان، لا بديلًا عن القراءة على أهل الإتقان.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- دعاء ختم القرآن -->
+  <section class="about-card" id="khatm-dua" aria-label="من أدعية ختم القرآن" style="border-right-color:var(--gold);">
+    <div class="about-row">
+      <div class="role-mark" aria-hidden="true">🤲</div>
+      <div class="about-body">
+        <div class="notranslate" translate="no" style="font-family:'Scheherazade New',serif;font-size:1.1rem;color:var(--green);line-height:2.1;text-align:center;">اللَّهُمَّ ارْحَمْنَا بِالقُرْآنِ الكَرِيمِ، وَاجْعَلْهُ لَنَا إِمَامًا وَنُورًا وَهُدًى وَرَحْمَةً، اللَّهُمَّ ذَكِّرْنَا مِنْهُ مَا نَسِينَا، وَعَلِّمْنَا مِنْهُ مَا جَهِلْنَا، وَارْزُقْنَا تِلَاوَتَهُ آنَاءَ اللَّيْلِ وَأَطْرَافَ النَّهَارِ، وَاجْعَلْهُ لَنَا حُجَّةً يَا رَبَّ العَالَمِينَ</div>
       </div>
     </div>
   </section>
