@@ -941,6 +941,44 @@ const yaseenPages=[
   ['yaseen_p444.html','ص 444','55–70'],['yaseen_p445.html','ص 445','71–83'],
 ];
 
+const israPages=[
+  ['alisra_p282.html','ص 282','1–7'],['alisra_p283.html','ص 283','8–17'],
+  ['alisra_p284.html','ص 284','18–27'],['alisra_p285.html','ص 285','28–38'],
+  ['alisra_p286.html','ص 286','39–49'],['alisra_p287.html','ص 287','50–58'],
+  ['alisra_p288.html','ص 288','59–66'],['alisra_p289.html','ص 289','67–75'],
+  ['alisra_p290.html','ص 290','76–86'],['alisra_p291.html','ص 291','87–96'],
+  ['alisra_p292.html','ص 292','97–104'],['alisra_p293.html','ص 293','105–111'],
+];
+
+const saffatPages=[
+  ['assaffat_p446.html','ص 446','1–24'],['assaffat_p447.html','ص 447','25–51'],
+  ['assaffat_p448.html','ص 448','52–76'],['assaffat_p449.html','ص 449','77–102'],
+  ['assaffat_p450.html','ص 450','103–126'],['assaffat_p451.html','ص 451','127–153'],
+  ['assaffat_p452.html','ص 452','154–182'],
+];
+
+const sadPages=[
+  ['sad_p453.html','ص 453','1–16'],['sad_p454.html','ص 454','17–26'],
+  ['sad_p455.html','ص 455','27–42'],['sad_p456.html','ص 456','43–61'],
+  ['sad_p457.html','ص 457','62–83'],['sad_p458.html','ص 458','84–88'],
+];
+
+const zumarPages=[
+  ['azzumar_p458.html','ص 458','1–5'],['azzumar_p459.html','ص 459','6–10'],
+  ['azzumar_p460.html','ص 460','11–21'],['azzumar_p461.html','ص 461','22–31'],
+  ['azzumar_p462.html','ص 462','32–40'],['azzumar_p463.html','ص 463','41–47'],
+  ['azzumar_p464.html','ص 464','48–56'],['azzumar_p465.html','ص 465','57–67'],
+  ['azzumar_p466.html','ص 466','68–74'],['azzumar_p467.html','ص 467','75'],
+];
+
+const ghafirPages=[
+  ['ghafir_p467.html','ص 467','1–7'],['ghafir_p468.html','ص 468','8–16'],
+  ['ghafir_p469.html','ص 469','17–25'],['ghafir_p470.html','ص 470','26–33'],
+  ['ghafir_p471.html','ص 471','34–40'],['ghafir_p472.html','ص 472','41–49'],
+  ['ghafir_p473.html','ص 473','50–58'],['ghafir_p474.html','ص 474','59–66'],
+  ['ghafir_p475.html','ص 475','67–77'],['ghafir_p476.html','ص 476','78–85'],
+];
+
 const fussilatPages=[
   ['fussilat_p477.html','ص 477','1–11'],['fussilat_p478.html','ص 478','12–20'],
   ['fussilat_p479.html','ص 479','21–29'],['fussilat_p480.html','ص 480','30–38'],
@@ -1180,7 +1218,7 @@ const JUZ_GROUPS = {
         { kind:'full', arr:annahlPages, name:'النحل', surah:'النحل' }
       ] },
   15:{ title:'الإسراء، الكهف', groups:[
-        { kind:'soon', name:'الإسراء', page:282 },
+        { kind:'full', arr:israPages, name:'الإسراء', surah:'الإسراء' },
         { kind:'range', arr:kahfPages, from:0, to:9, name:'سورة الكهف (1–74)', surah:'الكهف', note:'سورة الكهف تكمل في الجزء 16 ←', noteTarget:16 }
       ] },
   16:{ title:'الكهف، مريم، طه', groups:[
@@ -1222,13 +1260,13 @@ const JUZ_GROUPS = {
       ] },
   23:{ title:'يس، الصافات، ص، الزمر', groups:[
         { kind:'range', arr:yaseenPages, from:2, to:6, name:'سورة يس (28–83)', surah:'يس', note:'◄ سورة يس بدأت في الجزء 22', noteTarget:22 },
-        { kind:'soon', name:'الصافات', page:446 },
-        { kind:'soon', name:'ص', page:453 },
-        { kind:'soon', name:'الزمر', page:458 }
+        { kind:'full', arr:saffatPages, name:'الصافات', surah:'الصافات' },
+        { kind:'full', arr:sadPages, name:'ص', surah:'ص' },
+        { kind:'range', arr:zumarPages, from:0, to:4, name:'سورة الزمر (1–31)', surah:'الزمر', note:'سورة الزمر تكمل في الجزء 24 ←', noteTarget:24 }
       ] },
   24:{ title:'الزمر، غافر، فصلت', groups:[
-        { kind:'soon', name:'الزمر (تابع)', page:462 },
-        { kind:'soon', name:'غافر', page:467 },
+        { kind:'range', arr:zumarPages, from:4, to:10, name:'سورة الزمر (32–75)', surah:'الزمر', note:'◄ سورة الزمر بدأت في الجزء 23', noteTarget:23 },
+        { kind:'full', arr:ghafirPages, name:'غافر', surah:'غافر' },
         { kind:'range', arr:fussilatPages, from:0, to:5, name:'سورة فصلت (1–46)', surah:'فصلت', note:'سورة فصلت تكمل في الجزء 25 ←', noteTarget:25 }
       ] },
   25:{ title:'فصلت، الشورى، الزخرف، الدخان، الجاثية', groups:[
@@ -1293,7 +1331,7 @@ const SOON_JUZ = {
   17:['الأنبياء — الحج','ص 322'],
   18:['المؤمنون — الفرقان','ص 342'], 19:['الفرقان — النمل','ص 362'],
   20:['النمل — العنكبوت','ص 382'], 21:['العنكبوت — الأحزاب','ص 402'],
-  24:['الزمر — فصلت','ص 462'], 25:['فصلت — الجاثية','ص 482'],
+  25:['فصلت — الجاثية','ص 482'],
 };
 
 function card(href,name,meta,ok,surah){
@@ -1450,6 +1488,11 @@ function renderDarbiProgress(){
   sabaPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة سبأ '+p[1];});
   fatirPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة فاطر '+p[1];});
   yaseenPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة يس '+p[1];});
+  israPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الإسراء '+p[1];});
+  saffatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الصافات '+p[1];});
+  sadPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة ص '+p[1];});
+  zumarPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الزمر '+p[1];});
+  ghafirPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة غافر '+p[1];});
   fussilatPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة فصلت '+p[1];});
   shuraPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الشورى '+p[1];});
   zukhrufPages.forEach(p=>{nameByKey[p[0].replace('.html','')]='سورة الزخرف '+p[1];});
@@ -1532,7 +1575,7 @@ function renderDarbiProgress(){
 
   if(!Object.keys(all).length)return;
 
-  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+araafPages.length+anfalPages.length+tawbaPages.length+hudPages.length+kahfPages.length+maryamPages.length+tahaPages.length+anbiyaPages.length+hajjPages.length+yunusPages.length+yusufPages.length+arraadPages.length+ibrahimPages.length+alhijrPages.length+annahlPages.length+yaseenPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ashshuaraPages.length+annamlPages.length+qasasPages.length+ankabutPages.length+arrumPages.length+luqmanPages.length+assajdaPages.length+alahzabPages.length+sabaPages.length+fatirPages.length+muminunPages.length+nurPages.length+furqanPages.length+ammaData.filter(p=>p[3]).length;
+  const totalPages=1+baqaraPages.length+alimranPages.length+nisaPages.length+maidaPages.length+anamPages.length+araafPages.length+anfalPages.length+tawbaPages.length+hudPages.length+kahfPages.length+maryamPages.length+tahaPages.length+anbiyaPages.length+hajjPages.length+yunusPages.length+yusufPages.length+arraadPages.length+ibrahimPages.length+alhijrPages.length+annahlPages.length+yaseenPages.length+israPages.length+saffatPages.length+sadPages.length+zumarPages.length+ghafirPages.length+fussilatPages.length+shuraPages.length+zukhrufPages.length+dukhanPages.length+jathiyaPages.length+arrahmanPages.length+alwaqiahPages.length+almulkPages.length+alqalamPages.length+alhaqqaPages.length+almaarijPages.length+nuhPages.length+aljinnPages.length+almuzzammilPages.length+almudaththirPages.length+alqiyamaPages.length+alinsanPages.length+almursalatPages.length+alahqafPages.length+muhammadPages.length+alfathPages.length+alhujuratPages.length+qafPages.length+azzariyatPages.length+atturPages.length+annajmPages.length+alqamarPages.length+alhadidPages.length+almujadilaPages.length+alhashrPages.length+almumtahanaPages.length+alsaffPages.length+aljumuaPages.length+almunafiqunPages.length+attaghabunPages.length+attalaqPages.length+attahrimPages.length+ashshuaraPages.length+annamlPages.length+qasasPages.length+ankabutPages.length+arrumPages.length+luqmanPages.length+assajdaPages.length+alahzabPages.length+sabaPages.length+fatirPages.length+muminunPages.length+nurPages.length+furqanPages.length+ammaData.filter(p=>p[3]).length;
   let doneCount=0;
   Object.keys(nameByKey).forEach(k=>{ if(darbiPageComplete(all[k])) doneCount++; });
 

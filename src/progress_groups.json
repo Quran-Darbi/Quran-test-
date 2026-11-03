@@ -1526,6 +1526,72 @@
   ]
  },
  {
+  "label": "سورة الإسراء",
+  "juz": 15,
+  "pages": [
+   {
+    "stem": "alisra_p282",
+    "name": "الإسراء ص 282",
+    "range": "1–7"
+   },
+   {
+    "stem": "alisra_p283",
+    "name": "الإسراء ص 283",
+    "range": "8–17"
+   },
+   {
+    "stem": "alisra_p284",
+    "name": "الإسراء ص 284",
+    "range": "18–27"
+   },
+   {
+    "stem": "alisra_p285",
+    "name": "الإسراء ص 285",
+    "range": "28–38"
+   },
+   {
+    "stem": "alisra_p286",
+    "name": "الإسراء ص 286",
+    "range": "39–49"
+   },
+   {
+    "stem": "alisra_p287",
+    "name": "الإسراء ص 287",
+    "range": "50–58"
+   },
+   {
+    "stem": "alisra_p288",
+    "name": "الإسراء ص 288",
+    "range": "59–66"
+   },
+   {
+    "stem": "alisra_p289",
+    "name": "الإسراء ص 289",
+    "range": "67–75"
+   },
+   {
+    "stem": "alisra_p290",
+    "name": "الإسراء ص 290",
+    "range": "76–86"
+   },
+   {
+    "stem": "alisra_p291",
+    "name": "الإسراء ص 291",
+    "range": "87–96"
+   },
+   {
+    "stem": "alisra_p292",
+    "name": "الإسراء ص 292",
+    "range": "97–104"
+   },
+   {
+    "stem": "alisra_p293",
+    "name": "الإسراء ص 293",
+    "range": "105–111"
+   }
+  ]
+ },
+ {
   "label": "سورة الكهف",
   "juz": 15,
   "pages": [
@@ -2231,6 +2297,195 @@
     "stem": "yaseen_p445",
     "name": "يس ص 445",
     "range": "71–83"
+   }
+  ]
+ },
+ {
+  "label": "سورة الصافات",
+  "juz": 23,
+  "pages": [
+   {
+    "stem": "assaffat_p446",
+    "name": "الصافات ص 446",
+    "range": "1–24"
+   },
+   {
+    "stem": "assaffat_p447",
+    "name": "الصافات ص 447",
+    "range": "25–51"
+   },
+   {
+    "stem": "assaffat_p448",
+    "name": "الصافات ص 448",
+    "range": "52–76"
+   },
+   {
+    "stem": "assaffat_p449",
+    "name": "الصافات ص 449",
+    "range": "77–102"
+   },
+   {
+    "stem": "assaffat_p450",
+    "name": "الصافات ص 450",
+    "range": "103–126"
+   },
+   {
+    "stem": "assaffat_p451",
+    "name": "الصافات ص 451",
+    "range": "127–153"
+   },
+   {
+    "stem": "assaffat_p452",
+    "name": "الصافات ص 452",
+    "range": "154–182"
+   }
+  ]
+ },
+ {
+  "label": "سورة ص",
+  "juz": 23,
+  "pages": [
+   {
+    "stem": "sad_p453",
+    "name": "ص ص 453",
+    "range": "1–16"
+   },
+   {
+    "stem": "sad_p454",
+    "name": "ص ص 454",
+    "range": "17–26"
+   },
+   {
+    "stem": "sad_p455",
+    "name": "ص ص 455",
+    "range": "27–42"
+   },
+   {
+    "stem": "sad_p456",
+    "name": "ص ص 456",
+    "range": "43–61"
+   },
+   {
+    "stem": "sad_p457",
+    "name": "ص ص 457",
+    "range": "62–83"
+   },
+   {
+    "stem": "sad_p458",
+    "name": "ص ص 458",
+    "range": "84–88"
+   }
+  ]
+ },
+ {
+  "label": "سورة الزمر",
+  "juz": 23,
+  "pages": [
+   {
+    "stem": "azzumar_p458",
+    "name": "الزمر ص 458",
+    "range": "1–5"
+   },
+   {
+    "stem": "azzumar_p459",
+    "name": "الزمر ص 459",
+    "range": "6–10"
+   },
+   {
+    "stem": "azzumar_p460",
+    "name": "الزمر ص 460",
+    "range": "11–21"
+   },
+   {
+    "stem": "azzumar_p461",
+    "name": "الزمر ص 461",
+    "range": "22–31"
+   },
+   {
+    "stem": "azzumar_p462",
+    "name": "الزمر ص 462",
+    "range": "32–40"
+   },
+   {
+    "stem": "azzumar_p463",
+    "name": "الزمر ص 463",
+    "range": "41–47"
+   },
+   {
+    "stem": "azzumar_p464",
+    "name": "الزمر ص 464",
+    "range": "48–56"
+   },
+   {
+    "stem": "azzumar_p465",
+    "name": "الزمر ص 465",
+    "range": "57–67"
+   },
+   {
+    "stem": "azzumar_p466",
+    "name": "الزمر ص 466",
+    "range": "68–74"
+   },
+   {
+    "stem": "azzumar_p467",
+    "name": "الزمر ص 467",
+    "range": "75"
+   }
+  ]
+ },
+ {
+  "label": "سورة غافر",
+  "juz": 24,
+  "pages": [
+   {
+    "stem": "ghafir_p467",
+    "name": "غافر ص 467",
+    "range": "1–7"
+   },
+   {
+    "stem": "ghafir_p468",
+    "name": "غافر ص 468",
+    "range": "8–16"
+   },
+   {
+    "stem": "ghafir_p469",
+    "name": "غافر ص 469",
+    "range": "17–25"
+   },
+   {
+    "stem": "ghafir_p470",
+    "name": "غافر ص 470",
+    "range": "26–33"
+   },
+   {
+    "stem": "ghafir_p471",
+    "name": "غافر ص 471",
+    "range": "34–40"
+   },
+   {
+    "stem": "ghafir_p472",
+    "name": "غافر ص 472",
+    "range": "41–49"
+   },
+   {
+    "stem": "ghafir_p473",
+    "name": "غافر ص 473",
+    "range": "50–58"
+   },
+   {
+    "stem": "ghafir_p474",
+    "name": "غافر ص 474",
+    "range": "59–66"
+   },
+   {
+    "stem": "ghafir_p475",
+    "name": "غافر ص 475",
+    "range": "67–77"
+   },
+   {
+    "stem": "ghafir_p476",
+    "name": "غافر ص 476",
+    "range": "78–85"
    }
   ]
  },
