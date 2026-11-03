@@ -40,12 +40,12 @@
 <link rel="apple-touch-icon" href="icons/darbi_favicon_512.png">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WFT6TYVB75"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("js",new Date());gtag("config","G-WFT6TYVB75");</script>
-<link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Scheherazade+New:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f0f4f0;--text:#2d4a2d;--card:#fff;--border:#c8d9c0;--gold:#c4a84a;--accent:#4a7c4a;--surface2:#f4f8f2;--surface3:#f8fbf6;--surface-hover:#e0edd8;--accent-dark:#3a6a3a;--wrong-border:#c0392b;--teal:#3a7a7c;--hint-btn-bg:#fff7e6;}
 html[data-theme="dark"]{--bg:#1c2420;--text:#d9ecd9;--card:#232f29;--border:#3a4d40;--gold:#d9b96a;--accent:#5fae5f;--surface2:#2a3830;--surface3:#1f2a24;--surface-hover:#324438;--accent-dark:#7fcf7f;--wrong-border:#e74c3c;--teal:#5fb8ba;--hint-btn-bg:#3a3324;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:'Almarai','Amiri','Scheherazade New',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .top-bar{background:var(--bg);padding:12px 20px 12px 58px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
 .back-btn{background:none;border:none;color:var(--accent);font-size:18px;cursor:pointer;text-decoration:none;font-family:inherit;}
 #theme-toggle{background:var(--surface2);border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;font-size:16px;cursor:pointer;margin-right:auto;}
@@ -53,16 +53,16 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .info-card::before,.info-card::after{content:'✦';color:var(--gold);font-size:18px;position:absolute;top:14px;}
 .info-card::before{right:16px;}.info-card::after{left:16px;}
 .page-title{font-size:24px;font-weight:700;margin-bottom:4px;}
-.page-sub{font-size:13px;color:var(--accent);line-height:1.7;}
+.page-sub{font-size:13px;color:var(--accent);line-height:1.95;}
 .select-card{margin:0 16px 12px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:18px 16px;}
 .select-label{font-size:14px;color:var(--accent);margin-bottom:10px;font-weight:700;}
-.surah-select{width:100%;padding:12px 14px;font-family:'Amiri',serif;font-size:16px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);direction:rtl;outline:none;cursor:pointer;}
+.surah-select{width:100%;padding:12px 14px;font-family:'Almarai',sans-serif;font-size:16px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);direction:rtl;outline:none;cursor:pointer;}
 .surah-select:focus{border-color:var(--accent);}
 .surah-search{width:100%;padding:10px 14px;margin-bottom:8px;font-family:inherit;font-size:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);direction:rtl;outline:none;}
 .surah-search:focus{border-color:var(--accent);}
 .surah-search-empty{font-size:12.5px;color:var(--accent);text-align:center;padding:6px;display:none;}
 .selected-info{margin-top:10px;font-size:13px;color:var(--accent);background:var(--surface2);border-radius:8px;padding:8px 12px;text-align:center;display:none;}
-.surah-picker-trigger{width:100%;padding:12px 14px;font-family:'Amiri',serif;font-size:16px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;text-align:start;}
+.surah-picker-trigger{width:100%;padding:12px 14px;font-family:'Almarai',sans-serif;font-size:16px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;text-align:start;}
 .surah-picker-trigger:hover{border-color:var(--accent);}
 .surah-picker-trigger:focus-visible{border-color:var(--accent);outline:none;}
 .surah-picker-trigger-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -70,7 +70,7 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .legacy-surah-controls{display:none;}
 .surah-sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10005;display:none;}
 .surah-sheet-backdrop.open{display:block;}
-.surah-sheet{position:fixed;left:0;right:0;bottom:0;z-index:10006;max-height:85vh;background:var(--card);border:1.5px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,0.25);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .28s ease;font-family:'Amiri','Scheherazade New',serif;}
+.surah-sheet{position:fixed;left:0;right:0;bottom:0;z-index:10006;max-height:85vh;background:var(--card);border:1.5px solid var(--border);border-bottom:none;border-radius:20px 20px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,0.25);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .28s ease;font-family:'Almarai',sans-serif;}
 .surah-sheet-backdrop.open .surah-sheet{transform:translateY(0);}
 .surah-sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:10px auto 2px;flex:none;}
 .surah-sheet-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 16px 10px;border-bottom:1.5px solid var(--border);flex:none;}
@@ -106,11 +106,11 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,.4);}50%{box-shadow:0 0 0 10px rgba(231,76,60,0);}}
 .clear-btn{width:100%;padding:10px;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;border:1.5px solid var(--wrong-border);background:transparent;color:var(--wrong-border);visibility:hidden;margin-bottom:10px;}
 .clear-btn.visible{visibility:visible;}
-.transcript-box{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-size:17px;line-height:2.2;direction:rtl;text-align:right;min-height:80px;margin-bottom:12px;color:var(--text);}
+.transcript-box{background:var(--surface3);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-size:19px;line-height:2.2;direction:rtl;text-align:right;min-height:80px;margin-bottom:12px;color:var(--text);}
 .check-btn{width:100%;padding:13px;border-radius:12px;font-size:17px;font-family:inherit;cursor:pointer;background:var(--accent);color:#fff;border:none;visibility:hidden;}
 .check-btn.visible{visibility:visible;}
 .check-btn:hover{background:var(--accent-dark);}
-.rec-word{display:inline-block;background:var(--surface-hover);border-radius:4px;padding:2px 5px;margin:2px;cursor:pointer;}
+.rec-word{display:inline-block;background:var(--surface-hover);border-radius:4px;padding:0 5px;margin:2px 2.5px;line-height:1.95;cursor:pointer;}
 .rec-word:hover{opacity:0.7;text-decoration:line-through;}
 .result-card{margin:0 16px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:20px;display:none;}
 .result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
@@ -127,10 +127,10 @@ body{font-family:'Amiri','Scheherazade New',serif;background:var(--bg);color:var
 .legend{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:12px;}
 .legend-dot{width:13px;height:13px;border-radius:3px;}
-.ayah-display{font-family:'Scheherazade New',serif;font-size:19px;line-height:3;direction:rtl;text-align:right;}
-.w-ok{color:#155724;background:#c3e6cb;border-radius:4px;padding:1px 4px;margin:1px;}
-.w-err{color:#fff;background:#c0392b;border-radius:4px;padding:1px 4px;margin:1px;}
-.w-help{color:#7a5a10;background:#fbefc8;border-radius:4px;padding:1px 4px;margin:1px;}
+.ayah-display{font-family:'Scheherazade New',serif;font-size:19px;line-height:2.3;direction:rtl;text-align:right;}
+.w-ok{color:#155724;background:#c3e6cb;border-radius:4px;display:inline-block;line-height:1.95;padding:0 5px;margin:2px 0;}
+.w-err{color:#fff;background:#c0392b;border-radius:4px;display:inline-block;line-height:1.95;padding:0 5px;margin:2px 0;}
+.w-help{color:#7a5a10;background:#fbefc8;border-radius:4px;display:inline-block;line-height:1.95;padding:0 5px;margin:2px 0;}
 html[data-theme="dark"] .w-help{color:#f0d88a;background:#3a3114;}
 .w-start{box-shadow:0 0 0 2px var(--gold);}
 .edit-tip{display:none;font-size:13px;color:var(--text);opacity:.75;margin:0 0 6px;text-align:center;}
@@ -140,8 +140,9 @@ html[data-theme="dark"] .w-help{color:#f0d88a;background:#3a3114;}
 .help-chips span{background:#fbefc8;color:#7a5a10;border-radius:8px;padding:2px 10px;}
 html[data-theme="dark"] .help-chips span{background:#3a3114;color:#f0d88a;}
 .rec-word{border-bottom:2px dotted var(--gold);}
+.transcript-box,.rec-word,.help-chips,.help-chips span{font-family:'Scheherazade New','Amiri','Traditional Arabic',serif;}
 .retry-wrong-btn{display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-family:inherit;font-size:15px;cursor:pointer;}
-.tail-note{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-size:13px;text-align:center;line-height:1.7;}
+.tail-note{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-size:13px;text-align:center;line-height:1.95;}
 .tail-note button{margin-top:8px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--gold);background:transparent;color:var(--text);font-family:inherit;font-size:14px;cursor:pointer;}
 .scope-switch{display:flex;gap:6px;margin-bottom:4px;}
 .scope-switch button{flex:1;padding:9px 6px;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center;line-height:1.35;}
@@ -153,7 +154,7 @@ html[data-theme="dark"] .help-chips span{background:#3a3114;color:#f0d88a;}
 .scope-switch button.on .sc-s{opacity:.9;}
 html[data-theme="dark"] .scope-switch button.on{color:#10210f;}
 .scope-hint{font-size:12px;opacity:.75;text-align:center;margin-bottom:10px;}
-.help-why{font-size:12px;opacity:.8;margin:4px 0 8px;line-height:1.7;}
+.help-why{font-size:12px;opacity:.8;margin:4px 0 8px;line-height:1.95;}
 .retry-banner{display:none;margin-bottom:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--gold);background:var(--hint-btn-bg);color:var(--text);font-size:14px;text-align:center;}
 .w-missing{color:#999;background:#f0f0f0;border-radius:4px;padding:1px 4px;margin:1px;text-decoration:line-through;}
 .retry-btn{width:100%;padding:11px;border-radius:11px;font-size:15px;font-family:inherit;cursor:pointer;background:var(--surface2);color:var(--accent);border:1.5px solid var(--border);margin-top:10px;}
@@ -172,7 +173,7 @@ html[data-theme="dark"] .scope-switch button.on{color:#10210f;}
 <link rel="canonical" href="https://quran-darbi.com/recitation.html">
 <script src="lang.js"></script>
 <style>
-.tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Almarai',Tahoma,sans-serif;}
 .tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
 .tools-fab-btn:hover{filter:brightness(1.05);}
 .tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
@@ -192,7 +193,7 @@ html[data-theme="dark"] .scope-switch button.on{color:#10210f;}
 .tools-lang-list button.lang-active .lang-check{visibility:visible;}
 .fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
 .fdbk-overlay.open{display:flex;}
-.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
+.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Almarai',Tahoma,sans-serif;direction:rtl;text-align:right;}
 html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
 .fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
 html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
@@ -207,7 +208,7 @@ html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
 .fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
 .qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:center;justify-content:center;padding:16px;}
 .qr-overlay.open{display:flex;}
-.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Almarai',Tahoma,sans-serif;}
 .qr-title{font-size:1.05rem;color:#2E6B3E;font-weight:700;margin-bottom:14px;}
 html[data-theme="dark"] .qr-title{color:#6BBF5A;}
 .qr-img{border-radius:12px;border:1px solid var(--border,#E4EAE4);background:#fff;padding:8px;}
@@ -1037,43 +1038,43 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
       <option value="almursalat_p581">ص581 — آيات 20–50</option>
     </optgroup>
     <optgroup label="جزء عمّ">
-      <option value="attakwir" data-page="586">سورة التكوير كاملة (29 آية)</option>
-      <option value="annaba" data-page="582">سورة النبأ كاملة (40 آية)</option>
-      <option value="annaziat" data-page="583">سورة النازعات كاملة (46 آية)</option>
-      <option value="abasa" data-page="585">سورة عبس كاملة (42 آية)</option>
-      <option value="alinfitar" data-page="587">سورة الانفطار كاملة (19 آية)</option>
-      <option value="almutaffifin" data-page="587">سورة المطففين كاملة (36 آية)</option>
-      <option value="alinshiqaq" data-page="589">سورة الانشقاق كاملة (25 آية)</option>
-      <option value="alburuj" data-page="590">سورة البروج كاملة (22 آية)</option>
-      <option value="altariq" data-page="591">سورة الطارق كاملة (17 آية)</option>
-      <option value="alaala" data-page="591">سورة الأعلى كاملة (19 آية)</option>
-      <option value="alghasiya" data-page="592">سورة الغاشية كاملة (26 آية)</option>
-      <option value="alfajr" data-page="593">سورة الفجر كاملة (30 آية)</option>
-      <option value="albalad" data-page="594">سورة البلد كاملة (20 آية)</option>
-      <option value="alshams" data-page="595">سورة الشمس كاملة (15 آية)</option>
-      <option value="allayl" data-page="595">سورة الليل كاملة (21 آية)</option>
-      <option value="alduha" data-page="596">سورة الضحى كاملة (11 آية)</option>
-      <option value="alsharh" data-page="596">سورة الشرح كاملة (8 آيات)</option>
-      <option value="atteen" data-page="597">سورة التين كاملة (8 آيات)</option>
-      <option value="alalaq" data-page="597">سورة العلق كاملة (19 آية)</option>
-      <option value="alqadr" data-page="598">سورة القدر كاملة (5 آيات)</option>
-      <option value="albayyina" data-page="598">سورة البينة كاملة (8 آيات)</option>
-      <option value="alzalzala" data-page="599">سورة الزلزلة كاملة (8 آيات)</option>
-      <option value="alaadiyat" data-page="599">سورة العاديات كاملة (11 آية)</option>
-      <option value="alqaria" data-page="600">سورة القارعة كاملة (11 آية)</option>
-      <option value="altakathur" data-page="600">سورة التكاثر كاملة (8 آيات)</option>
-      <option value="alasr" data-page="601">سورة العصر كاملة (3 آيات)</option>
-      <option value="alhumaza" data-page="601">سورة الهمزة كاملة (9 آيات)</option>
-      <option value="alfiyl" data-page="601">سورة الفيل كاملة (5 آيات)</option>
-      <option value="aquraysh" data-page="602">سورة قريش كاملة (4 آيات)</option>
-      <option value="almaoon" data-page="602">سورة الماعون كاملة (7 آيات)</option>
-      <option value="alkawthur" data-page="602">سورة الكوثر كاملة (3 آيات)</option>
-      <option value="alkafirun" data-page="603">سورة الكافرون كاملة (6 آيات)</option>
-      <option value="alnnasr" data-page="603">سورة النصر كاملة (3 آيات)</option>
-      <option value="almasad" data-page="603">سورة المسد كاملة (5 آيات)</option>
-      <option value="alikhlas" data-page="604">سورة الإخلاص كاملة (4 آيات)</option>
-      <option value="alfalaq" data-page="604">سورة الفلق كاملة (5 آيات)</option>
-      <option value="alnnas" data-page="604">سورة الناس كاملة (6 آيات)</option>
+      <option value="annaba" data-page="582">سورة النبأ</option>
+      <option value="annaziat" data-page="583">سورة النازعات</option>
+      <option value="abasa" data-page="585">سورة عبس</option>
+      <option value="attakwir" data-page="586">سورة التكوير</option>
+      <option value="alinfitar" data-page="587">سورة الانفطار</option>
+      <option value="almutaffifin" data-page="587">سورة المطففين</option>
+      <option value="alinshiqaq" data-page="589">سورة الانشقاق</option>
+      <option value="alburuj" data-page="590">سورة البروج</option>
+      <option value="altariq" data-page="591">سورة الطارق</option>
+      <option value="alaala" data-page="591">سورة الأعلى</option>
+      <option value="alghasiya" data-page="592">سورة الغاشية</option>
+      <option value="alfajr" data-page="593">سورة الفجر</option>
+      <option value="albalad" data-page="594">سورة البلد</option>
+      <option value="alshams" data-page="595">سورة الشمس</option>
+      <option value="allayl" data-page="595">سورة الليل</option>
+      <option value="alduha" data-page="596">سورة الضحى</option>
+      <option value="alsharh" data-page="596">سورة الشرح</option>
+      <option value="atteen" data-page="597">سورة التين</option>
+      <option value="alalaq" data-page="597">سورة العلق</option>
+      <option value="alqadr" data-page="598">سورة القدر</option>
+      <option value="albayyina" data-page="598">سورة البينة</option>
+      <option value="alzalzala" data-page="599">سورة الزلزلة</option>
+      <option value="alaadiyat" data-page="599">سورة العاديات</option>
+      <option value="alqaria" data-page="600">سورة القارعة</option>
+      <option value="altakathur" data-page="600">سورة التكاثر</option>
+      <option value="alasr" data-page="601">سورة العصر</option>
+      <option value="alhumaza" data-page="601">سورة الهمزة</option>
+      <option value="alfiyl" data-page="601">سورة الفيل</option>
+      <option value="aquraysh" data-page="602">سورة قريش</option>
+      <option value="almaoon" data-page="602">سورة الماعون</option>
+      <option value="alkawthur" data-page="602">سورة الكوثر</option>
+      <option value="alkafirun" data-page="603">سورة الكافرون</option>
+      <option value="alnnasr" data-page="603">سورة النصر</option>
+      <option value="almasad" data-page="603">سورة المسد</option>
+      <option value="alikhlas" data-page="604">سورة الإخلاص</option>
+      <option value="alfalaq" data-page="604">سورة الفلق</option>
+      <option value="alnnas" data-page="604">سورة الناس</option>
     </optgroup>
   </select>
   </div>

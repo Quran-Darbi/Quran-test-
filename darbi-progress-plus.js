@@ -286,7 +286,7 @@
       bar.style.cssText = [
         'display:flex', 'align-items:center', 'justify-content:center', 'gap:10px', 'flex-wrap:wrap',
         'padding:9px 58px', 'background:var(--green,#2E6B3E)', 'color:#fff',
-        'font-family:"Amiri",Tahoma,sans-serif', 'font-size:.82rem', 'position:relative', 'z-index:300'
+        'font-family:"Almarai",Tahoma,sans-serif', 'font-size:.82rem', 'position:relative', 'z-index:300'
       ].join(';');
       bar.innerHTML =
         '<span data-i18n="reminder.banner">🌙 لم تبدأ وردك اليوم بعد — أكمل حفظك الآن</span>' +

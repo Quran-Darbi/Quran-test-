@@ -34,10 +34,10 @@
 <link rel="canonical" href="https://quran-darbi.com/privacy.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Amiri',serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;transition:background .3s,color .3s;}
+body{font-family:'Almarai',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;transition:background .3s,color .3s;}
 
 :root{
   --bg:#FAFAFA;--card:#FFFFFF;--nav:#FFFFFF;
@@ -58,7 +58,7 @@ html[data-theme="dark"]{
 
 /* ===== NAV ===== */
 nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px var(--shadow);}
-.nav-logo{font-family:'Scheherazade New',serif;font-size:1.1rem;color:var(--green);font-weight:700;display:flex;align-items:center;gap:6px;text-decoration:none;}
+.nav-logo{font-family:'Almarai',sans-serif;font-size:1.1rem;color:var(--green);font-weight:700;display:flex;align-items:center;gap:6px;text-decoration:none;}
 .nav-logo span{font-size:1.3rem;}
 .nav-logo img{width:24px;height:24px;border-radius:6px;object-fit:cover;flex-shrink:0;}
 .nav-right{display:flex;align-items:center;gap:8px;margin-left:46px;}
@@ -71,7 +71,7 @@ nav{background:var(--nav);border-bottom:1.5px solid var(--border);padding:10px 1
 .about-logo{flex-shrink:0;}
 .about-logo img{display:block;border-radius:12px;}
 .about-body{flex:1;min-width:220px;}
-.about-title{font-family:'Scheherazade New',serif;font-size:1.35rem;color:var(--green);font-weight:700;margin-bottom:8px;}
+.about-title{font-family:'Almarai',sans-serif;font-size:1.35rem;color:var(--green);font-weight:700;margin-bottom:8px;}
 .about-text{font-size:0.93rem;color:var(--soft);line-height:2;}
 .about-text p{margin:0 0 12px;}
 .about-text ul{margin:0 0 12px;padding-inline-start:22px;}
@@ -282,7 +282,7 @@ if('serviceWorker' in navigator){
 }
 </script>
 <style>
-.tools-fab{position:fixed;top:14px;left:14px;z-index:9990;display:inline-flex;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.tools-fab{position:fixed;top:10px;left:14px;z-index:9990;display:inline-flex;font-family:'Almarai',Tahoma,sans-serif;}
 .tools-fab-btn{display:flex;align-items:center;justify-content:center;background:var(--green3,var(--surface2,#EAF2EA));color:var(--green,var(--accent,#2E6B3E));border:1px solid var(--border,#E4EAE4);border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
 .tools-fab-btn:hover{filter:brightness(1.05);}
 .tools-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;max-width:min(240px,calc(100vw - 24px));background:var(--card,#fff);border:1.5px solid var(--border,#E4EAE4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.18);overflow:hidden;min-width:195px;border-top:3px solid #C4A84A;z-index:9998;}
@@ -307,7 +307,7 @@ iframe.skiptranslate,.VIpgJd-ZVi9od-ORHb-OEVmcd{display:none !important;}
 body{top:0 !important;}
 .fdbk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;padding:16px;}
 .fdbk-overlay.open{display:flex;}
-.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;direction:rtl;text-align:right;}
+.fdbk-modal{background:#fff;border-radius:14px;max-width:380px;width:100%;padding:20px;border-top:4px solid #C4A84A;font-family:'Almarai',Tahoma,sans-serif;direction:rtl;text-align:right;}
 html[data-theme="dark"] .fdbk-modal{background:#182018;color:#DCF0D8;}
 .fdbk-modal h3{margin:0 0 12px;color:#2E6B3E;font-size:1.15rem;}
 html[data-theme="dark"] .fdbk-modal h3{color:#6BBF5A;}
@@ -322,7 +322,7 @@ html[data-theme="dark"] .fdbk-send{background:#4A9E40;}
 .fdbk-cancel{background:none;border:1px solid #d8e0d8;color:inherit;}
 .qr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:center;justify-content:center;padding:16px;}
 .qr-overlay.open{display:flex;}
-.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Amiri','Scheherazade New',Tahoma,sans-serif;}
+.qr-modal{background:var(--card,#fff);border:1px solid var(--border,#E4EAE4);border-radius:18px;padding:22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.2);border-top:4px solid #C4A84A;font-family:'Almarai',Tahoma,sans-serif;}
 .qr-title{font-size:1.05rem;color:#2E6B3E;font-weight:700;margin-bottom:14px;}
 html[data-theme="dark"] .qr-title{color:#6BBF5A;}
 .qr-img{border-radius:12px;border:1px solid var(--border,#E4EAE4);background:#fff;padding:8px;}

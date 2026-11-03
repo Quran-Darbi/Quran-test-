@@ -60,7 +60,7 @@ ar: {
   'home.progress_btn':'📊 تقدّمي',
   'home.progress_btn_sub':'تقدّمي بالتفصيل ◀',
   'home.stat_tests':'اختباراً متاحاً',
-  'home.stat_parts':'أجزاء',
+  'home.stat_parts':'جزءًا',
   'home.stat_surahs':'سورة',
   'home.beta_tag':'✦ الإطلاق التجريبي',
   'home.beta_text_prefix':'نرحب بـ',
