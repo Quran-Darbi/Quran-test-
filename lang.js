@@ -861,7 +861,7 @@ fr: {
   'about2.for_p2':'Darbi offre aussi aux enseignants un outil interactif vers lequel ils peuvent orienter leurs élèves.',
   'about2.for_title':'À qui s’adresse Darbi ?',
   'about2.hadith_title':'Le mérite du Saint Coran',
-  'about2.how1':'Choisissez la sourate ou la page que vous souhaitez réviser.',
+  'about2.how1':'Déterminez la sourate ou la page que vous souhaitez réviser.',
   'about2.how2':'Choisissez le type de quiz qui vous convient ; vous pouvez commencer par n’importe quel niveau.',
   'about2.how3':'Refaites le quiz et revoyez vos erreurs jusqu’à maîtriser la page, puis passez à la suivante.',
   'about2.how4':'Utilisez les différents types de quiz pour renforcer votre capacité à rappeler les versets et à distinguer les versets similaires.',
