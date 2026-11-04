@@ -2782,6 +2782,7 @@ function ensureSyncMenuItem(){
         anchor = shareBtn || progBtn;
         item = document.createElement('button');
         item.className = 'tools-item tools-sync-item';
+        item.style.whiteSpace = 'nowrap'; item.style.fontSize = '0.8rem'; item.style.textAlign = 'start';
         item.setAttribute('onclick', "toolsClose();location.href='progress.html#sync-card';");
         var span = document.createElement('span');
         item.appendChild(span);
