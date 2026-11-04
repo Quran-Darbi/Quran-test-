@@ -141,3 +141,5 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 .q-text,.choice-btn,.answer-input,.feedback,.hint-box,.rec-transcript,.rec-word,.order-item,.order-help,.order-slot,.order-filled-grid,.order-empty-strip,.oh-tap,.mushaf-block,.ayah-end,.notranslate{font-family:'Scheherazade New','Amiri','Traditional Arabic',serif;}
 /* Scheherazade New أصغر بصريًا من Amiri بنفس المقاس، فنكبّر أسئلة واختيارات الآيات قليلًا */
 .q-text{font-size:22px;}.choice-btn{font-size:19px;}
+/* الترتيب: عند قلّة العناصر (١–٣) يملأ العنصر عرض الشاشة بدل عمود ضيّق */
+#order-pool{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;}

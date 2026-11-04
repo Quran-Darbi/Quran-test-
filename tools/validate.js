@@ -16,6 +16,7 @@ for(const {stem,file} of pages()){
   if(!fs.existsSync(path.join(SRC,'engine',j.engine+'.js')))E(stem,'محرك غير موجود: '+j.engine);
   if(typeof d.RESUME_KEY!=='string')E(stem,'RESUME_KEY ناقص');
   if(!Array.isArray(d.AYAT)||!d.AYAT.length||d.AYAT.some(a=>typeof a!=='string'||!a.trim()))E(stem,'AYAT غير صالح');
+  if(d.ORDER_SEGS&&(d.ORDER_SEGS.join(' ')!==(d.AYAT||[]).join(' ')||!d.ORDER_NUMS||d.ORDER_NUMS.length!==d.ORDER_SEGS.length||d.ORDER_SEGS.length<2))E(stem,'ORDER_SEGS لا تطابق AYAT أو ORDER_NUMS ناقص أو المقاطع أقل من ٢');
   if(d.AYAT_NUMS&&(!Array.isArray(d.AYAT_NUMS)||d.AYAT_NUMS.length!==(d.AYAT||[]).length))E(stem,'AYAT_NUMS لا يطابق عدد AYAT');
   if(!d.BAD_SPELL||!('$regex' in d.BAD_SPELL))E(stem,'BAD_SPELL (حارس الإملاء) مفقود');
   // قاعدة الإقلاب (ثابتة): علامة واحدة + ميم صغيرة؛ ممنوع تنوين مفتوح (ࣰ ࣱ ࣲ) قبل ۢ / ۭ

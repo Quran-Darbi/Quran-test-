@@ -1,7 +1,7 @@
 // مكتبة مشتركة لأدوات البناء — دربي لحفظ القرآن
 const fs=require('fs'),path=require('path');
 const ROOT=path.resolve(__dirname,'..'),SRC=path.join(ROOT,'src');
-const NAMES=['RESUME_KEY','AYAT','AYAT_NUMS','ORDER_AYAT','EASY_Q','MEDIUM_Q','HARD_Q','BAD_SPELL'];
+const NAMES=['RESUME_KEY','AYAT','AYAT_NUMS','ORDER_AYAT','ORDER_SEGS','ORDER_NUMS','EASY_Q','MEDIUM_Q','HARD_Q','BAD_SPELL'];
 // RegExp لا يُحفظ في JSON: يُخزَّن كعلامة {$regex,flags} ويعود حرفاً عند التوليد
 function jsLit(v){
   if(v&&typeof v==='object'&&!Array.isArray(v)&&'$regex' in v)return '/'+v.$regex+'/'+(v.flags||'');
