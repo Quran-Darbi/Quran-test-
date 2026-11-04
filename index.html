@@ -270,8 +270,8 @@ html[data-theme="dark"] .beta-text{color:var(--soft);}
 
 .about-dua{margin-top:14px;font-family:'Scheherazade New',serif;font-size:1.02rem;line-height:1.9;color:var(--green);text-align:center;}
 /* ضغط الشاشة الأولى حتى يظهر مربع البحث كاملًا على الهواتف الأقصر */
-@media(max-height:860px){
-  html.has-progress .home-first .hero{padding-top:10px;padding-bottom:8px;}
+@media(max-height:910px){
+  html.has-progress .home-first .hero{padding-top:20px;padding-bottom:8px;}
   html.has-progress .home-first .hero-bismillah{margin-bottom:8px;}
   html.has-progress .home-first .hero-title{margin-bottom:6px;}
   html.has-progress .home-first .hero-sub{margin-bottom:10px;line-height:1.5;}
@@ -301,11 +301,33 @@ html[data-theme="dark"] .beta-text{color:var(--soft);}
   html.has-progress .home-first .hero-inner .ayah-banner{display:none;}
 }
 @media(max-height:800px){
-  html:not(.has-progress) .home-first .hero{padding-top:10px;padding-bottom:8px;}
+  html:not(.has-progress) .home-first .hero{padding-top:20px;padding-bottom:8px;}
   html:not(.has-progress) .home-first .hero-bismillah{display:none;}
   html:not(.has-progress) .home-first .hero-sub{margin-bottom:10px;}
   html:not(.has-progress) .home-first .hero-types{margin-bottom:10px;}
   html:not(.has-progress) .home-first .hero-stars-bottom{display:none;}
+}
+/* الشاشات القصيرة: تصغير مربع الآية تدريجيًّا ليبقى كل شيء في شاشة واحدة */
+@media(max-height:800px){
+  html:not(.has-progress) .home-first .hero-inner .ayah-banner{padding:6px 16px;margin-top:10px;}
+  html:not(.has-progress) .home-first .ayah-text{font-size:0.95rem;line-height:1.6;margin-bottom:0;}
+  html:not(.has-progress) .home-first .ayah-ref{font-size:0.68rem;}
+}
+@media(max-height:720px){
+  html:not(.has-progress) .home-first .hero-inner .ayah-banner{padding:4px 14px;}
+  html:not(.has-progress) .home-first .ayah-text{font-size:0.88rem;line-height:1.5;}
+  html:not(.has-progress) .home-first .ayah-ref{font-size:0.64rem;}
+}
+/* الشاشات الطويلة: توزيع المساحة الفائضة على المسافات بين عناصر الهيرو بدل تركها فارغة فوق وتحت */
+@media(min-height:801px){
+  html:not(.has-progress) .home-first .hero{--x:max(0px,min(28px,calc((100svh - 800px) * .12)));}
+  html:not(.has-progress) .home-first .hero-bismillah{margin-bottom:calc(16px + var(--x));}
+  html:not(.has-progress) .home-first .hero-title{margin-bottom:calc(12px + var(--x) * .6);}
+  html:not(.has-progress) .home-first .hero-sub{margin-bottom:calc(20px + var(--x));}
+  html:not(.has-progress) .home-first .hero-types{margin-bottom:calc(20px + var(--x));}
+  html:not(.has-progress) .home-first .hero-btn-row{gap:calc(13px + var(--x) * .6);}
+  html:not(.has-progress) .home-first .hero-stars-bottom{margin-top:calc(18px + var(--x));}
+  html:not(.has-progress) .home-first .hero-inner .ayah-banner{margin-top:calc(10px + var(--x));}
 }
 </style>
 <link rel="canonical" href="https://quran-darbi.com/">
