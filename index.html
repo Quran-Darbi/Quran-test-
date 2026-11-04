@@ -14,8 +14,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google" content="notranslate">
-<title>Quran-darbi.com | دربي لحفظ القرآن</title>
-<meta name="description" content="اختبر حفظك للقرآن الكريم">
+<title>دربي لحفظ القرآن — اختبار حفظ القرآن الكريم ومراجعته</title>
+<meta name="description" content="منصة تفاعلية لاختبار حفظ القرآن الكريم ومراجعته صفحةً بصفحة، مع التركيز على متشابهات القرآن: اختبارات سهلة ومتوسطة وصعبة، وترتيب الآيات، واختبار صوتي.">
 <script src="lang.js"></script>
 <script src="darbi-keys.js"></script>
 <link rel="manifest" href="manifest.json">
@@ -29,7 +29,7 @@
 <link rel="icon" type="image/png" sizes="256x256" href="icons/darbi_favicon_256.png">
 <link rel="apple-touch-icon" href="icons/darbi_favicon_512.png">
 <meta property="og:title" content="دربي لحفظ القرآن">
-<meta property="og:description" content="اختبر حفظك للقرآن الكريم">
+<meta property="og:description" content="منصة تفاعلية لاختبار حفظ القرآن الكريم ومراجعته صفحةً بصفحة، مع التركيز على متشابهات القرآن: اختبارات سهلة ومتوسطة وصعبة، وترتيب الآيات، واختبار صوتي.">
 <meta property="og:url" content="https://quran-darbi.com/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://quran-darbi.com/og-image.png">
@@ -101,7 +101,7 @@ html[data-theme="dark"] #hero-progress-fill{background:var(--green)!important;}
 .hero-inner{position:relative;z-index:1;}
 .hero-bismillah{font-family:'Scheherazade New',serif;font-size:1.1rem;color:rgba(255,255,255,0.75);margin-bottom:16px;letter-spacing:1px;}
 .hero-title{font-family:'Almarai',sans-serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px;}
-.hero-sub{text-wrap:balance;font-size:1.02rem;line-height:1.7;color:rgba(255,255,255,0.78);margin-bottom:20px;}
+.hero-sub{white-space:pre-line;text-wrap:balance;font-size:1.02rem;line-height:1.7;color:rgba(255,255,255,0.78);margin-bottom:20px;}
 /* بطاقة الآية */
 .ayah-banner{display:inline-flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);border-radius:14px;padding:10px 18px;margin-bottom:12px;backdrop-filter:blur(6px);max-width:340px;}
 .ayah-text{font-family:'Scheherazade New',serif;font-size:1.05rem;color:#fff;line-height:1.9;margin-bottom:4px;}
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded',function(){
 .tools-fab.open .tools-menu{display:block;}
 .tools-item{display:flex;align-items:center;gap:8px;width:100%;background:none;border:none;padding:12px 14px;font-size:0.88rem;color:var(--text,#1A1A1A);cursor:pointer;text-align:right;font-family:inherit;}
 .tools-item:hover{background:var(--green3,var(--surface2,#F0F7F2));}
-.tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;}
+.tools-item .tools-lang-inline{margin-inline-start:auto;display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;}
 .tools-item .tools-lang-inline span:first-child{font-size:1em;color:inherit;}
 .tools-item .tools-arrow{font-size:0.75em;color:#B8963A;transition:transform .2s;}
 .tools-item svg{flex-shrink:0;}
@@ -405,7 +405,8 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
   <div class="hero-inner">
     <div class="hero-bismillah notranslate" translate="no">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     <div class="hero-title" data-i18n="home.title">دربي لحفظ القرآن</div>
-    <div class="hero-sub" data-i18n="home.subtitle">اختبر حفظك صفحةً بصفحة — اختبارات تفاعلية لمراجعة الحفظ وتثبيته</div>
+    <div class="hero-sub" data-i18n="home.subtitle">رفيقك في رحلة إتقان الحفظ وتثبيته
+اختبارات تفاعلية لمراجعة الحفظ وإتقان المتشابهات.</div>
     <div class="hero-types" aria-label="أنواع الاختبارات">
       <span class="hero-type">🌱 <span data-i18n="level.easy_name">سهل</span></span>
       <span class="hero-type">🌿 <span data-i18n="level.medium_name">متوسط</span></span>
@@ -430,7 +431,7 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
     </div>
     <div class="hero-stars-bottom">✦ ✦ ✦</div>
     <div class="ayah-banner">
-      <div class="ayah-text notranslate" translate="no">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلاً ﴾</div>
+      <div class="ayah-text notranslate" translate="no" dir="rtl">﴿ وَرَتِّلِ ٱلۡقُرۡءَانَ تَرۡتِيلًا ﴾</div>
       <div class="ayah-ref notranslate" translate="no">سورة المزمل — آية 4</div>
     </div>
   </div>
@@ -439,8 +440,8 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 </div>
 
 <div class="list-stats" aria-label="حجم المحتوى">
-  <div class="hstat"><b id="hstat-tests-count">0</b><small data-i18n="home.stat_tests">اختباراً متاحاً</small></div>
-  <div class="hstat"><b id="hstat-parts-count">0</b><small data-i18n="home.stat_parts">أجزاء</small></div>
+  <div class="hstat"><b id="hstat-tests-count">0</b><small data-i18n="home.stat_tests">اختبارًا متاحًا</small></div>
+  <div class="hstat"><b id="hstat-parts-count">0</b><small data-i18n="home.stat_parts">جزءًا</small></div>
   <div class="hstat"><b id="hstat-surahs-count">0</b><small data-i18n="home.stat_surahs">سورة</small></div>
 </div>
 <div class="search-wrap">
@@ -462,7 +463,7 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 </div>
 
 <footer>
-  <div class="footer-ayah notranslate" translate="no">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾</div>
+  <div class="footer-ayah notranslate" translate="no" dir="rtl">﴿ إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ ﴾</div>
   <div class="footer-ref notranslate" translate="no">سورة الحجر — آية 9</div>
   <div class="footer-copy">© 2026<span id="copy-year"></span> <span data-i18n="home.footer_copy">دربي لحفظ القرآن — جميع الحقوق محفوظة</span></div>
   <div class="footer-copy" style="margin-top:6px"><a href="about.html" data-i18n="home.about_title" style="color:inherit;text-decoration:underline">عن المشروع</a> · <a href="privacy.html" data-i18n="home.privacy_link" style="color:inherit;text-decoration:underline">سياسة الخصوصية</a></div>
