@@ -1490,11 +1490,13 @@ function ammaPagesStr(file){
 }
 
 function card(href,name,meta,ok,surah,pages){
+  // أرقام الآيات فقط (مثل 1–5 أو 22) تُسبق بكلمة «الآيات/الآية» لتمييزها عن أرقام الصفحات
+  if(ok && /^\d/.test(meta) && !/آية|آيات/.test(meta)) meta=(/^\d+$/.test(meta)?'الآية ':'الآيات ')+meta;
   const lx=x=>{try{return (window.darbiIdxLoc&&window.darbiIdxLoc(x))||'';}catch(e){return '';}};
   const s=(surah?surah+' ':'')+name+' '+meta+' '+lx(surah)+' '+lx(name)+' '+lx(meta)+(pages?' '+pages:'');
   if(!ok) return `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">${darbiT('home.card_soon_badge')}</span></div>`;
   const key=(href||'').replace('.html','');
-  return `<a href="${href}" class="quiz-card" data-s="${s}" data-key="${key}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><div class="card-levels"><span class="lvl-dot" data-lvl="easy" title="${darbiT('home.lvl_easy_title')}">${darbiT('level.easy_name').slice(0,1)}</span><span class="lvl-dot" data-lvl="medium" title="${darbiT('home.lvl_medium_title')}">${darbiT('level.medium_name').slice(0,1)}</span><span class="lvl-dot" data-lvl="hard" title="${darbiT('home.lvl_hard_title')}">${darbiT('level.hard_name').slice(0,1)}</span></div><span class="card-badge badge-ok card-complete" style="display:none">${darbiT('home.card_complete_badge')}</span></a>`;
+  return `<a href="${href}" class="quiz-card" data-s="${s}" data-key="${key}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><div class="card-levels"><span class="lvl-dot" data-lvl="easy" title="${darbiT('home.lvl_easy_title')}"></span><span class="lvl-dot" data-lvl="medium" title="${darbiT('home.lvl_medium_title')}"></span><span class="lvl-dot" data-lvl="hard" title="${darbiT('home.lvl_hard_title')}"></span></div><span class="card-badge badge-ok card-complete" style="display:none">${darbiT('home.card_complete_badge')}</span></a>`;
 }
 
 // مفاتيح التقدّم (نفس مفاتيح darbi_progress) اللي يغطيها مقطع واحد
