@@ -541,7 +541,14 @@ function levelLabel(lvl){
 }
 
 function darbiPageComplete(entry){
-  return !!(entry && entry.easy && entry.easy.done && entry.medium && entry.medium.done && entry.hard && entry.hard.done);
+  // المستويات المطلوبة للاكتمال = ما اختاره المستخدم في «تقدّمي ← نوع الهدف»؛ وإن لم يختر مستويات محددة فالثلاثة الأساسية
+  let req=[];
+  try{
+    const M={easy:'easy',medium:'medium',hard:'hard',order:'order',recite:'recitation'};
+    req=(localStorage.getItem('darbi_daily_goal_type_v1')||'').split(',').map(x=>M[x]).filter(Boolean);
+  }catch(e){}
+  if(!req.length)req=['easy','medium','hard'];
+  return !!entry && req.every(l=>entry[l]&&entry[l].done);
 }
 function darbiPageStarted(entry){
   return !!(entry && (entry.easy || entry.medium || entry.hard));

@@ -208,7 +208,7 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .surah-panel .card-name{font-size:0.8rem;}
 .surah-panel .card-meta{font-size:0.62rem;}
 .surah-panel .card-bar{width:2px;}
-.surah-panel .lvl-dot{width:15px;height:15px;font-size:0.55rem;}
+.surah-panel .card-meta{font-size:0.58rem;white-space:nowrap;padding-right:3px;}
 .surah-panel.open{display:block;}
 .surah-panel-title{display:inline-block;font-family:'Almarai',sans-serif;font-size:0.8rem;color:#fff;background:#2E6B3E;font-weight:700;margin:0 0 8px;padding:2px 12px;border-radius:20px;}
 @media(max-width:560px){.surah-panel .cards-grid{grid-template-columns:repeat(4,1fr);}.surah-panel{padding:9px 7px 8px;}}
@@ -225,13 +225,16 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .quiz-card.soon .card-bar{background:var(--border);}
 .card-name{font-family:'Almarai',sans-serif;font-size:0.95rem;color:var(--green);font-weight:700;padding-right:5px;}
 .card-meta{font-size:0.7rem;color:var(--soft);padding-right:5px;}
+.quiz-card.is-complete{background:var(--green3);}
 .card-badge{display:inline-block;font-size:0.66rem;padding:2px 7px;border-radius:7px;margin-top:2px;}
 .badge-ok{background:#E4F4DE;color:#2D5A27;border:1px solid #B0D8A8;}
 .badge-soon{background:var(--green3);color:var(--soft);border:1px solid var(--border);}
 /* مستويات كل بطاقة اختبار (سهل/متوسط/صعب) + علامة الاكتمال الكامل */
-.card-levels{display:flex;gap:4px;margin-top:2px;}
-.lvl-dot{width:17px;height:17px;border-radius:50%;font-size:0.6rem;display:flex;align-items:center;justify-content:center;background:var(--green3);color:var(--soft);border:1px solid var(--border);line-height:1;}
-.lvl-dot.done{background:var(--green);color:#fff;border-color:var(--green);}
+.card-levels{display:flex;gap:6px;margin-top:3px;line-height:1;}
+.lvl-dot{font-size:0.7rem;line-height:1;opacity:.45;filter:grayscale(1);}
+.lvl-dot.done{opacity:1;filter:none;}
+.surah-panel .card-levels{gap:4px;}
+.surah-panel .lvl-dot{font-size:0.58rem;}
 
 /* ===== FOOTER ===== */
 footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid var(--border);}
@@ -1496,7 +1499,7 @@ function card(href,name,meta,ok,surah,pages){
   const s=(surah?surah+' ':'')+name+' '+meta+' '+lx(surah)+' '+lx(name)+' '+lx(meta)+(pages?' '+pages:'');
   if(!ok) return `<div class="quiz-card soon" data-s="${s}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><span class="card-badge badge-soon">${darbiT('home.card_soon_badge')}</span></div>`;
   const key=(href||'').replace('.html','');
-  return `<a href="${href}" class="quiz-card" data-s="${s}" data-key="${key}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><div class="card-levels"><span class="lvl-dot" data-lvl="easy" title="${darbiT('home.lvl_easy_title')}"></span><span class="lvl-dot" data-lvl="medium" title="${darbiT('home.lvl_medium_title')}"></span><span class="lvl-dot" data-lvl="hard" title="${darbiT('home.lvl_hard_title')}"></span></div><span class="card-badge badge-ok card-complete" style="display:none">${darbiT('home.card_complete_badge')}</span></a>`;
+  return `<a href="${href}" class="quiz-card" data-s="${s}" data-key="${key}"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${name}</div><div class="card-meta">${meta}</div><div class="card-levels"><span class="lvl-dot" data-lvl="easy" title="${darbiT('home.lvl_easy_title')}">🌱</span><span class="lvl-dot" data-lvl="medium" title="${darbiT('home.lvl_medium_title')}">🌿</span><span class="lvl-dot" data-lvl="hard" title="${darbiT('home.lvl_hard_title')}">🌳</span><span class="lvl-dot" data-lvl="order" title="${darbiT('level.order_name')}">🔀</span></div><span class="card-badge badge-ok card-complete" style="display:none">${darbiT('home.card_complete_badge')}</span></a>`;
 }
 
 // مفاتيح التقدّم (نفس مفاتيح darbi_progress) اللي يغطيها مقطع واحد
@@ -1527,7 +1530,7 @@ function buildAccBody(meta){
     if(g.kind==='full'||g.kind==='range'){
       const arr=g.arr, from=('from' in g)?g.from:0, to=('to' in g)?g.to:arr.length;
       const pages=arr.slice(from,to);
-      const label=(g.name||'').replace(/^سورة /,'');
+      const label=(g.name||'').replace(/^سورة /,'').replace(/\((\d+\s*[–-]\s*\d+)\)/,'(الآيات $1)'); // أرقام الآيات بين القوسين تُسبق بكلمة «الآيات»
       if(pages.length>1){
         const id='sp'+gi+'_'+Math.random().toString(36).slice(2,7);
         cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${label}</div><div class="card-meta">${pages[0][1]}</div></button>`;
@@ -1619,7 +1622,14 @@ function goJuz(n){
 // صفحة/سورة تُعتبر "مكتملة" لو المستويات التلاتة الأساسية (سهل/متوسط/صعب)
 // كلهم وصلوا 70%+ — مستوى الترتيب اختياري فمش بيدخل في حساب الاكتمال
 function darbiPageComplete(entry){
-  return !!(entry && entry.easy && entry.easy.done && entry.medium && entry.medium.done && entry.hard && entry.hard.done);
+  // المستويات المطلوبة للاكتمال = ما اختاره المستخدم في «تقدّمي ← نوع الهدف»؛ وإن لم يختر مستويات محددة فالثلاثة الأساسية
+  let req=[];
+  try{
+    const M={easy:'easy',medium:'medium',hard:'hard',order:'order',recite:'recitation'};
+    req=(localStorage.getItem('darbi_daily_goal_type_v1')||'').split(',').map(x=>M[x]).filter(Boolean);
+  }catch(e){}
+  if(!req.length)req=['easy','medium','hard'];
+  return !!entry && req.every(l=>entry[l]&&entry[l].done);
 }
 function renderDarbiProgress(){
   let all={};
@@ -1727,7 +1737,9 @@ function renderDarbiProgress(){
       dot.classList.toggle('done', !!(entry && entry[lvl] && entry[lvl].done));
     });
     const badge=cardEl.querySelector('.card-complete');
-    if(badge) badge.style.display = darbiPageComplete(entry) ? '' : 'none';
+    const _c=darbiPageComplete(entry);
+    cardEl.classList.toggle('is-complete',_c);
+    if(badge) badge.style.display = _c ? '' : 'none';
   });
 
   if(!Object.keys(all).length)return;
