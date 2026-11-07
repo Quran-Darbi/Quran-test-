@@ -1535,7 +1535,7 @@ function buildAccBody(meta){
         const id='sp'+gi+'_'+Math.random().toString(36).slice(2,7);
         const _m=label.match(/^(.*?)\s*\((الآيات\s*[^)]*)\)\s*$/); // الاسم في سطر والآيات في سطر المعلومات
         const cardName=_m?_m[1]:label, cardAyat=_m?_m[2]:'';
-        cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${cardName}</div><div class="card-meta">${cardAyat?cardAyat+' · ':''}${pages[0][1]}</div></button>`;
+        cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${cardName}</div>${cardAyat?`<div class="card-meta">${cardAyat}</div>`:''}<div class="card-meta">${pages[0][1]}</div></button>`;
         panels+=`<div class="surah-panel" id="${id}"><div class="surah-panel-title notranslate" translate="no">${label}</div><div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}</div>`;
       } else if(pages.length===1){
         cards+=card(pages[0][0],label,pages[0][1],true,g.surah);
