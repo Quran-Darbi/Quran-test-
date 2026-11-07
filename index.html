@@ -231,10 +231,10 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .badge-soon{background:var(--green3);color:var(--soft);border:1px solid var(--border);}
 /* مستويات كل بطاقة اختبار (سهل/متوسط/صعب) + علامة الاكتمال الكامل */
 .card-levels{display:flex;flex-wrap:wrap;gap:3px 4px;margin-top:3px;line-height:1;max-width:100%;}
-.lvl-dot{font-size:0.6rem;line-height:1;opacity:.45;filter:grayscale(1);}
+.lvl-dot{font-size:clamp(0.62rem,2.8vw,0.8rem);line-height:1;opacity:.45;filter:grayscale(1);}
 .lvl-dot.done{opacity:1;filter:none;}
 .surah-panel .card-levels{gap:3px 4px;}
-.surah-panel .lvl-dot{font-size:0.58rem;}
+.surah-panel .lvl-dot{font-size:clamp(0.6rem,2.7vw,0.76rem);}
 
 /* ===== FOOTER ===== */
 footer{text-align:center;margin-top:44px;padding:24px 16px;border-top:1px solid var(--border);}
