@@ -31,8 +31,30 @@ function updateBadges(){
 }
 var ORD_A=(typeof ORDER_SEGS!=='undefined'&&ORDER_SEGS&&ORDER_SEGS.length)?ORDER_SEGS:AYAT;var ORD_N=(typeof ORDER_SEGS!=='undefined'&&ORDER_SEGS&&ORDER_SEGS.length)?ORDER_NUMS:(typeof AYAT_NUMS!=='undefined'?AYAT_NUMS:null);
 // الترتيب: آية/آيتان فقط تُقسَّمان عند علامات الوقف (ORDER_SEGS)، وإن لم يتوفر مقطعان على الأقل يُخفى الزر
+var ORD_ALL_A=ORD_A,ORD_ALL_N=ORD_N,ordRounds=[[0,ORD_A.length]],ordRoundIdx=0,ordStates=[],ordCorrect=[],ordRestoring=false;
+// الترتيب على جولات (٦–٨ آيات): تنقّل بين الجولات، إظهار/إخفاء الترتيب، تهنئة لكل جولة، واستئناف آخر موضع
+function _ordKey(){return 'darbi_order_prog_'+(typeof RESUME_KEY!=='undefined'?RESUME_KEY:location.pathname);}
+function _ordSig(){return ORD_ALL_A.length+'|'+ordRounds.length+'|'+String(ORD_ALL_A[0]||'').slice(0,14);}
+function _ordSetRound(i){ordRoundIdx=i;var r=ordRounds[i];ORD_A=ORD_ALL_A.slice(r[0],r[1]);ORD_N=ORD_ALL_N?ORD_ALL_N.slice(r[0],r[1]):(ordRounds.length>1?ORD_A.map(function(_,k){return r[0]+k+1;}):ORD_ALL_N);}
+function _ordSetupRounds(){ordStates=[];ordCorrect=[];ordRounds=[];var n=ORD_ALL_A.length;if(n>8){var k=Math.ceil(n/8),sz=Math.ceil(n/k);for(var i=0;i<n;i+=sz)ordRounds.push([i,Math.min(n,i+sz)]);}else ordRounds=[[0,n]];_ordSetRound(0);}
+function _ordSnap(){var fb=document.getElementById('order-feedback');return {placed:orderPlaced.slice(),pool:orderPoolOrder.slice(),cursor:orderCursor,checked:!!fb&&fb.style.display==='block',correct:ordCorrect[ordRoundIdx]||0};}
+function _ordPersist(){if(ordRestoring)return;ordStates[ordRoundIdx]=_ordSnap();try{localStorage.setItem(_ordKey(),JSON.stringify({sig:_ordSig(),idx:ordRoundIdx,states:ordStates,correct:ordCorrect}));}catch(e){}}
+function _ordClear(){try{localStorage.removeItem(_ordKey());}catch(e){}}
+function _ordAllChecked(){for(var i=0;i<ordRounds.length;i++){if(!(ordStates[i]&&ordStates[i].checked))return false;}return true;}
+function _ordInitUI(){document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';var rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';rb.textContent=darbiT('order.reveal_btn');}
+function _ordLoadRound(i){ordRestoring=true;try{_ordSetRound(i);var st=ordStates[i];document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';_ordInitUI();orderPlaced=st.placed.slice();orderPoolOrder=st.pool.slice();orderCursor=st.cursor;orderSelected=-1;renderOrderQuiz();_ordRoundInfo();if(st.checked)checkOrderAnswer(true);}finally{ordRestoring=false;}_ordPersist();}
+function _ordTryRestore(){try{var raw=localStorage.getItem(_ordKey());if(!raw)return false;var d=JSON.parse(raw);if(!d||d.sig!==_ordSig()||!d.states||!d.states[d.idx]){_ordClear();return false;}ordStates=d.states;ordCorrect=d.correct||[];if(_ordAllChecked()){ordStates=[];ordCorrect=[];_ordClear();return false;}_ordLoadRound(d.idx);return true;}catch(e){return false;}}
+function ordGo(i){if(i<0||i>=ordRounds.length)return;_ordPersist();if(ordStates[i])_ordLoadRound(i);else{_ordSetRound(i);startOrderQuiz(true);}var a=document.getElementById('order-area');if(a&&a.scrollIntoView)a.scrollIntoView({block:'start'});}
+function ordRestart(){if(!confirm(darbiT('order.round_confirm')))return;_ordClear();startOrderQuiz();}
+function _ordCounter(){var c=document.getElementById('order-counter');if(!c)return;var _u=(typeof ORDER_SEGS!=='undefined'&&ORDER_SEGS&&ORDER_SEGS.length)?'order.counter_segs':'order.counter_ayat';c.textContent=darbiT(_u,{a:toArabicNum(orderPlaced.filter(function(x){return x!==null;}).length),b:toArabicNum(orderPlaced.length)});}
+function _ordRoundInfo(){var el=document.getElementById('order-round-info');if(!el){el=document.createElement('div');el.id='order-round-info';el.className='order-round-info';var sl=document.getElementById('order-slots');sl.parentNode.insertBefore(el,sl);}var _hp=document.getElementById('order-help');if(_hp){var _n=document.getElementById('oh-rounds-note');if(!_n){_n=document.createElement('div');_n.id='oh-rounds-note';_n.className='oh-rounds-note';_n.setAttribute('data-i18n','order.help_rounds');_n.textContent=darbiT('order.help_rounds');var _cl=_hp.querySelector('.order-help-close');_hp.insertBefore(_n,_cl);}_n.style.display=ordRounds.length>1?'block':'none';}el.innerHTML='';var t=document.createElement('div');t.className='order-round-title';if(ordRounds.length>1){t.appendChild(document.createTextNode(darbiT('order.round_title',{a:toArabicNum(ordRoundIdx+1),b:toArabicNum(ordRounds.length)})));}var c=document.createElement('span');c.id='order-counter';c.className='order-counter';t.appendChild(c);el.appendChild(t);_ordCounter();_ordNav();}
+function _ordNav(){var nav=document.getElementById('order-round-nav');var fb=document.getElementById('order-feedback');if(!nav){nav=document.createElement('div');nav.id='order-round-nav';nav.className='order-round-nav';fb.parentNode.insertBefore(nav,fb.nextSibling);}var multi=ordRounds.length>1;var cur=ordStates[ordRoundIdx];var checked=!!(cur&&cur.checked);nav.innerHTML='';if(!multi){nav.style.display='none';return;}nav.style.display='flex';function mk(txt,fn,dis,cls){var b=document.createElement('button');b.type='button';b.textContent=txt;if(cls)b.className=cls;b.disabled=!!dis;b.onclick=fn;nav.appendChild(b);}if(multi)mk(darbiT('order.round_prev'),function(){ordGo(ordRoundIdx-1);},ordRoundIdx===0);mk(darbiT('order.round_restart'),ordRestart,false,'restart');if(multi){var canNext=ordRoundIdx<ordRounds.length-1&&(checked||!!ordStates[ordRoundIdx+1]);mk(darbiT('order.round_next'),function(){ordGo(ordRoundIdx+1);},!canNext||ordRoundIdx>=ordRounds.length-1,canNext&&checked?'primary':'');}}
+function _ordRoundDone(correct,allCorrect,replay){ordCorrect[ordRoundIdx]=correct;_ordPersist();_ordRoundInfo();var fb=document.getElementById('order-feedback');var multi=ordRounds.length>1;if(multi&&allCorrect){var c=document.createElement('div');c.className='order-congrats';c.textContent=darbiT('order.round_congrats',{n:toArabicNum(ordRoundIdx+1)});fb.appendChild(c);}var tot=0;for(var i=0;i<ordRounds.length;i++){if(ordStates[i]&&ordStates[i].checked)tot+=ordCorrect[i]||0;}if(!_ordAllChecked()){if(!replay&&allCorrect)spawnConfetti(multi?18:45);return;}if(multi){var t=document.createElement('div');t.style.cssText='margin-top:10px;font-weight:700;';t.textContent=darbiT('order.round_total',{a:toArabicNum(tot),b:toArabicNum(ORD_ALL_A.length)});fb.appendChild(t);}if(!replay){saveDarbiProgress('order',tot,ORD_ALL_A.length);if(tot===ORD_ALL_A.length)spawnConfetti(multi?90:45);}_ordClear();}
+/* زر الشرح: علامة الاستفهام في آخر الجملة (حسب اتجاه اللغة) — النص من lang.js حتى لو كان ثابت الصفحة قديمًا */
+(function helpBtnLabel(){try{var b=document.getElementById('order-help-btn');if(b)b.textContent=darbiT('order.help_btn');}catch(e){}})();
+(function shortOrderInstruction(){var q=document.querySelector('#order-area .q-number');var _sl=document.getElementById('order-slots');if(q&&_sl)_sl.parentNode.insertBefore(q,_sl);if(q){q.setAttribute('data-i18n','order.instruction_short');q.textContent=(typeof darbiT==='function')?darbiT('order.instruction_short'):'رتّب الآيات بالترتيب الصحيح';}})();
 (function hideOrderIfTooFew(){var b=document.getElementById('btn-order');if(b&&ORD_A.length<2)b.style.display='none';})();
-function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(ORD_A.length);return;}currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');if(lvl==='order'){document.getElementById('total-q').textContent=toArabicNum(ORD_A.length);}else{document.getElementById('total-q').textContent=toArabicNum((lvl==='easy'?EASY_Q:lvl==='medium'?MEDIUM_Q:HARD_Q).length);}}
+function selectLevel(lvl){if(lvl==='order'){currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));var __ob=document.getElementById('btn-order');if(__ob)__ob.classList.add('active');document.getElementById('start-btn').classList.add('ready');document.getElementById('total-q').textContent=toArabicNum(ORD_ALL_A.length);return;}currentLevel=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+lvl).classList.add('active');document.getElementById('start-btn').classList.add('ready');if(lvl==='order'){document.getElementById('total-q').textContent=toArabicNum(ORD_ALL_A.length);}else{document.getElementById('total-q').textContent=toArabicNum((lvl==='easy'?EASY_Q:lvl==='medium'?MEDIUM_Q:HARD_Q).length);}}
 function startQuiz(){if(currentLevel==='order'){startOrderQuiz();return;}if(!currentLevel)return;questions=currentLevel==='easy'?[...EASY_Q]:currentLevel==='medium'?[...MEDIUM_Q]:[...HARD_Q];qIndex=correctCount=wrongCount=0;wCorrect=wTotal=0;statuses=questions.map(()=>'pending');wrongIndices=[];document.getElementById('resume-banner').style.display='none';document.getElementById('level-card').style.display='none';document.getElementById('quiz-area').style.display='block';showQuestion();}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 function renderDotProgress(){const wrap=document.getElementById('dot-progress');if(!wrap)return;wrap.innerHTML='';statuses.forEach((st,i)=>{const dot=document.createElement('span');dot.className='q-dot'+(i===qIndex?' current':st!=='pending'?' '+st:'');wrap.appendChild(dot);});}
@@ -165,7 +187,11 @@ let orderPlaced=[],orderCursor=0,orderPoolOrder=[],orderSelected=-1;
    link = وقفة أقصر بين ضغطتين في نفس الخطوة (الشرح واحد فمش محتاج قراية تاني) */
 const OH_MS={read:4400,move:1100,press:600,hold:3400,link:1800};
 const ORDER_HELP_KEY='darbi_order_help_seen';
-function OH_SEG_AT(i){return [darbiT('oh.seg1'),darbiT('oh.seg2'),darbiT('oh.seg3')][i];}
+/* آيات حقيقية للمثال (منسوخة حرفيًا من صفحتي الكوثر والعصر): الكوثر افتراضيًا، والعصر في صفحة الكوثر نفسها حتى لا يُكشف ترتيبها */
+const OH_DEMO_KAWTHAR=["إِنَّآ أَعْطَيْنَٰكَ ٱلْكَوْثَرَ","فَصَلِّ لِرَبِّكَ وَٱنْحَرْ","إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ"];
+const OH_DEMO_ASR=["وَٱلْعَصْرِ","إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ","إِلَّا ٱلَّذِينَ ءَامَنُوا وَعَمِلُوا ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ"];
+function OH_SEG_AT(i){var k=(typeof RESUME_KEY!=='undefined')?RESUME_KEY:'';return (k==='quranResume_alkawthur'?OH_DEMO_ASR:OH_DEMO_KAWTHAR)[i];}
+function ohAyahEl(i){const a=document.createElement('span');a.className='oh-ayah notranslate';a.setAttribute('translate','no');a.setAttribute('lang','ar');a.setAttribute('dir','rtl');a.textContent=OH_SEG_AT(i);return a;}
 function ohAr(n){return typeof toArabicNum==='function'?toArabicNum(n):String(n);}
 function ohNum(i){return '﴿'+ohAr(i+1)+'﴾';}
 function ohEmpty(p,f){for(let i=f;i<p.length;i++)if(p[i]===null)return i;for(let i=0;i<p.length;i++)if(p[i]===null)return i;return -1;}
@@ -176,37 +202,39 @@ let ohSt=ohS0(),ohStep=0,ohTap=0,ohTimer=null,ohPlaying=false,ohFlash=null;
 const OH_STEPS=[
  {get act(){return darbiT('oh.step1_act');},
   get why(){return darbiT('oh.step1_why');},
-  taps:[
-   {at:function(){return document.querySelector('#oh-pool [data-p="1"]');},
-    run:function(s){s.placed[s.cursor]=1;ohFlash='s'+s.cursor;s.cursor=ohEmpty(s.placed,s.cursor+1);}}
-  ]},
+  taps:[1,0,2].map(function(k){return {at:function(){return document.querySelector('#oh-pool [data-p="'+k+'"]');},
+    run:function(s){s.placed[s.cursor]=k;ohFlash='s'+s.cursor;s.cursor=ohEmpty(s.placed,s.cursor+1);}};})},
  {get act(){return darbiT('oh.step2_act');},
   get why(){return darbiT('oh.step2_why');},
   taps:[
-   {at:function(){return document.querySelector('#oh-slots [data-d="2"]');},
-    run:function(s){s.cursor=2;ohFlash='d2';}},
-   {at:function(){return document.querySelector('#oh-pool [data-p="0"]');},
-    run:function(s){s.placed[2]=0;ohFlash='s2';s.cursor=ohEmpty(s.placed,0);}}
+   {at:function(){return document.querySelector('#oh-slots [data-s="0"] .order-badge');},
+    run:function(s){s.selected=0;ohFlash='s0';}},
+   {at:function(){return document.querySelector('#oh-slots [data-s="1"] .order-badge');},
+    run:function(s){const t=s.placed[0];s.placed[0]=s.placed[1];s.placed[1]=t;s.selected=-1;ohFlash='s0';}}
   ]},
  {get act(){return darbiT('oh.step3_act');},
   get why(){return darbiT('oh.step3_why');},
   taps:[
-   {at:function(){return document.querySelector('#oh-slots [data-s="0"] .order-badge');},
-    run:function(s){s.selected=0;ohFlash='s0';}}
+   {at:function(){return document.querySelector('#oh-slots [data-s="2"]');},
+    run:function(s){ohFlash='p'+s.placed[2];s.placed[2]=null;s.cursor=2;}},
+   {at:function(){return document.querySelector('#oh-slots [data-s="1"]');},
+    run:function(s){ohFlash='p'+s.placed[1];s.placed[1]=null;s.cursor=1;}}
   ]},
  {get act(){return darbiT('oh.step4_act');},
   get why(){return darbiT('oh.step4_why');},
   taps:[
-   {at:function(){return document.querySelector('#oh-slots [data-s="2"] .order-badge');},
-    run:function(s){const t=s.placed[0];s.placed[0]=s.placed[2];s.placed[2]=t;s.selected=-1;ohFlash='s0';}}
-  ]},
- {get act(){return darbiT('oh.step5_act');},
-  get why(){return darbiT('oh.step5_why');},
-  taps:[
-   {at:function(){return document.querySelector('#oh-slots [data-s="0"]');},
-    run:function(s){ohFlash='p'+s.placed[0];s.placed[0]=null;s.cursor=0;}}
+   {at:function(){return document.querySelector('#oh-slots [data-d="2"]');},
+    run:function(s){s.cursor=2;ohFlash='d2';}},
+   {at:function(){return document.querySelector('#oh-pool [data-p="2"]');},
+    run:function(s){s.placed[2]=2;ohFlash='s2';s.cursor=ohEmpty(s.placed,0);}},
+   {at:function(){return document.querySelector('#oh-pool [data-p="1"]');},
+    run:function(s){s.placed[s.cursor]=1;ohFlash='s'+s.cursor;s.cursor=ohEmpty(s.placed,0);}}
   ]}
 ];
+
+
+
+
 function ohDraw(){
  const sl=document.getElementById('oh-slots'),po=document.getElementById('oh-pool');
  if(!sl||!po)return;
@@ -223,8 +251,8 @@ function ohDraw(){
    c.className='order-slot filled'+(pos===ohSt.selected?' oh-swap':'')+(ohFlash==='s'+pos?' oh-flash':'');
    c.setAttribute('data-s',pos);
    const b=document.createElement('span');b.className='order-badge';b.textContent=ohNum(pos);
-   const t=document.createElement('span');t.textContent=OH_SEG_AT(idx);
-   c.appendChild(b);c.appendChild(t);g.appendChild(c);
+   const t=ohAyahEl(idx);
+   const x=document.createElement('span');x.className='order-x';x.setAttribute('aria-hidden','true');x.textContent='✕';c.appendChild(b);c.appendChild(t);c.appendChild(x);g.appendChild(c);
   }
  });
  if(g.children.length)sl.appendChild(g);
@@ -233,7 +261,7 @@ function ohDraw(){
   if(ohSt.placed.indexOf(idx)>-1)return;
   const b=document.createElement('div');
   b.className='order-item'+(ohFlash==='p'+idx?' oh-flash':'');
-  b.setAttribute('data-p',idx);b.textContent=OH_SEG_AT(idx);po.appendChild(b);
+  b.setAttribute('data-p',idx);b.appendChild(ohAyahEl(idx));po.appendChild(b);
  });
  ohFlash=null;
 }
@@ -321,19 +349,21 @@ function _orderHelpSet(open){
 }
 function toggleOrderHelp(){const p=document.getElementById('order-help');if(!p)return;_orderHelpSet(p.style.display==='none');_orderHelpMark();}
 function closeOrderHelp(){_orderHelpSet(false);_orderHelpMark();}
-function maybeShowOrderHelp(){_orderHelpSet(false);}
+/* اتجاه لوحة الشرح في اللغات اللاتينية — يُحقن من هنا حتى لا يعتمد على نسخة quiz.css المخزّنة في المتصفح */
+(function(){try{if(document.getElementById('oh-ltr-style'))return;var st=document.createElement('style');st.id='oh-ltr-style';st.textContent='html[dir="ltr"] .order-badge,html[dir="ltr"] .order-dot,html[dir="ltr"] .ayah-end{direction:rtl;unicode-bidi:isolate;}html[dir="ltr"] .order-help,html[dir="ltr"] .order-help .order-item,html[dir="ltr"] .order-help .order-slot{direction:ltr;text-align:left;}html[dir="ltr"] .order-help,html[dir="ltr"] .order-help *:not(.ayah-end):not(.order-badge):not(.oh-ayah){font-family:inherit;}.oh-ayah{display:block;flex:1;text-align:right;font-family:\'Scheherazade New\',\'Amiri\',\'Traditional Arabic\',serif;}';document.head.appendChild(st);}catch(e){}})();
+function maybeShowOrderHelp(){var seen=false;try{seen=!!localStorage.getItem(ORDER_HELP_KEY);}catch(e){}if(seen){_orderHelpSet(false);}else{_orderHelpSet(true);_orderHelpMark();}}
 /* ===== نهاية لوحة شرح الترتيب ===== */
 /*OHJS-END*/
-function startOrderQuiz(){orderPlaced=new Array(ORD_A.length).fill(null);orderCursor=0;orderSelected=-1;orderPoolOrder=ORD_A.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';maybeShowOrderHelp();renderOrderQuiz();}
+function startOrderQuiz(keepRound){if(!keepRound){_ordSetupRounds();if(_ordTryRestore())return;}orderPlaced=new Array(ORD_A.length).fill(null);orderCursor=0;orderSelected=-1;orderPoolOrder=ORD_A.map((t,idx)=>idx);shuffle(orderPoolOrder);document.getElementById('level-card').style.display='none';document.getElementById('order-area').style.display='block';document.getElementById('order-feedback').style.display='none';document.getElementById('order-reveal').style.display='none';document.getElementById('order-check-btn').style.display='none';const rb=document.getElementById('order-reveal-btn');rb.disabled=false;rb.style.opacity='1';rb.textContent=darbiT('order.reveal_btn');maybeShowOrderHelp();renderOrderQuiz();_ordRoundInfo();}
 function ayahNumAt(i){return (ORD_N&&ORD_N.length===ORD_A.length&&ORD_N[i]!=null)?ORD_N[i]:(i+1);}
 function _orderNum(pos){return (ORD_N&&ORD_N.length===ORD_A.length&&ORD_N.every(function(x){return x>0;}))?ORD_N[pos]:(pos+1);}
 /* صفحات المقاطع (مثل آية الدَّين) أرقامها 0 لغير الأخير: تُعرض أرقام ترتيب عادية لا أقواس آيات */
 function _orderLbl(pos){return (ORD_N&&ORD_N.length===ORD_A.length&&ORD_N.every(function(x){return x>0;}))?'﴿'+toArabicNum(_orderNum(pos))+'﴾':String(pos+1);}
 function mushafHtml(){return '<div class="mushaf-block notranslate" translate="no">'+ORD_A.map((t,i)=>t+(ayahNumAt(i)>0?' <span class="ayah-end">﴿'+toArabicNum(ayahNumAt(i))+'﴾</span>':'')).join(' ')+'</div>';}
 function nextEmptyFrom(start){for(let i=start;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}for(let i=0;i<orderPlaced.length;i++){if(orderPlaced[i]===null)return i;}return -1;}
-function renderOrderQuiz(){const slotsDiv=document.getElementById('order-slots');const poolDiv=document.getElementById('order-pool');slotsDiv.innerHTML='';poolDiv.innerHTML='';const filledGrid=document.createElement('div');filledGrid.className='order-filled-grid';const emptyStrip=document.createElement('div');emptyStrip.className='order-empty-strip';orderPlaced.forEach((idx,pos)=>{if(idx===null){const active=(pos===orderCursor);const dot=document.createElement('span');dot.className='order-dot'+(active?' active':'');dot.textContent=_orderLbl(pos);dot.title=active?darbiT('order.dot_active_title'):darbiT('order.dot_jump_title');dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};emptyStrip.appendChild(dot);}else{const card=document.createElement('div');card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(_orderNum(pos))+'﴾</span><span dir="rtl" class="notranslate">'+ORD_A[idx]+'</span>';card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};filledGrid.appendChild(card);}});if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);orderPoolOrder.forEach(idx=>{if(orderPlaced.includes(idx))return;const btn=document.createElement('button');btn.className='order-item notranslate';btn.setAttribute('translate','no');btn.textContent=ORD_A[idx];btn.onclick=()=>{if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}if(orderCursor===-1)return;orderPlaced[orderCursor]=idx;orderCursor=nextEmptyFrom(orderCursor+1);document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};poolDiv.appendChild(btn);});const allFilled=!orderPlaced.includes(null);document.getElementById('order-check-btn').style.display=allFilled?'block':'none';}
-function checkOrderAnswer(){let correct=0;document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{const ok=(orderPlaced[pos]!==null&&ORD_A[orderPlaced[pos]]===ORD_A[pos]);if(ok)correct++;el.classList.remove('correct-slot','wrong-slot');el.classList.add(ok?'correct-slot':'wrong-slot');});const fb=document.getElementById('order-feedback');const allCorrect=(correct===ORD_A.length);fb.className='feedback '+(allCorrect?'correct':'wrong');fb.innerHTML='<div style="margin-bottom:8px;">'+darbiT('order.result_line',{correct:toArabicNum(correct),total:toArabicNum(ORD_A.length)})+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">'+darbiT('order.result_review_label')+'</div>'+mushafHtml());fb.style.display='block';document.getElementById('order-check-btn').style.display='none';saveDarbiProgress('order',correct,ORD_A.length);if(allCorrect)spawnConfetti();}
-function revealOrderAnswer(){document.getElementById('order-reveal').innerHTML=mushafHtml();document.getElementById('order-reveal').style.display='block';const rb=document.getElementById('order-reveal-btn');rb.disabled=true;rb.style.opacity='0.5';}
+function renderOrderQuiz(){const slotsDiv=document.getElementById('order-slots');const poolDiv=document.getElementById('order-pool');slotsDiv.innerHTML='';poolDiv.innerHTML='';const filledGrid=document.createElement('div');filledGrid.className='order-filled-grid';const emptyStrip=document.createElement('div');emptyStrip.className='order-empty-strip';orderPlaced.forEach((idx,pos)=>{if(idx===null){const active=(pos===orderCursor);const dot=document.createElement('span');dot.className='order-dot'+(active?' active':'');dot.textContent=_orderLbl(pos);dot.title=active?darbiT('order.dot_active_title'):darbiT('order.dot_jump_title');dot.onclick=()=>{orderCursor=pos;renderOrderQuiz();};emptyStrip.appendChild(dot);}else{const card=document.createElement('div');card.className='order-slot filled'+(pos===orderSelected?' order-slot-selected':'');card.setAttribute('translate','no');card.innerHTML='<span class="order-badge">﴿'+toArabicNum(_orderNum(pos))+'﴾</span><span dir="rtl" class="notranslate">'+ORD_A[idx]+'</span><span class="order-x" aria-hidden="true">✕</span>';card.onclick=(e)=>{if(e.target.closest('.order-badge')){if(orderSelected===pos){orderSelected=-1;renderOrderQuiz();return;}if(orderSelected===-1){orderSelected=pos;renderOrderQuiz();return;}const tmp=orderPlaced[orderSelected];orderPlaced[orderSelected]=orderPlaced[pos];orderPlaced[pos]=tmp;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();return;}orderPlaced[pos]=null;orderCursor=pos;orderSelected=-1;document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};filledGrid.appendChild(card);}});if(filledGrid.children.length)slotsDiv.appendChild(filledGrid);if(emptyStrip.children.length)slotsDiv.appendChild(emptyStrip);orderPoolOrder.forEach(idx=>{if(orderPlaced.includes(idx))return;const btn=document.createElement('button');btn.className='order-item notranslate';btn.setAttribute('translate','no');btn.textContent=ORD_A[idx];btn.onclick=()=>{if(orderCursor===-1||orderPlaced[orderCursor]!==null){orderCursor=nextEmptyFrom(0);}if(orderCursor===-1)return;orderPlaced[orderCursor]=idx;orderCursor=nextEmptyFrom(orderCursor+1);document.getElementById('order-feedback').style.display='none';renderOrderQuiz();};poolDiv.appendChild(btn);});const allFilled=!orderPlaced.includes(null);var _ck=document.getElementById('order-check-btn');_ck.style.display='block';_ck.disabled=!allFilled;_ordCounter();_ordPersist();_ordNav();}
+function checkOrderAnswer(replay){let correct=0;document.querySelectorAll('#order-slots .order-slot').forEach((el,pos)=>{const ok=(orderPlaced[pos]!==null&&ORD_A[orderPlaced[pos]]===ORD_A[pos]);if(ok)correct++;el.classList.remove('correct-slot','wrong-slot');el.classList.add(ok?'correct-slot':'wrong-slot');});const fb=document.getElementById('order-feedback');const allCorrect=(correct===ORD_A.length);fb.className='feedback '+(allCorrect?'correct':'wrong');fb.innerHTML='<div style="margin-bottom:8px;">'+darbiT('order.result_line',{correct:toArabicNum(correct),total:toArabicNum(ORD_A.length)})+(allCorrect?' 🌟':'')+'</div>'+(allCorrect?'':'<div style="font-size:14px;margin-bottom:4px;">'+darbiT('order.result_review_label')+'</div>'+mushafHtml());fb.style.display='block';document.getElementById('order-check-btn').style.display='none';_ordRoundDone(correct,allCorrect,replay);}
+function revealOrderAnswer(){const r=document.getElementById('order-reveal');const rb=document.getElementById('order-reveal-btn');if(r.style.display==='block'){r.style.display='none';rb.textContent=darbiT('order.reveal_btn');return;}r.innerHTML=mushafHtml();r.style.display='block';rb.textContent=darbiT('order.hide_btn');}
 function shareApp(){var url=location.href;var t=document.title||darbiT('home.title');if(navigator.share){navigator.share({title:t,url:url}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var b=document.getElementById('tools-fab-btn');if(b){var old=b.textContent;b.textContent='✅';setTimeout(function(){b.textContent=old;},1800);}}).catch(function(){});}}
 function applyTheme(mode){document.documentElement.setAttribute('data-theme',mode);document.getElementById('theme-toggle').textContent=mode==='dark'?'☀️':'🌙';}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';applyTheme(next);try{localStorage.setItem('quranTheme',next);}catch(e){}}

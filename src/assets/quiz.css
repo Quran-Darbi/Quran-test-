@@ -141,5 +141,24 @@ html[data-theme="dark"] .qr-copy-btn{background:#4A9E40;}
 .q-text,.choice-btn,.answer-input,.feedback,.hint-box,.rec-transcript,.rec-word,.order-item,.order-help,.order-slot,.order-filled-grid,.order-empty-strip,.oh-tap,.mushaf-block,.ayah-end,.notranslate{font-family:'Scheherazade New','Amiri','Traditional Arabic',serif;}
 /* Scheherazade New أصغر بصريًا من Amiri بنفس المقاس، فنكبّر أسئلة واختيارات الآيات قليلًا */
 .q-text{font-size:22px;}.choice-btn{font-size:19px;}
+
 /* الترتيب: عند قلّة العناصر (١–٣) يملأ العنصر عرض الشاشة بدل عمود ضيّق */
 #order-pool{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;}
+/* الترتيب على جولات */
+.order-round-info{margin:0 0 10px;text-align:center;}
+.order-round-title{font-size:15px;font-weight:700;color:var(--accent-dark,var(--accent));}
+.order-counter{color:var(--text-soft,var(--accent));font-weight:600;}
+.order-round-nav{display:flex;gap:8px;margin-top:12px;}
+.order-round-nav button{flex:1;min-height:44px;padding:4px 6px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--accent);font-family:inherit;font-size:12.5px;line-height:1.3;cursor:pointer;}
+.order-round-nav button:disabled{opacity:.45;cursor:default;}
+.order-round-nav .restart{flex:.9;border-style:dashed;color:var(--text-soft,var(--accent));}
+.order-round-nav .primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.order-congrats{margin-top:8px;font-weight:700;}
+.order-x{margin-inline-start:auto;flex:0 0 auto;font-size:14px;line-height:1;color:var(--text-soft,#6B8067);opacity:.75;padding:4px 2px 4px 4px;}
+.order-slot.correct-slot .order-x,.order-slot.wrong-slot .order-x{display:none;}
+#order-check-btn:disabled{opacity:.5;cursor:default;}
+.oh-rounds-note{margin:10px 0 0;padding:8px 10px;border-radius:10px;background:var(--surface3);color:var(--text-soft,var(--accent));font-size:13px;line-height:1.7;text-align:center;}
+/* لغات تُكتب من اليسار: لوحة الشرح تتبع اتجاه الصفحة (لا تمسّ آيات الاختبار الحقيقية) */
+html[dir="ltr"] .order-help,html[dir="ltr"] .order-help .order-item,html[dir="ltr"] .order-help .order-slot{direction:ltr;text-align:left;}html[dir="ltr"] .order-help,html[dir="ltr"] .order-help *:not(.ayah-end):not(.order-badge):not(.oh-ayah){font-family:inherit;}.oh-ayah{display:block;flex:1;text-align:right;}
+/* أقواس رقم الآية ﴿﴾ تبقى باتجاه الرسم القرآني في اللغات التي تُكتب من اليسار */
+html[dir="ltr"] .order-badge,html[dir="ltr"] .order-dot,html[dir="ltr"] .ayah-end{direction:rtl;unicode-bidi:isolate;}

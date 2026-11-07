@@ -1591,7 +1591,7 @@ function buildJuzRow(n){
   return `<div class="acc" id="${id}" data-state="built">
   <button class="acc-btn" onclick="toggleAcc(this)">
     <div class="acc-left">
-      <div class="acc-left-top"><div class="${badgeClass}">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${meta.amma?"جزء عمّ — ":""}${juzRange(meta.title)}</div>${countBadge}</div>
+      <div class="acc-left-top"><div class="${badgeClass}">${darbiT('home.juz_prefix')} ${n}</div><div class="juz-title notranslate" translate="no">${meta.amma?"جزء عمّ ("+juzRange(meta.title)+")":juzRange(meta.title)}</div>${countBadge}</div>
       <div class="juz-bar-track"><div class="juz-bar-fill" id="juz${n}-bar" style="width:0%"></div></div>
     </div>
     <div class="acc-right"><div class="juz-prog" id="juz${n}-prog">${darbiT('home.juz_available_count',{n:total})}</div><span class="acc-arrow">▾</span></div>
