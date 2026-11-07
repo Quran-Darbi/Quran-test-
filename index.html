@@ -230,8 +230,8 @@ html[data-theme="dark"] .juz-badge:not(.amma):not(.soon){background:#2E6B3E;}
 .badge-ok{background:#E4F4DE;color:#2D5A27;border:1px solid #B0D8A8;}
 .badge-soon{background:var(--green3);color:var(--soft);border:1px solid var(--border);}
 /* مستويات كل بطاقة اختبار (سهل/متوسط/صعب) + علامة الاكتمال الكامل */
-.card-levels{display:flex;flex-wrap:wrap;gap:3px 6px;margin-top:3px;line-height:1;max-width:100%;}
-.lvl-dot{font-size:0.7rem;line-height:1;opacity:.45;filter:grayscale(1);}
+.card-levels{display:flex;flex-wrap:wrap;gap:3px 4px;margin-top:3px;line-height:1;max-width:100%;}
+.lvl-dot{font-size:0.6rem;line-height:1;opacity:.45;filter:grayscale(1);}
 .lvl-dot.done{opacity:1;filter:none;}
 .surah-panel .card-levels{gap:3px 4px;}
 .surah-panel .lvl-dot{font-size:0.58rem;}
@@ -1533,7 +1533,9 @@ function buildAccBody(meta){
       const label=(g.name||'').replace(/^سورة /,'').replace(/\((\d+\s*[–-]\s*\d+)\)/,'(الآيات $1)'); // أرقام الآيات بين القوسين تُسبق بكلمة «الآيات»
       if(pages.length>1){
         const id='sp'+gi+'_'+Math.random().toString(36).slice(2,7);
-        cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${label}</div><div class="card-meta">${pages[0][1]}</div></button>`;
+        const _m=label.match(/^(.*?)\s*\((الآيات\s*[^)]*)\)\s*$/); // الاسم في سطر والآيات في سطر المعلومات
+        const cardName=_m?_m[1]:label, cardAyat=_m?_m[2]:'';
+        cards+=`<button type="button" class="quiz-card surah-card" data-panel="${id}" aria-expanded="false" onclick="toggleSurah(this)"><div class="card-bar"></div><div class="card-name notranslate" translate="no">${cardName}</div><div class="card-meta">${cardAyat?cardAyat+' · ':''}${pages[0][1]}</div></button>`;
         panels+=`<div class="surah-panel" id="${id}"><div class="surah-panel-title notranslate" translate="no">${label}</div><div class="cards-grid">${groupCardsHtml(g)}</div>${noteBtn}</div>`;
       } else if(pages.length===1){
         cards+=card(pages[0][0],label,pages[0][1],true,g.surah);
