@@ -1778,6 +1778,20 @@ function renderDarbiProgress(){
       if(href){cont.setAttribute('href',href);cont.style.display='inline-flex';hasCont=true;}
     }
     if(lv&&lastKey)lv.textContent=darbiT('home.hero_last_visited',{name:(window.darbiDisplayName&&darbiDisplayName(lastName))||lastName});
+    // اختبار بدأتَه ولم تُنهِه: «تابع» يفتحه مباشرة عند السؤال المحفوظ (?resume=1) بدل بدايته
+    if(cont){
+      let rs=null;
+      document.querySelectorAll('a.quiz-card[data-key]').forEach(c=>{
+        const k=c.dataset.key,rk=k==='alfatiha'?'fatiha':k.replace(/^albaqara_/,'');
+        let st=null;try{st=JSON.parse(localStorage.getItem('quranResume_'+rk));}catch(e){}
+        if(!st||['easy','medium','hard'].indexOf(st.level)<0||!st.statuses||!st.statuses.length)return;
+        let qi=+st.qIndex||0;
+        while(qi<st.statuses.length&&st.statuses[qi]&&st.statuses[qi]!=='pending')qi++;
+        if(qi>=st.statuses.length||(qi===0&&!st.statuses.some(x=>x&&x!=='pending')))return;
+        if(!rs||(st.date||0)>rs.date)rs={href:c.getAttribute('href'),date:st.date||0};
+      });
+      if(rs&&rs.href){cont.setAttribute('href',rs.href+(rs.href.indexOf('?')<0?'?resume=1':'&resume=1'));cont.style.display='inline-flex';}
+    }
   }
 }
 renderDarbiProgress();
