@@ -29,7 +29,7 @@ except ImportError:
     sys.exit(1)
 
 COLLECTION = 'darbi_reminders'
-WINDOW_MINUTES = 12  # هامش تسامح لجدولة GitHub Action (تعمل كل ١٥ دقيقة تقريبًا)
+WINDOW_MINUTES = 180  # نافذة تعويض بعد الموعد: GitHub قد يؤخّر التشغيل المجدول أو يتخطّاه، فيصل التذكير متأخرًا بدل ألا يصل
 
 
 def main():
@@ -67,10 +67,21 @@ def main():
             continue
 
         target_minutes = h * 60 + m
-        diff = abs(now_minutes - target_minutes)
-        diff = min(diff, 1440 - diff)  # التفاف حوالين منتصف الليل
-        if diff > WINDOW_MINUTES:
+        elapsed = (now_minutes - target_minutes) % 1440  # دقائق مضت منذ موعد اليوم (مع الالتفاف حول منتصف الليل)
+        if elapsed > WINDOW_MINUTES:
             continue
+
+        # إن حُفظ التذكير بعد موعد اليوم فلا نرسل فورًا، يبدأ من الغد
+        updated = data.get('updatedAt')  # نص ISO مثل 2026-11-08T10:20:00.000Z
+        if updated:
+            try:
+                updated_dt = datetime.datetime.strptime(str(updated)[:19], '%Y-%m-%dT%H:%M:%S')
+                target_dt = now - datetime.timedelta(minutes=elapsed)
+                if updated_dt > target_dt:
+                    skipped += 1
+                    continue
+            except ValueError:
+                pass
 
         if data.get('lastSentDate') == today_str:
             skipped += 1
