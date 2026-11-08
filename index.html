@@ -131,6 +131,8 @@ html[dir="rtl"] .hero-start-btn::after,html[dir="rtl"] .hero-rec-btn::after{cont
 .hero-inner .ayah-banner{margin-top:10px;margin-bottom:0;}
 .hero-progress-btn{display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:rgba(255,255,255,0.16);color:#fff;border:1.5px solid rgba(255,255,255,0.55);border-radius:18px;padding:9px 24px;font-size:0.95rem;font-family:'Almarai',sans-serif;font-weight:700;text-decoration:none;transition:transform .2s,background .2s;cursor:pointer;}
 .hero-progress-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,0.26);}
+.hero-progress-btn>span:first-child::after{content:"→";display:inline-block;font-size:1.05rem;opacity:.75;margin-inline-start:8px;}
+html[dir="rtl"] .hero-progress-btn>span:first-child::after{content:"←";}
 .hero-progress-btn-sub{font-size:0.68rem;font-weight:400;opacity:0.85;text-decoration:underline;}
 /* إحصائيات */
 .list-stats{display:none;justify-content:center;gap:10px;margin:14px 16px 4px;flex-wrap:wrap;}

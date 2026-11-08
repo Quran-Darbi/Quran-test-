@@ -126,10 +126,11 @@
   function getWeekTracker() {
     var hist = safeGetJSON(HISTORY_KEY, []);
     var lg0 = (window.darbiLang && window.darbiLang()) || document.documentElement.lang || 'ar';
-    if (['en', 'fr', 'de', 'es', 'tr'].indexOf(lg0) !== -1) {
-      // أسبوع يبدأ بالاثنين (المعتاد في هذه اللغات): من الاثنين إلى الأحد، والأيام المقبلة فارغة
+    if (['en', 'fr', 'de', 'es', 'tr', 'ar', 'fa'].indexOf(lg0) !== -1) {
+      // أسبوع تقويمي والأيام المقبلة فارغة: يبدأ بالسبت في العربية والفارسية، وبالاثنين في الباقي
       var now = new Date();
-      var mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
+      var startShift = (lg0 === 'ar' || lg0 === 'fa') ? ((now.getDay() + 1) % 7) : ((now.getDay() + 6) % 7);
+      var mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - startShift);
       var wk = [];
       for (var k = 0; k < 7; k++) {
         var dd = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + k);
@@ -182,6 +183,7 @@
     var m = all[k] || { pageKey: pageKey, level: level, qIndex: qIndex, missCount: 0 };
     m.qIndex = qIndex; // مضافة 2026-09-27 — تلزم لبناء رابط "أعد المحاولة" المباشر للسؤال نفسه
     m.missCount += 1;
+    m.okDays = []; // أي خطأ جديد يعيد عدّ الإجابات الصحيحة من الصفر
     m.verseText = answerText || m.verseText || '';
     m.lastMissed = todayStr();
     all[k] = m;
@@ -194,11 +196,53 @@
     if (all[k]) { delete all[k]; safeSetJSON(MISSED_KEY, all); }
   }
 
+  // ---------- تثبيت الأسئلة: ٣ إجابات صحيحة في أيام مختلفة (تبقى محفوظة ولا تُحذف) ----------
+  var STABLE_AFTER = 3;
+
+  // عدد أيام الإجابة الصحيحة بعد آخر خطأ (يوم الخطأ نفسه لا يُحتسب)
+  function stableCount(m) {
+    var last = m.lastMissed || '';
+    return (m.okDays || []).filter(function (d) { return d > last; }).length;
+  }
+
+  function isStable(m) { return stableCount(m) >= STABLE_AFTER; }
+
+  function recordCorrect(level, qIndex) {
+    var pageKey = currentPageKey();
+    if (!pageKey) return;
+    var all = safeGetJSON(MISSED_KEY, {});
+    var m = all[pageKey + '|' + level + '|' + qIndex];
+    if (!m) return; // سؤال لم يُخطأ فيه من قبل — لا شيء يُتتبَّع
+    var t = todayStr();
+    m.okDays = m.okDays || [];
+    if (t > (m.lastMissed || '') && m.okDays.indexOf(t) === -1) {
+      m.okDays.push(t);
+      if (m.okDays.length > 10) m.okDays = m.okDays.slice(-10);
+      safeSetJSON(MISSED_KEY, all);
+    }
+  }
+
+  function returnToReview(pageKey, level, qIndex) {
+    var all = safeGetJSON(MISSED_KEY, {});
+    var m = all[pageKey + '|' + level + '|' + qIndex];
+    if (m) { m.okDays = []; safeSetJSON(MISSED_KEY, all); }
+  }
+
   function getReviewQueue(limit) {
     var all = safeGetJSON(MISSED_KEY, {});
-    var list = Object.keys(all).map(function (k) { return all[k]; });
+    var list = Object.keys(all).map(function (k) { return all[k]; }).filter(function (m) { return !isStable(m); });
     list.sort(function (a, b) { return b.missCount - a.missCount; });
     return list.slice(0, limit || 10);
+  }
+
+  function getStableList() {
+    var all = safeGetJSON(MISSED_KEY, {});
+    var list = Object.keys(all).map(function (k) { return all[k]; }).filter(isStable);
+    list.sort(function (a, b) {
+      var la = (a.okDays || []).slice(-1)[0] || '', lb = (b.okDays || []).slice(-1)[0] || '';
+      return lb < la ? -1 : (lb > la ? 1 : 0);
+    });
+    return list;
   }
 
   // ---------- قراءة ملخصة لصفحة "تقدّمي" (تُبنى لاحقًا فوق دي) ----------
@@ -249,7 +293,7 @@
     var hasProgress = Object.keys(safeGetJSON(PROGRESS_KEY, {})).length > 0;
     if (!hasProgress) return false;
     var last = getLastBackupDate();
-    if (!last) return true;
+    if (!last) return safeGetJSON(HISTORY_KEY, []).length >= 7; // مستخدم جديد: لا إزعاج قبل أسبوع من النشاط
     var days = Math.round((new Date(todayStr()) - new Date(last)) / 86400000);
     return days >= BACKUP_REMIND_DAYS;
   }
@@ -363,6 +407,11 @@
     recordMiss: recordMiss,
     removeMiss: removeMiss,
     getReviewQueue: getReviewQueue,
+    getStableList: getStableList,
+    recordCorrect: recordCorrect,
+    returnToReview: returnToReview,
+    stableCount: stableCount,
+    STABLE_AFTER: STABLE_AFTER,
     getStreak: getStreak,
     getWeekTracker: getWeekTracker,
     hasDoneToday: hasDoneToday,

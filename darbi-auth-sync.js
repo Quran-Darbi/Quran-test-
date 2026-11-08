@@ -136,6 +136,11 @@
         verseText: l.verseText || c.verseText || '',
         lastMissed: laterDate(l.lastMissed, c.lastMissed)
       };
+      var seen = {};
+      out[k].okDays = (l.okDays || []).concat(c.okDays || []).filter(function (d) {
+        if (seen[d] || d <= out[k].lastMissed) return false; // أيام قبل آخر خطأ لا تُحتسب
+        seen[d] = 1; return true;
+      }).sort();
     });
     return out;
   }

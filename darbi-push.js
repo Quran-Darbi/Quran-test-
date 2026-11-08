@@ -23,7 +23,7 @@
 
   var TOKEN_KEY = 'darbi_push_token_v1';
   var SW_PATH = 'firebase-messaging-sw.js';
-  var SW_SCOPE = '/firebase-cloud-messaging-push-scope';
+  var SW_SCOPE = './firebase-cloud-messaging-push-scope'; // نسبي: يعمل على الجذر وعلى مجلد فرعي (موقع التجربة)
   var COLLECTION = 'darbi_reminders';
 
   var app = null, messaging = null, db = null;
@@ -69,12 +69,27 @@
     return String(local.getUTCHours()).padStart(2, '0') + ':' + String(local.getUTCMinutes()).padStart(2, '0');
   }
 
+  // PushManager.subscribe يتطلّب خدمة (Service Worker) نشطة؛ نتأكد من اكتمال تفعيلها بعد التسجيل
+  function whenActive(reg) {
+    return new Promise(function (resolve, reject) {
+      var sw = reg.installing || reg.waiting || reg.active;
+      if (!sw) { reject(new Error('تعذّر تشغيل خدمة الإشعارات')); return; }
+      if (sw.state === 'activated') { resolve(reg); return; }
+      var timer = setTimeout(function () { reject(new Error('انتهت مهلة تفعيل خدمة الإشعارات، أعد المحاولة')); }, 15000);
+      sw.addEventListener('statechange', function () {
+        if (sw.state === 'activated') { clearTimeout(timer); resolve(reg); }
+        else if (sw.state === 'redundant') { clearTimeout(timer); reject(new Error('تعذّر تثبيت خدمة الإشعارات')); }
+      });
+    });
+  }
+
   function enable(localTime, cb) {
     if (!supported()) { cb && cb(false, 'غير مدعوم على هذا المتصفح/الجهاز'); return; }
     ensureApp();
     Notification.requestPermission().then(function (perm) {
       if (perm !== 'granted') { cb && cb(false, 'تم رفض إذن الإشعارات'); return; }
       navigator.serviceWorker.register(SW_PATH, { scope: SW_SCOPE })
+        .then(whenActive)
         .then(function (reg) {
           return messaging.getToken({ vapidKey: window.DARBI_FIREBASE_VAPID_KEY, serviceWorkerRegistration: reg });
         })
