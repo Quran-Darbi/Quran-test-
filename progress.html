@@ -779,7 +779,13 @@ function findResume(){
 }
 function renderContinue(all){
   const card=document.getElementById('continue-card');
-  const rs=findResume();
+  let rs=findResume();
+  // الأحدث يفوز: إن كان آخر نشاط (إنهاء مستوى/تلاوة) أحدث من الاختبار المتوقف، فلا نعيد المستخدم للقديم
+  if(rs){
+    let lastMs=0;
+    Object.keys(all).forEach(k=>{const e=all[k];if(e&&e.lastVisited){const t=new Date(e.lastVisited).getTime();if(t>lastMs)lastMs=t;}});
+    if(lastMs>rs.date)rs=null;
+  }
   if(rs){
     card.classList.remove('hidden');
     document.getElementById('continue-link').href=rs.file+'.html?resume=1';

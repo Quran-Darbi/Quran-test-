@@ -1790,6 +1790,7 @@ function renderDarbiProgress(){
         if(qi>=st.statuses.length||(qi===0&&!st.statuses.some(x=>x&&x!=='pending')))return;
         if(!rs||(st.date||0)>rs.date)rs={href:c.getAttribute('href'),date:st.date||0};
       });
+      if(rs&&rs.date<lastTime)rs=null; // آخر نشاط أحدث من الاختبار المتوقف: الأحدث يفوز
       if(rs&&rs.href){cont.setAttribute('href',rs.href+(rs.href.indexOf('?')<0?'?resume=1':'&resume=1'));cont.style.display='inline-flex';}
     }
   }
