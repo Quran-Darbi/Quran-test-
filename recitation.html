@@ -1834,12 +1834,14 @@ function darbiProgressKey(key){
   if(key.indexOf('baqara_p')===0)return'al'+key;
   return key;
 }
+function dTrack(n,p){try{if(typeof gtag==='function')gtag('event',n,p||{});}catch(e){}}
 function saveDarbiProgress(level,correct,total){
   try{
     var pk='darbi_progress';
     var all=JSON.parse(localStorage.getItem(pk)||'{}');
     var key=darbiProgressKey(currentKey);
     var pct=total>0?Math.round((correct/total)*100):0;
+    dTrack('darbi_quiz_complete',{page_key:key,level:level,score_pct:pct,passed:pct>=70,duration_s:0});
     if(!all[key])all[key]={};
     var prevObj=all[key][level]||{};
     var prev=prevObj.score||0;

@@ -3134,6 +3134,7 @@ function getLang(){
 }
 function setLangPref(code){
   try{ localStorage.setItem('darbi_lang', code); }catch(e){}
+  try{ if(typeof gtag==='function')gtag('event','darbi_lang_change',{lang:code}); }catch(e){}
 }
 
 function t(key, vars){
