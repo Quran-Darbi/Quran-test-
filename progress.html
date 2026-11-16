@@ -1047,7 +1047,7 @@ function renderSmart(all,streak){
   const box=document.getElementById('smart-msg');
   if(!box)return;
   let msg='';
-  if(window.DarbiExtra){const q=DarbiExtra.getReviewQueue(50).length;if(q>0)msg=darbiT('progress.sm_review',{n:q});}
+  if(window.DarbiExtra){const q=DarbiExtra.getReviewQueue(99999).length;if(q>8)msg=darbiT('progress.sm_review_daily',{n:q,k:8});else if(q>0)msg=darbiT('progress.sm_review',{n:q});}
   if(!msg){const t=findContinue(all);if(t)msg=darbiT('progress.sm_next',{name:pgName(t[1])});}
   document.getElementById('smart-txt').textContent=msg;
   box.classList.toggle('hidden',!msg);
